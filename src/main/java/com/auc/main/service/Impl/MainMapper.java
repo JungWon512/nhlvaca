@@ -48,10 +48,7 @@ public interface MainMapper {
 	int updatePassword(Map<String, Object> map) throws Exception;
 
 	int selChkPw(String usrid, String user_pw);
-
 	
-
-	
-	
+	Map<String, Object> selChkPwTibero(String usrid, String user_pw);
 
 }

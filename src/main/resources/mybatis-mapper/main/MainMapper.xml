@@ -270,6 +270,12 @@
            AND USRID = #{usrid}
     </select>
     
+    <select id="selChkPwTibero" resultType="hashMap">
+        SELECT PW
+          FROM TB_LA_IS_MM_USR
+         WHERE USRID = #{usrid}
+    </select>
+    
     
     <select id="MainSogQcn_selList" resultType="hashMap">
         SELECT '1월'            AS MONTHNM

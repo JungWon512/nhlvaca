@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,6 +22,8 @@ public class JwtUserDetailsService implements UserDetailsService{
 	MainMapper mainMapper;
 	@Autowired
 	PasswordEncoder passwordEncoder;
+	@Value("${db-profile}")
+	private String dbProfile;
 	   
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -68,7 +71,13 @@ public class JwtUserDetailsService implements UserDetailsService{
 
 	public int selChkPw(String usrid, String user_pw) {
 		int chkPw = 0;
-		chkPw = mainMapper.selChkPw(usrid, user_pw);
+		if ("tibero".equals(dbProfile)) {
+			Map<String, Object> pwMap = mainMapper.selChkPwTibero(usrid, user_pw);
+			if (passwordEncoder.matches(user_pw, pwMap.getOrDefault("PW", "").toString())) return 1;
+		}
+		else {
+			chkPw = mainMapper.selChkPw(usrid, user_pw);
+		}
 		return chkPw;
 	}
 
