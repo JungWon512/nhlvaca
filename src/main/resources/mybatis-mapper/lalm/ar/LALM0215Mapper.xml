@@ -1,0 +1,930 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ar.service.Impl.LALM0215Mapper">
+
+    <select id="LALM0215_selList" resultType="hashMap">
+    <![CDATA[
+         SELECT
+	          A.NA_BZPLC                        /* 경제통합사업장코드                   	*/
+	        , A.AUC_OBJ_DSC                     /* 경매대상구분코드                    	*/
+	        , A.AUC_DT                          /* 경매일자                          	*/
+	        , A.OSLP_NO                         /* 원표번호                          	*/
+	        , A.LED_SQNO                        /* 원장일련번호                       	*/
+	        , A.FHS_ID_NO                       /* 농가식별번호                       	*/
+	        , A.FARM_AMNNO                      /* 농장관리번호                       	*/
+	        , A.SOG_NA_TRPL_C                   /* 출하경제통합거래처코드               	*/
+	        , A.VHC_SHRT_C                      /* 차량단축코드                      	*/
+	        , A.RC_DT                           /* 접수일자                          	*/
+	        , A.TRMN_AMNNO                      /* 거래인관리번호                      	*/
+	        , A.LVST_AUC_PTC_MN_NO              /* 가축경매참여자번호                   	*/
+	        , A.SRA_SRS_DSC                     /* 축산축종구분코드                    	*/
+	        , SUBSTRING(A.SRA_INDV_AMNNO,4,12) AS SRA_INDV_AMNNO  /* 축산개체관리번호                     	*/
+	        , A.COW_SOG_WT                      /* 우출하중량                        	*/
+	        , A.FIR_LOWS_SBID_LMT_AM            /* 최초최저낙찰한도금액                	*/
+	        , A.LOWS_SBID_LMT_AM                /* 최저낙찰한도금액                   	*/
+	        , A.SRA_SBID_UPR                    /* 축산낙찰단가                       	*/
+	        , A.SRA_SBID_AM                     /* 축산낙찰금액                       	*/
+	        , A.SEL_STS_DSC                     /* 판매상태구분코드                    	*/
+	        , A.BRCL_ISP_CTFW_SMT_YN            /* 브루셀라검사증명서제출여부           	*/
+	        , A.BRCL_ISP_DT                     /* 브루셀라검사일자                    	*/
+	        , A.LWPR_CHG_NT                     /* 최저가변경횟수                     	*/
+	        , A.VACN_DT                         /* 예방접종일자                       	*/
+	        , A.LVST_MKT_TRPL_AMNNO             /* 가축시장거래처관리번호                	*/
+	        , A.MT12_OVR_YN                     /* 12개월이상여부                     	*/
+	        , A.PPGCOW_FEE_DSC                  /* 번식우수수료구분코드                 	*/
+	        , A.PRNY_JUG_YN                     /* 임신감정여부                       	*/
+	        , A.PRNY_YN                         /* 임신여부                          	*/
+	        , A.NCSS_JUG_YN                     /* 괴사감정여부                       	*/
+	        , A.NCSS_YN                         /* 괴사여부                          	*/
+	        , A.TRPCS_PY_YN                     /* 운송비지급여부                      	*/
+	        , A.SRA_TRPCS                       /* 축산운송비                         	*/
+	        , A.SRA_PYIVA                       /* 축산납입출자금                     	*/
+	        , A.SRA_FED_SPY_AM                  /* 축산사료공급금액                    	*/
+	        , A.TD_RC_CST                       /* 당일접수비용                       	*/
+	        , A.MT12_OVR_FEE                    /* 12개월이상수수료 필드 없음          	*/
+	        , A.AFISM_MOD_DT                    /* 인공수정일자                       	*/
+	        , A.PRNY_MTCN                       /* 임신개월수                        	*/
+	        , A.AFISM_MOD_CTFW_SMT_YN           /* 인공수정증명서제출여부                	*/
+	        , A.RMHN_YN                         /* 제각여부                          	*/
+	        , A.SRA_PDMNM                       /* 축산생산자명                     	*/
+	        , A.SRA_PD_RGNNM                    /* 축산생산지역명                      	*/
+	        , A.RMK_CNTN                        /* 비고내용                          	*/
+	        , A.AUC_PRG_SQ                      /* 경매진행순서                      	*/
+	        , A.DEL_YN                          /* 삭제여부                          	*/
+	        , A.TMS_YN                          /* 전송여부                          	*/
+	        , A.SOGMN_C
+	        , A.AUC_YN							/* 경매진행상태                       	*/
+	
+	        , B.FTSNM                           /* 농가명                           	*/
+	        , B.OHSE_TELNO                      /* 자택전화번호                        	*/
+	        , B.CUS_MPNO                        /* 고객휴대전화번호                    	*/
+	        , B.ZIP                             /* 우편번호                          	*/
+	        , B.DONGUP                          /* 동이상주소                         	*/
+	        , B.DONGBW                          /* 동이하주소                         	*/
+	        , B.MACO_YN AS IO_SOGMN_MACO_YN     /* 출하자조합원여부                    	*/
+	
+	        , C.VHC_DRV_CAFFNM                  /* 수송자명                          	*/
+	
+	        , D.INDV_ID_NO                      /* 개체식별번호                       	*/
+	        , D.MCOW_DSC                        /* 어미구분코드                        	*/
+	        , D.MCOW_SRA_INDV_AMNNO             /* 어미소축산개체관리번호                	*/
+	        , TRIM(D.KPN_NO) AS KPN_NO          /* KPN번호                         	*/
+	        , D.SRA_INDV_PASG_QCN               /* 축산개체계대차수                 	 	*/
+	        , D.INDV_SEX_C                      /* 개체성별코드                     	*/
+	        , D.BIRTH                           /* 생년월일                         	*/
+	        , D.SRA_INDV_BRDSRA_RG_NO           /* 축산개체종축등록번호                   */
+	        , D.RG_DSC                          /* 등록구분코드                      	*/
+	        , D.MATIME                          /* 산차                            	*/
+	
+	        , E.SRA_MWMNNM                      /* 축산중도매인명                      	*/
+	        , E.MACO_YN AS IO_MWMN_MACO_YN      /* 중도매인조합원여부                   	*/
+	        , TRIM(A.MOD_KPN_NO) AS MOD_KPN_NO  /* 수정kpn				         	*/
+	        , A.DDL_QCN			   			    /* 일괄경매 마감차수		            	*/
+	        , A.FEE_CHK_YN                      /* 출하수수료수기적용여부               	*/
+	        , A.BLOOD_AM		                /* 혈통수수료	                       	*/
+	        , A.SELFEE_CHK_YN                   /* 판매수수료수기적용여부                	*/
+	        , B.SRA_FARM_ACNO	                /* 계좌정보                          	*/
+	        , A.FEE_CHK_YN_FEE                  /* 출하수수료수기등록                   	*/
+	        , A.SELFEE_CHK_YN_FEE               /* 판매수수료수기등록                   	*/
+	        , A.DNA_YN                          /* 친자검사결과                        	*/
+	        , NVL(B.SRA_FED_SPY_YN, 0) AS SRA_FED_SPY_YN         /* 사료미사용여부                      	*/
+	        , A.BRANDNM
+	        , A.PDA_ID                          /* 수의사구분                          */
+	        , A.DNA_YN_CHK                      /* 친자검사여부                        	*/
+	        , A.BOVINE_DT                       /* 우결핵검사일                        	*/
+	        , A.RE_PRODUCT_1                    /* 유전능력 냉도체중                    	*/
+	        , A.RE_PRODUCT_1_1                  /* 유전능력 냉도체중 등급                	*/
+	        , A.RE_PRODUCT_2                    /* 유전능력 배최장근단면적                	*/
+	        , A.RE_PRODUCT_2_1                  /* 유전능력 배최장근단면적 등급           	*/
+	        , A.RE_PRODUCT_3                    /* 유전능력 등지방두께                   	*/
+	        , A.RE_PRODUCT_3_1                  /* 유전능력 등지방두께 등급               	*/
+	        , A.RE_PRODUCT_4                    /* 유전능력 근내지방도                   	*/
+	        , A.RE_PRODUCT_4_1                  /* 유전능력 근내지방도 등급               	*/
+	        , A.EPD_YN                          /* 고능력여부                         	*/
+	        , A.RE_PRODUCT_11                   /* 유전능력 냉도체중           	- 모개체  */
+	        , A.RE_PRODUCT_11_1                 /* 유전능력 냉도체중 등급        	- 모개체  */
+	        , A.RE_PRODUCT_12                   /* 유전능력 배최장근단면적       	- 모개체  */
+	        , A.RE_PRODUCT_12_1                 /* 유전능력 배최장근단면적 등급   	- 모개체  */
+	        , A.RE_PRODUCT_13                   /* 유전능력 등지방두께          	- 모개체  */
+	        , A.RE_PRODUCT_13_1                 /* 유전능력 등지방두께 등급     	- 모개체  */
+	        , A.RE_PRODUCT_14                   /* 유전능력 근내지방도          	- 모개체  */
+	        , A.RE_PRODUCT_14_1                 /* 유전능력 근내지방도 등급     	- 모개체	*/
+	        , A.SPAY_YN                         /* 난소적출 여부                       	*/
+	        , TRIM(A.CASE_COW) AS CASE_COW
+	        , A.FED_SPY_YN                      /* 전이용사료여부                      	*/
+	        , A.AMNNO                           /* 정산자거래인번호                    	*/
+	        , F.SRA_MWMNNM AS AMNNM             /* 정산자거래인명                    	*/
+	        , A.MODL_NO                         /* 거치대번호                       	*/
+	        , A.BRCL_ISP_RZT_C                  /* 브루셀라접종여부 0:수기 1:음성 2:양성 9:미접종 */
+	
+	    FROM TB_LA_IS_MH_SOG_COW A
+	
+	    LEFT OUTER JOIN TB_LA_IS_MM_VHC C
+	         ON  C.NA_BZPLC      = A.NA_BZPLC
+	         AND C.VHC_SHRT_C    = A.VHC_SHRT_C
+	
+	    LEFT OUTER JOIN TB_LA_IS_MM_MWMN    E
+	         ON  A.NA_BZPLC      = E.NA_BZPLC
+	         AND A.TRMN_AMNNO    = E.TRMN_AMNNO
+	         
+	    LEFT OUTER JOIN TB_LA_IS_MM_MWMN    F
+	         ON  A.NA_BZPLC      = F.NA_BZPLC
+	         AND A.AMNNO         = F.TRMN_AMNNO
+	
+	       , TB_LA_IS_MM_FHS     B
+	       , TB_LA_IS_MM_INDV    D
+	
+	    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC    = #{hdn_auc_obj_dsc}
+	      AND A.AUC_DT         = #{hdn_auc_dt}
+	      AND A.OSLP_NO        = #{hdn_oslp_no}
+	      AND A.LED_SQNO       = '1'
+	
+	      AND B.NA_BZPLC       = A.NA_BZPLC
+	      AND B.FHS_ID_NO      = A.FHS_ID_NO
+	      AND B.FARM_AMNNO     = A.FARM_AMNNO
+	
+	      AND A.NA_BZPLC       = D.NA_BZPLC
+	      AND A.SRA_SRS_DSC    = D.SRA_SRS_DSC
+	      AND A.SRA_INDV_AMNNO = D.SRA_INDV_AMNNO
+	]]>
+    </select>
+    
+    <select id="LALM0215_selPrgSq" resultType="hashMap">
+    <![CDATA[
+         SELECT
+        	  NVL(MAX(AUC_PRG_SQ)+1,1)  AS AUC_PRG_SQ			/* 경매순번			*/
+    	FROM  TB_LA_IS_MH_SOG_COW
+    	WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
+      	  AND AUC_DT          = #{auc_dt}						/* 경매일자			*/
+	]]>
+	<if test='ss_na_bzplc == "8808990656571"'>
+          AND FSRGMN_ENO      = #{ss_userid}
+   	</if>
+    </select>
+    
+    <select id="LALM0215_selAucPrgSq" resultType="hashMap">
+    <![CDATA[
+         SELECT COUNT(AUC_PRG_SQ) AS C_AUC_PRG_SQ
+           FROM  TB_LA_IS_MH_SOG_COW
+          WHERE 1 = 1
+            AND NA_BZPLC     = #{ss_na_bzplc}
+    ]]>
+    <if test='auc_dt != null and auc_dt != ""'>
+            AND AUC_DT       = #{auc_dt}
+    </if>
+    <if test='auc_obj_dsc != null and auc_obj_dsc != ""'>
+            AND AUC_OBJ_DSC  = #{auc_obj_dsc}
+    </if>
+    <if test='auc_prg_sq != null and auc_prg_sq != ""'>
+            AND AUC_PRG_SQ   = #{auc_prg_sq}
+    </if>
+    </select>
+    
+    <select id="LALM0215_selOslpNo" resultType="hashMap">
+    <![CDATA[
+         SELECT OSLP_NO
+           FROM TB_LA_IS_MH_SOG_COW
+          WHERE 1 = 1
+            AND NA_BZPLC     = #{ss_na_bzplc}
+    ]]>
+    <if test='auc_dt != null and auc_dt != ""'>
+            AND AUC_DT       = #{auc_dt}
+    </if>
+    <if test='auc_obj_dsc != null and auc_obj_dsc != ""'>
+            AND AUC_OBJ_DSC  = #{auc_obj_dsc}
+    </if>
+    <if test='auc_prg_sq != null and auc_prg_sq != ""'>
+            AND AUC_PRG_SQ   = #{auc_prg_sq}
+    </if>
+    </select>
+        
+     <select id="LALM0215_selMhCalf" resultType="hashMap">
+    <![CDATA[
+         SELECT
+		        NA_BZPLC									/* 경제통합사업장코드		*/
+		      , AUC_OBJ_DSC									/* 경매대상구분코드		*/
+		      , AUC_DT										/* 경매일자			*/
+		      , OSLP_NO										/* 원표번호			*/
+		      , RG_SQNO										/* 등록일련번호			*/
+		      , SRA_SRS_DSC									/* 축산축종구분코드		*/
+		      , SRA_INDV_AMNNO								/* 축산개체관리번호		*/
+		      , INDV_SEX_C									/* 개체성별코드			*/
+		      , COW_SOG_WT									/* 우출하중량			*/
+		      , BIRTH										/* 생년월일			*/
+		      , TRIM(KPN_NO) AS KPN_NO						/* KPN번호			*/
+		      , TMS_YN										/* 전송여부			*/
+		      , DEL_YN										/* 삭제여부			*/
+		      , '0' AS MCOW_SRA_INDV_AMNNO                  /* 어미소개체관리번호		*/
+		    FROM   TB_LA_IS_MH_CALF A
+		    WHERE  A.NA_BZPLC        = #{ss_na_bzplc}		/* 경제통합사업장코드		*/
+		      AND  A.AUC_OBJ_DSC     = #{auc_obj_dsc}	/* 경매대상구분코드		*/
+		      AND  A.AUC_DT          = #{auc_dt}			/* 경매일자			*/
+		      AND  A.OSLP_NO         = #{oslp_no}			/* 원표번호			*/
+	]]>
+    </select>
+    
+    <select id="LALM0215_selIndvAmnno" resultType="hashMap">
+    <![CDATA[
+         SELECT
+              SRA_INDV_AMNNO
+        FROM  TB_LA_IS_MH_SOG_COW
+        WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
+          AND AUC_DT          = #{auc_dt}						/* 이월일자			*/
+          AND SRA_SRS_DSC     = '01'							/* 축산축종구분코드		*/
+          AND SRA_INDV_AMNNO  = #{re_indv_no}					/* 축산개체관리번호		*/
+	]]>
+    </select>
+    
+    <select id="LALM0215_selIndvAmnnoPgm" resultType="hashMap">
+    <![CDATA[
+          SELECT A.SRA_INDV_AMNNO, A.AUC_DT, A.AUC_PRG_SQ 
+			FROM (SELECT SRA_INDV_AMNNO, AUC_DT, AUC_PRG_SQ 
+					FROM TB_LA_IS_MH_SOG_COW 
+				   WHERE 1 = 1
+					AND SRA_INDV_AMNNO LIKE '%'||#{sra_indv_amnno}||'%'
+				   ORDER BY AUC_DT DESC) A
+			WHERE 1 = 1
+			  AND SRA_INDV_AMNNO LIKE '%'||#{sra_indv_amnno}||'%'
+			  AND ROWNUM = 1
+	]]>
+    </select>
+    
+    <select id="LALM0215_selTmpIndvAmnnoPgm" resultType="hashMap">
+    <![CDATA[
+          SELECT
+               A.SRA_INDV_AMNNO
+           FROM TB_LA_IS_MM_INDV A
+              , TB_LA_IS_MM_FHS  B
+           WHERE A.NA_BZPLC       = #{ss_na_bzplc}
+             AND A.NA_BZPLC       = B.NA_BZPLC
+             AND A.FHS_ID_NO      = B.FHS_ID_NO
+             AND A.FARM_AMNNO     = B.FARM_AMNNO
+             AND A.ANW_YN IN('1','9')
+             AND B.ANW_YN IN('1','9')
+             AND A.SRA_INDV_AMNNO = #{re_indv_no}
+	]]>
+    </select>
+    
+    <select id="LALM0215_selFhsIdNo" resultType="hashMap">
+    <![CDATA[
+          SELECT
+               FHS_ID_NO
+             , FARM_AMNNO
+             , FTSNM
+             , CASE WHEN CUS_MPNO = '' OR CUS_MPNO = '-' OR CUS_MPNO = '--' OR CUS_MPNO IS NULL THEN OHSE_TELNO
+               ELSE CUS_MPNO END AS OHSE_TELNO
+             , ZIP, DONGUP
+             , DONGBW
+             , NA_TRPL_C
+             , SRA_FARM_ACNO
+         FROM TB_LA_IS_MM_FHS
+         WHERE NA_BZPLC       = #{ss_na_bzplc} 
+           AND FHS_ID_NO = #{fhs_id_no}
+	]]>
+    </select>
+    
+    <select id="LALM0215_selAmnno" resultType="hashMap">
+    <![CDATA[
+         SELECT
+              SRA_INDV_AMNNO
+        FROM  TB_LA_IS_MH_SOG_COW
+        WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
+          AND SRA_INDV_AMNNO  = #{re_indv_no}					/* 축산개체관리번호		*/
+	]]>
+    </select>
+    
+    <select id="LALM0215_selVoslpNo" resultType="hashMap">
+    <![CDATA[
+         SELECT
+	          NVL(MAX(OSLP_NO)+1,1)  AS V_OSLP_NO
+		FROM  TB_LA_IS_MH_SOG_COW
+		WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
+		  AND AUC_DT          = #{auc_dt}					/* 이월일자			*/
+	]]>
+    </select>
+    
+    <select id="LALM0215_selChgVoslpNo" resultType="hashMap">
+    <![CDATA[
+         SELECT
+	          NVL(MAX(OSLP_NO)+1,1)  AS V_OSLP_NO
+		FROM  TB_LA_IS_MH_SOG_COW
+		WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
+		  AND AUC_DT          = #{auc_chg_dt}					/* 이월일자			*/
+	]]>
+    </select>
+    
+    <select id="LALM0215_selTmpAucObjDsc" resultType="hashMap">
+    <![CDATA[
+         SELECT AUC_OBJ_DSC
+          FROM  TB_LA_IS_MH_AUC_QCN
+          WHERE NA_BZPLC        = #{ss_na_bzplc}
+            AND AUC_DT          = #{auc_dt}
+	]]>
+    </select>
+    
+    <select id="LALM0215_selTmpAucPrgSq" resultType="hashMap">
+    <![CDATA[
+         SELECT NVL(MAX(AUC_PRG_SQ)+1,1) AS AUC_PRG_SQ			/* 경매순번                     */
+           FROM TB_LA_IS_MH_SOG_COW
+           WHERE NA_BZPLC        = #{ss_na_bzplc}				/* 경제통합사업장코드           */
+             AND AUC_DT          = #{auc_dt}					/* 경매일자                     */
+             AND AUC_OBJ_DSC     = #{auc_obj_dsc}			/* 경매대상                     */
+	]]>
+    </select>
+    
+    <select id="LALM0215_selTmpFhsNm" resultType="hashMap">
+    <![CDATA[
+        SELECT
+		      FHS_ID_NO
+		    , FARM_AMNNO
+		   	, FTSNM
+			, CASE WHEN CUS_MPNO = '' OR CUS_MPNO = '-' OR CUS_MPNO = '--' OR CUS_MPNO IS NULL THEN OHSE_TELNO
+              ELSE CUS_MPNO END AS OHSE_TELNO
+			, ZIP
+			, DONGUP
+			, DONGBW
+			, NA_TRPL_C
+			, SRA_FARM_ACNO
+		FROM  TB_LA_IS_MM_FHS
+		WHERE FTSNM                 = '백운학'
+		  AND SUBSTR(FHS_ID_NO,1,1) = 'T'
+	]]>
+    </select>
+    
+    <select id="LALM0215_selAucPrg" resultType="hashMap">
+    <![CDATA[
+        SELECT AUC_PRG_SQ                                       /* 경매순번                   */
+	     FROM  TB_LA_IS_MH_SOG_COW
+	    WHERE  NA_BZPLC     = #{ss_na_bzplc}              /* 경제통합사업장코드         */
+	      AND  AUC_DT       = #{auc_dt}         /* 경매일자                   */
+	      AND  AUC_OBJ_DSC  = #{auc_obj_dsc}    /* 경매대상                   */
+	      AND  AUC_PRG_SQ   = #{auc_prg_sq}     /* 경매번호                   */
+	]]>
+    </select>
+    
+    <select id="LALM0215_selMacoFee" resultType="hashMap">
+    <![CDATA[
+        SELECT
+               MACO_FEE_UPR
+         FROM  TB_LA_IS_MH_FEE
+         WHERE NA_BZPLC       = #{ss_na_bzplc}									/* 경제통합사업장코드      */
+           AND AUC_OBJ_DSC    = #{auc_obj_dsc}								/* 경매대상구분코드        */
+           AND APL_DT         = (SELECT
+                                       MAX(APL_DT)
+                                 FROM TB_LA_IS_MH_FEE
+                                 WHERE NA_BZPLC     = #{ss_na_bzplc}			/* 경제통합사업장코드      */
+                                   AND AUC_OBJ_DSC  = #{auc_obj_dsc}			/* 경매대상구분코드        */
+                                   AND APL_DT      <= #{auc_dt}					/* 적용일자                */
+                                   AND DEL_YN       = '0')						/* 적용일자                */
+           AND NA_FEE_C       = '010'
+           AND FEE_APL_OBJ_C  = '1'
+           AND PPGCOW_FEE_DSC = #{ppgcow_fee_dsc}
+           AND DEL_YN         = '0'												/* 삭제여부                */
+	]]>
+    </select>
+    
+    <select id="LALM0215_selStsDsc" resultType="hashMap">
+    <![CDATA[
+          SELECT SEL_STS_DSC
+		    FROM TB_LA_IS_MH_SOG_COW
+		   WHERE NA_BZPLC = #{ss_na_bzplc}
+			 AND  OSLP_NO         = #{oslp_no} 
+			 AND AUC_OBJ_DSC  = #{auc_obj_dsc} 
+			 AND AUC_DT = #{auc_dt}
+	]]>
+    </select>
+    
+    <select id="LALM0215_selFee" resultType="hashMap">
+    <![CDATA[
+          SELECT
+	          A.NA_BZPLC												/* 경제통합사업장코드			*/
+	        , A.APL_DT													/* 적용일자				*/
+	        , A.AUC_OBJ_DSC												/* 경매대상구분코드			*/
+	        , A.FEE_RG_SQNO												/* 수수료등록일련번호			*/
+	        , A.NA_FEE_C												/* 경제통합수수료코드			*/
+	        , A.SRA_FEENM												/* 축산수수료명				*/
+	        , A.JNLZ_BSN_DSC											/* 분개업무구분코드			*/
+	        , A.SRA_NA_FEE_C											/* 축산경제통합수수료코드		*/
+	        , A.FEE_APL_OBJ_C											/* 수수료적용대상코드			*/
+	        , A.AM_RTO_DSC												/* 금액비율구분코드			*/
+	        , A.SGNO_PRC_DSC											/* 단수처리구분코드			*/
+	        , A.MACO_FEE_UPR											/* 조합원수수료단가			*/
+	        , A.NMACO_FEE_UPR											/* 비조합원수수료단가			*/
+	        , A.ANS_DSC													/* 가감구분코드				*/
+	        , A.SBID_YN													/* 낙찰여부				*/
+	        , A.PPGCOW_FEE_DSC											/* 번식우수수료구분코드		*/
+	        , A.DEL_YN													/* 삭제여부				*/
+	        , A.FSRG_DTM												/* 최초등록일시				*/
+	        , A.FSRGMN_ENO												/* 최초등록자개인번호			*/
+	        , A.LSCHG_DTM												/* 최종변경일시				*/
+	        , A.LS_CMENO												/* 최종변경자개인번호			*/
+	        , 0 AS SRA_TR_FEE											/* 축산거래수수료			*/
+	    FROM  TB_LA_IS_MH_FEE A
+	    WHERE A.NA_BZPLC    = #{ss_na_bzplc}							/* 경제통합사업장코드			*/
+	      AND A.AUC_OBJ_DSC = #{auc_obj_dsc}							/* 경매대상구분코드			*/
+	      AND A.APL_DT      = (SELECT MAX(APL_DT)
+	                           FROM  TB_LA_IS_MH_FEE
+	                           WHERE NA_BZPLC      = #{ss_na_bzplc}		/* 경제통합사업장코드			*/
+	                             AND AUC_OBJ_DSC   = #{auc_obj_dsc}	/* 경매대상구분코드			*/
+	                             AND APL_DT       <= #{auc_dt}			/* 적용일자				*/
+	                             AND DEL_YN        = '0')				/* 적용일자				*/
+	      AND A.DEL_YN      = '0' 										/* 삭제여부				*/
+	]]>
+    </select>
+    
+    <select id="LALM0215_selGetPpgcowFeeDsc" resultType="hashMap">
+    <![CDATA[
+          SELECT
+                 A.PPGCOW_FEE_DSC
+            FROM  TB_LA_IS_MH_FEE A
+            WHERE A.NA_BZPLC       = #{ss_na_bzplc}             				/* 경제통합사업장코드			*/
+              AND A.AUC_OBJ_DSC    = #{auc_obj_dsc}          				/* 경매대상구분코드			*/
+              AND A.APL_DT         = (SELECT
+                                            MAX(APL_DT)
+                                      FROM TB_LA_IS_MH_FEE
+                                      WHERE NA_BZPLC     = #{ss_na_bzplc}       /* 경제통합사업장코드			*/
+                                        AND AUC_OBJ_DSC  = #{auc_obj_dsc}    /* 경매대상구분코드			*/
+                                        AND APL_DT      <= #{auc_dt}         	/* 적용일자				*/
+                                        AND DEL_YN       = '0')
+              AND A.NA_FEE_C       = #{tmp_hd_na_fee_c}
+              AND A.PPGCOW_FEE_DSC = #{ppgcow_fee_dsc}
+              AND A.DEL_YN         = '0' ;                 						/* 삭제여부				*/
+	]]>
+    </select>
+    
+    <delete id="LALM0215_delSogCow">
+    <![CDATA[
+        DELETE FROM TB_LA_IS_MH_SOG_COW
+    		WHERE  NA_BZPLC        = #{ss_na_bzplc}				/* 경제통합사업장코드			*/        
+    	      AND  AUC_OBJ_DSC     = #{auc_obj_dsc}			/* 경매대상구분코드			*/
+    	      AND  AUC_DT          = #{auc_dt}					/* 경매일자				*/
+    	      AND  OSLP_NO         = #{oslp_no}					/* 원표번호				*/ 
+    ]]>
+    </delete>
+    
+    <delete id="LALM0215_delFeeImps">
+    <![CDATA[
+        DELETE FROM TB_LA_IS_MH_FEE_IMPS
+    		WHERE  NA_BZPLC        = #{ss_na_bzplc}				/* 경제통합사업장코드			*/        
+    	      AND  AUC_OBJ_DSC     = #{auc_obj_dsc}			/* 경매대상구분코드			*/
+    	      AND  AUC_DT          = #{auc_dt}					/* 경매일자				*/
+    	      AND  OSLP_NO         = #{oslp_no}					/* 원표번호				*/  
+    ]]>
+    </delete>
+    
+    <delete id="LALM0215_delMhCalf">
+    <![CDATA[
+        DELETE FROM TB_LA_IS_MH_CALF
+    		WHERE  NA_BZPLC        = #{ss_na_bzplc}				/* 경제통합사업장코드			*/        
+    	      AND  AUC_OBJ_DSC     = #{auc_obj_dsc}			/* 경매대상구분코드			*/
+    	      AND  AUC_DT          = #{auc_dt}					/* 경매일자				*/
+    	      AND  OSLP_NO         = #{oslp_no}					/* 원표번호				*/  
+    ]]>
+    </delete>
+    
+    <insert id="LALM0215_insSogCow">
+        INSERT  INTO TB_LA_IS_MH_SOG_COW (
+           NA_BZPLC                               	/* 경제통합사업장코드         */
+         , AUC_OBJ_DSC                            	/* 경매대상구분코드           */
+         , AUC_DT                                 	/* 경매일자                   */
+         , OSLP_NO                                	/* 원표번호                   */
+         , LED_SQNO                               	/* 원장일련번호               */
+         , FHS_ID_NO                              	/* 농가식별번호               */
+         , FARM_AMNNO                             	/* 농장관리번호               */
+         , SOG_NA_TRPL_C                          	/* 출하경제통합거래처코드     */
+         , VHC_SHRT_C                             	/* 차량단축코드               */
+         , RC_DT                                  	/* 접수일자                   */
+         , TRMN_AMNNO                             	/* 거래인관리번호             */
+         , LVST_AUC_PTC_MN_NO                     	/* 가축경매참여자번호         */
+         , SRA_SRS_DSC                            	/* 축산축종구분코드           */
+         , SRA_INDV_AMNNO                         	/* 축산개체관리번호           */
+         , COW_SOG_WT                             	/* 우출하중량                 */
+         , FIR_LOWS_SBID_LMT_AM                   	/* 최초최저낙찰한도금액       */
+         , LOWS_SBID_LMT_AM                       	/* 최저낙찰한도금액           */
+         , SRA_SBID_UPR                           	/* 축산낙찰단가               */
+         , SRA_SBID_AM                            	/* 축산낙찰금액               */
+         , SEL_STS_DSC                            	/* 판매상태구분코드           */
+         , BRCL_ISP_CTFW_SMT_YN                   	/* 브루셀라검사증명서제출여부 */
+         , BRCL_ISP_DT                            	/* 브루셀라검사일자           */
+         , LWPR_CHG_NT                            	/* 최저가변경횟수             */
+         , VACN_DT                                	/* 예방접종일자               */
+         , LVST_MKT_TRPL_AMNNO                    	/* 가축시장거래처관리번호     */
+         , MT12_OVR_YN                            	/* 12개월이상여부             */
+         , PPGCOW_FEE_DSC                         	/* 번식우수수료구분코드       */
+         , PRNY_JUG_YN                            	/* 임신감정여부               */
+         , PRNY_YN                                	/* 임신여부                   */
+         , NCSS_JUG_YN                            	/* 괴사감정여부               */
+         , NCSS_YN                                	/* 괴사여부                   */
+         , TRPCS_PY_YN                            	/* 운송비지급여부             */
+         , SRA_TRPCS                              	/* 축산운송비                 */
+         , SRA_PYIVA                              	/* 축산납입출자금             */
+         , SRA_FED_SPY_AM                         	/* 축산사료공급금액           */
+         , TD_RC_CST                              	/* 당일접수비용               */
+         , MT12_OVR_FEE                           	/* 12개월이상수수료           */
+         , AFISM_MOD_DT                           	/* 인공수정일자               */
+         , PRNY_MTCN                              	/* 임신개월수                 */
+         , AFISM_MOD_CTFW_SMT_YN                  	/* 인공수정증명서제출여부     */
+         , RMHN_YN                                	/* 제각여부                   */
+         , SRA_PDMNM                              	/* 축산생산자명               */
+         , SRA_PD_RGNNM                           	/* 축산생산지역명             */
+         , RMK_CNTN                               	/* 비고내용                   */
+         , AUC_PRG_SQ                             	/* 경매진행순서               */
+         , DEL_YN                                 	/* 삭제여부                   */
+         , TMS_YN                                 	/* 전송여부                   */
+         , MOD_KPN_NO	                      		/* 수정kpn			        */
+         , SOGMN_C                                	/* 생산자                     */
+         , DDL_QCN		                          	/* 마감차수(일괄경매 진행차수)*/
+         , FSRG_DTM                               	/* 최초등록일시               */
+         , FSRGMN_ENO                             	/* 최초등록자개인번호         */
+         , LSCHG_DTM                              	/* 최종변경일시               */
+         , LS_CMENO                               	/* 최종변경자개인번호         */
+         , FEE_CHK_YN                             	/* 출하수수료수기적용여부     */
+         , BLOOD_AM                               	/* 송아지혈통수수료           */
+         , SELFEE_CHK_YN                          	/* 판매수수료수기적용여부     */
+         , FEE_CHK_YN_FEE                         	/* 출하수수료수기등록         */
+         , SELFEE_CHK_YN_FEE                      	/* 판매수수료수기등록         */
+         , DNA_YN                                 	/* 친자확인여부               */
+         , BRANDNM                                	/* 출장우브랜드명(춘천)       */
+         , PDA_ID                                 	/* 산정위 PDA_ID              */
+         , DNA_YN_CHK                             	/* 친자검사여부               */
+         , BOVINE_DT                              	/* 우결핵검사일               */
+         , RE_PRODUCT_1                             /* 유전능력 냉도체중                      */
+		 , RE_PRODUCT_1_1                           /* 유전능력 냉도체중 등급                 */
+		 , RE_PRODUCT_2                             /* 유전능력 배최장근단면적                */
+		 , RE_PRODUCT_2_1                           /* 유전능력 배최장근단면적 등급           */
+		 , RE_PRODUCT_3                             /* 유전능력 등지방두께                    */
+		 , RE_PRODUCT_3_1                           /* 유전능력 등지방두께 등급               */
+		 , RE_PRODUCT_4                             /* 유전능력 근내지방도                    */
+		 , RE_PRODUCT_4_1                           /* 유전능력 근내지방도 등급               */
+		 , EPD_YN                                   /* 고능력여부                             */
+		 , RE_PRODUCT_11                            /* 유전능력 냉도체중            - 모개체  */
+		 , RE_PRODUCT_11_1                          /* 유전능력 냉도체중 등급       - 모개체  */
+		 , RE_PRODUCT_12                            /* 유전능력 배최장근단면적      - 모개체  */
+		 , RE_PRODUCT_12_1                          /* 유전능력 배최장근단면적 등급 - 모개체  */
+		 , RE_PRODUCT_13                            /* 유전능력 등지방두께          - 모개체  */
+		 , RE_PRODUCT_13_1                          /* 유전능력 등지방두께 등급     - 모개체  */
+		 , RE_PRODUCT_14                            /* 유전능력 근내지방도          - 모개체  */
+		 , RE_PRODUCT_14_1                          /* 유전능력 근내지방도 등급     - 모개체  */
+		 , SPAY_YN                                  /* 난소적출 여부                          */
+		 , CASE_COW                                 /* 송아지 구분 코드*/
+		 , FED_SPY_YN                             	/* 전이용사료여부              */
+		 , AMNNO                                   /* 정산자거래인번호                     */
+		 , MODL_NO                                 /* 거치대 번호 */
+    )values(
+           #{ss_na_bzplc}                        	/* 경제통합사업장코드         */
+         , #{auc_obj_dsc}             				/* 경매대상구분코드           */
+         , #{auc_dt}              					/* 경매이월일자               */
+         , #{oslp_no}                           	/* 원표번호                   */
+         , 1                                        /* 원장일련번호               */
+         , #{fhs_id_no}               				/* 농가식별번호               */
+         , #{farm_amnno}              				/* 농장관리번호               */
+         , #{sog_na_trpl_c}           				/* 출하경제통합거래처코드     */
+         , #{vhc_shrt_c}               				/* 차량단축코드               */
+         , #{rc_dt}                    				/* 접수일자                   */
+         <choose>
+			<when test='trmn_amnno == "" or trmn_amnno == null'>			/* 거래인관리번호             */
+				, null								
+			</when>
+			<otherwise>
+				, #{trmn_amnno}
+			</otherwise>
+		 </choose>
+		 <choose>
+			<when test='lvst_auc_ptc_mn_no == "" or lvst_auc_ptc_mn_no == null'>	/* 가축경매참여자번호         */
+				, null								
+			</when>
+			<otherwise>
+				, #{lvst_auc_ptc_mn_no}
+			</otherwise>
+		 </choose>
+         , '01'					                  	/* 축산축종구분코드           */
+         , #{re_indv_no}                   			/* 축산개체관리번호           */
+         , #{cow_sog_wt}               				/* 우출하중량                 */
+         , #{fir_lows_sbid_lmt_am}     				/* 최초최저낙찰한도금액       */
+         , #{lows_sbid_lmt_am}         				/* 최저낙찰한도금액           */
+         , #{sra_sbid_upr}             				/* 축산낙찰단가               */
+         , #{sra_sbid_am}              				/* 축산낙찰금액               */
+         , #{sel_sts_dsc}              				/* 판매상태구분코드           */
+         , #{brcl_isp_ctfw_smt_yn}     				/* 브루셀라검사증명서제출여부 */
+         , #{brcl_isp_dt}              				/* 브루셀라검사일자           */
+         , #{lwpr_chg_nt}              				/* 최저가변경횟수             */
+         , #{vacn_dt}                  				/* 예방접종일자               */
+         <choose>
+			<when test='lvst_mkt_trpl_amnno == "" or lvst_mkt_trpl_amnno == null'>	/* 가축시장거래처관리번호     */
+				, null								
+			</when>
+			<otherwise>
+				, #{lvst_mkt_trpl_amnno}
+			</otherwise>
+		</choose>
+         , #{mt12_ovr_yn}              				/* 12개월이상여부             */
+         , #{ppgcow_fee_dsc}           				/* 번식우수수료구분코드       */
+         , #{prny_jug_yn}              				/* 임신감정여부               */
+         , #{prny_yn}                  				/* 임신여부                   */
+         , #{ncss_jug_yn}              				/* 괴사감정여부               */
+         , #{ncss_yn}                  				/* 괴사여부                   */
+         , #{trpcs_py_yn}              				/* 운송비지급여부             */
+         , #{sra_trpcs}                				/* 축산운송비                 */
+         , #{sra_pyiva}                				/* 축산납입출자금             */
+         , #{sra_fed_spy_am}           				/* 축산사료공급금액           */
+         , #{td_rc_cst}                				/* 당일접수비용               */
+         , #{mt12_ovr_fee}             				/* 12개월이상수수료           */
+         , #{afism_mod_dt}             				/* 인공수정일자               */
+         , #{prny_mtcn}                				/* 임신개월수                 */
+         , #{afism_mod_ctfw_smt_yn}    				/* 인공수정증명서제출여부     */
+         , #{rmhn_yn}                  				/* 제각여부                   */
+         , #{sra_pdmnm}                				/* 축산생산자명               */
+         , #{sra_pd_rgnnm}             				/* 축산생산지역명             */
+         , #{rmk_cntn}                 				/* 비고내용                   */
+         , #{auc_prg_sq}               				/* 경매진행순서               */
+         , '0'                                      /* 삭제여부                   */
+         , '0'                                      /* 전송여부                   */
+         , #{mod_kpn_no}	            			/* 수정kpn                    */
+         , #{sogmn_c}                  				/* 생산자                     */
+         , ''								        /* 마감차수(일괄경매 진행차수)*/
+         , SYSDATE                                	/* 최초등록일시               */
+         , #{ss_userid}                             /* 최초등록자개인번호         */
+         , SYSDATE                                	/* 최종변경일시               */
+         , #{ss_userid}                             /* 최종변경자개인번호         */
+         , #{fee_chk_yn}               				/* 출하수수료수기적용여부     */
+         , #{blood_am}                 				/* 송아지혈통수수료		      */
+         , #{selfee_chk_yn}            				/* 판매수수료수기적용여부     */
+         , #{fee_chk_yn_fee}           				/* 출하수수료수기등록         */
+         , #{selfee_chk_yn_fee}        				/* 판매수수료수기등록         */
+         
+         <choose>
+			<when test='dna_yn == "" or dna_yn == null'>	/* 친자확인여부               */
+				, '3'								
+			</when>
+			<otherwise>
+				, #{dna_yn}                   				
+			</otherwise>
+		 </choose>
+         
+         , #{brandnm}                  				/* 출장우브랜드명(춘천)       */
+         , #{pda_id}                   				/* 산정위 PDA_ID              */
+         , #{dna_yn_chk}               				/* 친자검사여부               */
+         , #{bovine_dt}                				/* 우결핵검사일               */
+         , #{re_product_1}                           /* 유전능력 냉도체중                      */
+		 , #{re_product_1_1}                         /* 유전능력 냉도체중 등급                 */
+		 , #{re_product_2}                           /* 유전능력 배최장근단면적                */
+		 , #{re_product_2_1}                         /* 유전능력 배최장근단면적 등급           */
+		 , #{re_product_3}                           /* 유전능력 등지방두께                    */
+		 , #{re_product_3_1}                         /* 유전능력 등지방두께 등급               */
+		 , #{re_product_4}                           /* 유전능력 근내지방도                    */
+		 , #{re_product_4_1}                         /* 유전능력 근내지방도 등급               */
+		 , #{epd_yn}                                 /* 고능력여부                             */
+		 , #{re_product_11}                          /* 유전능력 냉도체중            - 모개체  */
+		 , #{re_product_11_1}                        /* 유전능력 냉도체중 등급       - 모개체  */
+		 , #{re_product_12}                          /* 유전능력 배최장근단면적      - 모개체  */
+		 , #{re_product_12_1}                        /* 유전능력 배최장근단면적 등급 - 모개체  */
+		 , #{re_product_13}                          /* 유전능력 등지방두께          - 모개체  */
+		 , #{re_product_13_1}                        /* 유전능력 등지방두께 등급     - 모개체  */
+		 , #{re_product_14}                          /* 유전능력 근내지방도          - 모개체  */
+		 , #{re_product_14_1}                        /* 유전능력 근내지방도 등급     - 모개체  */
+		 , #{spay_yn}                                /* 난소적출 여부                          */
+		 
+		 <choose>
+			<when test='case_cow == "" or case_cow == null'>	/* 송아지 구분 코드*/
+				, ''								
+			</when>
+			<otherwise>
+				, #{case_cow}
+			</otherwise>
+		 </choose>
+		 
+		 , #{fed_spy_yn}             				 /* 전이용사료여부                */
+		 
+		 <choose>
+			<when test='amnno == "" or amnno == null'>	/* 정산자거래인번호                     */
+				, null								
+			</when>
+			<otherwise>
+				, #{amnno}
+			</otherwise>
+		 </choose>
+		 , #{modl_no}                             /* 거치대 번호 */
+    )
+    </insert>
+    
+    <insert id="LALM0215_insMmIndv">
+        INSERT INTO TB_LA_IS_MM_INDV
+            (
+                  NA_BZPLC                                             /* 경제통합사업장코드                  */
+                , SRA_INDV_AMNNO                                       /* 축산개체관리번호                    */
+                , SRA_SRS_DSC                                          /* 축산축종구분코드                    */
+                , FHS_ID_NO                                            /* 농가식별번호                        */
+                , FARM_AMNNO                                           /* 농장관리번호                        */
+                , BIRTH                                                /* 생년월일                            */
+                , MCOW_DSC                                             /* 어미구분코드                        */
+                , KPN_NO		                                       /* KPN번호                             */
+                , INDV_SEX_C                                           /* 개체성별코드                        */
+                , MCOW_SRA_INDV_AMNNO                                  /* 어미소축산개체관리번호              */
+                , MATIME                                               /* 산차                                */
+                , SRA_INDV_PASG_QCN                                    /* 축산개체계대차수                    */
+                , INDV_ID_NO                                           /* 개체식별번호                        */
+                , SRA_INDV_BRDSRA_RG_NO                                /* 축산개체종축등록번호                */
+                , RG_DSC                                               /* 등록구분코드                        */
+                , ANW_YN                                               /* 한우종합등록여부                    */
+                , FSRG_DTM                                             /* 최초등록일시                        */
+                , FSRGMN_ENO                                           /* 최초등록자개인번호                  */
+                , LSCHG_DTM                                            /* 최종변경일시                        */
+                , LS_CMENO                                             /* 최종변경자개인번호                  */
+            )VALUES
+            (
+                  #{ss_na_bzplc}										/* 경제통합사업장코드                  */
+                , #{re_indv_no}											/* 축산개체관리번호                    */
+                , '01'													/* 축산축종구분코드                    */
+                , #{fhs_id_no}											/* 농가식별번호                        */
+                , #{farm_amnno}											/* 농장관리번호                        */
+                <choose>
+					<when test='birth == "" or birth == null'>
+						, BIRTH = NULL
+					</when>
+					<otherwise>
+						, BIRTH = #{birth}
+					</otherwise>
+				</choose>												/* 생년월일                            */
+                , #{mcow_dsc}											/* 어미구분코드                        */
+                , #{kpn_no}												/* KPN번호                             */
+                , #{indv_sex_c}											/* 개체성별코드                        */
+                , #{mcow_sra_indv_amnno}								/* 어미소축산개체관리번호              */
+                <choose>
+					<when test='matime == "" or matime == null'>
+						, MATIME = NULL
+					</when>
+					<otherwise>
+						, MATIME = #{matime}
+					</otherwise>
+				</choose>												/* 산차                                */
+                , #{sra_indv_pasg_qcn}									/* 축산개체계대차수                    */
+                , #{indv_id_no}											/* 개체식별번호                        */
+                , #{sra_indv_brdsra_rg_no}								/* 축산개체종축등록번호                */
+                , #{rg_dsc}												/* 등록구분코드                        */
+                , '9'													/* 한우종합등록여부                    */
+                , SYSDATE												/* 최초등록일시                        */
+                , #{ss_userid}											/* 최초등록자개인번호                  */
+                , SYSDATE												/* 최종변경일시                        */
+                , #{ss_userid}											/* 최종변경자개인번호                  */
+            )
+    </insert>
+    
+    <insert id="LALM0215_insMhFeeImps">
+        INSERT INTO TB_LA_IS_MH_FEE_IMPS (
+                  NA_BZPLC                      /* 경제통합사업장코드                */
+                , AUC_OBJ_DSC                   /* 경매대상구분코드                  */
+                , AUC_DT                        /* 경매일자                          */
+                , OSLP_NO                       /* 원표번호                          */
+                , LED_SQNO                      /* 원장일련번호                      */
+                , FEE_RG_SQNO                   /* 수수료등록일련번호                */
+                , NA_FEE_C                      /* 경제통합수수료코드                */
+                , APL_DT                        /* 적용일자                          */
+                , FEE_APL_OBJ_C                 /* 수수료적용대상코드                */
+                , ANS_DSC                       /* 가감구분코드                      */
+                , SBID_YN                       /* 낙찰여부                          */
+                , SRA_TR_FEE                    /* 축산거래수수료                    */
+                , TMS_YN                        /* 전송여부                          */
+            )VALUES(
+                  #{ss_na_bzplc}             /* 경제통합사업장코드                */
+                , #{auc_obj_dsc}   /* 경매대상구분코드                  */
+                , #{auc_dt}        /* 경매일자                          */
+                , #{v_oslp_no}                    /* 원표번호                          */
+                , 1                              /* 원장일련번호                      */
+                , #{fee_rg_sqno}             /* 수수료등록일련번호                */
+                , #{na_fee_c}                /* 경제통합수수료코드                */
+                , #{apl_dt}                  /* 적용일자                          */
+                , #{fee_apl_obj_c}           /* 수수료적용대상코드                */
+                , #{ans_dsc}                 /* 가감구분코드                      */
+                , #{sbid_yn}                 /* 낙찰여부                          */
+                , #{sra_tr_fee}              /* 축산거래수수료                    */
+                , '0'                           /* 전송여부                          */
+            )
+    </insert>
+    
+    <insert id="LALM0215_insMhCalf">
+        INSERT INTO TB_LA_IS_MH_CALF (
+                      NA_BZPLC				/* 경제통합사업장코드                */
+                    , AUC_OBJ_DSC			/* 경매대상구분코드                  */
+                    , AUC_DT				/* 경매일자                          */
+                    , OSLP_NO				/* 원표번호                          */
+                    , RG_SQNO				/* 등록일련번호                      */
+                    , SRA_SRS_DSC			/* 축산축종구분코드                  */
+                    , SRA_INDV_AMNNO		/* 축산개체관리번호                  */
+                    , INDV_SEX_C			/* 개체성별코드                      */
+                    , COW_SOG_WT			/* 우출하중량                        */
+                    , BIRTH					/* 생년월일                          */
+                    , KPN_NO				/* KPN번호                           */
+                    , DEL_YN				/* 삭제여부                          */
+                    , TMS_YN				/* 전송여부                          */
+                    , FSRG_DTM				/* 최초등록일시                      */
+                    , FSRGMN_ENO			/* 최초등록자개인번호                */
+                    , LSCHG_DTM				/* 최종변경일시                      */
+                    , LS_CMENO				/* 최종변경자개인번호                */
+                )VALUES(
+                      #{ss_na_bzplc}		/* 경제통합사업장코드                */
+                    , #{auc_obj_dsc}		/* 경매대상구분코드                  */
+                    , #{auc_dt}				/* 경매일자                          */
+                    , #{v_oslp_no}			/* 원표번호                          */
+                    , #{v_rg_sqno}			/* 등록일련번호                      */
+                    , #{sra_srs_dsc}		/* 축산축종구분코드                  */
+                    , #{sra_indv_amnno}		/* 축산개체관리번호                  */
+                    , #{indv_sex_c}			/* 개체성별코드                      */
+                    , #{cow_sog_wt}			/* 우출하중량                        */
+                    , #{birth}				/* 생년월일                          */
+                    , #{kpn_no}				/* KPN번호                           */
+                    , '0'					/* 삭제여부                          */
+                    , '0'					/* 전송여부                          */
+                    , SYSDATE				/* 최초등록일시                      */
+                    , #{ss_userid}			/* 최초등록자개인번호                */
+                    , SYSDATE				/* 최종변경일시                      */
+                    , #{ss_userid}			/* 최종변경자개인번호                */
+                )
+    </insert>
+    
+    <update id="LALM0215_updMmFhs">
+    <![CDATA[
+          UPDATE TB_LA_IS_MM_FHS SET
+              MACO_YN     	 =  #{io_sogmn_maco_yn}
+            , LSCHG_DTM      =  SYSDATE
+            , LS_CMENO       =  #{ss_userid}
+        WHERE NA_BZPLC   =  #{ss_na_bzplc}
+          AND FHS_ID_NO  =  #{fhs_id_no}
+          AND FARM_AMNNO =  #{farm_amnno}
+    ]]>
+    </update>
+    
+    <update id="LALM0215_updIndvSet">
+    <![CDATA[
+          UPDATE TB_LA_IS_MM_INDV SET
+		        KPN_NO = #{kpn_no}
+		    WHERE NA_BZPLC       = #{ss_na_bzplc}
+		      AND SRA_INDV_AMNNO = #{re_indv_no}
+		      AND SRA_SRS_DSC    = '01'
+    ]]>
+    </update>
+    
+    <update id="LALM0215_updMnIndv">
+          UPDATE TB_LA_IS_MM_INDV SET
+                  KPN_NO              =  #{kpn_no}
+                , FHS_ID_NO 	      =  #{fhs_id_no}
+                , FARM_AMNNO 	      =  #{farm_amnno}
+                , INDV_SEX_C          =  #{indv_sex_c}
+                <choose>
+					<when test='birth == "" or birth == null'>
+						, BIRTH = NULL
+					</when>
+					<otherwise>
+						, BIRTH = #{birth}
+					</otherwise>
+				</choose>
+                , INDV_ID_NO            =  #{indv_id_no}
+                , SRA_INDV_BRDSRA_RG_NO =  #{sra_indv_brdsra_rg_no}
+                <choose>
+					<when test='rg_dsc == "" or rg_dsc == null'>
+						, RG_DSC = NULL
+					</when>
+					<otherwise>
+						, RG_DSC = #{rg_dsc}
+					</otherwise>
+				</choose>
+				<choose>
+					<when test='mcow_dsc == "" or mcow_dsc == null'>
+						, MCOW_DSC = NULL
+					</when>
+					<otherwise>
+						, MCOW_DSC = #{mcow_dsc}
+					</otherwise>
+				</choose>
+                , MCOW_SRA_INDV_AMNNO   =  #{mcow_sra_indv_amnno}
+                <choose>
+					<when test='matime == "" or matime == null'>
+						, MATIME = NULL
+					</when>
+					<otherwise>
+						, MATIME = #{matime}
+					</otherwise>
+				</choose>
+                , SRA_INDV_PASG_QCN     = #{sra_indv_pasg_qcn}
+            WHERE NA_BZPLC              = #{ss_na_bzplc}
+              AND SRA_INDV_AMNNO        = #{re_indv_no}
+              AND SRA_SRS_DSC           ='01'
+    </update>
+</mapper>
+
+
+
+
+		
+
+
+
+
+
+
+
+
+

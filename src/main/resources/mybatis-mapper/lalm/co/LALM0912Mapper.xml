@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0912Mapper">
+    
+    <select id="LALM0912_selData" resultType="java.util.LinkedHashMap">
+        SELECT A.NA_BZPLC               /* 경제통합사업장코드   */
+	         , A.NA_BZPLNM              /* 경제통합사업장명     */
+	         , A.BZNO                   /* 대표사업자번호       */
+	         , A.REPMNM                 /* 대표자명             */
+	         , A.BRC                    /* 사무소코드           */
+	         , A.ZIP                    /* 우편번호             */
+	         , A.DONGUP                 /* 동이상주소           */
+	         , A.DONGBW                 /* 동이하주소           */
+	         , A.TELNO                  /* 대표전화번호         */
+	         , A.REP_BNK_C              /* 결제계좌은행         */
+	         , A.ACNO                   /* 계좌번호             */
+	         , A.RMK_CNTN               /* 비고                 */
+	         , A.FSRG_DTM               /* 최초등록일시         */
+	         , A.FSRGMN_ENO             /* 최초등록자개인번호   */
+	         , A.LSCHG_DTM              /* 최종변경일시         */
+	         , A.LS_CMENO               /* 최종변경자개인번호   */
+	         , A.SEAL_IMG_CNTN
+	         , A.SEAL_IMG_FLNM          /* 직인정보             */
+	         , A.TRPL_SHRT_C            /* 사업장단축코드       */
+	         , B.NBFCT_AUC_UPR_DSC            /* 비육우단가기준              */
+	         , B.PHN_AUC_YN                   /* 음성경매여부                */
+	         , B.TD_RC_CST                    /* 당일접수비용                */
+	         , B.AUC_ATDR_UNT_AM
+	         , B.MT12_OVR_FEE                 /* 12개월이상수수료            */
+	         , B.KPN_CIP                      /* KPN자리수                   */
+	         , B.EBBO_IP_ADDR1                /* 멀티A                       */
+	         , B.EBBO_PORT_NO1                /* 멀티A포트                   */
+	         , B.EBBO_IP_ADDR2                /* PDP A                       */
+	         , B.EBBO_PORT_NO2                /* PDP A 포트                  */
+	         , B.EBBO_IP_ADDR3                /* 멀티B                       */
+	         , B.EBBO_PORT_NO3                /* 멀티B포트                   */
+	         , B.EBBO_IP_ADDR4                /* PDP B                       */
+	         , B.EBBO_PORT_NO4                /* PDP B포트                   */
+	         , B.CALF_AUC_ATDR_UNT_AM         /* 송아지응찰단위금액          */
+	         , B.NBFCT_AUC_ATDR_UNT_AM        /* 비육우응찰단위금액          */
+	         , B.PPGCOW_AUC_ATDR_UNT_AM       /* 번식우응찰단위금액          */
+	         , B.CNNT_OBJ_SYS_DSC             /* 연계시스템구분              */
+	         , B.URL_NM                       /* 연계시스템URL               */
+	         , B.MULTI_AUCNO                  /* 멀티자릿수-경매번호         */
+	         , B.MULTI_FTSNM                  /* 멀티자릿수-출하주           */
+	         , B.MULTI_WEIGHT                 /* 멀티자릿수-중량             */
+	         , B.MULTI_SEX                    /* 멀티자릿수-성별             */
+	         , B.MULTI_QCN                    /* 멀티자릿수-계대             */
+	         , B.MULTI_MATIME                 /* 멀티자릿수-산차             */
+	         , B.MULTI_SBID_LMT_AM            /* 멀티자릿수-응찰하한가       */
+	         , B.MULTI_SBID_UPR               /* 멀티자릿수-낙찰가           */
+	         , B.MULTI_MWMNNM                 /* 멀티자릿수-낙찰자           */
+	         , B.PDP_AUCNO                    /* PDP자릿수-경매번호          */
+	         , B.PDP_FTSNM                    /* PDP자릿수-출하주            */
+	         , B.PDP_WEIGHT                   /* PDP자릿수-중량              */
+	         , B.PDP_SEX                      /* PDP자릿수-성별              */
+	         , B.PDP_QCN                      /* PDP자릿수-계대              */
+	         , B.PDP_MATIME                   /* PDP자릿수-산차              */
+	         , B.PDP_SBID_LMT_AM              /* PDP자릿수-응찰하한가        */
+	         , B.PDP_SBID_UPR                 /* PDP자릿수-낙찰가            */
+	         , B.PDP_MWMNNM                   /* PDP자릿수-낙찰자            */
+	         , B.SRA_FED_SPY_YN_FEE           /* 사료미사용추가수수료        */
+	         , B.BRKR_NAME_HOST               /* 수의사병원명                */
+	         , B.FEE_CHK_DNA_YN_FEE           /* 친자확인출하수수료          */
+	         , B.SELFEE_CHK_DNA_YN_FEE        /* 친자확인판매수수료          */
+	         , C.NA_BZPLCNO                   /* 사업장 번호                 */
+	         , C.NA_BZPLCLOC                  /* 사업장 지역 코드            */
+	         , C.CLNTNM                       /* 사업장명                    */
+	         , C.AREAORD                      /* 지역2순서                   */
+	         , C.AREANM                       /* 지역2명                     */
+	         , C.AUC_DSC                      /* 경매구분 1일괄;2단일        */
+	         , C.LAT                          /* 위도                        */
+	         , C.LNG                          /* 경도                        */
+	         , C.AUC_YN                       /* 경매 여부                   */
+	         , C.DEL_YN                       /* 삭제 여부                   */
+	         , C.RMK_CNTN AS AUC_RMK_CNTN     /* 비고내용                    */
+	         , C.TEL_NO                       /* 전화번호                    */
+	         , C.KKO_SVC_ID                   /* 카카오서비스아이디          */
+	         , C.KKO_SVC_KEY                  /* 카카오서비스키              */
+	         , C.SMS_AUTH_YN                  /* SMS인증사용여부 */
+	      FROM TB_LA_IS_MM_WMC A
+	         , TB_LA_IS_MM_ENV_EST B
+             , TB_LA_IS_BM_BZLOC   C
+         WHERE 1 = 1
+        <choose>
+            <when test='na_bzplc != null and na_bzplc != ""'>
+           AND A.NA_BZPLC       = #{na_bzplc} 
+            </when>
+            <otherwise>
+           AND A.NA_BZPLC       = #{ss_na_bzplc} 
+            </otherwise>
+        </choose>
+           AND A.NA_BZPLC       = B.NA_BZPLC(+)
+           AND A.NA_BZPLC       = C.NA_BZPLC(+)
+    </select>
+    
+    
+    <insert id="LALM0912_insWmc">
+        INSERT INTO TB_LA_IS_MM_WMC(
+               NA_BZPLC                                /* 경제통합사업장코드   */
+             , NA_BZPLNM                               /* 경제통합사업장명     */
+             , BZNO                                    /* 대표사업자번호       */
+             , REPMNM                                  /* 대표자명             */
+             , BRC                                     /* 사무소코드           */
+             , ZIP                                     /* 우편번호             */
+             , DONGUP                                  /* 동이상주소           */
+             , DONGBW                                  /* 동이하주소           */
+             , TELNO                                   /* 대표전화번호         */
+             , REP_BNK_C                               /* 결제계좌은행         */
+             , ACNO                                    /* 계좌번호             */
+             , RMK_CNTN                                /* 비고                 */
+             , TRPL_SHRT_C                             /* 사업장단축코드       */
+             , FSRG_DTM                                /* 최초등록일시         */
+             , FSRGMN_ENO                              /* 최초등록자개인번호   */
+             , LSCHG_DTM                               /* 최종변경일시         */
+             , LS_CMENO                                /* 최종변경자개인번호   */
+	    ) VALUES (
+	           #{na_bzplc}                   /* 경제통합사업장코드   */
+	         , #{na_bzplnm}                  /* 경제통합사업장명     */
+	         , Replace(#{bzno},'-','')       /* 대표사업자번호       */
+	         , #{repmnm}                     /* 대표자명             */
+	         , #{brc}                        /* 사무소코드           */
+	         , Replace(#{zip},'-','')        /* 우편번호             */
+	         , #{dongup}                     /* 동이상주소           */
+	         , #{dongbw}                     /* 동이하주소           */
+	         , #{telno}                      /* 대표전화번호         */
+	         , #{rep_bnk_c}                  /* 결제계좌은행         */
+	         , #{acno}                       /* 계좌번호             */
+	         , #{rmk_cntn}                   /* 비고                 */
+             , #{trpl_shrt_c}                /* 직인정보             */
+             , SYSDATE                       /* 최초등록일시         */
+             , #{ss_userid}                  /* 최초등록자개인번호   */
+             , SYSDATE                       /* 최종변경일시         */
+             , #{ss_userid}                  /* 최종변경자개인번호   */
+        )   
+    </insert>
+    
+    
+    
+    <insert id="LALM0912_insEnvEst">
+    <![CDATA[
+        INSERT INTO TB_LA_IS_MM_ENV_EST(
+               NA_BZPLC                                      /* 경제통합사업장코드          */
+             , NBFCT_AUC_UPR_DSC                             /* 비육우단가기준              */
+             , PHN_AUC_YN                                    /* 음성경매여부                */
+             , TD_RC_CST                                     /* 당일접수비용                */
+             , MT12_OVR_FEE                                  /* 12개월이상수수료            */
+             , KPN_CIP                                       /* KPN자리수                   */
+             , EBBO_IP_ADDR1                                 /* 멀티A                       */
+             , EBBO_PORT_NO1                                 /* 멀티A포트                   */
+             , EBBO_IP_ADDR2                                 /* PDP A                       */
+             , EBBO_PORT_NO2                                 /* PDP A 포트                  */
+             , EBBO_IP_ADDR3                                 /* 멀티B                       */
+             , EBBO_PORT_NO3                                 /* 멀티B포트                   */
+             , EBBO_IP_ADDR4                                 /* PDP B                       */
+             , EBBO_PORT_NO4                                 /* PDP B포트                   */
+             , CALF_AUC_ATDR_UNT_AM                          /* 송아지응찰단위금액          */
+             , NBFCT_AUC_ATDR_UNT_AM                         /* 비육우응찰단위금액          */
+             , PPGCOW_AUC_ATDR_UNT_AM                        /* 번식우응찰단위금액          */
+             , CNNT_OBJ_SYS_DSC                              /* 연계시스템구분              */
+             , URL_NM                                        /* 연계시스템URL               */
+             , MULTI_AUCNO                                   /* 멀티자릿수-경매번호         */
+             , MULTI_FTSNM                                   /* 멀티자릿수-출하주           */
+             , MULTI_WEIGHT                                  /* 멀티자릿수-중량             */
+             , MULTI_SEX                                     /* 멀티자릿수-성별             */
+             , MULTI_QCN                                     /* 멀티자릿수-계대             */
+             , MULTI_MATIME                                  /* 멀티자릿수-산차             */
+             , MULTI_SBID_LMT_AM                             /* 멀티자릿수-응찰하한가       */
+             , MULTI_SBID_UPR                                /* 멀티자릿수-낙찰가           */
+             , MULTI_MWMNNM                                  /* 멀티자릿수-낙찰자           */
+             , PDP_AUCNO                                     /* PDP자릿수-경매번호          */
+             , PDP_FTSNM                                     /* PDP자릿수-출하주            */
+             , PDP_WEIGHT                                    /* PDP자릿수-중량              */
+             , PDP_SEX                                       /* PDP자릿수-성별              */
+             , PDP_QCN                                       /* PDP자릿수-계대              */
+             , PDP_MATIME                                    /* PDP자릿수-산차              */
+             , PDP_SBID_LMT_AM                               /* PDP자릿수-응찰하한가        */
+             , PDP_SBID_UPR                                  /* PDP자릿수-낙찰가            */
+             , PDP_MWMNNM                                    /* PDP자릿수-낙찰자            */
+             , SRA_FED_SPY_YN_FEE                            /* 사료미사용추가수수료        */
+             , BRKR_NAME_HOST                                /* 수의사병원명                */
+             , FEE_CHK_DNA_YN_FEE                            /* 친자확인출하수수료          */
+             , SELFEE_CHK_DNA_YN_FEE                         /* 친자확인판매수수료          */
+             , FSRG_DTM                                      /* 최초등록일시                */
+             , FSRGMN_ENO                                    /* 최초등록자개인번호          */
+             , LSCHG_DTM                                     /* 최종변경일사                */
+             , LS_CMENO                                      /* 최종변경자개인번호          */
+        ) VALUES(
+               #{na_bzplc}                       /* 경제통합사업장코드          */
+             , #{nbfct_auc_upr_dsc}              /* 비육우단가기준              */
+             , #{phn_auc_yn}                     /* 음성경매여부                */
+             , #{td_rc_cst}                      /* 당일접수비용                */
+             , #{mt12_ovr_fee}                   /* 12개월이상수수료            */
+             , #{kpn_cip}                        /* KPN자리수                   */
+             , #{ebbo_ip_addr1}                  /* 멀티A                       */
+             , #{ebbo_port_no1}                  /* 멀티A포트                   */
+             , #{ebbo_ip_addr2}                  /* PDP A                       */
+             , #{ebbo_port_no2}                  /* PDP A 포트                  */
+             , #{ebbo_ip_addr3}                  /* 멀티B                       */
+             , #{ebbo_port_no3}                  /* 멀티B포트                   */
+             , #{ebbo_ip_addr4}                  /* PDP B                       */
+             , #{ebbo_port_no4}                  /* PDP B포트                   */
+             , #{calf_auc_atdr_unt_am}           /* 송아지응찰단위금액          */
+             , #{nbfct_auc_atdr_unt_am}          /* 비육우응찰단위금액          */
+             , #{ppgcow_auc_atdr_unt_am}         /* 번식우응찰단위금액          */
+             , #{cnnt_obj_sys_dsc}               /* 연계시스템구분              */
+             , #{url_nm}                         /* 연계시스템URL               */
+             , #{multi_aucno}                    /* 멀티자릿수-경매번호         */
+             , #{multi_ftsnm}                    /* 멀티자릿수-출하주           */
+             , #{multi_weight}                   /* 멀티자릿수-중량             */
+             , #{multi_sex}                      /* 멀티자릿수-성별             */
+             , #{multi_qcn}                      /* 멀티자릿수-계대             */
+             , #{multi_matime}                   /* 멀티자릿수-산차             */
+             , #{multi_sbid_lmt_am}              /* 멀티자릿수-응찰하한가       */
+             , #{multi_sbid_upr}                 /* 멀티자릿수-낙찰가           */
+             , #{multi_mwmnnm}                   /* 멀티자릿수-낙찰자           */
+             , #{pdp_aucno}                      /* PDP자릿수-경매번호          */
+             , #{pdp_ftsnm}                      /* PDP자릿수-출하주            */
+             , #{pdp_weight}                     /* PDP자릿수-중량              */
+             , #{pdp_sex}                        /* PDP자릿수-성별              */
+             , #{pdp_qcn}                        /* PDP자릿수-계대              */
+             , #{pdp_matime}                     /* PDP자릿수-산차              */
+             , #{pdp_sbid_lmt_am}                /* PDP자릿수-응찰하한가        */
+             , #{pdp_sbid_upr}                   /* PDP자릿수-낙찰가            */
+             , #{pdp_mwmnnm}                     /* PDP자릿수-낙찰자            */
+             , #{sra_fed_spy_yn_fee}             /* 사료미사용추가수수료        */
+             , #{brkr_name_host}                 /* 수의사병원명                */
+             , #{fee_chk_dna_yn_fee}             /* 친자확인출하수수료          */
+             , #{selfee_chk_dna_yn_fee}          /* 친자확인판매수수료          */
+             , SYSDATE                           /* 최초등록일시                */
+             , #{ss_userid}                      /* 최초등록자개인번호          */
+             , SYSDATE                           /* 최종변경일시                */
+             , #{ss_userid}                      /* 최종변경자개인번호          */
+        )         
+    ]]>
+    </insert>
+    
+    <insert id="LALM0912_insBzloc">
+    <![CDATA[
+        INSERT INTO TB_LA_IS_BM_BZLOC(
+               NA_BZPLC                     /* 경제통합사업장코드          */
+             , NA_BZPLCNO                   /* 사업장 번호                 */
+             , NA_BZPLCLOC                  /* 사업장 지역 코드            */
+             , CLNTNM                       /* 사업장명                    */
+             , AREAORD                      /* 지역2순서                   */
+             , AREANM                       /* 지역2명                     */
+             , AUC_DSC                      /* 경매구분 1일괄;2단일        */
+             , LAT                          /* 위도                        */
+             , LNG                          /* 경도                        */
+             , AUC_YN                       /* 경매 여부                   */
+             , DEL_YN                       /* 삭제 여부                   */
+             , RMK_CNTN                     /* 비고내용                    */
+             , TEL_NO                       /* 전화번호                    */
+             , KKO_SVC_ID                   /* 카카오서비스아이디          */
+             , KKO_SVC_KEY                  /* 카카오서비스키              */     
+             , SMS_AUTH_YN                  /* SMS인증사용여부 */
+             , FSRG_DTM                     /* 최초등록일시                */
+             , FSRGMN_ENO                   /* 최초등록자개인번호          */
+             , LSCHG_DTM                    /* 최종변경일사                */
+             , LS_CMENO                     /* 최종변경자개인번호          */
+        ) VALUES(
+               #{na_bzplc}                       /* 경제통합사업장코드          */
+             , #{na_bzplcno}                     /* 사업장 번호                 */
+             , #{na_bzplcloc}                    /* 사업장 지역 코드            */
+             , #{clntnm}                         /* 사업장명                    */
+             , #{areaord}                        /* 지역2순서                   */
+             , #{areanm}                         /* 지역2명                     */
+             , #{auc_dsc}                        /* 경매구분 1일괄;2단일        */
+             , #{lat}                            /* 위도                        */
+             , #{lng}                            /* 경도                        */
+             , #{auc_yn}                         /* 경매 여부                   */
+             , '0'                               /* 삭제 여부                   */
+             , #{auc_rmk_cntn}                   /* 비고내용                    */
+             , #{tel_no}                         /* 전화번호                    */
+             , #{kko_svc_id}                     /* 카카오서비스아이디          */
+             , #{kko_svc_key}                    /* 카카오서비스키              */
+             , #{sms_auth_yn}
+             , SYSDATE                           /* 최초등록일시                */
+             , #{ss_userid}                      /* 최초등록자개인번호          */
+             , SYSDATE                           /* 최종변경일시                */
+             , #{ss_userid}                      /* 최종변경자개인번호          */
+        )         
+    ]]>
+    </insert>
+    
+    
+    <update id="LALM0912_updWmc">
+        UPDATE TB_LA_IS_MM_WMC SET
+               NA_BZPLNM     = #{na_bzplnm}                      /* 경제통합사업장명     */
+             , BZNO          = Replace(#{bzno},'-','')           /* 대표사업자번호       */
+             , REPMNM        = #{repmnm}                         /* 대표자명             */
+             , BRC           = #{brc}                            /* 사무소코드           */
+             , ZIP           = Replace(#{zip},'-','')            /* 우편번호             */
+             , DONGUP        = #{dongup}                         /* 동이상주소           */
+             , DONGBW        = #{dongbw}                         /* 동이하주소           */
+             , TELNO         = #{telno}                          /* 대표전화번호         */
+             , REP_BNK_C     = #{rep_bnk_c}                      /* 결제계좌은행         */
+             , ACNO          = #{acno}                           /* 계좌번호             */
+             , RMK_CNTN      = #{rmk_cntn}                       /* 비고                 */
+             , TRPL_SHRT_C   = #{trpl_shrt_c}                    /* 사업장단축코드       */
+             , LSCHG_DTM     = SYSDATE                           /* 최종변경일시         */
+             , LS_CMENO      = #{ss_userid}                      /* 최종변경자개인번호   */
+         WHERE NA_BZPLC      = #{na_bzplc} 
+    </update>
+    
+    <update id="LALM0912_updSealImg">
+        UPDATE TB_LA_IS_MM_WMC SET
+               SEAL_IMG_FLNM     = #{seal_img_flnm}
+             , SEAL_IMG_CNTN     = #{seal_img_cntn}
+         WHERE NA_BZPLC      = #{na_bzplc} 
+    </update>
+    
+    <select id="LALM0912_selSealImg" resultType="hashMap">
+        SELECT SEAL_IMG_CNTN
+          FROM TB_LA_IS_MM_WMC
+         WHERE NA_BZPLC      = #{na_bzplc}
+    </select>
+    
+    
+    <update id="LALM0912_updEnvEst">
+    <![CDATA[
+        MERGE INTO TB_LA_IS_MM_ENV_EST A
+        USING DUAL
+          ON (A.NA_BZPLC       = #{na_bzplc})
+        WHEN MATCHED THEN
+        UPDATE SET
+               A.NBFCT_AUC_UPR_DSC          = #{nbfct_auc_upr_dsc}          /* 비육우단가기준              */
+             , A.PHN_AUC_YN                 = #{phn_auc_yn}                 /* 음성경매여부                */
+             , A.TD_RC_CST                  = #{td_rc_cst}                  /* 당일접수비용                */
+             , A.MT12_OVR_FEE               = #{mt12_ovr_fee}               /* 12개월이상수수료            */
+             , A.KPN_CIP                    = #{kpn_cip}                    /* KPN자리수                   */
+             , A.EBBO_IP_ADDR1              = #{ebbo_ip_addr1}              /* 멀티A                       */
+             , A.EBBO_PORT_NO1              = #{ebbo_port_no1}              /* 멀티A포트                   */
+             , A.EBBO_IP_ADDR2              = #{ebbo_ip_addr2}              /* PDP A                       */
+             , A.EBBO_PORT_NO2              = #{ebbo_port_no2}              /* PDP A 포트                  */
+             , A.EBBO_IP_ADDR3              = #{ebbo_ip_addr3}              /* 멀티B                       */
+             , A.EBBO_PORT_NO3              = #{ebbo_port_no3}              /* 멀티B포트                   */
+             , A.EBBO_IP_ADDR4              = #{ebbo_ip_addr4}              /* PDP B                       */
+             , A.EBBO_PORT_NO4              = #{ebbo_port_no4}              /* PDP B포트                   */
+             , A.CALF_AUC_ATDR_UNT_AM       = #{calf_auc_atdr_unt_am}       /* 송아지응찰단위금액          */
+             , A.NBFCT_AUC_ATDR_UNT_AM      = #{nbfct_auc_atdr_unt_am}      /* 비육우응찰단위금액          */
+             , A.PPGCOW_AUC_ATDR_UNT_AM     = #{ppgcow_auc_atdr_unt_am}     /* 번식우응찰단위금액          */
+             , A.CNNT_OBJ_SYS_DSC           = #{cnnt_obj_sys_dsc}           /* 연계시스템구분              */
+             , A.URL_NM                     = #{url_nm}                     /* 연계시스템URL               */
+             , A.MULTI_AUCNO                = #{multi_aucno}                /* 멀티자릿수-경매번호         */
+             , A.MULTI_FTSNM                = #{multi_ftsnm}                /* 멀티자릿수-출하주           */
+             , A.MULTI_WEIGHT               = #{multi_weight}               /* 멀티자릿수-중량             */
+             , A.MULTI_SEX                  = #{multi_sex}                  /* 멀티자릿수-성별             */
+             , A.MULTI_QCN                  = #{multi_qcn}                  /* 멀티자릿수-계대             */
+             , A.MULTI_MATIME               = #{multi_matime}               /* 멀티자릿수-산차             */
+             , A.MULTI_SBID_LMT_AM          = #{multi_sbid_lmt_am}          /* 멀티자릿수-응찰하한가       */
+             , A.MULTI_SBID_UPR             = #{multi_sbid_upr}             /* 멀티자릿수-낙찰가           */
+             , A.MULTI_MWMNNM               = #{multi_mwmnnm}               /* 멀티자릿수-낙찰자           */
+             , A.PDP_AUCNO                  = #{pdp_aucno}                  /* PDP자릿수-경매번호          */
+             , A.PDP_FTSNM                  = #{pdp_ftsnm}                  /* PDP자릿수-출하주            */
+             , A.PDP_WEIGHT                 = #{pdp_weight}                 /* PDP자릿수-중량              */
+             , A.PDP_SEX                    = #{pdp_sex}                    /* PDP자릿수-성별              */
+             , A.PDP_QCN                    = #{pdp_qcn}                    /* PDP자릿수-계대              */
+             , A.PDP_MATIME                 = #{pdp_matime}                 /* PDP자릿수-산차              */
+             , A.PDP_SBID_LMT_AM            = #{pdp_sbid_lmt_am}            /* PDP자릿수-응찰하한가        */
+             , A.PDP_SBID_UPR               = #{pdp_sbid_upr}               /* PDP자릿수-낙찰가            */
+             , A.PDP_MWMNNM                 = #{pdp_mwmnnm}                 /* PDP자릿수-낙찰자            */
+             , A.SRA_FED_SPY_YN_FEE         = #{sra_fed_spy_yn_fee}         /* 사료미사용추가수수료        */
+             , A.BRKR_NAME_HOST             = #{brkr_name_host}             /* 수의사병원명                */
+             , A.FEE_CHK_DNA_YN_FEE         = #{fee_chk_dna_yn_fee}         /* 친자확인출하수수료          */
+             , A.SELFEE_CHK_DNA_YN_FEE      = #{selfee_chk_dna_yn_fee}      /* 친자확인판매수수료          */
+             , A.LSCHG_DTM                  = SYSDATE                       /* 최종변경일사                */
+             , A.LS_CMENO                   = #{ss_userid}                  /* 최종변경자개인번호          */
+         WHEN NOT MATCHED THEN
+         INSERT (
+               NA_BZPLC                                      /* 경제통합사업장코드          */
+             , NBFCT_AUC_UPR_DSC                             /* 비육우단가기준              */
+             , PHN_AUC_YN                                    /* 음성경매여부                */
+             , TD_RC_CST                                     /* 당일접수비용                */
+             , MT12_OVR_FEE                                  /* 12개월이상수수료            */
+             , KPN_CIP                                       /* KPN자리수                   */
+             , EBBO_IP_ADDR1                                 /* 멀티A                       */
+             , EBBO_PORT_NO1                                 /* 멀티A포트                   */
+             , EBBO_IP_ADDR2                                 /* PDP A                       */
+             , EBBO_PORT_NO2                                 /* PDP A 포트                  */
+             , EBBO_IP_ADDR3                                 /* 멀티B                       */
+             , EBBO_PORT_NO3                                 /* 멀티B포트                   */
+             , EBBO_IP_ADDR4                                 /* PDP B                       */
+             , EBBO_PORT_NO4                                 /* PDP B포트                   */
+             , CALF_AUC_ATDR_UNT_AM                          /* 송아지응찰단위금액          */
+             , NBFCT_AUC_ATDR_UNT_AM                         /* 비육우응찰단위금액          */
+             , PPGCOW_AUC_ATDR_UNT_AM                        /* 번식우응찰단위금액          */
+             , CNNT_OBJ_SYS_DSC                              /* 연계시스템구분              */
+             , URL_NM                                        /* 연계시스템URL               */
+             , MULTI_AUCNO                                   /* 멀티자릿수-경매번호         */
+             , MULTI_FTSNM                                   /* 멀티자릿수-출하주           */
+             , MULTI_WEIGHT                                  /* 멀티자릿수-중량             */
+             , MULTI_SEX                                     /* 멀티자릿수-성별             */
+             , MULTI_QCN                                     /* 멀티자릿수-계대             */
+             , MULTI_MATIME                                  /* 멀티자릿수-산차             */
+             , MULTI_SBID_LMT_AM                             /* 멀티자릿수-응찰하한가       */
+             , MULTI_SBID_UPR                                /* 멀티자릿수-낙찰가           */
+             , MULTI_MWMNNM                                  /* 멀티자릿수-낙찰자           */
+             , PDP_AUCNO                                     /* PDP자릿수-경매번호          */
+             , PDP_FTSNM                                     /* PDP자릿수-출하주            */
+             , PDP_WEIGHT                                    /* PDP자릿수-중량              */
+             , PDP_SEX                                       /* PDP자릿수-성별              */
+             , PDP_QCN                                       /* PDP자릿수-계대              */
+             , PDP_MATIME                                    /* PDP자릿수-산차              */
+             , PDP_SBID_LMT_AM                               /* PDP자릿수-응찰하한가        */
+             , PDP_SBID_UPR                                  /* PDP자릿수-낙찰가            */
+             , PDP_MWMNNM                                    /* PDP자릿수-낙찰자            */
+             , SRA_FED_SPY_YN_FEE                            /* 사료미사용추가수수료        */
+             , BRKR_NAME_HOST                                /* 수의사병원명                */
+             , FEE_CHK_DNA_YN_FEE                            /* 친자확인출하수수료          */
+             , SELFEE_CHK_DNA_YN_FEE                         /* 친자확인판매수수료          */
+             , FSRG_DTM                                      /* 최초등록일시                */
+             , FSRGMN_ENO                                    /* 최초등록자개인번호          */
+             , LSCHG_DTM                                     /* 최종변경일사                */
+             , LS_CMENO                                      /* 최종변경자개인번호          */
+        ) VALUES(
+               #{na_bzplc}                       /* 경제통합사업장코드          */
+             , #{nbfct_auc_upr_dsc}              /* 비육우단가기준              */
+             , #{phn_auc_yn}                     /* 음성경매여부                */
+             , #{td_rc_cst}                      /* 당일접수비용                */
+             , #{mt12_ovr_fee}                   /* 12개월이상수수료            */
+             , #{kpn_cip}                        /* KPN자리수                   */
+             , #{ebbo_ip_addr1}                  /* 멀티A                       */
+             , #{ebbo_port_no1}                  /* 멀티A포트                   */
+             , #{ebbo_ip_addr2}                  /* PDP A                       */
+             , #{ebbo_port_no2}                  /* PDP A 포트                  */
+             , #{ebbo_ip_addr3}                  /* 멀티B                       */
+             , #{ebbo_port_no3}                  /* 멀티B포트                   */
+             , #{ebbo_ip_addr4}                  /* PDP B                       */
+             , #{ebbo_port_no4}                  /* PDP B포트                   */
+             , #{calf_auc_atdr_unt_am}           /* 송아지응찰단위금액          */
+             , #{nbfct_auc_atdr_unt_am}          /* 비육우응찰단위금액          */
+             , #{ppgcow_auc_atdr_unt_am}         /* 번식우응찰단위금액          */
+             , #{cnnt_obj_sys_dsc}               /* 연계시스템구분              */
+             , #{url_nm}                         /* 연계시스템URL               */
+             , #{multi_aucno}                    /* 멀티자릿수-경매번호         */
+             , #{multi_ftsnm}                    /* 멀티자릿수-출하주           */
+             , #{multi_weight}                   /* 멀티자릿수-중량             */
+             , #{multi_sex}                      /* 멀티자릿수-성별             */
+             , #{multi_qcn}                      /* 멀티자릿수-계대             */
+             , #{multi_matime}                   /* 멀티자릿수-산차             */
+             , #{multi_sbid_lmt_am}              /* 멀티자릿수-응찰하한가       */
+             , #{multi_sbid_upr}                 /* 멀티자릿수-낙찰가           */
+             , #{multi_mwmnnm}                   /* 멀티자릿수-낙찰자           */
+             , #{pdp_aucno}                      /* PDP자릿수-경매번호          */
+             , #{pdp_ftsnm}                      /* PDP자릿수-출하주            */
+             , #{pdp_weight}                     /* PDP자릿수-중량              */
+             , #{pdp_sex}                        /* PDP자릿수-성별              */
+             , #{pdp_qcn}                        /* PDP자릿수-계대              */
+             , #{pdp_matime}                     /* PDP자릿수-산차              */
+             , #{pdp_sbid_lmt_am}                /* PDP자릿수-응찰하한가        */
+             , #{pdp_sbid_upr}                   /* PDP자릿수-낙찰가            */
+             , #{pdp_mwmnnm}                     /* PDP자릿수-낙찰자            */
+             , #{sra_fed_spy_yn_fee}             /* 사료미사용추가수수료        */
+             , #{brkr_name_host}                 /* 수의사병원명                */
+             , #{fee_chk_dna_yn_fee}             /* 친자확인출하수수료          */
+             , #{selfee_chk_dna_yn_fee}          /* 친자확인판매수수료          */
+             , SYSDATE                           /* 최초등록일시                */
+             , #{ss_userid}                      /* 최초등록자개인번호          */
+             , SYSDATE                           /* 최종변경일시                */
+             , #{ss_userid}                      /* 최종변경자개인번호          */
+        ) 
+    ]]>
+    </update>
+    
+    <update id="LALM0912_updBzloc">
+    <![CDATA[
+        MERGE INTO TB_LA_IS_BM_BZLOC A
+        USING DUAL
+          ON (A.NA_BZPLC       = #{na_bzplc})
+        WHEN MATCHED THEN
+        UPDATE SET
+               A.NA_BZPLCNO                 = #{na_bzplcno}    /* 사업장 번호                 */
+             , A.NA_BZPLCLOC                = #{na_bzplcloc}   /* 사업장 지역 코드            */
+             , A.CLNTNM                     = #{clntnm}        /* 사업장명                    */
+             , A.AREAORD                    = #{areaord}       /* 지역2순서                   */
+             , A.AREANM                     = #{areanm}        /* 지역2명                     */
+             , A.AUC_DSC                    = #{auc_dsc}       /* 경매구분 1일괄;2단일        */
+             , A.LAT                        = #{lat}           /* 위도                        */
+             , A.LNG                        = #{lng}           /* 경도                        */
+             , A.AUC_YN                     = #{auc_yn}        /* 경매 여부                   */
+             , A.RMK_CNTN                   = #{auc_rmk_cntn}  /* 비고내용                    */
+             , A.TEL_NO                     = #{tel_no}        /* 전화번호                    */
+             , A.KKO_SVC_ID                 = #{kko_svc_id}    /* 카카오서비스아이디          */
+             , A.KKO_SVC_KEY                = #{kko_svc_key}   /* 카카오서비스키              */     
+             , A.SMS_AUTH_YN                = #{sms_auth_yn}   /* SMS인증사용여부 */
+             , A.LSCHG_DTM                  = SYSDATE          /* 최종변경일사                */
+             , A.LS_CMENO                   = #{ss_userid}     /* 최종변경자개인번호          */
+         WHEN NOT MATCHED THEN
+         INSERT(
+               NA_BZPLC                     /* 경제통합사업장코드          */
+             , NA_BZPLCNO                   /* 사업장 번호                 */
+             , NA_BZPLCLOC                  /* 사업장 지역 코드            */
+             , CLNTNM                       /* 사업장명                    */
+             , AREAORD                      /* 지역2순서                   */
+             , AREANM                       /* 지역2명                     */
+             , AUC_DSC                      /* 경매구분 1일괄;2단일        */
+             , LAT                          /* 위도                        */
+             , LNG                          /* 경도                        */
+             , AUC_YN                       /* 경매 여부                   */
+             , DEL_YN                       /* 삭제 여부                   */
+             , RMK_CNTN                     /* 비고내용                    */
+             , TEL_NO                       /* 전화번호                    */
+             , KKO_SVC_ID                   /* 카카오서비스아이디          */
+             , KKO_SVC_KEY                  /* 카카오서비스키              */     
+             , SMS_AUTH_YN                  /* SMS인증사용여부 */
+             , FSRG_DTM                     /* 최초등록일시                */
+             , FSRGMN_ENO                   /* 최초등록자개인번호          */
+             , LSCHG_DTM                    /* 최종변경일사                */
+             , LS_CMENO                     /* 최종변경자개인번호          */
+        ) VALUES(
+               #{na_bzplc}                       /* 경제통합사업장코드          */
+             , #{na_bzplcno}                     /* 사업장 번호                 */
+             , #{na_bzplcloc}                    /* 사업장 지역 코드            */
+             , #{clntnm}                         /* 사업장명                    */
+             , #{areaord}                        /* 지역2순서                   */
+             , #{areanm}                         /* 지역2명                     */
+             , #{auc_dsc}                        /* 경매구분 1일괄;2단일        */
+             , #{lat}                            /* 위도                        */
+             , #{lng}                            /* 경도                        */
+             , #{auc_yn}                         /* 경매 여부                   */
+             , '0'                               /* 삭제 여부                   */
+             , #{auc_rmk_cntn}                   /* 비고내용                    */
+             , #{tel_no}                         /* 전화번호                    */
+             , #{kko_svc_id}                     /* 카카오서비스아이디          */
+             , #{kko_svc_key}                    /* 카카오서비스키              */
+             , #{sms_auth_yn}
+             , SYSDATE                           /* 최초등록일시                */
+             , #{ss_userid}                      /* 최초등록자개인번호          */
+             , SYSDATE                           /* 최종변경일시                */
+             , #{ss_userid}                      /* 최종변경자개인번호          */
+        )  
+    ]]>
+    </update>
+    
+    <delete id="LALM0912_delWmc">
+    <![CDATA[
+        DELETE 
+          FROM TB_LA_IS_MM_WMC
+         WHERE NA_BZPLC       = #{na_bzplc} 
+         
+    ]]>
+    </delete>
+    
+    <delete id="LALM0912_delEnvEst">
+    <![CDATA[
+        DELETE 
+          FROM TB_LA_IS_MM_ENV_EST
+         WHERE NA_BZPLC       = #{na_bzplc} 
+         
+    ]]>
+    </delete>
+    
+    <delete id="LALM0912_delBzloc">
+    <![CDATA[
+        DELETE 
+          FROM TB_LA_IS_BM_BZLOC
+         WHERE NA_BZPLC       = #{na_bzplc} 
+         
+    ]]>
+    </delete>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

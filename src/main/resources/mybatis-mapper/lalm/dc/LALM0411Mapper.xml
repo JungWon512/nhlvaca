@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.dc.service.Impl.LALM0411Mapper">
+
+    <update id="LALM0411_updMwmn">
+        update tb_la_is_mm_mwmn set
+	           tms_yn              = '1'
+	         , lschg_dtm           = SYSDATE
+	         , ls_cmeno            = #{ss_userid}
+	     where na_bzplc            = #{ss_na_bzplc}
+	       and trmn_amnno          = #{trmn_amnno}
+    </update>
+    
+    <update id="LALM0411_updAucQcn">
+         update tb_la_is_mh_auc_qcn set
+                tms_yn          = '1'
+              , lschg_dtm       = SYSDATE
+              , ls_cmeno        = #{ss_userid}
+          where na_bzplc        = #{ss_na_bzplc}
+            and auc_obj_dsc     = #{auc_obj_dsc}
+            and auc_dt          = #{auc_dt}
+    </update>
+    
+    <update id="LALM0411_updMwmnAdj">
+        update tb_la_is_mh_mwmn_adj set
+               tms_yn      = '1'
+             , lschg_dtm   = SYSDATE
+             , ls_cmeno    = #{ss_userid}
+         where na_bzplc    = #{ss_na_bzplc}
+           and auc_obj_dsc = #{auc_obj_dsc}
+           and auc_dt      = #{auc_dt}
+           and trmn_amnno  = #{trmn_amnno}
+           and rv_sqno     = #{rv_sqno}
+    </update>
+    
+    <update id="LALM0411_updMwmnEntr">
+        update tb_la_is_mh_auc_entr set
+               tms_yn             = '1'
+             , lschg_dtm          = SYSDATE
+             , ls_cmeno           = #{ss_userid}
+         where na_bzplc           = #{ss_na_bzplc}
+           and auc_obj_dsc        = #{auc_obj_dsc}
+           and auc_dt             = #{auc_dt}
+           and lvst_auc_ptc_mn_no = #{lvst_auc_ptc_mn_no}
+    </update>
+    
+    <update id="LALM0411_updRkonCm">
+         update tb_la_is_mh_rkon_cm set
+                tms_yn      = '1'
+              , lschg_dtm   = SYSDATE
+              , ls_cmeno    = #{ss_userid}
+          where na_bzplc    = #{ss_na_bzplc}
+            and auc_obj_dsc = #{auc_obj_dsc}
+            and auc_dt      = #{auc_dt}
+            and pda_id      = #{pda_id}
+    </update>
+    
+    <select id="LALM0411_selChkSogCow" resultType="_int">
+        select
+	         count(*)
+	    from tb_la_is_mh_sog_cow         a  
+	    left outer join tb_la_is_mm_mwmn c on a.na_bzplc = c.na_bzplc and a.trmn_amnno = c.trmn_amnno
+	       , tb_la_is_mm_fhs     b
+	       , tb_la_is_mm_indv    d
+	   where a.na_bzplc       = #{ss_na_bzplc}
+	     and a.auc_dt         = #{auc_dt}
+	     and a.led_sqno       = '1'
+	     and b.na_bzplc       = a.na_bzplc
+	     and b.fhs_id_no      = a.fhs_id_no
+	     and b.farm_amnno     = a.farm_amnno
+	     and a.na_bzplc       = d.na_bzplc
+	     and a.sra_srs_dsc    = d.sra_srs_dsc
+	     and a.sra_indv_amnno = d.sra_indv_amnno
+    </select>
+    
+    <select id="LALM0411_selMaxOslpNo" resultType="HashMap">
+        select TO_CHAR(nvl(max(a.oslp_no) + 1, 1)) as v_oslp_no
+          from TB_LA_IS_MH_SOG_COW a
+         where a.na_bzplc = #{ss_na_bzplc}   /* 경제통합사업장코드          */
+           and a.auc_dt   = #{auc_dt}        /* 경매일자                    */
+    </select>
+    
+    <select id="LALM0411_selOslpNoList" resultType="HashMap">
+		select
+		          a.na_bzplc                        /* 경제통합사업장코드         */
+		        , a.auc_obj_dsc                     /* 경매대상구분코드           */
+		        , a.auc_dt                          /* 경매일자                   */
+		        , a.oslp_no                         /* 원표번호                   */
+		        , a.led_sqno                        /* 원장일련번호               */
+		        , a.fhs_id_no                       /* 농가식별번호               */
+		        , a.farm_amnno                      /* 농장관리번호               */
+		        , a.sog_na_trpl_c                   /* 출하경제통합거래처코드     */
+		        , a.vhc_shrt_c                      /* 차량단축코드               */
+		        , a.rc_dt                           /* 접수일자                   */
+		        , a.trmn_amnno                      /* 거래인관리번호             */
+		        , a.lvst_auc_ptc_mn_no              /* 가축경매참여자번호         */
+		        , a.sra_srs_dsc                     /* 축산축종구분코드           */
+		        , substr(a.sra_indv_amnno,4,12)     /* 축산개체관리번호           */
+		        , a.cow_sog_wt                      /* 우출하중량                 */
+		        , a.fir_lows_sbid_lmt_am            /* 최초최저낙찰한도금액       */
+		        , a.lows_sbid_lmt_am                /* 최저낙찰한도금액           */
+		        , a.sra_sbid_upr                    /* 축산낙찰단가               */
+		        , a.sra_sbid_am                     /* 축산낙찰금액               */
+		        , a.sel_sts_dsc                     /* 판매상태구분코드           */
+		        , a.brcl_isp_ctfw_smt_yn            /* 브루셀라검사증명서제출여부 */
+		        , a.brcl_isp_dt                     /* 브루셀라검사일자           */
+		        , a.lwpr_chg_nt                     /* 최저가변경횟수             */
+		        , a.vacn_dt                         /* 예방접종일자               */
+		        , a.lvst_mkt_trpl_amnno             /* 가축시장거래처관리번호     */
+		        , a.mt12_ovr_yn                     /* 12개월이상여부             */
+		        , a.ppgcow_fee_dsc                  /* 번식우수수료구분코드       */
+		        , a.prny_jug_yn                     /* 임신감정여부               */
+		        , a.prny_yn                         /* 임신여부                   */
+		        , a.ncss_jug_yn                     /* 괴사감정여부               */
+		        , a.ncss_yn                         /* 괴사여부                   */
+		        , a.trpcs_py_yn                     /* 운송비지급여부             */
+		        , a.sra_trpcs                       /* 축산운송비                 */
+		        , a.sra_pyiva                       /* 축산납입출자금             */
+		        , a.sra_fed_spy_am                  /* 축산사료공급금액           */
+		        , a.td_rc_cst                       /* 당일접수비용               */
+		        , a.mt12_ovr_fee                    /* 12개월이상수수료           *//*필드 없음 */
+		        , a.afism_mod_dt                    /* 인공수정일자               */
+		        , a.prny_mtcn                       /* 임신개월수                 */
+		        , a.afism_mod_ctfw_smt_yn           /* 인공수정증명서제출여부     */
+		        , a.rmhn_yn                         /* 제각여부                   */
+		        , a.sra_pdmnm                       /* 축산생산자명               */
+		        , a.sra_pd_rgnnm                    /* 축산생산지역명             */
+		        , a.rmk_cntn                        /* 비고내용                   */
+		        , a.auc_prg_sq                      /* 경매진행순서               */
+		        , a.del_yn                          /* 삭제여부                   */
+		        , a.tms_yn                          /* 전송여부                   */
+		        , a.sogmn_c
+		        , a.auc_yn                          /* 경매진행상태               */
+		        , a.mod_kpn_no                      /* 수정kpn                    */
+		        , a.ddl_qcn                         /* 일괄경매 마감차수          */
+		        , a.fee_chk_yn                      /* 출하수수료수기적용여부     */
+		        , a.blood_am                        /* 혈통수수료                 */
+		        , a.selfee_chk_yn                   /* 판매수수료수기적용여부     */
+		        , a.fee_chk_yn_fee                  /* 출하수수료수기등록         */
+		        , a.selfee_chk_yn_fee               /* 판매수수료수기등록         */
+		        , b.maco_yn as io_sogmn_maco_yn     /* 출하자조합원여부           */
+		        , c.maco_yn as io_mwmn_maco_yn      /* 중도매인조합원여부         */
+		        , a.DNA_YN                          /* 친자검사결과               */
+		        , a.DNA_YN_CHK                      /* 친자검사여부               */
+		        , nvl(b.SRA_FED_SPY_YN, 0)          /* 사료미사용여부             */
+		        , d.indv_sex_c                      /* 개체성별코드               */
+        from tb_la_is_mh_sog_cow         a  
+        left outer join tb_la_is_mm_mwmn c on a.na_bzplc = c.na_bzplc and a.trmn_amnno = c.trmn_amnno
+           , tb_la_is_mm_fhs     b
+           , tb_la_is_mm_indv    d
+       where a.na_bzplc       = #{ss_na_bzplc}
+         and a.auc_dt         = #{auc_dt}
+         and a.led_sqno       = '1'
+         and b.na_bzplc       = a.na_bzplc
+         and b.fhs_id_no      = a.fhs_id_no
+         and b.farm_amnno     = a.farm_amnno
+         and a.na_bzplc       = d.na_bzplc
+         and a.sra_srs_dsc    = d.sra_srs_dsc
+         and a.sra_indv_amnno = d.sra_indv_amnno
+    </select>
+    
+    <update id="LALM0411_updOslpSogCow">
+        update tb_la_is_mh_sog_cow 
+           set oslp_no  = #{v_oslp_no}
+         where na_bzplc = #{NA_BZPLC} and auc_dt = #{AUC_DT} and oslp_no = #{OSLP_NO} and auc_obj_dsc = #{AUC_OBJ_DSC}
+    </update>
+    
+    <update id="LALM0411_updOslpFeeImps">
+        update tb_la_is_mh_fee_imps 
+           set oslp_no  = #{v_oslp_no}
+         where na_bzplc = #{NA_BZPLC} and auc_dt = #{AUC_DT} and oslp_no = #{OSLP_NO} and auc_obj_dsc = #{AUC_OBJ_DSC}
+    </update>
+    
+    <update id="LALM0411_updOslpMhCalf">
+        update tb_la_is_mh_calf 
+           set oslp_no  = #{v_oslp_no}
+         where na_bzplc = #{NA_BZPLC} and auc_dt = #{AUC_DT} and oslp_no = #{OSLP_NO} and auc_obj_dsc = #{AUC_OBJ_DSC}
+    </update>
+    
+    <update id="LALM0411_updOslpAtdrLog">
+        update tb_la_is_mh_atdr_log 
+           set oslp_no  = #{v_oslp_no}
+         where na_bzplc = #{NA_BZPLC} and auc_dt = #{AUC_DT} and oslp_no = #{OSLP_NO} and auc_obj_dsc = #{AUC_OBJ_DSC}
+    </update>
+    
+    <update id="LALM0411_updSogCow">
+        update tb_la_is_mh_sog_cow
+           set tms_yn      = '1'                      /* 전송여부                          */
+             , lschg_dtm   = SYSDATE                  /* 최종변경일시                      */
+             , ls_cmeno    = #{ss_userid}             /* 최종변경자개인번호                */
+         where na_bzplc    = #{ss_na_bzplc}
+           and auc_obj_dsc = #{auc_obj_dsc}
+           and auc_dt      = #{auc_dt}
+           and oslp_no     = #{oslp_no}
+    </update>
+    
+    <update id="LALM0411_updSogCowFee">
+        update tb_la_is_mh_fee_imps
+           set tms_yn      = '1'
+         where na_bzplc    = #{ss_na_bzplc}
+           and auc_obj_dsc = #{auc_obj_dsc}
+           and auc_dt      = #{auc_dt}
+           and oslp_no     = #{oslp_no}
+           and led_sqno    = #{led_sqno}
+           and fee_rg_sqno = #{fee_rg_sqno}
+    </update>
+    
+    <update id="LALM0411_updSogCowCalf">
+        update tb_la_is_mh_calf 
+           set tms_yn      = '1'
+             , lschg_dtm   = SYSDATE
+             , ls_cmeno    = #{ss_userid}
+         where na_bzplc    = #{ss_na_bzplc}
+           and auc_obj_dsc = #{auc_obj_dsc}
+           and auc_dt      = #{auc_dt}
+           and oslp_no     = #{oslp_no}
+           and rg_sqno     = #{rg_sqno}
+    </update>
+    
+    <update id="LALM0411_updAtdrLog">
+        update tb_la_is_mh_atdr_log
+           set tms_yn             = '1'
+         where na_bzplc           = #{ss_na_bzplc}
+           and auc_obj_dsc        = #{auc_obj_dsc}
+           and auc_dt             = #{auc_dt}
+           and oslp_no            = #{oslp_no}
+           and trmn_amnno         = #{trmn_amnno}
+           and lvst_auc_ptc_mn_no = #{lvst_auc_ptc_mn_no}
+           and rg_sqno            = #{rg_sqno}
+    </update>
+    
+    <select id="LALM0411_selFhsInfo" resultType="HashMap">
+        select
+	          a.na_bzplc
+	        , a.fhs_id_no                 as io_fhs_id_no
+	        , a.farm_amnno
+	        , '0'
+	        , nvl(a.na_trpl_c,'')         as na_trpl_c
+	        , substr(a.ftsnm,1,10)        as sra_fhsnm
+	        , nvl(substr(a.zip, 1,3),'')  as sra_fhs_fzip
+	        , nvl(substr(a.zip, 4,6),'')  as sra_fhs_rzip
+	        , nvl(a.dongup,'')            as sra_fhs_dongup
+	        , nvl(a.dongbw,'')            as sra_fhs_dongbw
+	        , nvl(case when length(Replace(a.ohse_telno,'-','')) = 9 then substr(a.ohse_telno, 1,2)
+	               when  length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2) = '02'
+	               then substr(a.ohse_telno, 1,2)
+	               when length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2) <![CDATA[<]]>> '02'
+	               then substr(a.ohse_telno, 1,3)
+	               when length(Replace(a.ohse_telno,'-','')) = 11
+	               then substr(a.ohse_telno, 1,3)end,'') as sra_fhs_atel
+	        , nvl(case when length(Replace(a.ohse_telno,'-','')) = 9 then substr(Replace(a.ohse_telno,'-',''), 3,3)
+	               when  length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2) = '02'
+	               then substr(Replace(a.ohse_telno,'-',''), 3,4)
+	               when length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2) <![CDATA[<]]>> '02'
+	               then substr(Replace(a.ohse_telno,'-',''), 4,3)
+	               when length(Replace(a.ohse_telno,'-','')) = 11
+	               then substr(Replace(a.ohse_telno,'-',''), 4,4)end,'') as sra_fhs_htel
+	        , nvl(case when length(Replace(a.ohse_telno,'-','')) = 9 then substr(Replace(a.ohse_telno,'-',''), 6,4)
+	               when  length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2) = '02'
+	               then substr(Replace(a.ohse_telno,'-',''), 7,4)
+	               when length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2) <![CDATA[<]]>> '02'
+	               then substr(Replace(a.ohse_telno,'-',''), 7,4)
+	               when length(Replace(a.ohse_telno,'-','')) = 11
+	               then substr(Replace(a.ohse_telno,'-',''), 8,4)end,'') as sra_fhs_stel
+	        , nvl(substr(Replace(a.cus_mpno,'-',''),1,3),'') as sra_fhs_rep_mpsvno
+	        , nvl(case when length(Replace(a.cus_mpno,'-','')) = 10 then substr(Replace(a.cus_mpno,'-',''), 4,3)
+	               when length(Replace(a.cus_mpno,'-','')) = 11 then substr(Replace(a.cus_mpno,'-',''), 4,4)  end,'') as sra_fhs_rep_mphno
+	        , nvl(case when length(Replace(a.cus_mpno,'-','')) = 10 then substr(Replace(a.cus_mpno,'-',''), 7,4)
+	               when length(Replace(a.cus_mpno,'-','')) = 11 then substr(Replace(a.cus_mpno,'-',''), 8,4)  end,'') as sra_fhs_rep_mpsqno
+	        , a.maco_yn
+	        , a.rmk_cntn
+	        , a.jrdwo_dsc
+	        , b.brc
+	        , Replace(a.sra_farm_acno,'-','') as sra_farm_acno
+	    from tb_la_is_mm_fhs   a
+	       , tb_la_is_mm_wmc   b
+	    where a.na_bzplc              = #{ss_na_bzplc}
+	      and a.na_bzplc              = b.na_bzplc
+	      and a.sra_farm_acno         <![CDATA[<]]>> ''
+	      and length(a.sra_farm_acno) >  8
+	      and a.anw_yn                = '0'
+	      and a.sra_farm_acno         <![CDATA[<]]>> '000000000'
+	      and a.sra_farm_acno         <![CDATA[<]]>> '0000000000'
+	      and a.sra_farm_acno         <![CDATA[<]]>> '00000000000'
+	      and a.sra_farm_acno         <![CDATA[<]]>> '000000000000'
+	      and a.sra_farm_acno         <![CDATA[<]]>> '0000000000000'
+	      and a.sra_farm_acno         <![CDATA[<]]>> '00000000000000'
+	      and a.sra_farm_acno         <![CDATA[<]]>> '000000000000000'
+	      and a.sra_farm_acno         <![CDATA[<]]>> '0000000000000000'
+	      order by a.ftsnm
+    </select>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

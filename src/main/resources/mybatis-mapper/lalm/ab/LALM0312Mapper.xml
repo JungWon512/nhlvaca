@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ab.service.Impl.LALM0312Mapper">
+
+    <select id="LALM0312_selList" resultType="hashMap">
+    <![CDATA[
+	    SELECT
+	          A.AUC_PRG_SQ                           /* 원표번호                 */
+	        , A.AUC_OBJ_DSC                         /* 경매대상구분코드         */
+	        , B.FTSNM                                /* 출하주명                  */
+	        , SUBSTR(A.SRA_INDV_AMNNO, 1, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9)  AS SRA_INDV_AMNNO                      /* 축산개체관리번호            */
+	        , C.MATIME                               /* 산차                   */
+	        , C.SRA_INDV_PASG_QCN                    /* 계대                    */
+	        , SUBSTR(C.BIRTH, 1, 4) || '-' || SUBSTR(C.BIRTH, 5, 2) || '-' || SUBSTR(C.BIRTH, 7, 2)  AS BIRTH       /* 생년월일                  */
+	        , C.INDV_SEX_C                            /* 개체성별코드               */
+	        , A.COW_SOG_WT                            /* 우출하중량               */
+	        , C.MCOW_DSC                            /* 어미소구분코드               */
+	        , 0  AS SANJUNG1                          /* 수기입력1                */
+	        , 0  AS SANJUNG2                        /* 수기입력2                  */
+	        , 0  AS SANJUNG3                        /* 수기입력3                  */
+	        , 0  AS SANJUNG4                        /* 수기입력4                  */
+	        , CASE A.AUC_OBJ_DSC WHEN '1' THEN A.LOWS_SBID_LMT_AM/D.CALF_AUC_ATDR_UNT_AM
+	                             WHEN '2' THEN A.LOWS_SBID_LMT_AM/D.NBFCT_AUC_ATDR_UNT_AM
+	                             ELSE A.LOWS_SBID_LMT_AM/D.PPGCOW_AUC_ATDR_UNT_AM
+	                             END AS LOWS_SBID_LMT_AM 
+	        , A.AUC_DT                        /* 경매일자                    */
+	        , A.LED_SQNO                            /* 원장일련번호                */
+	        , A.FHS_ID_NO                           /* 농가식별번호                */
+	        , A.FARM_AMNNO                          /* 농장관리번호                */
+	        , A.FIR_LOWS_SBID_LMT_AM          /* 최초최저낙착한도금액            */
+	        , A.LOWS_SBID_LMT_AM                    /* 최저낙찰한도금액              */
+	        , A.SEL_STS_DSC                         /* 판매상태구분코드               */
+	        , D.CALF_AUC_ATDR_UNT_AM                /* 송아지응찰단위금액               */
+	        , D.NBFCT_AUC_ATDR_UNT_AM               /* 비육우응찰단위금액               */
+	        , D.PPGCOW_AUC_ATDR_UNT_AM              /* 번식우응찰단위금액               */
+	        , A.OSLP_NO                             /* 원표번호                      */
+	    FROM   TB_LA_IS_MH_SOG_COW A
+	         , TB_LA_IS_MM_FHS     B
+	         , TB_LA_IS_MM_INDV    C
+	         , TB_LA_IS_MM_ENV_EST D
+	   WHERE A.NA_BZPLC              = #{ss_na_bzplc}
+	     AND A.AUC_OBJ_DSC          = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	     AND A.AUC_DT                = #{auc_dt}
+	     AND A.NA_BZPLC             = B.NA_BZPLC
+	     AND A.FHS_ID_NO            = B.FHS_ID_NO
+	     AND A.FARM_AMNNO           = B.FARM_AMNNO
+	     AND A.DEL_YN               = '0'
+	     AND A.NA_BZPLC             = C.NA_BZPLC
+	     AND A.SRA_INDV_AMNNO       = C.SRA_INDV_AMNNO
+	     AND A.SRA_SRS_DSC          = C.SRA_SRS_DSC
+	     AND A.SEL_STS_DSC          = '11'
+	     AND A.NA_BZPLC             = D.NA_BZPLC	     
+    ]]>
+    </select>
+    
+	<update id="LALM0312_updSogCowSjam">
+    <![CDATA[	
+			UPDATE TB_LA_IS_MH_SOG_COW SET
+
+				 FIR_LOWS_SBID_LMT_AM   = CASE WHEN FIR_LOWS_SBID_LMT_AM = 0 AND #{auc_obj_dsc} = '1' THEN #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}
+											   WHEN FIR_LOWS_SBID_LMT_AM = 0 AND #{auc_obj_dsc} = '2' THEN #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}
+											   WHEN FIR_LOWS_SBID_LMT_AM = 0 AND #{auc_obj_dsc} = '3' THEN #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}
+										  ELSE FIR_LOWS_SBID_LMT_AM
+	  		                              END
+
+			    ,LOWS_SBID_LMT_AM       = CASE WHEN #{auc_obj_dsc} = '1' THEN #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}
+				                               WHEN #{auc_obj_dsc} = '2' THEN #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}
+				                               WHEN #{auc_obj_dsc} = '3' THEN #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}
+				                          ELSE LOWS_SBID_LMT_AM
+				                          END
+		  	 WHERE NA_BZPLC				= #{ss_na_bzplc}
+			   AND AUC_DT				= #{auc_dt}
+			   AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
+			   AND AUC_PRG_SQ			= #{auc_prg_sq}
+			   AND OSLP_NO              = #{oslp_no}
+			   AND LED_SQNO				= '1'
+			   AND SEL_STS_DSC			= '11'
+			   AND DEL_YN				= '0'	
+    ]]>		   
+	</update>    
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

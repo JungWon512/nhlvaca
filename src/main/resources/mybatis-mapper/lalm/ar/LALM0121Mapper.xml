@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ar.service.Impl.LALM0121Mapper">
+
+    <select id="LALM0121_selList" resultType="hashMap">
+	    SELECT
+	          A.AUC_OBJ_DSC                      /* 경매대상구분코드           */
+	        , A.AUC_DT                           /* 경매일자                   */
+	        , A.PDA_ID                           /* PDAID                      */
+	        , A.LVST_MKT_TRPL_AMNNO              /* 가축시장거래처관리번호     */
+	        , B.BRKR_NAME
+	        , A.RMK_CNTN                         /* 비고내용                   */
+	        , A.TMS_YN                           /* 전송여부                   */
+	    FROM TB_LA_IS_MH_RKON_CM A
+	       , TB_LA_IS_MM_TRPL    B
+	    WHERE A.NA_BZPLC               =  #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC            = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND   A.AUC_DT               = #{auc_dt}
+	      AND   A.NA_BZPLC             = B.NA_BZPLC
+	      AND   B.LVST_MKT_TRPL_DSC    = '2'
+	      AND   A.LVST_MKT_TRPL_AMNNO  = B.LVST_MKT_TRPL_AMNNO
+	      AND   B.BRKR_NAME            LIKE #{brkr_name} || '%'
+	    ORDER BY A.AUC_OBJ_DSC, A.AUC_DT DESC, A.PDA_ID ;    
+
+    </select>
+    
+    <select id="LALM0121_selLmtaComboList" resultType="hashMap">
+    <![CDATA[
+		SELECT
+		  LVST_MKT_TRPL_AMNNO
+		, LVST_MKT_TRPL_AMNNO || ' ' || BRKR_NAME AS BRKR_NAME
+		FROM TB_LA_IS_MM_TRPL
+		WHERE NA_BZPLC          = #{ss_na_bzplc}
+		AND LVST_MKT_TRPL_DSC = '2'
+		ORDER BY LVST_MKT_TRPL_AMNNO
+    ]]>
+    </select>
+    
+    <select id="LALM0121_selQcn" resultType="hashMap">
+    <![CDATA[
+         SELECT
+            COUNT(*) AS CNT
+           FROM  TB_LA_IS_MH_AUC_QCN
+          WHERE NA_BZPLC             = #{ss_na_bzplc}
+       		AND AUC_OBJ_DSC          = #{hd_auc_obj_dsc}
+            AND AUC_DT               = #{cb_auc_dt}
+            AND DEL_YN               = '0'
+    ]]>
+    </select>    
+       
+    <insert id="LALM0121_insPgm">
+    <![CDATA[
+        INSERT INTO TB_LA_IS_MH_RKON_CM(
+              NA_BZPLC                                   /* 경제통합사업장코드         */
+            , AUC_OBJ_DSC                                /* 경매대상구분코드           */
+            , AUC_DT                                     /* 경매일자                   */
+            , PDA_ID                                     /* PDAID                      */
+            , LVST_MKT_TRPL_AMNNO                        /* 가축시장거래처관리번호     */
+            , RMK_CNTN                                   /* 비고내용                   */
+            , TMS_YN                                     /* 전송여부                   */
+            , FSRG_DTM              /* 최초등록일시               */
+            , FSRGMN_ENO            /* 최초등록자개인번호         */
+            , LSCHG_DTM             /* 최종변경일시               */
+            , LS_CMENO              /* 최종변경자개인번호         */    
+        )VALUES(
+              #{ss_na_bzplc}        /* 경제통합사업장코드         */             
+            , #{hd_auc_obj_dsc}     /* 경매대상구분코드           */             
+            , #{cb_auc_dt}          /* 경매일자                */             
+            , #{pda_id}             /* PDAID                 */ 
+            , #{lvst_mkt_trpl_amnno}/* 가축시장거래처관리번호       */             
+            , #{rmk_cntn}           /* 비고내용                   */
+            , '0'                   /* 전송여부                   */               
+            , SYSDATE               /* 최초등록일시               */             
+            , #{ss_userid}          /* 최초등록자개인번호         */             
+            , SYSDATE               /* 최종변경일시               */             
+            , #{ss_userid}          /* 최종변경자개인번호         */              
+        )
+    ]]>
+    </insert>
+    
+    <update id="LALM0121_updPgm">
+    <![CDATA[
+        UPDATE TB_LA_IS_MH_RKON_CM SET
+              LVST_MKT_TRPL_AMNNO    = #{lvst_mkt_trpl_amnno}          /* 시작경매번호               */
+            , RMK_CNTN               = #{rmk_cntn}          /* 종료경매번호               */
+            , TMS_YN                 = '0' 
+            , LSCHG_DTM              = SYSDATE               /* 최종변경일시               */
+            , LS_CMENO               = #{ss_userid}          /* 최종변경자개인번호         */
+        WHERE NA_BZPLC               = #{ss_na_bzplc}
+          AND AUC_OBJ_DSC          = #{hd_auc_obj_dsc}
+          AND AUC_DT               = #{cb_auc_dt}
+          AND PDA_ID               = #{pda_id}
+    ]]>
+    </update>      
+    
+    <delete id="LALM0121_delPgm">
+    <![CDATA[
+	    DELETE
+	      FROM TB_LA_IS_MH_RKON_CM
+        WHERE NA_BZPLC               = #{ss_na_bzplc}
+          AND AUC_OBJ_DSC          = #{hd_auc_obj_dsc}
+          AND AUC_DT               = #{cb_auc_dt}
+          AND PDA_ID               = #{pda_id}
+    ]]>
+    </delete>
+     
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

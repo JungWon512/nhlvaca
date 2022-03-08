@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.bs.service.Impl.LALM0114Mapper">
+    
+    <select id="LALM0114_selList" resultType="HashMap">
+            select
+		          a.na_bzplc                                                       /* 경제통합사업장코드                  */
+		        , a.sra_indv_amnno                                                 /* 축산개체관리번호                    */
+		        , a.sra_srs_dsc                                                    /* 축산축종구분코드                    */
+		        , a.fhs_id_no || '-' || TO_CHAR(a.farm_amnno) as fhs_id_no         /* 농가식별번호                        */
+		        , a.fhs_id_no    as sra_fhs_id_no
+		        , a.farm_amnno                                                     /* 농장관리번호                        */
+                , CASE WHEN #{ss_security} = '1' THEN b.ftsnm
+                       WHEN LENGTH(b.ftsnm) = 2 THEN SUBSTR(b.ftsnm,1,1) || '*' 
+                       WHEN LENGTH(b.ftsnm) = 3 THEN SUBSTR(b.ftsnm,1,1) || '*'  || SUBSTR(b.ftsnm,3,1) 
+                       WHEN LENGTH(b.ftsnm) = 4 THEN SUBSTR(b.ftsnm,1,1) || '**' || SUBSTR(b.ftsnm,4,1)  
+                       WHEN LENGTH(b.ftsnm) >= 5 THEN SUBSTR(b.ftsnm,1,2) || '**' || SUBSTR(b.ftsnm,5,1)  END AS ftsnm  /* 농가명       */
+		        , a.birth                                                          /* 생년월일                            */
+		        , a.mcow_dsc                                                       /* 어미구분코드                        */
+		        , a.kpn_no                                                         /* KPN번호                             */
+		        , a.indv_sex_c                                                     /* 개체성별코드                        */
+		        , a.mcow_sra_indv_amnno                                            /* 어미소축산개체관리번호              */
+		        , a.matime                                                         /* 산차                                */
+		        , a.sra_indv_pasg_qcn                                              /* 축산개체계대차수                    */
+		        , a.indv_id_no                                                     /* 개체식별번호                        */
+		        , a.sra_indv_brdsra_rg_no                                          /* 축산개체종축등록번호                */
+		        , a.rg_dsc                                                         /* 등록구분코드                        */
+		        , a.anw_yn
+		     from tb_la_is_mm_indv a
+		        , tb_la_is_mm_fhs  b
+		    where a.na_bzplc     = #{ss_na_bzplc}
+		    and   a.na_bzplc     = b.na_bzplc
+		    and   a.fhs_id_no    = b.fhs_id_no
+		    and   a.farm_amnno   = b.farm_amnno
+		    <if test='sh_ftsnm != null and sh_ftsnm != ""'>
+		    and   b.ftsnm like #{sh_ftsnm} || '%'
+		    </if>
+		    <if test='sh_condition != null and sh_condition != "" and sh_condition == "4"'>
+		    and   a.sra_indv_amnno  like '__________' || #{sh_sra_indv_amnno} || '_'
+		    </if>
+		    <if test='sh_condition != null and sh_condition != "" and sh_condition == "9"'>
+		    and   a.sra_indv_amnno  like '______' || #{sh_sra_indv_amnno} || ''
+		    </if>
+		    <if test='sh_condition != null and sh_condition != "" and sh_condition == "5"'>
+            and   a.sra_indv_amnno  like '______%' || #{sh_sra_indv_amnno} || '%'
+            </if>
+		    order by a.lschg_dtm desc
+    </select>
+    
+    <select id="LALM0114_selIndvDetail" resultType="HashMap">
+        select
+                  a.na_bzplc                                                       /* 경제통합사업장코드                  */
+                , a.sra_indv_amnno                                                 /* 축산개체관리번호                    */
+                , a.sra_srs_dsc                                                    /* 축산축종구분코드                    */
+                , a.fhs_id_no || '-' || TO_CHAR(a.farm_amnno) as fhs_id_no         /* 농가식별번호                        */
+                , a.fhs_id_no    as sra_fhs_id_no
+                , a.farm_amnno                                                     /* 농장관리번호                        */
+                , b.ftsnm                                                          /* 농가명       */
+                , a.birth                                                          /* 생년월일                            */
+                , a.mcow_dsc                                                       /* 어미구분코드                        */
+                , a.kpn_no                                                         /* KPN번호                             */
+                , a.indv_sex_c                                                     /* 개체성별코드                        */
+                , a.mcow_sra_indv_amnno                                            /* 어미소축산개체관리번호              */
+                , a.matime                                                         /* 산차                                */
+                , a.sra_indv_pasg_qcn                                              /* 축산개체계대차수                    */
+                , a.indv_id_no                                                     /* 개체식별번호                        */
+                , a.sra_indv_brdsra_rg_no                                          /* 축산개체종축등록번호                */
+                , a.rg_dsc                                                         /* 등록구분코드                        */
+                , a.anw_yn
+             from tb_la_is_mm_indv a
+                , tb_la_is_mm_fhs  b
+            where a.na_bzplc     = #{ss_na_bzplc}
+            and   a.na_bzplc     = b.na_bzplc
+            and   a.fhs_id_no    = b.fhs_id_no
+            and   a.farm_amnno   = b.farm_amnno
+            and   a.sra_indv_amnno = #{sra_indv_amnno}
+            order by a.lschg_dtm desc
+    </select>
+    
+    
+    <insert id="LALM0114_insIndv">
+        insert into tb_la_is_mm_indv
+         (
+            na_bzplc
+          , sra_indv_amnno
+          , sra_srs_dsc
+          , fhs_id_no
+          , farm_amnno
+          , birth
+          , mcow_dsc
+          , kpn_no
+          , indv_sex_c
+          , mcow_sra_indv_amnno
+          , matime
+          , sra_indv_pasg_qcn
+          , indv_id_no
+          , sra_indv_brdsra_rg_no
+          , rg_dsc
+          , anw_yn
+          , fsrg_dtm
+          , fsrgmn_eno
+          , lschg_dtm
+          , ls_cmeno
+         ) values
+         (
+             #{ss_na_bzplc}
+           , #{sra_indv_amnno}
+           , #{sra_srs_dsc}
+           , #{sra_fhs_id_no}
+           , #{farm_amnno}
+           , #{birth}
+           , #{mcow_dsc}
+           , #{kpn_no}
+           , #{indv_sex_c}
+           , #{mcow_sra_indv_amnno}
+           , #{matime}
+           , #{sra_indv_pasg_qcn}
+           , #{indv_id_no}
+           , #{sra_indv_brdsra_rg_no}
+           , #{rg_dsc}
+           , '9'
+           , SYSDATE
+           , #{ss_userid}
+           , SYSDATE
+           , #{ss_userid}
+         );
+    </insert>
+    
+    <select id="LALM0114_chk_Indv" resultType="_int">
+         select
+               count(*)
+         from tb_la_is_mm_indv a
+         where a.na_bzplc       = #{ss_na_bzplc}
+           and a.sra_indv_amnno = #{sra_indv_amnno}
+           and a.sra_srs_dsc    = #{sra_srs_dsc}
+    </select>
+    
+    
+    <update id="LALM0114_updIndv">
+        update tb_la_is_mm_indv set
+              fhs_id_no                 = #{sra_fhs_id_no}
+            , farm_amnno                = #{farm_amnno}
+            , birth                     = #{birth}
+            , mcow_dsc                  = #{mcow_dsc}
+            , kpn_no                    = #{kpn_no}
+            , indv_sex_c                = #{indv_sex_c}
+            , mcow_sra_indv_amnno       = #{mcow_sra_indv_amnno}
+            , matime                    = #{matime}
+            , sra_indv_pasg_qcn         = #{sra_indv_pasg_qcn}
+            , indv_id_no                = #{indv_id_no}
+            , sra_indv_brdsra_rg_no     = #{sra_indv_brdsra_rg_no}
+            , rg_dsc                    = #{rg_dsc}
+            , lschg_dtm                 = SYSDATE
+            , ls_cmeno                  = #{ss_userid}
+        where na_bzplc                  = #{ss_na_bzplc}
+          and sra_indv_amnno            = #{sra_indv_amnno}
+          and sra_srs_dsc               = #{sra_srs_dsc}
+    </update>
+    
+    <select id="LALM0114_chk_delIndv" resultType="_int">
+        select count(*) 
+          from TB_LA_IS_MH_SOG_COW 
+         where sra_indv_amnno = #{sra_indv_amnno}
+    </select>
+    
+    <delete id="LALM0114_delIndv">
+        delete from tb_la_is_mm_indv
+	     where na_bzplc       = #{ss_na_bzplc}
+	       and sra_indv_amnno = #{sra_indv_amnno}
+    </delete>
+    
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

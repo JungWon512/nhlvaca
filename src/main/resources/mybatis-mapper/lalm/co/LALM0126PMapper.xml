@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0126PMapper">
+      
+      <select id="LALM0126P_selListProv" resultType="HashMap">
+          SELECT
+		         DISTINCT
+		         PROVNM AS PROVNM
+		    FROM TB_LA_IS_MC_RODNM
+		   WHERE 1=1
+		   ORDER BY PROVNM
+      </select>
+      
+      <select id="LALM0126P_selListCcw" resultType="HashMap">
+          SELECT
+	   		     DISTINCT
+		   	     PROVNM AS PROVNM
+			    ,CCWNM  AS CCWNM       /* 시군구명             */
+		    FROM TB_LA_IS_MC_RODNM
+		   WHERE 1=1
+		   ORDER BY PROVNM ,CCWNM
+      </select>
+      
+      
+      <select id="LALM0126P_selList" resultType="HashMap">
+        SELECT C.zip               /* 우편번호     */
+		     , A.provnm || ' ' || A.ccwnm || ' ' || CASE WHEN A.dong_dsc = '1' THEN '' ELSE A.lwdgnm || ' ' END
+		      || A.adr_rodnm || ' ' || CASE WHEN TO_CHAR(B.bld_asst_no) = '0' THEN TO_CHAR(B.bld_asst_no)
+		         ELSE TO_CHAR(B.bld_asst_no) || '-' || TO_CHAR(B.bld_asst_no) end
+		      || CASE WHEN A.dong_dsc = '1' THEN ' (' || A.lwdgnm || CASE WHEN C.adr_bldnm1 is null THEN '' ELSE ',' END || C.adr_bldnm1 || ')'
+		         ELSE CASE WHEN NVL(C.adr_bldnm1, '-1') = '-1' THEN '' ELSE ' (' || C.adr_bldnm1 || ')' END END AS rodnm_adr /* 도로명주소 */
+		     , D.PROVNM || ' ' || D.CCWNM || ' ' || CASE WHEN D.LWDGNM = ' ' THEN '' ELSE D.LWDGNM END || ' ' ||
+		       CASE WHEN D.rinm = ' ' THEN '' ELSE D.rinm END || ' ' || TO_CHAR(D.LTNO_MAIN_NO) || '-' || TO_CHAR(D.LTNO_ASST_NO) AS adr    /* 지번주소     */
+		     , A.rodnm_c            /* 도로명코드       */
+		     , B.rodnm_sqno         /* 도로명일련번호   */
+		     , A.provnm || ' ' || A.ccwnm || ' ' || A.lwdgnm || ' ' || A.adr_rodnm AS dongup  /* 동이상주소 */
+		     , CASE WHEN TO_CHAR(B.bld_asst_no) = '0' THEN TO_CHAR(B.bld_main_no)
+		            ELSE TO_CHAR(B.bld_main_no) || '-' || TO_CHAR(B.bld_asst_no) END ||
+		            CASE WHEN A.dong_dsc = '1' THEN ' (' || A.lwdgnm || CASE WHEN C.adr_bldnm1 is null THEN '' ELSE ',' END || C.adr_bldnm1 || ')'
+		            ELSE CASE WHEN NVL(C.adr_bldnm1, '-1') = '-1' THEN '' ELSE ' (' || C.adr_bldnm1 || ')' END END AS dongbw /* 동이하주소 */
+		     , C.ttvnm              /* 읍명도명         */
+		     , C.ccw_bldnm          /* 시군구건물명     */
+		     , D.rinm               /* 리명             */
+		     , D.mont_yn            /* 산여부           */
+		     , D.ltno_main_no       /* 지번본번호       */
+		     , D.ltno_asst_no       /* 지번부번호       */
+		  FROM TB_LA_IS_MC_RODNM A 
+		  LEFT OUTER JOIN TB_LA_IS_MM_RODADR B   on A.rodnm_c  = B.RODNM_C AND A.rodnm_sqno = B.RODNM_SQNO
+		  LEFT OUTER JOIN TB_LA_IS_MM_RODLTNO D  on B.BLD_SQNO = D.BLD_SQNO
+		  LEFT OUTER JOIN TB_LA_IS_MM_RODADINF C on B.BLD_SQNO = C.BLD_SQNO
+		 WHERE A.uyn = '0'
+		   AND D.REP_LTNO_YN    = '1'
+		   AND a.provnm = #{provnm}
+		   AND a.ccwnm  = #{ccwnm}
+		  <if test='adr_rodnm != null and adr_rodnm != ""'>
+            AND A.adr_rodnm LIKE #{adr_rodnm} || '%'
+          </if>
+          <if test='ttvnm != null and ttvnm != ""'>
+            AND C.ttvnm LIKE #{ttvnm} || '%'
+          </if>
+           <if test='adr_bldnm1 != null and adr_bldnm1 != ""'>
+            AND c.adr_bldnm1 LIKE #{adr_bldnm1} || '%'
+          </if> 
+      </select>
+      
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

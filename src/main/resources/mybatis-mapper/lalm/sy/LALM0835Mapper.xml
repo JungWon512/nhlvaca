@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.sy.service.Impl.LALM0835Mapper">
+	
+	 <select id="LALM0835_selList" resultType="hashMap">
+		SELECT 
+			   SIMP_TPC 
+		  FROM TB_LA_IS_MH_COMN_APL
+	  GROUP BY SIMP_TPC;
+	</select>
+	
+	<select id="LALM0835_selList2" resultType="hashMap">
+		SELECT 
+			   SIMP_C_GRP_SQNO
+			 , SIMP_TPC
+		  FROM TB_LA_IS_MH_COMN_APL
+		 WHERE SIMP_TPC = #{simp_tpc}
+	  GROUP BY SIMP_C_GRP_SQNO
+	         , SIMP_TPC;
+		   
+		     
+		      
+	</select>
+	
+	<select id="LALM0835_selList3" resultType="hashMap">
+		SELECT
+			   BSN_DSC
+			 , SIMP_C
+			 , SIMP_TPC 
+			 , SIMP_C_GRP_SQNO 
+			 , SIMP_C_YN 
+			 , SIMP_CNM
+			 , PRET_SIMP_TPC
+			 , PRET_SIMP_C
+			 , SORT_SQ
+			 , AMN_HCNT
+			 , AMN_HCNT2
+			 , AMN_HCNT3
+			 , AMN_HCNT4
+			 , AMN_HCNT5
+			 , AMN_HCNT6
+			 , AMN_HCNT7
+			 , AMN_HCNT8
+			 , AMN_HCNT9
+			 , AMN_HCNT10
+			 , AMN_HCNT11
+			 , FSRGMN_ENO
+			 , FSRG_DTM
+			 , FSRGMN_NA_BZPLC
+			 , LSCHG_DTM
+			 , LS_CMENO
+			 , LSCGMN_NA_BZPLC
+		  FROM TB_LA_IS_MH_COMN_APL
+		 WHERE SIMP_C_GRP_SQNO = #{simp_c_grp_sqno}
+		   AND SIMP_TPC = #{simp_tpc}  
+		 
+	</select>
+	<!-- <insert id="LALM0835_insert">
+		INSERT INTO TB_LA_IS_MH_COMN_APL(
+			   BSN_DSC
+			 , SIMP_C
+			 , SIMP_TPC 
+			 , SIMP_C_GRP_SQNO 
+			 , SIMP_C_YN 
+			 , SIMP_CNM
+			 )VALUES(
+			 BSN_DSC
+			 , #{SIMP_C}
+			 , #{SIMP_TPC}
+			 , #{SIMP_C_GRP_SQNO} 
+			 , #{SIMP_C_YN} 
+			 , #{SIMP_CNM}
+			 )
+	</insert> -->
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

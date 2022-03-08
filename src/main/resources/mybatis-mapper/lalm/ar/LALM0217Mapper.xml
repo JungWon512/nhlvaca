@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ar.service.Impl.LALM0217Mapper">
+
+    <select id="LALM0217_selList" resultType="hashMap">
+	    SELECT
+	          A.AUC_OBJ_DSC               /* 경매대상구분코드           */
+	        , A.AUC_DT                    /* 경매일자                   */
+	        , A.ST_AUC_NO                 /* 시작경매번호               */
+	        , A.ED_AUC_NO                 /* 종료경매번호               */
+	        , A.SEL_STS_DSC               /* 판매상태구분코드           */
+	        , A.RG_SQNO                   /* 등록일련번호               */
+	        , A.DEL_YN                    /* 삭제여부                   */
+	    FROM TB_LA_IS_MH_AUC_STN A
+	    WHERE A.NA_BZPLC         = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC      = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END /* 경매대상구분코드            */
+	      AND A.AUC_DT           = #{auc_dt}
+	    ORDER BY A.ST_AUC_NO
+    </select>
+    
+    <select id="LALM0217_selQcn" resultType="hashMap">
+    <![CDATA[
+         SELECT
+            COUNT(*) AS CNT
+           FROM  TB_LA_IS_MH_AUC_QCN
+          WHERE NA_BZPLC             = #{ss_na_bzplc}
+            AND AUC_DT               = #{cb_auc_dt}
+            AND DEL_YN               = '0'
+    ]]>
+    </select>
+    
+    <select id="LALM0217_selAucStn" resultType="hashMap">
+    <![CDATA[
+ 		 SELECT
+                COUNT(*)  AS MAXCNT
+           FROM TB_LA_IS_MH_AUC_STN
+          WHERE NA_BZPLC     = #{ss_na_bzplc}
+            AND AUC_OBJ_DSC  = #{hd_auc_obj_dsc}
+            AND AUC_DT       = #{cb_auc_dt}
+            AND ( #{st_auc_no} BETWEEN ST_AUC_NO AND ED_AUC_NO OR  #{ed_auc_no}  BETWEEN ST_AUC_NO AND ED_AUC_NO )
+
+    ]]>
+    </select>
+       
+    <insert id="LALM0217_insPgm">
+    <![CDATA[
+        INSERT INTO TB_LA_IS_MH_AUC_STN(
+              NA_BZPLC              /* 경제통합사업장코드         */
+            , AUC_OBJ_DSC           /* 경매대상구분코드           */
+            , AUC_DT                /* 경매일자                   */
+            , RG_SQNO               /* 등록일련번호               */
+            , ST_AUC_NO             /* 시작경매번호               */
+            , ED_AUC_NO             /* 종료경매번호               */
+            , SEL_STS_DSC           /* 판매상태구분코드           */
+            , DEL_YN                /* 삭제여부                   */
+            , DDL_QCN               /* 차수                   */
+            , FSRG_DTM              /* 최초등록일시               */
+            , FSRGMN_ENO            /* 최초등록자개인번호         */
+            , LSCHG_DTM             /* 최종변경일시               */
+            , LS_CMENO              /* 최종변경자개인번호         */    
+        )VALUES(
+              #{ss_na_bzplc}        /* 경제통합사업장코드         */             
+            , #{hd_auc_obj_dsc}     /* 경매대상구분코드           */             
+            , #{cb_auc_dt}          /* 경매일자                   */             
+            , ( SELECT NVL(MAX(RG_SQNO)+1,1)
+                  FROM TB_LA_IS_MH_AUC_STN
+                 WHERE NA_BZPLC    = #{ss_na_bzplc}
+                   AND AUC_OBJ_DSC = #{hd_auc_obj_dsc}
+                   AND AUC_DT      = #{cb_auc_dt} )            
+            , #{st_auc_no}          /* 시작경매번호               */             
+            , #{ed_auc_no}          /* 종료경매번호               */             
+            , '11'                  /* 판매상태구분코드           */             
+            , '0'                   /* 삭제여부                   */             
+            , ''                    /* 차수                   */                 
+            , SYSDATE               /* 최초등록일시               */             
+            , #{ss_userid}          /* 최초등록자개인번호         */             
+            , SYSDATE               /* 최종변경일시               */             
+            , #{ss_userid}          /* 최종변경자개인번호         */              
+        )
+    ]]>
+    </insert>
+    
+    <insert id="LALM0217_insLogPgm">
+    <![CDATA[
+	    INSERT INTO TB_LA_IS_MH_AUC_STN_LOG
+	        (
+	          NA_BZPLC                           /* 경제통합사업장코드           */
+	        , AUC_OBJ_DSC                        /* 경매대상구분코드             */
+	        , AUC_DT                             /* 경매일자                 */
+	        , RG_SQNO                            /* 일련번호                 */
+	        , DDL_QCN                            /* 차수                   */
+	        , ST_AUC_NO                          /* 경매시작번호               */
+	        , ED_AUC_NO                          /* 경매종료번호               */
+	        , SEL_STS_DSC                        /* 진행상태                 */
+	        , DEL_YN                             /* 삭제여부                  */
+	        , ST_DTM                             /* 경매시작일시                 */
+	        , ED_DTM                             /* 경매마감일시                 */
+	        , FSRG_DTM                           /* 최초등록일시                 */
+	        , FSRGMN_ENO                         /* 최초등록자개인번호             */
+	        , LSCHG_DTM                          /* 최종변경일시                 */
+	        , LS_CMENO                           /* 최종변경자개인번호           */
+	        )
+	        SELECT
+	          A.NA_BZPLC                         /* 경제통합사업장코드         */
+	        , A.AUC_OBJ_DSC                      /* 경매대상구분코드          */
+	        , A.AUC_DT                           /* 경매일자                */
+	        , A.RG_SQNO                          /* 일련번호                */
+	        , NVL(A.DDL_QCN + 1, 1)              /* 차수                   */
+	        , A.ST_AUC_NO                        /* 경매시작번호             */
+	        , A.ED_AUC_NO                        /* 경매종료번호              */
+	        , A.SEL_STS_DSC                      /* 진행상태                */
+	        , A.DEL_YN                           /* 삭제여부                */
+	        , SYSDATE                            /* 경매시작일시               */
+	        , NULL                               /* 경매마감일시               */
+            , SYSDATE                            /* 최초등록일시               */             
+            , #{ss_userid}                       /* 최초등록자개인번호         */             
+            , A.LSCHG_DTM                        /* 최종변경일시              */       
+            , '0217저장'                          /* 최종변경자개인번호         */     
+         FROM TB_LA_IS_MH_AUC_STN A
+        WHERE A.NA_BZPLC         =  #{ss_na_bzplc}
+          AND A.AUC_OBJ_DSC      =  CASE WHEN #{hd_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{hd_auc_obj_dsc} END    /* 경매대상구분코드            */
+          AND A.AUC_DT           =  #{cb_auc_dt}
+        
+    ]]>
+    </insert>    
+    
+    <update id="LALM0217_updPgm">
+    <![CDATA[
+        UPDATE TB_LA_IS_MH_AUC_STN SET
+              ST_AUC_NO              = #{st_auc_no}          /* 시작경매번호               */
+            , ED_AUC_NO              = #{ed_auc_no}          /* 종료경매번호               */
+            , LSCHG_DTM              = SYSDATE               /* 최종변경일시               */
+            , LS_CMENO               = #{ss_userid}          /* 최종변경자개인번호         */
+        WHERE NA_BZPLC               = #{ss_na_bzplc}
+          AND   AUC_OBJ_DSC          = #{hd_auc_obj_dsc}
+          AND   AUC_DT               = #{cb_auc_dt}
+          AND   RG_SQNO              = #{rg_sqno}
+    ]]>
+    </update>
+    
+    <insert id="LALM0217_updLogPgm">
+    <![CDATA[
+	    INSERT INTO TB_LA_IS_MH_AUC_STN_LOG
+	        (
+	        NA_BZPLC                                 /* 경제통합사업장코드                  */
+	        , AUC_OBJ_DSC                              /* 경매대상구분코드                    */
+	        , AUC_DT                                   /* 경매일자                            */
+	        , RG_SQNO                                  /* 일련번호                            */
+	        , DDL_QCN                                  /* 차수                                */
+	        , ST_AUC_NO                                /* 경매시작번호                        */
+	        , ED_AUC_NO                                /* 경매종료번호                        */
+	        , SEL_STS_DSC                              /* 진행상태                            */
+	        , DEL_YN                                   /* 삭제여부                            */
+	        , ST_DTM                                   /* 경매시작일시                        */
+	        , ED_DTM                                   /* 경매마감일시                        */
+	        , FSRG_DTM                                 /* 최초등록일시                        */
+	        , FSRGMN_ENO                               /* 최초등록자개인번호                  */
+	        , LSCHG_DTM                                /* 최종변경일시                        */
+	        , LS_CMENO                                 /* 최종변경자개인번호                  */
+	        )
+	        SELECT
+	          A.NA_BZPLC                         /* 경제통합사업장코드                  */
+	        , A.AUC_OBJ_DSC                      /* 경매대상구분코드                    */
+	        , A.AUC_DT                           /* 경매일자                            */
+	        , A.RG_SQNO                          /* 일련번호                            */
+	        , NVL(A.DDL_QCN + 1, 1)              /* 차수                                */
+	        , A.ST_AUC_NO                        /* 경매시작번호                        */
+	        , A.ED_AUC_NO                        /* 경매종료번호                        */
+	        , A.SEL_STS_DSC                      /* 진행상태                            */
+	        , A.DEL_YN                           /* 삭제여부                            */
+	        , SYSDATE                            /* 경매시작일시                        */
+	        , NULL                               /* 경매마감일시                        */
+	        , SYSDATE                            /* 최초등록일시                        */
+	        , #{ss_userid}                       /* 최초등록자개인번호                  */
+	        , A.LSCHG_DTM                        /* 최종변경일시                        */
+	        , '0217수정'                          /* 최종변경자개인번호                  */
+	        FROM TB_LA_IS_MH_AUC_STN A
+	        WHERE A.NA_BZPLC       =  #{ss_na_bzplc}
+	        AND A.AUC_OBJ_DSC      =  CASE WHEn #{hd_auc_obj_dsc} = '0' then a.auc_obj_dsc else #{hd_auc_obj_dsc} end    /* 경매대상구분코드            */
+	        AND A.AUC_DT           =  #{cb_auc_dt}
+    ]]>
+    </insert>       
+    
+    <delete id="LALM0217_delPgm">
+    <![CDATA[
+	    DELETE
+	      FROM TB_LA_IS_MH_AUC_STN
+	     WHERE NA_BZPLC               = #{ss_na_bzplc}
+	       AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}
+	       AND AUC_DT                 = #{cb_auc_dt}
+	       AND RG_SQNO                = #{rg_sqno}
+    ]]>
+    </delete>
+    
+    <insert id="LALM0217_delLogPgm">
+    <![CDATA[
+	    INSERT INTO TB_LA_IS_MH_AUC_STN_LOG
+	        (
+	        NA_BZPLC                                 /* 경제통합사업장코드                  */
+	        , AUC_OBJ_DSC                              /* 경매대상구분코드                    */
+	        , AUC_DT                                   /* 경매일자                            */
+	        , RG_SQNO                                  /* 일련번호                            */
+	        , DDL_QCN                                  /* 차수                                */
+	        , ST_AUC_NO                                /* 경매시작번호                        */
+	        , ED_AUC_NO                                /* 경매종료번호                        */
+	        , SEL_STS_DSC                              /* 진행상태                            */
+	        , DEL_YN                                   /* 삭제여부                            */
+	        , ST_DTM                                   /* 경매시작일시                        */
+	        , ED_DTM                                   /* 경매마감일시                        */
+	        , FSRG_DTM                                 /* 최초등록일시                        */
+	        , FSRGMN_ENO                               /* 최초등록자개인번호                  */
+	        , LSCHG_DTM                                /* 최종변경일시                        */
+	        , LS_CMENO                                 /* 최종변경자개인번호                  */
+	        )
+	        SELECT
+	          A.NA_BZPLC                         /* 경제통합사업장코드                  */
+	        , A.AUC_OBJ_DSC                      /* 경매대상구분코드                    */
+	        , A.AUC_DT                           /* 경매일자                            */
+	        , A.RG_SQNO                          /* 일련번호                            */
+	        , NVL(A.DDL_QCN + 1, 1)              /* 차수                                */
+	        , A.ST_AUC_NO                        /* 경매시작번호                        */
+	        , A.ED_AUC_NO                        /* 경매종료번호                        */
+	        , A.SEL_STS_DSC                      /* 진행상태                            */
+	        , '1'                                /* 삭제여부                            */
+	        , SYSDATE                            /* 경매시작일시                        */
+	        , NULL                               /* 경매마감일시                        */
+	        , SYSDATE                            /* 최초등록일시                        */
+	        , #{ss_userid}                       /* 최초등록자개인번호                  */
+	        , A.LSCHG_DTM                        /* 최종변경일시                        */
+	        , '0217삭제'                          /* 최종변경자개인번호                  */
+	        FROM TB_LA_IS_MH_AUC_STN A
+	        WHERE A.NA_BZPLC       =  #{ss_na_bzplc}
+	        AND A.AUC_OBJ_DSC      =  CASE WHEn #{hd_auc_obj_dsc} = '0' then a.auc_obj_dsc else #{hd_auc_obj_dsc} end   
+	        AND A.AUC_DT           =  #{cb_auc_dt}
+    ]]>
+    </insert>     
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

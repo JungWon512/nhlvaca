@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0916Mapper">
+    <select id="LALM0916_selPw" resultType="hashMap">
+    <![CDATA[
+        SELECT CASE WHEN pw != Damo.ENC_B64('KEY1', #{io_old_pw}) THEN 1 
+                    WHEN pw  = Damo.ENC_B64('KEY1', #{io_new_pw}) THEN 2 
+               ELSE 0 END  AS PASSWORD
+          FROM TB_LA_IS_MM_USR
+         WHERE NA_BZPLC       = #{ss_na_bzplc} 
+           AND usrid          = #{usrid}
+    ]]>
+    </select>
+    
+    <update id="LALM0916_updPw">
+    <![CDATA[
+        UPDATE TB_LA_IS_MM_USR SET
+               PW        = Damo.ENC_B64('KEY1', #{io_new_pw})
+             , PWERR_NT  = 0
+             , STRG_DT   = TO_CHAR(SYSDATE,'YYYYMMDD')
+             , LSCHG_DTM = SYSDATE
+             , LS_CMENO  = #{ss_userid}
+         WHERE NA_BZPLC  = #{ss_na_bzplc} 
+           AND usrid     = #{usrid}
+    ]]>
+    </update>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

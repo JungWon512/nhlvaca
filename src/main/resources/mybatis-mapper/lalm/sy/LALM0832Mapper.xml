@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.sy.service.Impl.LALM0832Mapper">
+
+    <select id="LALM0832_selList" resultType="hashMap">
+        SELECT A.PGID
+             , A.PGMNM
+             , A.PGM_DSC
+             , A.FLNM
+             , A.UYN
+          FROM TB_LA_IS_MM_PGM A
+         WHERE 1=1
+         <if test='pgid != null and pgid != ""'>
+            AND A.pgid like '%' || #{pgid} || '%'
+          </if>
+          <if test='pgmnm != null and pgmnm != ""'>
+            AND A.pgmnm like '%' || #{pgmnm} || '%'
+          </if>         
+         ORDER BY pgid asc
+    </select>
+    
+    <select id="LALM0832_selBtnList" resultType="hashMap">
+        SELECT A.PGID
+             , A.PGMNM
+             , A.UYN
+             , A.FLNM
+             , B.BTN_C
+             , B.BTN_TPC
+             , B.UYN AS BTN_UYN
+          FROM TB_LA_IS_MM_PGM A
+          LEFT OUTER JOIN TB_LA_IS_MM_PGM_BTN B ON B.pgid = A.pgid
+         <if test='pgid != null and pgid != ""'>
+            WHERE A.pgid = #{pgid}
+          </if>
+    </select>
+    
+    
+    <insert id="LALM0832_insPgm">
+        INSERT INTO TB_LA_IS_MM_PGM
+            ( pgid
+            , pgmnm
+            , flnm
+            , pgm_dsc
+            , uyn
+            , fsrg_dtm
+            , fsrgmn_eno
+            , lschg_dtm
+            , ls_cmeno
+            ) VALUES (
+                #{de_pgid}
+              , #{de_pgmnm}
+              , #{de_flnm}
+              , #{de_pgm_dsc}
+              , #{de_uyn}
+              , SYSDATE
+              , #{ss_userid}
+              , SYSDATE
+              , #{ss_userid}
+            )
+    </insert>
+    
+    <insert id="LALM0832_insPgmBtn">
+        INSERT INTO TB_LA_IS_MM_PGM_BTN
+            ( pgid
+            , btn_c
+            , btn_tpc
+            , uyn
+            , fsrg_dtm
+            , fsrgmn_eno
+            , lschg_dtm
+            , ls_cmeno
+            ) VALUES (
+                #{pgid}
+              , #{btn_c}
+              , #{btn_tpc}
+              , '1'
+              , SYSDATE
+              , #{ss_userid}
+              , SYSDATE
+              , #{ss_userid}
+            )
+    </insert>
+    
+    <update id="LALM0832_updPgm">
+         UPDATE TB_LA_IS_MM_PGM
+		    SET PGMNM     = #{de_pgmnm}
+		      , UYN       = #{de_uyn}
+		      , FLNM      = #{de_flnm}
+		      , LSCHG_DTM = SYSDATE
+		      , LS_CMENO  = #{ss_userid}
+		  WHERE PGID  = #{de_pgid}
+    </update>
+    
+    <update id="LALM0832_updPgmBtn">
+        UPDATE TB_LA_IS_MM_PGM_BTN
+		   SET UYN       = #{btn_uyn}
+		     , LSCHG_DTM = SYSDATE
+		     , LS_CMENO  = #{ss_userid}
+		 WHERE PGID  = #{de_pgid}
+		   AND BTN_C = #{btn_c}
+    </update>
+    
+    <delete id="LALM0832_delPgm">
+        DELETE FROM TB_LA_IS_MM_PGM WHERE pgid = #{de_pgid}
+    </delete>
+        
+    <delete id="LALM0832_delPgmBtn">
+        DELETE FROM TB_LA_IS_MM_PGM_BTN WHERE pgid = #{de_pgid}
+    </delete>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

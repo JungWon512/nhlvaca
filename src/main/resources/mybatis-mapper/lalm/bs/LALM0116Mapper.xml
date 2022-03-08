@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.bs.service.Impl.LALM0116Mapper">
+
+    <select id="LALM0116_selList" resultType="hashMap">
+	    SELECT
+	          RTRIM(KPN_NO) AS KPN_NO                     /* KPN번호                    */
+	        , GRD                                         /* 등급                       */
+	        , BIRTH                                       /* 생년월일                   */
+	        , SRA_WGH                                     /* 축산체중                   */
+	        , PEAR_LONS_MSCL_AREA                         /* 배최장근면적               */
+	        , MCIN_GRSDR                                  /* 근내지방도                 */
+	        , SRA_TR_UPR                                  /* 축산거래단가               */
+	        , RMK_CNTN                                    /* 비고내용                   */
+	    FROM  TB_LA_IS_MM_KPN
+	    WHERE NA_BZPLC = #{ss_na_bzplc}
+	      AND KPN_NO   LIKE '%'||#{kpn_no}||'%'
+	    ORDER BY KPN_NO
+    </select>
+        
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.bs.service.Impl.LALM0111Mapper">
+
+    <select id="LALM0111_selList" resultType="hashMap">
+        SELECT
+              na_bzplc                                     -- 경제통합사업장코드
+            , fhs_id_no || '-' || farm_amnno as fhs_id_no  -- 농가식별번호
+            , fhs_id_no as sra_fhs_id_no                   -- 농가식별번호
+            , farm_amnno                                   -- 농장관리번호
+            , farm_id_no                                   -- 농장식별번호
+            , na_trpl_c                                    -- 경제통합거래처코드
+            , CASE WHEN #{ss_security} = '1' THEN FTSNM
+                   WHEN LENGTH(FTSNM) = 2 THEN SUBSTR(FTSNM,1,1) || '*' 
+                   WHEN LENGTH(FTSNM) = 3 THEN SUBSTR(FTSNM,1,1) || '*'  || SUBSTR(FTSNM,3,1) 
+                   WHEN LENGTH(FTSNM) = 4 THEN SUBSTR(FTSNM,1,1) || '**' || SUBSTR(FTSNM,4,1)  
+                   WHEN LENGTH(FTSNM) = 5 THEN SUBSTR(FTSNM,1,2) || '**' || SUBSTR(FTSNM,5,1)
+                   WHEN LENGTH(FTSNM) > 5 THEN SUBSTR(FTSNM,1,2) || '**' || SUBSTR(FTSNM,5,1)  END AS FTSNM  /* 농가명                                */
+            , zip                                          -- 우편번호
+            , dongup                                       -- 동이상주소
+            , CASE WHEN #{ss_security} = '1' THEN DONGBW
+                   ELSE  RPAD(' ', length(dongbw), '*') END as dongbw                                       -- 동이하주소
+            , CASE WHEN #{ss_security} = '1' THEN trim(OHSE_TELNO)
+                   WHEN LENGTH(REPLACE(trim(OHSE_TELNO),'-','')) = 9  THEN SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),1,2) || '-' || '***' || '-' || SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),6,4)  
+                   WHEN LENGTH(REPLACE(trim(OHSE_TELNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),1,2) = '02' 
+                                                                             THEN SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),7,4)  
+                                                                             ELSE SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),7,4)  END) 
+                   WHEN LENGTH(REPLACE(trim(OHSE_TELNO),'-','')) = 11 or LENGTH(REPLACE(trim(OHSE_TELNO),'-','')) = 12  THEN SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),8,4)
+                   WHEN LENGTH(REPLACE(trim(OHSE_TELNO),'-','')) <![CDATA[<]]> 9 THEN '***-' || SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),4,4)                                                                               
+                   END AS OHSE_TELNO  /* 농가 집전화번호      */
+            , CASE WHEN #{ss_security} = '1' THEN CUS_MPNO
+                   WHEN LENGTH(REPLACE(RTRIM(CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),1,2) || '-***-' || SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),6,4)  
+                   WHEN LENGTH(REPLACE(RTRIM(CUS_MPNO),'-','')) = 10 THEN 
+                  (CASE WHEN SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),1,2) = '02' 
+                        THEN SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),7,4)
+                   ELSE SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),7,4)  END) 
+                   WHEN LENGTH(REPLACE(RTRIM(CUS_MPNO),'-','')) IN (11,12) THEN SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),1,3) || '-****-' || SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),8,4)                                             
+              END AS CUS_MPNO                                    /* 출하주 핸드폰번호                     */
+            , maco_yn                                      -- 조합원여부
+            , rmk_cntn                                     -- 비고내용
+            , jrdwo_dsc                                    -- 관내외구분
+            , del_yn                                       -- 삭제여부
+            , hdwk_rg_yn                                   -- 수작업여부
+            , anw_yn                                       -- 한우종합여부
+            , SRA_FED_SPY_YN                               -- 사료사용여부
+            , case when (sra_farm_acno = '' or sra_farm_acno is null) then
+                       case when LENGTH(new_sra_farm_acno) = 12 then SUBSTR(new_sra_farm_acno,1,8) ||'****'
+                            when LENGTH(new_sra_farm_acno) = 13 then SUBSTR(new_sra_farm_acno,1,9) ||'****'
+                            when LENGTH(new_sra_farm_acno) = 14 then SUBSTR(new_sra_farm_acno,1,10) ||'****'
+                            when LENGTH(new_sra_farm_acno) = 15 then SUBSTR(new_sra_farm_acno,1,11) ||'****'
+                            when LENGTH(new_sra_farm_acno) = 16 then SUBSTR(new_sra_farm_acno,1,12) ||'****'
+                            when LENGTH(new_sra_farm_acno) = 17 then SUBSTR(new_sra_farm_acno,1,13) ||'****'
+                            when LENGTH(new_sra_farm_acno) = 18 then SUBSTR(new_sra_farm_acno,1,14) ||'****'
+                       else new_sra_farm_acno end
+                   else
+                       case when LENGTH(sra_farm_acno) = 12 then SUBSTR(sra_farm_acno,1,8) ||'****'
+                            when LENGTH(sra_farm_acno) = 13 then SUBSTR(sra_farm_acno,1,9) ||'****'
+                            when LENGTH(sra_farm_acno) = 14 then SUBSTR(sra_farm_acno,1,10) ||'****'
+                            when LENGTH(sra_farm_acno) = 15 then SUBSTR(sra_farm_acno,1,11) ||'****'
+                            when LENGTH(sra_farm_acno) = 16 then SUBSTR(sra_farm_acno,1,12) ||'****'
+                            when LENGTH(sra_farm_acno) = 17 then SUBSTR(sra_farm_acno,1,13) ||'****'
+                            when LENGTH(sra_farm_acno) = 18 then SUBSTR(sra_farm_acno,1,14) ||'****'
+                       else sra_farm_acno end
+                   end as sra_farm_acno
+            , case when (sra_farm_acno = '' or sra_farm_acno is null) then new_sra_farm_acno else sra_farm_acno end  as io_sra_farm_acno
+            , birth
+            , RTRIM(FTSNM)      as ORG_FTSNM
+            , RTRIM(OHSE_TELNO) as ORG_OHSE_TELNO
+            , RTRIM(CUS_MPNO)   as ORG_CUS_MPNO
+            , DONGBW            as ORG_DONGBW
+            , DEL_YN            as DEL_YN
+         FROM tb_la_is_mm_fhs
+        WHERE 1=1
+          AND ftsnm        like #{sh_ftsnm} || '%'
+          AND na_bzplc     = #{ss_na_bzplc}
+          AND (DEL_YN      = #{del_yn}
+           OR #{del_yn}     IS NULL)
+          AND SUBSTR(fhs_id_no,1,1) = case when #{broker} = '1' then 'T' else SUBSTR(fhs_id_no,1,1) end
+        ORDER BY lschg_dtm DESC
+    </select>    
+    
+    <insert id="LALM0111_insFarm">
+        insert into tb_la_is_mm_fhs(
+              na_bzplc
+            , fhs_id_no
+            , farm_amnno
+            , farm_id_no
+            , na_trpl_c
+            , ftsnm
+            , zip
+            , dongup
+            , dongbw
+            , ohse_telno
+            , cus_mpno
+            , maco_yn
+            , rmk_cntn
+            , jrdwo_dsc
+            , del_yn
+            , anw_yn
+            , hdwk_rg_yn
+            , sra_farm_acno
+            , new_sra_farm_acno
+            , fsrg_dtm
+            , fsrgmn_eno
+            , lschg_dtm
+            , ls_cmeno
+            , SRA_FED_SPY_YN
+            , birth
+        )
+        values (
+              #{ss_na_bzplc}
+            , trim(#{sra_fhs_id_no})
+            , trim(#{farm_amnno})
+            , trim(#{farm_id_no})
+            , trim('')
+            , trim(#{ftsnm})
+            , trim(#{zip})
+            , #{dongup}
+            , #{dongbw}
+            , trim(#{ohse_telno})
+            , trim(#{cus_mpno})
+            , trim(#{maco_yn})
+            , #{rmk_cntn}
+            , trim(#{jrdwo_dsc})
+            , trim('0')
+            , trim('9')
+            , trim('1')
+            , trim(#{io_sra_farm_acno})
+            , trim(#{io_sra_farm_acno})
+            , SYSDATE
+            , #{ss_userid}
+            , SYSDATE
+            , #{ss_userid}
+            , trim(#{sra_fed_spy_yn})
+            , trim(#{birth})
+        )
+    </insert>
+    
+    <update id="LALM0111_updFarm">
+        update tb_la_is_mm_fhs set
+              farm_id_no        = trim(#{farm_id_no})
+            , ftsnm             = trim(#{ftsnm})
+            , zip               = trim(#{zip})
+            , dongup            = #{dongup}
+            , dongbw            = #{dongbw}
+            , ohse_telno        = trim(#{ohse_telno})
+            , cus_mpno          = trim(#{cus_mpno})
+            , maco_yn           = trim(#{maco_yn})
+            , rmk_cntn          = #{rmk_cntn}
+            , jrdwo_dsc         = trim(#{jrdwo_dsc})
+            , sra_farm_acno     = trim(#{io_sra_farm_acno})
+            , new_sra_farm_acno = trim(#{io_sra_farm_acno})
+            , lschg_dtm         = SYSDATE
+            , ls_cmeno          = #{ss_userid}
+            , SRA_FED_SPY_YN    = #{sra_fed_spy_yn}
+            , birth             = #{birth}
+            , del_yn            = #{del_yn}
+        where na_bzplc          = #{ss_na_bzplc}
+          and trim(fhs_id_no)   = trim(#{sra_fhs_id_no})
+          and trim(farm_amnno)  = trim(#{farm_amnno})
+    </update>
+    
+    <select id="LALM0111_selFhsAnw" resultType="hashMap">
+        select
+	          TO_CHAR(a.na_bzplc)                 as na_bzplc
+	        , TO_CHAR(a.fhs_id_no)                as fhs_id_no      
+	        , TO_CHAR(a.farm_amnno)               as farm_amnno
+	        , TO_CHAR(a.farm_id_no)               as farm_id_no
+	        , TO_CHAR(NVL(a.na_trpl_c,''))        as na_trpl_c
+	        , TO_CHAR(a.ftsnm)                    as sra_fhsnm
+	        , TO_CHAR(NVL(substr(a.zip, 1,3),'')) as sra_fhs_fzip
+	        , TO_CHAR(NVL(substr(a.zip, 4,6),'')) as sra_fhs_rzip
+	        , TO_CHAR(a.dongup)                   as sra_fhs_dongup
+	        , TO_CHAR(a.dongbw)                   as sra_fhs_dongbw
+	        , TO_CHAR(case when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 9 then substr(TRIM(a.ohse_telno), 1,2)
+	               when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 10 and substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'),1,2)  = '02' then substr(a.ohse_telno, 1,2)
+	               when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 10 and substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'),1,2) <![CDATA[<]]>> '02' then substr(a.ohse_telno, 1,3)
+	               when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 11                                                         then substr(a.ohse_telno, 1,3)
+	          end) as sra_fhs_atel
+	        , TO_CHAR(case when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 9 then substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'), 3,3)
+	               when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 10 and substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'),1,2)  = '02' then substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'), 3,4)
+	               when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 10 and substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'),1,2) <![CDATA[<]]>> '02' then substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'), 4,3)
+	               when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 11                                                         then substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'), 4,4)
+	          end) as sra_fhs_htel
+	        , TO_CHAR(case when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 9 then substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'), 6,4)
+	               when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 10 and substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'),1,2)  = '02' then substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'), 7,4)
+	               when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 10 and substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'),1,2) <![CDATA[<]]>> '02' then substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'), 7,4)
+	               when length(REGEXP_REPLACE(a.ohse_telno, '[^0-9]')) = 11                                                      then substr(REGEXP_REPLACE(a.ohse_telno, '[^0-9]'), 8,4)
+	          end) as sra_fhs_stel
+	        , TO_CHAR(NVL(substr(REGEXP_REPLACE(a.cus_mpno, '[^0-9]'),1,3),'')) as sra_fhs_rep_mpsvno
+	        , TO_CHAR(case when length(REGEXP_REPLACE(a.cus_mpno, '[^0-9]')) = 10 then substr(REGEXP_REPLACE(a.cus_mpno, '[^0-9]'), 4,3)
+	               when length(REGEXP_REPLACE(a.cus_mpno, '[^0-9]')) = 11 then substr(REGEXP_REPLACE(a.cus_mpno, '[^0-9]'), 4,4)  end) as sra_fhs_rep_mphno
+	        , TO_CHAR(case when length(REGEXP_REPLACE(a.cus_mpno, '[^0-9]')) = 10 then substr(REGEXP_REPLACE(a.cus_mpno, '[^0-9]'), 7,4)
+	               when length(REGEXP_REPLACE(a.cus_mpno, '[^0-9]')) = 11 then substr(REGEXP_REPLACE(a.cus_mpno, '[^0-9]'), 8,4)  end) as sra_fhs_rep_mpsqno
+	        , TO_CHAR(a.rmk_cntn)                     as rmk_cntn
+	        , TO_CHAR(a.fsrg_dtm,'YYYYMMDDHH24MISS')  as fsrg_dtm
+	        , TO_CHAR(a.fsrgmn_eno)                   as fsrgmn_eno
+	        , TO_CHAR(a.lschg_dtm,'YYYYMMDDHH24MISS') as lschg_dtm
+	        , TO_CHAR(a.ls_cmeno)                     as ls_cmeno
+	        , TO_CHAR(a.maco_yn)                      as maco_yn              
+	        , TO_CHAR(b.brc)                          as brc
+	        , TO_CHAR(a.sra_farm_acno)                as sra_farm_acno
+	    from tb_la_is_mm_fhs   a
+	       , tb_la_is_mm_wmc   b
+	    where a.na_bzplc    = #{ss_na_bzplc}
+	      and a.na_bzplc    = b.na_bzplc
+	      and a.anw_yn      = '9'
+	      and trim(a.fhs_id_no)   = trim(#{fhs_id_no})
+	      and trim(a.farm_amnno)  = trim(#{farm_amnno})	      
+          and trim(a.ftsnm) = trim(#{ftsnm})
+	      and substr(a.fhs_id_no,1,1) in ('T', 'N')
+    </select>
+    
+    <select id="LALM0111_selChkFhsCow" resultType="_int">
+        select count(*) 
+          from TB_LA_IS_MH_SOG_COW 
+         where trim(fhs_id_no) = trim(#{sra_fhs_id_no})
+    </select>
+    
+    <delete id="LALM0111_delFhs">
+       delete from tb_la_is_mm_fhs
+	    where na_bzplc   = #{ss_na_bzplc}                /* 경제통합사업장코드    */
+	      and trim(fhs_id_no)  = trim(#{sra_fhs_id_no})  /* 농가코드              */
+	      and trim(farm_amnno) = trim(#{farm_amnno})     /* 농장관리번호          */
+    </delete>
+    
+    <select id="LALM0111_selDetail" resultType="HashMap">
+        SELECT
+              na_bzplc                                     -- 경제통합사업장코드
+            , fhs_id_no || '-' || farm_amnno as fhs_id_no  -- 농가식별번호
+            , fhs_id_no as sra_fhs_id_no                   -- 농가식별번호
+            , farm_amnno                                   -- 농장관리번호
+            , farm_id_no                                   -- 농장식별번호
+            , na_trpl_c                                    -- 경제통합거래처코드
+            , FTSNM  /* 농가명                                */
+            , zip                                          -- 우편번호
+            , dongup                                       -- 동이상주소
+            , dongbw                                       -- 동이하주소
+            , OHSE_TELNO  /* 농가 집전화번호      */
+            , CUS_MPNO                                    /* 출하주 핸드폰번호                     */
+            , maco_yn                                      -- 조합원여부
+            , rmk_cntn                                     -- 비고내용
+            , jrdwo_dsc                                    -- 관내외구분
+            , del_yn                                       -- 삭제여부
+            , hdwk_rg_yn                                   -- 수작업여부
+            , anw_yn                                       -- 한우종합여부
+            , SRA_FED_SPY_YN                               -- 사료사용여부
+            , case when (sra_farm_acno = '' or sra_farm_acno is null) then new_sra_farm_acno
+                   else sra_farm_acno
+                   end as sra_farm_acno
+            , case when (sra_farm_acno = '' or sra_farm_acno is null) then new_sra_farm_acno else sra_farm_acno end  as io_sra_farm_acno
+            , birth
+            , RTRIM(FTSNM)      as ORG_FTSNM
+            , RTRIM(OHSE_TELNO) as ORG_OHSE_TELNO
+            , RTRIM(CUS_MPNO)   as ORG_CUS_MPNO
+            , DONGBW            as ORG_DONGBW
+            , DEL_YN            as DEL_YN
+         FROM tb_la_is_mm_fhs
+        WHERE fhs_id_no  = #{sra_fhs_id_no}
+          AND farm_amnno = #{farm_amnno}
+          AND na_bzplc   = #{ss_na_bzplc}
+    </select>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

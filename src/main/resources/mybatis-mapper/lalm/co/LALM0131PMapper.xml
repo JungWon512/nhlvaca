@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0131PMapper">
+
+    <select id="LALM0131P_selList" resultType="hashMap">
+	    SELECT
+	          LVST_MKT_TRPL_DSC           /* 가축시장거래처구분코드     */
+	        , LVST_MKT_TRPL_AMNNO         /* 가축시장거래처관리번호     */
+	        , NA_TRPL_C                   /* 경제통합거래처코드         */
+	        , BRKR_NAME                   /* 중개인성명                 */
+	        , ZIP                         /* 우편번호                   */
+	        , DONGUP                      /* 동이상주소                 */
+	        , DONGBW                      /* 동이하주소                 */
+	        , OHSE_TELNO                  /* 자택전화번호               */
+	        , CUS_MPNO                    /* 고객휴대전화번호           */
+	        , PR_RKON_CM_ALW              /* 가격산정위원수당           */
+	        , DEL_YN                      /* 삭제여부                   */
+	    FROM TB_LA_IS_MM_TRPL
+	    WHERE NA_BZPLC            = #{ss_na_bzplc}  
+	      AND DEL_YN              = '0'
+	      AND LVST_MKT_TRPL_DSC   = #{lvst_mkt_trpl_dsc} 
+	       <if test='v_brkr_name_c == "1"'>
+	           AND lvst_mkt_trpl_amnno = #{brkr_name} 
+	       </if>	
+	       <if test='v_brkr_name_c == "2"'>
+		       AND brkr_name LIKE '%' || #{brkr_name}  || '%' 
+	       </if>		       
+    </select>    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

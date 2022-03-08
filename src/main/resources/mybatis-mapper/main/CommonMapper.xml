@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.main.service.Impl.CommonMapper">
+    <!-- 경매일자 -->
+    <select id="Common_selAucDt" resultType="hashMap">
+    <![CDATA[
+        SELECT NVL(
+               NVL(
+                   (SELECT MIN(AUC_DT)                     /* 경매일자             */
+                      FROM TB_LA_IS_MH_AUC_QCN
+                     WHERE NA_BZPLC    = #{ss_na_bzplc}            /* 경제통합사업장코드 */
+                       AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})    /* 경매대상구분코드   */
+                       AND DDL_YN      = '0')
+                  ,(SELECT MAX(AUC_DT)                     /* 경매일자             */
+                      FROM TB_LA_IS_MH_AUC_QCN
+                     WHERE NA_BZPLC    = #{ss_na_bzplc}            /* 경제통합사업장코드 */
+                       AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})    /* 경매대상구분코드   */
+                       AND DDL_YN      = '1')
+                   )
+               , TO_CHAR(SYSDATE,'YYYYMMDD')) AS AUC_DT
+          FROM DUAL            
+                               
+    ]]>
+    </select>
+    
+    <select id="Common_selAucQcn" resultType="hashMap">
+    <![CDATA[
+         SELECT
+              NA_BZPLC                                  /* 경제통합사업장코드        */
+            , AUC_OBJ_DSC                               /* 경매대상구분코드     */
+            , AUC_DT                                    /* 경매일자         */
+            , QCN                                       /* 차수               */
+            , BASE_LMT_AM                               /* 기초한도금액           */
+            , CUT_AM                                    /* 절사단위금액           */
+            , SGNO_PRC_DSC                              /* 단수처리구분코드     */
+            , DDL_YN                                    /* 마감여부         */
+            , DEL_YN                                    /* 삭제여부         */
+        FROM  TB_LA_IS_MH_AUC_QCN
+        WHERE NA_BZPLC    = #{ss_na_bzplc}              /* 경제통합사업장코드        */
+    ]]>
+    <choose>
+        <when test='auc_obj_dsc == "" or auc_obj_dsc == null'>
+            AND AUC_OBJ_DSC = '0'                       /* 경매대상구분코드     */
+        </when>
+        <otherwise>
+            AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})    /* 경매대상구분코드     */
+        </otherwise>
+    </choose>
+    <![CDATA[
+          AND AUC_DT      = #{auc_dt};                  /* 경매일자         */
+    ]]>
+    </select>
+    
+    
+    <!-- 수의사 -->
+    <select id="Common_selVet" resultType="hashMap">
+    <![CDATA[
+        SELECT LVST_MKT_TRPL_AMNNO
+			 , BRKR_NAME
+		  FROM TB_LA_IS_MM_TRPL
+	     WHERE NA_BZPLC          = #{ss_na_bzplc} 
+		   AND LVST_MKT_TRPL_DSC = '1'
+		   AND DEL_YN            = '0'          
+                               
+    ]]>
+    </select>
+    
+    <!-- 수수료부과내역삭제 -->
+    <delete id="Common_delFee">
+        DELETE FROM TB_LA_IS_MH_FEE_IMPS
+         WHERE NA_BZPLC    = #{na_bzplc}
+           AND AUC_DT      = #{auc_dt}
+           AND AUC_OBJ_DSC = #{auc_obj_dsc}
+           AND OSLP_NO     = #{oslp_no}
+    </delete>
+    <!--  수수료내역조회 -->
+    <select id="Common_selFee" resultType="hashMap">
+    
+        SELECT
+               A.NA_BZPLC                                                /* 경제통합사업장코드    */
+             , A.APL_DT                                                  /* 적용일자              */
+             , A.AUC_OBJ_DSC                                             /* 경매대상구분코드      */
+             , A.FEE_RG_SQNO                                             /* 수수료등록일련번호    */
+             , A.NA_FEE_C                                                /* 경제통합수수료코드    */
+             , A.SRA_FEENM                                               /* 축산수수료명          */
+             , A.JNLZ_BSN_DSC                                            /* 분개업무구분코드      */
+             , A.SRA_NA_FEE_C                                            /* 축산경제통합수수료코드*/
+             , A.FEE_APL_OBJ_C                                           /* 수수료적용대상코드    */
+             , A.AM_RTO_DSC                                              /* 금액비율구분코드      */
+             , A.SGNO_PRC_DSC                                            /* 단수처리구분코드      */
+             , A.MACO_FEE_UPR                                            /* 조합원수수료단가      */
+             , A.NMACO_FEE_UPR                                           /* 비조합원수수료단가    */
+             , A.ANS_DSC                                                 /* 가감구분코드          */
+             , A.SBID_YN                                                 /* 낙찰여부              */
+             , A.PPGCOW_FEE_DSC                                          /* 번식우수수료구분코드  */
+             , A.DEL_YN                                                  /* 삭제여부              */
+             , A.FSRG_DTM                                                /* 최초등록일시          */
+             , A.FSRGMN_ENO                                              /* 최초등록자개인번호    */
+             , A.LSCHG_DTM                                               /* 최종변경일시          */
+             , A.LS_CMENO                                                /* 최종변경자개인번호    */
+             , 0 AS SRA_TR_FEE                                           /* 축산거래수수료        */
+          FROM TB_LA_IS_MH_FEE A
+         WHERE A.NA_BZPLC    = #{na_bzplc}                               /* 경제통합사업장코드    */
+        <if test='auc_obj_dsc != "0"'>
+           AND A.AUC_OBJ_DSC          = #{auc_obj_dsc}
+        </if> 
+          AND A.APL_DT      = (SELECT MAX(APL_DT)
+                               FROM  TB_LA_IS_MH_FEE
+                               WHERE NA_BZPLC      = A.NA_BZPLC         /* 경제통합사업장코드     */
+                                 AND AUC_OBJ_DSC   = A.AUC_OBJ_DSC      /* 경매대상구분코드       */
+                                 AND APL_DT       <![CDATA[<=]]> #{auc_dt}          /* 적용일자               */
+                                 AND DEL_YN        = '0')               /* 적용일자               */
+          AND A.DEL_YN      = '0'                                       /* 삭제여부               */
+    
+    </select>
+    
+    <!-- 임신우 구분조회 -->
+    <select id="Common_selPpgcowFeeDsc" resultType="hashMap">
+    <![CDATA[
+        SELECT A.PPGCOW_FEE_DSC
+          FROM TB_LA_IS_MH_FEE A
+         WHERE A.NA_BZPLC       = #{na_bzplc}                            /* 경제통합사업장코드       */
+           AND A.AUC_OBJ_DSC    = #{auc_obj_dsc}                         /* 경매대상구분코드         */
+           AND A.APL_DT         = (SELECT MAX(APL_DT)
+                                     FROM TB_LA_IS_MH_FEE
+                                    WHERE NA_BZPLC     = #{na_bzplc}     /* 경제통합사업장코드       */
+                                      AND AUC_OBJ_DSC  = #{auc_obj_dsc}  /* 경매대상구분코드         */
+                                      AND APL_DT      <= #{auc_dt}       /* 적용일자                 */
+                                      AND DEL_YN       = '0')
+           AND A.NA_FEE_C       = #{na_fee_c}
+           AND A.PPGCOW_FEE_DSC = #{ppgcow_fee_dsc}
+           AND A.DEL_YN         = '0'                                    /* 삭제여부                 */
+    ]]>
+    </select>
+    
+    <!-- 수수료부과내역 등록 -->
+    <insert id="Common_insFeeImps">
+        insert into tb_la_is_mh_fee_imps (
+               na_bzplc                    /* 경제통합사업장코드             */
+             , auc_obj_dsc                 /* 경매대상구분코드               */
+             , auc_dt                      /* 경매일자                       */
+             , oslp_no                     /* 원표번호                       */
+             , led_sqno                    /* 원장일련번호                   */
+             , fee_rg_sqno                 /* 수수료등록일련번호             */
+             , na_fee_c                    /* 경제통합수수료코드             */
+             , apl_dt                      /* 적용일자                       */
+             , fee_apl_obj_c               /* 수수료적용대상코드             */
+             , ans_dsc                     /* 가감구분코드                   */
+             , sbid_yn                     /* 낙찰여부                       */
+             , sra_tr_fee                  /* 축산거래수수료                 */
+             , tms_yn                      /* 전송여부                       */
+        )values(
+               #{na_bzplc}              /* 경제통합사업장코드             */
+             , #{auc_obj_dsc}           /* 경매대상구분코드               */
+             , #{auc_dt}                /* 경매일자                       */
+             , #{oslp_no}               /* 원표번호                       */
+             , 1                        /* 원장일련번호                   */
+             , #{fee_rg_sqno}           /* 수수료등록일련번호             */
+             , #{na_fee_c}              /* 경제통합수수료코드             */
+             , #{apl_dt}                /* 적용일자                       */
+             , #{fee_apl_obj_c}         /* 수수료적용대상코드             */
+             , #{ans_dsc}               /* 가감구분코드                   */
+             , #{sbid_yn}               /* 낙찰여부                       */
+             , #{sra_tr_fee}            /* 축산거래수수료                 */
+             , '0'                      /* 전송여부                       */
+        )
+    </insert>
+</mapper>

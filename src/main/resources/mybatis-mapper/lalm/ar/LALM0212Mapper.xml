@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ar.service.Impl.LALM0212Mapper">
+
+    <select id="LALM0212_selList" resultType="hashMap">
+    <![CDATA[
+         SELECT NA_BZPLC                    /* 경제통합사업장코드		*/
+	        , AUC_OBJ_DSC                 	/* 경매대상구분코드		*/
+	        , AUC_DT                      	/* 경매일자			*/
+	        , QCN                         	/* 차수				*/
+	        , BASE_LMT_AM                 	/* 기초한도금액			*/
+	        , CUT_AM                      	/* 절사단위금액(비육우)	*/
+	        , SGNO_PRC_DSC                	/* 절사구분(비육우)		*/
+	        , DDL_YN                      	/* 마감여부			*/
+	        , TMS_YN                      	/* 전송여부			*/
+	        , DEL_YN	                    /* 삭제여부			*/
+	        , MALE_KG                     	/* 최초등록일시			*/
+	        , FEMALE_KG                   	/* 최초등록자개인번호		*/
+	        , FSRG_DTM                    	/* 최종변경일시			*/
+	        , FSRGMN_ENO                  	/* 최종변경자개인번호		*/
+	        , LSCHG_DTM                   	/* 수송아지(KG) 단가	*/
+	        , LS_CMENO	                  	/* 암송아지(KG) 단가	*/
+	    FROM  TB_LA_IS_MH_AUC_QCN
+	   WHERE 1 = 1
+	   		AND NA_BZPLC    = #{ss_na_bzplc}                      /* 경제통합사업장코드	*/
+	]]>
+            <if test='cb_auc_obj_dsc != null and cb_auc_obj_dsc != ""'>
+            AND AUC_OBJ_DSC = #{cb_auc_obj_dsc}                   /* 경매대상구분코드	*/
+            </if>
+	<![CDATA[
+            AND AUC_DT BETWEEN #{auc_st_dt} AND #{auc_ed_dt}      /* 경매일자			*/
+            AND DEL_YN = '0'                                      /* 삭제여부			*/
+       ORDER BY AUC_DT DESC, AUC_OBJ_DSC
+	]]>
+    </select>
+    
+    <select id="LALM0212_selQcn" resultType="hashMap">
+    <![CDATA[
+         SELECT
+            COUNT(*) AS CNT
+           FROM  TB_LA_IS_MH_AUC_QCN
+          WHERE NA_BZPLC             = #{ss_na_bzplc}
+    ]]>
+          	<if test='hd_auc_obj_dsc != "0"'>
+          		AND AUC_OBJ_DSC      = '0'
+          	</if>
+          	<if test='hd_auc_obj_dsc == "0"'>
+          		AND AUC_OBJ_DSC     != '0'
+          	</if>
+    <![CDATA[
+            AND AUC_DT               = #{auc_dt}
+            AND DEL_YN               = '0'
+    ]]>
+    </select>
+    
+    <select id="LALM0212_selMaxQcn" resultType="hashMap">
+    <![CDATA[
+         SELECT NVL(MAX(QCN), 0) + 1  AS MAXCNT
+		   FROM TB_LA_IS_MH_AUC_QCN
+          WHERE NA_BZPLC         = #{ss_na_bzplc}
+          	AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}    
+    ]]>
+    </select>
+    
+    <select id="LALM0212_selAucQcn" resultType="hashMap">
+    <![CDATA[
+         SELECT
+            COUNT(*) AS CNT
+           FROM  TB_LA_IS_MH_AUC_QCN
+          WHERE NA_BZPLC         = #{ss_na_bzplc}
+          	AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}    
+            AND AUC_DT           = #{auc_dt}
+            AND DEL_YN           = '0'
+    ]]>
+    </select>
+    
+    <select id="LALM0212_selmhSogCow" resultType="hashMap">
+    <![CDATA[
+          SELECT COUNT(*) AS CNT
+        FROM TB_LA_IS_MH_SOG_COW
+        WHERE NA_BZPLC               = #{ss_na_bzplc}
+    ]]>
+          <if test='hd_auc_obj_dsc != null and hd_auc_obj_dsc != "" and hd_auc_obj_dsc != "0"'>
+          AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}
+          </if>
+    <![CDATA[
+          AND AUC_DT                 = #{auc_dt}
+          AND DEL_YN                 = '0'
+    ]]>
+    </select>
+    
+    <update id="LALM0212_updDdl">
+    <![CDATA[
+         UPDATE TB_LA_IS_MH_AUC_QCN SET
+	          DDL_YN           = '1'
+	        , LSCHG_DTM        = SYSDATE
+	        , LS_CMENO         = #{ss_userid}
+	    WHERE NA_BZPLC         = #{ss_na_bzplc}
+	      AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}
+	      AND AUC_DT           = #{auc_dt}
+    ]]>
+    </update>
+    
+    <update id="LALM0212_updCan">
+    <![CDATA[
+         UPDATE TB_LA_IS_MH_AUC_QCN SET
+	          DDL_YN           = '0'
+	        , LSCHG_DTM        = SYSDATE
+	        , LS_CMENO         = #{ss_userid}
+	    WHERE NA_BZPLC         = #{ss_na_bzplc}
+	      AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}
+	      AND AUC_DT           = #{auc_dt}
+    ]]>
+    </update>
+    
+    <insert id="LALM0212_insPgm">
+    <![CDATA[
+        INSERT INTO TB_LA_IS_MH_AUC_QCN(
+              NA_BZPLC                                	/* 경제통합사업장코드		*/
+            , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
+            , AUC_DT                                  	/* 경매일자			*/
+            , QCN                                     	/* 차수				*/
+            , BASE_LMT_AM                             	/* 기초한도금액			*/
+            , CUT_AM                                  	/* 절사단위금액(비육우)	*/
+            , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
+            , DDL_YN                                  	/* 마감여부			*/
+            , TMS_YN                                  	/* 전송여부			*/
+            , DEL_YN                                  	/* 삭제여부			*/
+            , FSRG_DTM                                	/* 최종등록일시			*/
+            , FSRGMN_ENO                              	/* 최초등록자개인번호		*/
+            , LSCHG_DTM                               	/* 최종변경일시			*/
+            , LS_CMENO                                	/* 최종변경자개인번호		*/
+            , MALE_KG                                 	/* 수송아지(KG) 단가	*/
+            , FEMALE_KG                               	/* 암송아지(KG) 단가	*/
+        )VALUES(
+              #{ss_na_bzplc}                       		/* 경제통합사업장코드		*/
+            , #{hd_auc_obj_dsc}             			/* 경매대상구분코드		*/
+            , #{auc_dt}                  				/* 경매일자			*/
+            , #{qcn}                      				/* 차수				*/
+            , #{base_lmt_am}              				/* 기초한도금액			*/
+            , #{cut_am}                   				/* 절사단위금액(비육우)	*/
+            , #{hd_sgno_prc_dsc}             			/* 절사구분(비육우)		*/
+            , '0'                                     	/* 마감여부			*/
+            , '0'                                     	/* 전송여부			*/
+            , '0'                                     	/* 삭제여부			*/
+            , SYSDATE                               	/* 최초등록일시			*/
+            , #{ss_userid}                             	/* 최초등록자개인번호		*/
+            , SYSDATE                               	/* 최종변경일시			*/
+            , #{ss_userid}                             	/* 최종변경자개인번호		*/
+            , #{female_kg}	                 			/* 수송아지(KG) 단가	*/
+            , #{male_kg}               					/* 암송아지(KG) 단가	*/
+        )
+    ]]>
+    </insert>
+    
+    <insert id="LALM0212_insLogPgm">
+    <![CDATA[
+    	INSERT INTO TB_LA_IS_MH_AUC_QCN_LOG(
+              NA_BZPLC                                	/* 경제통합사업장코드		*/
+            , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
+            , AUC_DT                                  	/* 경매일자			*/
+            , QCN                                     	/* 차수				*/
+            , BASE_LMT_AM                             	/* 기초한도금액			*/
+            , CUT_AM                                  	/* 절사단위금액(비육우)	*/
+            , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
+            , DDL_YN                                  	/* 마감여부			*/
+            , TMS_YN                                  	/* 전송여부			*/
+            , DEL_YN                                  	/* 삭제여부			*/
+            , FSRG_DTM                                	/* 최종등록일시			*/
+            , FSRGMN_ENO                              	/* 최초등록자개인번호		*/
+            , LSCHG_DTM                               	/* 최종변경일시			*/
+            , LS_CMENO                                	/* 최종변경자개인번호		*/
+            , MALE_KG                                 	/* 수송아지(KG) 단가	*/
+            , FEMALE_KG                               	/* 암송아지(KG) 단가	*/
+            , STATS                                   	/* 사용자등록			*/
+            , IP                                      	/* 등록PC IP			*/
+        )VALUES(
+              #{ss_na_bzplc}                       		/* 경제통합사업장코드		*/
+            , #{hd_auc_obj_dsc}             			/* 경매대상구분코드		*/
+            , #{auc_dt}                  				/* 경매일자			*/
+            , #{qcn}                      				/* 차수				*/
+            , #{base_lmt_am}              				/* 기초한도금액			*/
+            , #{cut_am}                   				/* 절사단위금액(비육우)	*/
+            , #{hd_sgno_prc_dsc}             			/* 절사구분(비육우)		*/
+            , '0'                                     	/* 마감여부			*/
+            , '0'                                     	/* 전송여부			*/
+            , '0'                                     	/* 삭제여부			*/
+            , SYSDATE                               	/* 최초등록일시			*/
+            , #{ss_userid}                             	/* 최초등록자개인번호		*/
+            , SYSDATE                               	/* 최종변경일시			*/
+            , '0212등록'                             		/* 최종변경자개인번호		*/
+            , #{female_kg}                 				/* 수송아지(KG) 단가	*/
+            , #{male_kg}               					/* 암송아지(KG) 단가	*/
+            , 'UI'                                    	/* 사용자등록			*/
+            , ''										/* 등록PC IP			*/
+        )
+    ]]>
+    </insert>
+    
+    <update id="LALM0212_updInsPgm">
+    <![CDATA[
+         UPDATE TB_LA_IS_MH_AUC_QCN SET
+	          DDL_YN                 = '1'								/* 마감여부			*/
+	        , LSCHG_DTM              = SYSDATE							/* 최종변경일시			*/
+	        , LS_CMENO               = #{ss_userid}						/* 최종변경자개인번호		*/
+	    WHERE NA_BZPLC               = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
+	      AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}				/* 경매대상구분코드		*/
+	      AND AUC_DT                 < TO_CHAR(SYSDATE, 'yyyymmdd')		/* 경매일자			*/
+    ]]>
+    </update>
+    
+    <update id="LALM0212_updPgm">
+    <![CDATA[
+         UPDATE TB_LA_IS_MH_AUC_QCN SET
+              QCN                    = #{qcn}					/* 차수					*/
+            , BASE_LMT_AM            = #{base_lmt_am}			/* 기초한도금액				*/
+            , CUT_AM                 = #{cut_am}				/* 절사단위금액(비육우)		*/
+            , SGNO_PRC_DSC           = #{hd_sgno_prc_dsc}		/* 절사구분(비육우)			*/
+            , TMS_YN                 = '0'						/* 전송여부				*/
+            , LSCHG_DTM              = SYSDATE					/* 최종변경일시				*/
+            , LS_CMENO               = #{ss_userid}				/* 최종변경자개인번호			*/
+            , MALE_KG    	         = #{female_kg}				/* 수송아지(KG) 단가		*/
+            , FEMALE_KG    	         = #{male_kg}				/* 암송아지(KG) 단가		*/
+        WHERE NA_BZPLC               = #{ss_na_bzplc}			/* 경제통합사업장코드			*/
+          AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}		/* 경매대상구분코드			*/
+          AND AUC_DT                 = #{auc_dt}				/* 경매일자				*/
+    ]]>
+    </update>
+    
+    <insert id="LALM0212_updLogPgm">
+    <![CDATA[
+    	INSERT INTO TB_LA_IS_MH_AUC_QCN_LOG(
+              NA_BZPLC                                	/* 경제통합사업장코드		*/
+            , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
+            , AUC_DT                                  	/* 경매일자			*/
+            , QCN                                     	/* 차수				*/
+            , BASE_LMT_AM                             	/* 기초한도금액			*/
+            , CUT_AM                                  	/* 절사단위금액(비육우)	*/
+            , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
+            , DDL_YN                                  	/* 마감여부			*/
+            , TMS_YN                                  	/* 전송여부			*/
+            , DEL_YN                                  	/* 삭제여부			*/
+            , FSRG_DTM                                	/* 최종등록일시			*/
+            , FSRGMN_ENO                              	/* 최초등록자개인번호		*/
+            , LSCHG_DTM                               	/* 최종변경일시			*/
+            , LS_CMENO                                	/* 최종변경자개인번호		*/
+            , MALE_KG                                 	/* 수송아지(KG) 단가	*/
+            , FEMALE_KG                               	/* 암송아지(KG) 단가	*/
+            , STATS                                   	/* 사용자등록			*/
+            , IP                                      	/* 등록PC IP			*/
+        )VALUES(
+              #{ss_na_bzplc}                       		/* 경제통합사업장코드		*/
+            , #{hd_auc_obj_dsc}             			/* 경매대상구분코드		*/
+            , #{auc_dt}                  				/* 경매일자			*/
+            , #{qcn}                      				/* 차수				*/
+            , #{base_lmt_am}              				/* 기초한도금액			*/
+            , #{cut_am}                   				/* 절사단위금액(비육우)	*/
+            , #{hd_sgno_prc_dsc}             			/* 절사구분(비육우)		*/
+            , '0'                                     	/* 마감여부			*/
+            , '0'                                     	/* 전송여부			*/
+            , '0'                                     	/* 삭제여부			*/
+            , SYSDATE                               	/* 최초등록일시			*/
+            , #{ss_userid}                             	/* 최초등록자개인번호		*/
+            , SYSDATE                               	/* 최종변경일시			*/
+            , '0212수정'                             		/* 최종변경자개인번호		*/
+            , #{female_kg}                 				/* 수송아지(KG) 단가	*/
+            , #{male_kg}               					/* 암송아지(KG) 단가	*/
+            , 'UU'                                    	/* 사용자등록			*/
+            , ''										/* 등록PC IP			*/
+        )
+    ]]>
+    </insert>
+    
+    <delete id="LALM0212_delPgm">
+    <![CDATA[
+        DELETE FROM TB_LA_IS_MH_AUC_QCN
+   		 WHERE NA_BZPLC               = #{ss_na_bzplc}		/* 경제통합사업장코드		*/
+      	   AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}	/* 경매대상구분코드		*/
+      	   AND AUC_DT                 = #{auc_dt}			/* 경매일자			*/
+    ]]>
+    </delete>
+    
+    <insert id="LALM0212_delLogPgm">
+    <![CDATA[
+    	INSERT INTO TB_LA_IS_MH_AUC_QCN_LOG(
+              NA_BZPLC                                	/* 경제통합사업장코드		*/
+            , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
+            , AUC_DT                                  	/* 경매일자			*/
+            , QCN                                     	/* 차수				*/
+            , BASE_LMT_AM                             	/* 기초한도금액			*/
+            , CUT_AM                                  	/* 절사단위금액(비육우)	*/
+            , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
+            , DDL_YN                                  	/* 마감여부			*/
+            , TMS_YN                                  	/* 전송여부			*/
+            , DEL_YN                                  	/* 삭제여부			*/
+            , FSRG_DTM                                	/* 최종등록일시			*/
+            , FSRGMN_ENO                              	/* 최초등록자개인번호		*/
+            , LSCHG_DTM                               	/* 최종변경일시			*/
+            , LS_CMENO                                	/* 최종변경자개인번호		*/
+            , MALE_KG                                 	/* 수송아지(KG) 단가	*/
+            , FEMALE_KG                               	/* 암송아지(KG) 단가	*/
+            , STATS                                   	/* 사용자등록			*/
+            , IP                                      	/* 등록PC IP			*/
+        )VALUES(
+              #{ss_na_bzplc}                       		/* 경제통합사업장코드		*/
+            , #{hd_auc_obj_dsc}             			/* 경매대상구분코드		*/
+            , #{auc_dt}                  				/* 경매일자			*/
+            , #{qcn}                      				/* 차수				*/
+            , #{base_lmt_am}              				/* 기초한도금액			*/
+            , #{cut_am}                   				/* 절사단위금액(비육우)	*/
+            , #{hd_sgno_prc_dsc}             			/* 절사구분(비육우)		*/
+            , '0'                                     	/* 마감여부			*/
+            , '0'                                     	/* 전송여부			*/
+            , '0'                                     	/* 삭제여부			*/
+            , SYSDATE                               	/* 최초등록일시			*/
+            , #{ss_userid}                             	/* 최초등록자개인번호		*/
+            , SYSDATE                               	/* 최종변경일시			*/
+            , '0212삭제'                             		/* 최종변경자개인번호		*/
+            , #{female_kg}                 				/* 수송아지(KG) 단가	*/
+            , #{male_kg}               					/* 암송아지(KG) 단가	*/
+            , 'UD'                                    	/* 사용자등록			*/
+            , ''										/* 등록PC IP			*/
+        )
+    ]]>
+    </insert>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ar.service.Impl.LALM0220Mapper">
+
+    <select id="LALM0220_selList" resultType="hashMap">
+		    SELECT
+		          CASE WHEN #{ss_security} = '1' THEN C.VHC_DRV_CAFFNM
+		               WHEN LENGTH(C.VHC_DRV_CAFFNM) = 2 THEN SUBSTR(C.VHC_DRV_CAFFNM,1,1) || '*' 
+		               WHEN LENGTH(C.VHC_DRV_CAFFNM) = 3 THEN SUBSTR(C.VHC_DRV_CAFFNM,1,1) || '*'  || SUBSTR(C.VHC_DRV_CAFFNM,3,1) 
+		               WHEN LENGTH(C.VHC_DRV_CAFFNM) = 4 THEN SUBSTR(C.VHC_DRV_CAFFNM,1,1) || '**' || SUBSTR(C.VHC_DRV_CAFFNM,4,1)  
+		               WHEN LENGTH(C.VHC_DRV_CAFFNM) = 5 THEN SUBSTR(C.VHC_DRV_CAFFNM,1,2) || '**' || SUBSTR(C.VHC_DRV_CAFFNM,5,1)   END AS VHC_DRV_CAFFNM          
+		        , CASE WHEN #{ss_security} = '1' THEN C.DRV_CAFF_TELNO
+		               WHEN LENGTH(REPLACE(C.DRV_CAFF_TELNO,'-','')) = 9  THEN SUBSTR(REPLACE(C.DRV_CAFF_TELNO,'-',''),1,2) || '-' || '***' || '-' || SUBSTR(REPLACE(C.DRV_CAFF_TELNO,'-',''),6,4)  
+		               WHEN LENGTH(REPLACE(C.DRV_CAFF_TELNO,'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(C.DRV_CAFF_TELNO,'-',''),1,2) = '02' 
+		                               											     THEN SUBSTR(REPLACE(C.DRV_CAFF_TELNO,'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(C.DRV_CAFF_TELNO,'-',''),7,4)  
+		                              											     ELSE SUBSTR(REPLACE(C.DRV_CAFF_TELNO,'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(C.DRV_CAFF_TELNO,'-',''),7,4)  END) 
+					   WHEN LENGTH(REPLACE(C.DRV_CAFF_TELNO,'-','')) = 11 or LENGTH(REPLACE(C.DRV_CAFF_TELNO,'-',''))= 12 THEN SUBSTR(REPLACE(C.DRV_CAFF_TELNO,'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(C.DRV_CAFF_TELNO,'-',''),8,4)                               											   
+		          END AS DRV_CAFF_TELNO 
+		        , CASE WHEN #{ss_security} = '1' THEN C.BRWR_MPNO
+		               WHEN LENGTH(REPLACE(C.BRWR_MPNO,'-','')) = 9  THEN SUBSTR(REPLACE(C.BRWR_MPNO,'-',''),1,2) || '-' || '***' || '-' || SUBSTR(REPLACE(C.BRWR_MPNO,'-',''),6,4)  
+		               WHEN LENGTH(REPLACE(C.BRWR_MPNO,'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(C.BRWR_MPNO,'-',''),1,2) = '02' 
+		                               											THEN SUBSTR(REPLACE(C.BRWR_MPNO,'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(C.BRWR_MPNO,'-',''),7,4)  
+		                              											ELSE SUBSTR(REPLACE(C.BRWR_MPNO,'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(C.BRWR_MPNO,'-',''),7,4)  END) 
+					   WHEN LENGTH(REPLACE(C.BRWR_MPNO,'-','')) = 11 or LENGTH(REPLACE(C.BRWR_MPNO,'-','')) = 12 THEN SUBSTR(REPLACE(C.BRWR_MPNO,'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(C.BRWR_MPNO,'-',''),8,4)                               											   
+		          END AS BRWR_MPNO  /* 차주휴대전화번호     */      
+		        , CASE WHEN #{ss_security} = '1' THEN B.FTSNM
+		               WHEN LENGTH(B.FTSNM) = 2 THEN SUBSTR(B.FTSNM,1,1) || '*' 
+		               WHEN LENGTH(B.FTSNM) = 3 THEN SUBSTR(B.FTSNM,1,1) || '*'  || SUBSTR(B.FTSNM,3,1) 
+		               WHEN LENGTH(B.FTSNM) = 4 THEN SUBSTR(B.FTSNM,1,1) || '**' || SUBSTR(B.FTSNM,4,1)  
+		               WHEN LENGTH(B.FTSNM) = 5 THEN SUBSTR(B.FTSNM,1,2) || '**' || SUBSTR(B.FTSNM,5,1)   END AS FTSNM           
+		        , B.DONGUP || '' || B.DONGBW AS ADR	/* 농가주소           */
+		        , CASE WHEN #{ss_security} = '1' THEN B.CUS_MPNO
+		               WHEN LENGTH(REPLACE(B.CUS_MPNO,'-','')) = 9  THEN SUBSTR(REPLACE(B.CUS_MPNO,'-',''),1,2) || '-' || '***' || '-' || SUBSTR(REPLACE(B.CUS_MPNO,'-',''),6,4)  
+		               WHEN LENGTH(REPLACE(B.CUS_MPNO,'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(B.CUS_MPNO,'-',''),1,2) = '02' 
+		                               										   THEN SUBSTR(REPLACE(B.CUS_MPNO,'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(B.CUS_MPNO,'-',''),7,4)  
+		                              										   ELSE SUBSTR(REPLACE(B.CUS_MPNO,'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(B.CUS_MPNO,'-',''),7,4)  END) 
+					   WHEN LENGTH(REPLACE(B.CUS_MPNO,'-','')) = 11 or LENGTH(REPLACE(B.CUS_MPNO,'-','')) = 12  THEN SUBSTR(REPLACE(B.CUS_MPNO,'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(B.CUS_MPNO,'-',''),8,4)                               											   
+		          END AS CUS_MPNO  /* 농가 휴대폰번호       */        
+		        , CASE WHEN #{ss_security} = '1' THEN B.OHSE_TELNO
+		               WHEN LENGTH(REPLACE(B.OHSE_TELNO,'-','')) = 9  THEN SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),1,2) || '-' || '***' || '-' || SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),6,4)  
+		               WHEN LENGTH(REPLACE(B.OHSE_TELNO,'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),1,2) = '02' 
+		                               										   THEN SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),7,4)  
+		                              										   ELSE SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),7,4)  END) 
+					   WHEN LENGTH(REPLACE(B.OHSE_TELNO,'-','')) = 11 or LENGTH(REPLACE(B.OHSE_TELNO,'-','')) = 12  THEN SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),8,4)                               											   
+		          END AS OHSE_TELNO             /* 농가 집전화번호      */
+		        , A.AUC_OBJ_DSC			        /* 경매대상구분코드     */
+		        , SUBSTR(A.SRA_INDV_AMNNO, 1, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9)  AS SRA_INDV_AMNNO		        /* 축산개체관리번호     */
+		        , D.INDV_SEX_C                  /* 개체성별코드         */
+		        , A.AUC_PRG_SQ			        /* 경매진행순서         */
+		        , A.COW_SOG_WT			        /* 우출하중량           */
+		        , B.RMK_CNTN			        /* 수송비고			  */
+		        , A.RMK_CNTN AS RMK_CNTN2
+		        , B.FHS_ID_NO		        
+		    FROM TB_LA_IS_MH_SOG_COW A
+		       , TB_LA_IS_MM_FHS     B
+		       , TB_LA_IS_MM_VHC     C
+		       , TB_LA_IS_MM_INDV    D
+		    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
+		      AND A.AUC_OBJ_DSC    = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END  /* 경매대상구분코드            */
+		      AND A.AUC_DT         = #{auc_dt}
+		      AND (C.VHC_DRV_CAFFNM = #{vhc_drv_caffnm}
+		       OR #{vhc_drv_caffnm} is null)
+		      AND A.LED_SQNO       = '1'
+		      AND A.DEL_YN         = '0'
+		      AND A.NA_BZPLC       = B.NA_BZPLC
+		      AND A.FHS_ID_NO      = B.FHS_ID_NO
+		      AND A.FARM_AMNNO     = B.FARM_AMNNO
+		      AND A.NA_BZPLC       = C.NA_BZPLC
+		      AND A.VHC_SHRT_C     = C.VHC_SHRT_C
+		      AND A.NA_BZPLC       = D.NA_BZPLC
+		      AND A.SRA_INDV_AMNNO = D.SRA_INDV_AMNNO
+		      AND A.SRA_SRS_DSC    = D.SRA_SRS_DSC
+		    UNION ALL
+		    SELECT
+		          ''    AS VHC_DRV_CAFFNM      /* 수송자명             */
+		        , ''         AS DRV_CAFF_TELNO     /* 수송자전화번호       */
+		        , ''         AS BRWR_MPNO          /* 차주휴대전화번호     */
+		        , CASE WHEN LENGTH(B.FTSNM) = 2 THEN SUBSTR(B.FTSNM,1,1) || '*' 
+		               WHEN LENGTH(B.FTSNM) = 3 THEN SUBSTR(B.FTSNM,1,1) || '*'  || SUBSTR(B.FTSNM,3,1) 
+		               WHEN LENGTH(B.FTSNM) = 4 THEN SUBSTR(B.FTSNM,1,1) || '**' || SUBSTR(B.FTSNM,4,1)  
+		               WHEN LENGTH(B.FTSNM) = 5 THEN SUBSTR(B.FTSNM,1,2) || '**' || SUBSTR(B.FTSNM,5,1)   END AS FTSNM                            /* 농가명               */
+		        , B.DONGUP || '' || B.DONGBW AS ADR	   /* 농가주소           */
+		        , CASE WHEN LENGTH(REPLACE(B.CUS_MPNO,'-','')) = 9  THEN SUBSTR(REPLACE(B.CUS_MPNO,'-',''),1,2) || '-' || '***' || '-' ||  SUBSTR(REPLACE(B.CUS_MPNO,'-',''),6,4)  
+		               WHEN LENGTH(REPLACE(B.CUS_MPNO,'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(B.CUS_MPNO,'-',''),1,2) = '02' 
+		                               										   THEN SUBSTR(REPLACE(B.CUS_MPNO,'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(B.CUS_MPNO,'-',''),7,4)  
+		                              										   ELSE SUBSTR(REPLACE(B.CUS_MPNO,'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(B.CUS_MPNO,'-',''),7,4)  END) 
+					   WHEN LENGTH(REPLACE(B.CUS_MPNO,'-','')) = 11 or LENGTH(REPLACE(B.CUS_MPNO,'-','')) = 12  THEN SUBSTR(REPLACE(B.CUS_MPNO,'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(B.CUS_MPNO,'-',''),8,4)                               											   
+		          END AS CUS_MPNO  /* 농가 휴대폰번호       */        
+		        , CASE WHEN LENGTH(REPLACE(B.OHSE_TELNO,'-','')) = 9  THEN SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),1,2) || '-' || '***' || '-' || SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),6,4)  
+		               WHEN LENGTH(REPLACE(B.OHSE_TELNO,'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),1,2) = '02' 
+		                               										   THEN SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),7,4)  
+		                              										   ELSE SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),7,4)  END) 
+					   WHEN LENGTH(REPLACE(B.OHSE_TELNO,'-','')) = 11 or LENGTH(REPLACE(B.OHSE_TELNO,'-','')) = 12  THEN SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(B.OHSE_TELNO,'-',''),8,4)                               											   
+		          END AS OHSE_TELNO  /* 농가 집전화번호      */
+		        , A.AUC_OBJ_DSC			           /* 경매대상구분코드     */
+		        , A.SRA_INDV_AMNNO		           /* 축산개체관리번호     */
+		        , D.INDV_SEX_C                  /* 개체성별코드         */
+		        , A.AUC_PRG_SQ			        /* 경매진행순서         */
+		        , A.COW_SOG_WT			        /* 우출하중량           */
+		        , B.RMK_CNTN			        /* 수송비고			   */
+		        , A.RMK_CNTN AS RMK_CNTN2
+		        , B.FHS_ID_NO		        
+		    FROM TB_LA_IS_MH_SOG_COW A
+		       , TB_LA_IS_MM_FHS     B
+		       , TB_LA_IS_MM_INDV    D 
+		    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
+		      AND A.AUC_OBJ_DSC    = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END 
+		      AND A.AUC_DT         = #{auc_dt}
+		      AND 1                = (CASE WHEN #{vhc_drv_caffnm} is null THEN 1 ELSE 2 END) 
+		      AND A.LED_SQNO       = '1'
+		      AND A.DEL_YN         = '0'
+		      AND A.TRPCS_PY_YN    = '1'
+		      AND A.NA_BZPLC       = B.NA_BZPLC
+		      AND A.FHS_ID_NO      = B.FHS_ID_NO
+		      AND A.FARM_AMNNO     = B.FARM_AMNNO
+		      AND A.NA_BZPLC       = D.NA_BZPLC
+		      AND A.SRA_INDV_AMNNO = D.SRA_INDV_AMNNO
+		      AND A.SRA_SRS_DSC    = D.SRA_SRS_DSC 		      
+		  ORDER BY VHC_DRV_CAFFNM, ADR, FTSNM
+    ;
+    </select>
+        
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

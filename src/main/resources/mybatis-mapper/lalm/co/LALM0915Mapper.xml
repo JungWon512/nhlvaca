@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0915Mapper">
+    
+    <update id="LALM0915_selUsr" parameterType="HashMap">
+        MERGE INTO TB_LA_IS_MM_USR S
+            USING (select na_bzplc
+                        , usrid
+                        , usrnm
+                        , mpno
+                     from tb_la_is_mm_usr
+                    where usrid    = #{usrid}
+                      and usrnm    = #{usrnm}
+                      and mpno     = #{mpno}) T
+               ON (S.na_bzplc = T.na_bzplc
+               AND S.usrid    = T.usrid
+               AND S.usrnm    = T.usrnm
+               AND S.mpno     = T.mpno)
+        WHEN MATCHED THEN
+            UPDATE
+               SET S.ATTC_NO = #{pw} 
+    </update>
+    
+    <select id="LALM0915_selPW" resultType="HashMap">
+        SELECT NA_BZPLC
+             , USRID
+             , USRNM
+             , MPNO
+          FROM TB_LA_IS_MM_USR
+         WHERE USRID   = #{usrid}
+           AND ATTC_NO = #{attc_no}  
+    </select>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

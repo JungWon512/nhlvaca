@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ab.service.Impl.LALM0320Mapper">
+
+    <select id="LALM0320_selList" resultType="hashMap">
+	    SELECT
+	          A.AUC_OBJ_DSC             /* 경매대상구분                            */
+	        , A.AUC_PRG_SQ              /* 경매진행순서                            */
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN C.FTSNM
+	           WHEN LENGTH(C.FTSNM) = 2 THEN SUBSTR(C.FTSNM,1,1) || '*' 
+	           WHEN LENGTH(C.FTSNM) = 3 THEN SUBSTR(C.FTSNM,1,1) || '*'  || SUBSTR(C.FTSNM,3,1) 
+	           WHEN LENGTH(C.FTSNM) = 4 THEN SUBSTR(C.FTSNM,1,1) || '**' || SUBSTR(C.FTSNM,4,1)  
+	           WHEN LENGTH(C.FTSNM) >= 5 THEN SUBSTR(C.FTSNM,1,2) || '**' || SUBSTR(C.FTSNM,5,1)  END AS FTSNM /*농가명*/
+	        
+	        , SUBSTR(A.SRA_INDV_AMNNO, 1, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9)  AS SRA_INDV_AMNNO /* 축산개체관리번호(바코드, 귀표번호)      */
+	        , SUBSTR(B.BIRTH, 1, 4) || '-' || SUBSTR(B.BIRTH, 5, 2) || '-' || SUBSTR(B.BIRTH, 7, 2)  AS BIRTH  /* 생년월일                                */
+	        , B.INDV_SEX_C              /* 개체성별코드                            */
+	        , B.MCOW_DSC                /* 어미구분코드                            */
+	        , RTRIM(B.KPN_NO) KPN_NO    /* PKN번호                                 */
+	        , B.SRA_INDV_PASG_QCN       /* 계대                                    */
+	        , B.MATIME                  /* 산차                                    */
+	        , A.COW_SOG_WT              /* 우출하중량                              */
+	        , A.LOWS_SBID_LMT_AM        /* 최저낙찰한도금액                        */
+	        , (case when A.AUC_OBJ_DSC = '1' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
+	                when A.AUC_OBJ_DSC = '2' and A.SEL_STS_DSC = '22' then A.SRA_SBID_UPR
+	                when A.AUC_OBJ_DSC = '3' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
+	                else 0
+	           end) as SRA_SBID_AM      /* 축산낙찰금액                            */
+	        , (case when A.AUC_OBJ_DSC = '1' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
+	                when A.AUC_OBJ_DSC = '2' and A.SEL_STS_DSC = '22' then A.SRA_SBID_UPR
+	                when A.AUC_OBJ_DSC = '3' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
+	                else 0
+	           end) - A.LOWS_SBID_LMT_AM as DIF_SBID_AM   /* 낙찰가차액 */
+	        , CASE WHEN #{ss_security} = '1' THEN D.SRA_MWMNNM
+	               WHEN LENGTH(D.SRA_MWMNNM) = 2 THEN SUBSTR(D.SRA_MWMNNM,1,1) || '*' 
+	               WHEN LENGTH(D.SRA_MWMNNM) = 3 THEN SUBSTR(D.SRA_MWMNNM,1,1) || '*' || SUBSTR(D.SRA_MWMNNM,3,1) 
+	               WHEN LENGTH(D.SRA_MWMNNM) = 4 THEN SUBSTR(D.SRA_MWMNNM,1,1) || '**' || SUBSTR(D.SRA_MWMNNM,4,1)  
+	               WHEN LENGTH(D.SRA_MWMNNM) >= 5 THEN SUBSTR(D.SRA_MWMNNM,1,2) || '**' || SUBSTR(D.SRA_MWMNNM,5,1)   END AS SRA_MWMNNM	        
+	        , A.SEL_STS_DSC             /* 판매산태                        */
+	    FROM TB_LA_IS_MH_SOG_COW  A
+	       , TB_LA_IS_MM_INDV     B
+	       , TB_LA_IS_MM_FHS      C
+	       , TB_LA_IS_MM_MWMN     D
+	    WHERE A.NA_BZPLC            = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC         = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END
+	      AND A.AUC_DT              = #{auc_dt}
+	      AND A.LED_SQNO            = 1
+	      AND A.DEL_YN              = '0'
+	      AND A.NA_BZPLC            = B.NA_BZPLC
+	      AND A.SRA_INDV_AMNNO      = B.SRA_INDV_AMNNO
+	      AND A.SRA_SRS_DSC         = B.SRA_SRS_DSC
+	      AND A.NA_BZPLC            = C.NA_BZPLC
+	      AND A.FHS_ID_NO           = C.FHS_ID_NO
+	      AND A.FARM_AMNNO          = C.FARM_AMNNO
+	      AND A.NA_BZPLC            = D.NA_BZPLC(+)
+	      AND A.TRMN_AMNNO          = D.TRMN_AMNNO(+)
+	    ORDER BY A.AUC_PRG_SQ;
+    </select>
+    
+    <select id="LALM0320_selAucIngList" resultType="hashMap"> 
+    <![CDATA[   
+	    SELECT
+	          CASE WHEN A.AM_CNT      > 0 THEN ROUND(A.AM_LMT_AM  / A.AM_CNT     , 0)  ELSE 0 END AS AM_EVE_LMT_AM       /* 암-응찰하한가평균 */
+	        , CASE WHEN A.AM_SBID_CNT > 0 THEN ROUND(A.AM_SBID_AM / A.AM_SBID_CNT, 0)  ELSE 0 END AS AM_EVE_SBID_AM      /* 암-낙찰가평균     */
+	        , CASE WHEN A.SU_CNT      > 0 THEN ROUND(A.SU_LMT_AM  / A.SU_CNT     , 0)  ELSE 0 END AS SU_EVE_LMT_AM       /* 수-응찰하한가평균 */
+	        , CASE WHEN A.SU_SBID_CNT > 0 THEN ROUND(A.SU_SBID_AM / A.SU_SBID_CNT, 0)  ELSE 0 END AS SU_EVE_SBID_AM      /* 수-낙찰가평균     */
+	    FROM (SELECT
+	                SUM(CASE WHEN B.INDV_SEX_C =  '1'                          THEN 1                  ELSE 0 END) AS AM_CNT         /* 암-출장우 수  */
+	              , SUM(CASE WHEN B.INDV_SEX_C =  '1'                          THEN A.LOWS_SBID_LMT_AM ELSE 0 END) AS AM_LMT_AM      /* 암-응찰하한가 */
+	              , SUM(CASE WHEN B.INDV_SEX_C =  '1' AND A.SEL_STS_DSC = '22' THEN 1                  ELSE 0 END) AS AM_SBID_CNT    /* 암-낙찰우 수  */
+	              , SUM(CASE WHEN B.INDV_SEX_C =  '1' AND A.SEL_STS_DSC = '22' THEN A.SRA_SBID_AM      ELSE 0 END) AS AM_SBID_AM     /* 암-낙찰가     */
+	              , SUM(CASE WHEN B.INDV_SEX_C != '1'                          THEN 1                  ELSE 0 END) AS SU_CNT         /* 수-출장우 수  */
+	              , SUM(CASE WHEN B.INDV_SEX_C != '1'                          THEN A.LOWS_SBID_LMT_AM ELSE 0 END) AS SU_LMT_AM      /* 수-응찰하한가 */
+	              , SUM(CASE WHEN B.INDV_SEX_C != '1' AND A.SEL_STS_DSC = '22' THEN 1                  ELSE 0 END) AS SU_SBID_CNT    /* 수-낙찰우 수  */
+	              , SUM(CASE WHEN B.INDV_SEX_C != '1' AND A.SEL_STS_DSC = '22' THEN A.SRA_SBID_AM      ELSE 0 END) AS SU_SBID_AM     /* 수-낙찰가     */
+	          FROM TB_LA_IS_MH_SOG_COW  A
+	             , TB_LA_IS_MM_INDV     B
+	          WHERE A.NA_BZPLC            = #{ss_na_bzplc}
+	            AND A.AUC_OBJ_DSC         = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END
+	            AND A.AUC_DT              = #{auc_dt}
+	            AND A.LED_SQNO            = 1
+	            AND A.DEL_YN              = '0'                                /* 삭제건이 아닌건    */
+	            AND A.NA_BZPLC            = B.NA_BZPLC
+	            AND A.SRA_INDV_AMNNO      = B.SRA_INDV_AMNNO
+	            AND A.SRA_SRS_DSC         = B.SRA_SRS_DSC
+	         ) A
+	     
+	]]> 
+    </select>        
+        
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0128PMapper">
+
+    <select id="LALM0128P_selList" resultType="hashMap">
+		SELECT
+		         VHC_SHRT_C
+		        ,VHC_DRV_CAFFNM
+		        ,DRV_CAFF_TELNO
+		        ,VHCNO
+		        ,BRWRNM
+		        ,VHC_DSC
+		        ,BRWR_TELNO
+		        ,BRWR_MPNO
+		        ,SRA_LOAD_WT
+		        ,SRA_VHC_TNCN
+		        ,SRA_LOAD_PSB_BULK
+		        ,CARTP_C
+		        ,LVST_TRPT_YN
+		        ,PVEP_DT
+		        ,EDU_CPL_YN
+		        ,NA_TRPL_C
+		        ,ADJ_NA_TRPL_C
+		        ,DEL_YN
+		  FROM TB_LA_IS_MM_VHC
+		 WHERE NA_BZPLC  = #{ss_na_bzplc} 
+		   AND DEL_YN     = '0'
+        <if test='vhc_drv_caffnm_c == "1"'>
+           AND (VHC_SHRT_C           = #{vhc_drv_caffnm}
+            OR #{vhc_drv_caffnm}     is null)
+        </if>	
+        <if test='vhc_drv_caffnm_c == "2"'>
+		   AND VHC_DRV_CAFFNM LIKE '%' || #{vhc_drv_caffnm}  || '%' 
+        </if>	        	   
+    </select>    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0127PMapper">
+
+    <select id="LALM0127P_selList" resultType="hashMap">
+    <![CDATA[
+        SELECT
+              na_bzplc
+	        , fhs_id_no
+	        , farm_amnno
+	        , farm_id_no
+	        , na_trpl_c
+	        , sra_farm_acno
+	        , ftsnm
+	        , zip
+	        , dongup
+	        , dongbw
+	        , ohse_telno
+	        , cus_mpno
+	        , maco_yn
+	        , rmk_cntn
+	        , jrdwo_dsc
+	        , del_yn
+	        , SRA_FED_SPY_YN
+          FROM TB_LA_IS_MM_FHS
+         WHERE NA_BZPLC   = #{ss_na_bzplc}
+           AND DEL_YN     = '0'
+           AND ANW_YN    != '0'
+           AND FTSNM   LIKE '%'||#{ftsnm}||'%'
+        ORDER BY NA_BZPLC
+               , FHS_ID_NO
+    ]]>
+    </select>    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

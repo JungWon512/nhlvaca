@@ -1,0 +1,1763 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.sy.service.Impl.LALM0899Mapper">
+    
+    <!-- 1200 -->
+    <delete id="LALM0899_delMca1200">
+        DELETE FROM TB_LA_IS_MM_FHS
+         WHERE NA_BZPLC    = #{ss_na_bzplc}
+           AND FHS_ID_NO   = nvl(trim(#{FHS_ID_NO}),'')
+           AND FARM_AMNNO  = nvl(trim(#{FARM_AMNNO}),'')
+    </delete>
+    
+    <select id="LALM0899_selMca1200_fhsIdNo" resultType="_int">
+        select count(fhs_id_no) 
+          from tb_la_is_mm_fhs
+         where na_bzplc   = #{ss_na_bzplc}
+           AND FHS_ID_NO   = nvl(trim(#{FHS_ID_NO}),'')
+           AND FARM_AMNNO  = nvl(trim(#{FARM_AMNNO}),'')
+    </select>
+    
+    <update id="LALM0899_updMca1200">
+        update tb_la_is_mm_fhs set
+	            farm_id_no        = nvl(trim(#{FARM_ID_NO}),'')               /* 농장식별번호                     */
+	          , na_trpl_c         = nvl(trim(#{NA_TRPL_C}),'')                /* 출하경제통합거래처코드           */
+	          , ftsnm             = nvl(trim(#{FTSNM}),'')                    /* 농가명                           */
+	          , zip               = nvl(trim(#{ZIP}),'')                      /* 우편번호                         */
+	          , dongup            = nvl(trim(#{DONGUP}),'')                   /* 동이상주소                       */
+	          , dongbw            = nvl(trim(#{DONGBW}),'')                   /* 동이하주소                       */
+	          , ohse_telno        = nvl(trim(#{OHSE_TELNO}),'')               /* 자택전화번호                     */
+	          , cus_mpno          = nvl(trim(#{CUS_MPNO}),'')                 /* 고객휴대전화번호                 */
+	          , maco_yn           = nvl(trim(#{MACO_YN}),'')                  /* 출하자조합원여부                 */
+	          , rmk_cntn          = nvl(trim(#{RMK_CNTN}),'')                 /* 비고내용                         */
+	          , jrdwo_dsc         = nvl(trim(#{JRDWO_DSC}),'')                /* 관내외구분                       */
+	          , anw_yn            = nvl(trim(#{ANW_YN}),'')                   /* 한우종합등록여부                 */
+	          , hdwk_rg_yn        = nvl(trim(#{HDWK_RG_YN}),'')               /* 수작업여부                       */
+	          , lschg_dtm         = SYSDATE                     /* 최종변경일시                     */
+	          , ls_cmeno          = #{ss_userid}                 /* 최종변경자개인번호               */
+	      where na_bzplc          = #{ss_na_bzplc}
+	        and fhs_id_no         = nvl(trim(#{FHS_ID_NO}),'')
+	        and farm_amnno        = nvl(trim(#{FARM_AMNNO}),'')
+    </update>
+    
+    <insert id="LALM0899_insMca1200">
+         insert into tb_la_is_mm_fhs
+              (
+                 na_bzplc                         /* 경제통합사업장코드               */
+               , fhs_id_no                        /* 농가식별번호                     */
+               , farm_amnno                       /* 농장관리번호                     */
+               , farm_id_no                       /* 농장식별번호                     */
+               , na_trpl_c                        /* 출하경제통합거래처코드           */
+               , ftsnm                            /* 농가명                           */
+               , zip                              /* 우편번호                         */
+               , dongup                           /* 동이상주소                       */
+               , dongbw                           /* 동이하주소                       */
+               , ohse_telno                       /* 자택전화번호                     */
+               , cus_mpno                         /* 고객휴대전화번호                 */
+               , maco_yn                          /* 출하자조합원여부                 */
+               , rmk_cntn                         /* 비고내용                         */
+               , jrdwo_dsc                        /* 관내외구분                       */
+               , del_yn                           /* 삭제여부                         */
+               , anw_yn                           /* 한우종합등록여부                 */
+               , hdwk_rg_yn                       /* 수작업여부                       */
+               , new_sra_farm_acno                /* 계좌번호                         */
+               , fsrg_dtm                         /* 최초등록일시                     */
+               , fsrgmn_eno                       /* 최초등록자개인번호               */
+               , lschg_dtm                        /* 최종변경일시                     */
+               , ls_cmeno                         /* 최종변경자개인번호               */
+               , birth
+              )values(
+                 #{ss_na_bzplc}                /* 경제통합사업장코드               */
+               , nvl(trim(#{FHS_ID_NO}),'')                  /* 농가식별번호                     */
+               , nvl(trim(#{FARM_AMNNO}),'')                 /* 농장관리번호                     */
+               , nvl(trim(#{FARM_ID_NO}),'')                 /* 농장식별번호                     */
+               , nvl(trim(#{NA_TRPL_C}),'')                  /* 출하경제통합거래처코드           */
+               , nvl(trim(#{FTSNM}),'')                      /* 농가명                           */
+               , nvl(trim(#{ZIP}),'')                        /* 우편번호                         */
+               , nvl(trim(#{DONGUP}),'')                     /* 동이상주소                       */
+               , nvl(trim(#{DONGBW}),'')                     /* 동이하주소                       */
+               , nvl(trim(#{OHSE_TELNO}),'')                 /* 자택전화번호                     */
+               , nvl(trim(#{CUS_MPNO}),'')                   /* 고객휴대전화번호                 */
+               , nvl(trim(#{MACO_YN}),'')                    /* 출하자조합원여부                 */
+               , nvl(trim(#{RMK_CNTN}),'')                   /* 비고내용                         */
+               , nvl(trim(#{JRDWO_DSC}),'')                  /* 관내외구분                       */
+               , '0'                           /* 삭제여부                         */
+               , nvl(trim(#{ANW_YN}),'')                     /* 한우종합등록여부                 */
+               , nvl(trim(#{HDWK_RG_YN}),'')                 /* 수작업여부                       */
+               , nvl(trim(#{NEW_SRA_FARM_ACNO}),'')              /* 계좌번호                         */
+               , SYSDATE                       /* 최초등록일시                     */
+               , '기준정보'                    /* 최초등록자개인번호               */
+               , SYSDATE                       /* 최종변경일시                     */
+               , #{ss_userid}                   /* 최종변경자개인번호               */
+               , nvl(trim(#{BIRTH}),'')
+              )
+    </insert>
+    
+    <insert id="LALM0899_insMca1200_2">
+        insert into tb_la_is_mm_fhs
+        (
+              na_bzplc                            /* 경제통합사업장코드               */
+            , fhs_id_no                           /* 농가식별번호                     */
+            , farm_amnno                          /* 농장관리번호                     */
+            , farm_id_no                          /* 농장식별번호                     */
+            , na_trpl_c                           /* 출하경제통합거래처코드           */
+            , ftsnm                               /* 농가명                           */
+            , zip                                 /* 우편번호                         */
+            , dongup                              /* 동이상주소                       */
+            , dongbw                              /* 동이하주소                       */
+            , ohse_telno                          /* 자택전화번호                     */
+            , cus_mpno                            /* 고객휴대전화번호                 */
+            , maco_yn                             /* 출하자조합원여부                 */
+            , rmk_cntn                            /* 비고내용                         */
+            , jrdwo_dsc                           /* 관내외구분                       */
+            , del_yn                              /* 삭제여부                         */
+            , anw_yn                              /* 한우종합등록여부                 */
+            , hdwk_rg_yn                          /* 수작업여부                       */
+            , new_sra_farm_acno                   /* 계좌번호                         */
+            , fsrg_dtm                            /* 최초등록일시                     */
+            , fsrgmn_eno                          /* 최초등록자개인번호               */
+            , lschg_dtm                           /* 최종변경일시                     */
+            , ls_cmeno                            /* 최종변경자개인번호               */
+            , SRA_FED_SPY_YN                      /* 사료사용여부                     */
+        )values(
+              #{ss_na_bzplc}                   /* 경제통합사업장코드               */
+            , nvl(trim(#{FHS_ID_NO}),'')                     /* 농가식별번호                     */
+            , nvl(trim(#{FARM_AMNNO}),'')                    /* 농장관리번호                     */
+            , nvl(trim(#{FARM_ID_NO}),'')                    /* 농장식별번호                     */
+            , nvl(trim(#{NA_TRPL_C}),'')                     /* 출하경제통합거래처코드           */
+            , nvl(trim(#{FTSNM}),'')                         /* 농가명                           */
+            , nvl(trim(#{ZIP}),'')                           /* 우편번호                         */
+            , nvl(trim(#{DONGUP}),'')                        /* 동이상주소                       */
+            , nvl(trim(#{DONGBW}),'')                        /* 동이하주소                       */
+            , nvl(trim(#{OHSE_TELNO}),'')                    /* 자택전화번호                     */
+            , nvl(trim(#{CUS_MPNO}),'')                      /* 고객휴대전화번호                 */
+            , nvl(trim(#{MACO_YN}),'')                       /* 출하자조합원여부                 */
+            , nvl(trim(#{RMK_CNTN}),'')                      /* 비고내용                         */
+            , nvl(trim(#{JRDWO_DSC}),'')                     /* 관내외구분                       */
+            , '0'                              /* 삭제여부                         */
+            , nvl(trim(#{ANW_YN}),'')                        /* 한우종합등록여부                 */
+            , nvl(trim(#{HDWK_RG_YN}),'')                    /* 수작업여부                       */
+            , nvl(trim(#{NEW_SRA_FARM_ACNO}),'')                 /* 계좌번호                         */
+            , SYSDATE                          /* 최초등록일시                     */
+            , #{ss_userid}                     /* 최초등록자개인번호               */
+            , SYSDATE                          /* 최종변경일시                     */
+            , #{ss_userid}                     /* 최종변경자개인번호               */
+            , '0'                              /* 사료사용여부                     */
+        )
+    </insert>    
+    <!-- 1200 -->
+    
+    <!-- 1300 -->
+    <select id="LALM0899_selMca1300Cnt" resultType="_int">
+        select   
+                  count(*)
+            from  tb_la_is_mm_mwmn a
+                 ,tb_la_is_mh_auc_entr b
+            where a.na_bzplc    = #{ss_na_bzplc}
+              and a.na_bzplc    = b.na_bzplc
+              and a.trmn_amnno  = b.trmn_amnno  
+              and b.auc_dt      = #{auc_dt}    
+    </select>
+    
+    <select id="LALM0899_selMca1300" resultType="HashMap">
+		SELECT *
+		  FROM (
+		  SELECT ROWNUM as NO , A.*
+		  FROM (
+				select   
+				          a.na_bzplc            /* 경제통합사업장코드         */
+				        , a.trmn_amnno          /* 중도매인코드               */
+				        , a.mwmn_na_trpl_c      /* 경제통합거래처             */
+				        , a.sra_mwmnnm          /* 중도매인명                 */
+				        , a.frlno               /* 실명번호                   */
+				        , a.zip                 /* 우편번호                   */
+				        , a.dongup              /* 동이상주소                 */
+				        , a.dongbw              /* 동이하주소                 */
+				        , a.ohse_telno          /* 자택전화번호               */
+				        , a.cus_mpno            /* 고객휴대전화번호           */
+				        , a.maco_yn             /* 조합원여부                 */
+				        , a.jrdwo_dsc           /* 관내외구분                 */
+				        , a.psn_inf_ofr_agr_yn  /* 개인정보제공동의           */
+				        , a.tms_yn              /* 전송여부                   */
+				        , a.del_yn              /* 삭제여부                   */
+				        , a.fsrg_dtm            /* 최종등록일시               */
+				        , a.fsrgmn_eno          /* 최초등록자개인번호         */
+				        , a.lschg_dtm           /* 최종변경일시               */
+				        , a.ls_cmeno            /* 최종변경자개인번호         */
+				        , case when LENGTH(Replace(a.cus_rlno,'-','')) >= 13 and (substr(Replace(a.cus_rlno,'-',''),7,1) = 1 or substr(Replace(a.cus_rlno,'-',''),7,1) = 2)
+				               then Replace(substr(a.cus_rlno,1,6),'-','')
+				               else Replace(a.cus_rlno,'-','')
+				          end as cus_rlno
+				    from  tb_la_is_mm_mwmn a
+				         ,tb_la_is_mh_auc_entr b
+				    where a.na_bzplc    = #{ss_na_bzplc}
+				      and a.na_bzplc    = b.na_bzplc
+				      and a.trmn_amnno  = b.trmn_amnno  
+				      and b.auc_dt      = #{auc_dt}
+				    order by a.trmn_amnno
+				    ) A)
+                WHERE NO BETWEEN #{st_pos} AND #{ed_pos}
+    </select>
+    <!-- 1300 -->
+    
+    <!-- 1400 -->
+    <delete id="LALM0899_delMca1400">
+        DELETE FROM TB_LA_IS_MM_INDV
+         WHERE NA_BZPLC        = #{ss_na_bzplc}
+           AND SRA_INDV_AMNNO  = nvl(trim(#{SRA_INDV_AMNNO}),'') 
+           AND SRA_SRS_DSC     = nvl(trim(#{SRA_SRS_DSC}),'') 
+    </delete>
+    
+    <insert id="LALM0899_insMca1400">
+        insert into tb_la_is_mm_indv
+		  (
+		        na_bzplc                                            /* 경제통합사업장코드                  */
+		      , sra_indv_amnno                                      /* 축산개체관리번호                    */
+		      , sra_srs_dsc                                         /* 축산축종구분코드                    */
+		      , fhs_id_no                                           /* 농가식별번호                        */
+		      , farm_amnno                                          /* 농장관리번호                        */
+		      , birth                                               /* 생년월일                            */
+		      , mcow_dsc                                            /* 어미구분코드                        */
+		      , kpn_no                                              /* KPN번호                             */
+		      , indv_sex_c                                          /* 개체성별코드                        */
+		      , mcow_sra_indv_amnno                                 /* 어미소축산개체관리번호              */
+		      , matime                                              /* 산차                                */
+		      , sra_indv_pasg_qcn                                   /* 축산개체계대차수                    */
+		      , indv_id_no                                          /* 개체식별번호                        */
+		      , sra_indv_brdsra_rg_no                               /* 축산개체종축등록번호                */
+		      , rg_dsc                                              /* 등록구분코드                        */
+		      , anw_yn                                              /* 한우종합등록여부                    */
+		      , fsrg_dtm                                            /* 최초등록일시                        */
+		      , fsrgmn_eno                                          /* 최초등록자개인번호                  */
+		      , lschg_dtm                                           /* 최종변경일시                        */
+		      , ls_cmeno                                            /* 최종변경자개인번호                  */
+		  )values(
+		        #{ss_na_bzplc}                                   /* 경제통합사업장코드                  */
+		      , nvl(trim(#{SRA_INDV_AMNNO}),'')                                /* 축산개체관리번호                    */
+		      , nvl(trim(#{SRA_SRS_DSC}),'')                                   /* 축산축종구분코드                    */
+		      , nvl(trim(#{FHS_ID_NO}),'')                                     /* 농가식별번호                        */
+		      , nvl(trim(#{FARM_AMNNO}),'')                                    /* 농장관리번호                        */
+		      , nvl(trim(#{BIRTH}),'')                                         /* 생년월일                            */
+		      , nvl(trim(#{MCOW_DSC}),'')                                      /* 어미구분코드                        */
+		      , nvl(trim(#{KPN_NO}),'')                                        /* KPN번호                             */
+		      , nvl(trim(#{INDV_SEX_C}),'')                                    /* 개체성별코드                        */
+		      , nvl(trim(#{MCOW_SRA_INDV_AMNNO}),'')                           /* 어미소축산개체관리번호              */
+		      , CASE WHEN nvl(trim(#{MATIME}),'') = '' THEN 0
+		             ELSE to_number(nvl(trim(#{MATIME}),''))
+		        END                                              /* 산차                                */
+		      , nvl(trim(#{SRA_INDV_PASG_QCN}),'')                              /* 축산개체계대차수                    */
+		      , nvl(trim(#{INDV_ID_NO}),'')                                     /* 개체식별번호                        */
+		      , nvl(trim(#{SRA_INDV_BRDSRA_RG_NO}),'')                          /* 축산개체종축등록번호                */
+		      , nvl(trim(#{RG_DSC}),'')                                         /* 등록구분코드                        */
+		      , nvl(trim(#{ANW_YN}),'')                                         /* 한우종합등록여부                    */
+		      , SYSDATE                                          /* 최초등록일시                        */
+		      , #{ss_userid}                                     /* 최초등록자개인번호                  */
+		      , SYSDATE                                          /* 최종변경일시                        */
+		      , #{ss_userid}                                     /* 최종변경자개인번호                  */
+		  );
+    </insert>   
+    <!-- 1400 -->
+    
+    <!-- 1500 -->
+    <delete id="LALM0899_delMca1500">
+        delete from tb_la_is_mm_vhc
+         where na_bzplc   = #{ss_na_bzplc}
+           and vhc_shrt_c = nvl(trim(#{VHC_SHRT_C}),'')
+    </delete>
+    
+    <insert id="LALM0899_insMca1500">
+         insert into tb_la_is_mm_vhc
+         (
+               na_bzplc                                     /* 경제통합사업장코드         */
+             , vhc_shrt_c                                   /* 차량단축코드               */
+             , na_trpl_c                                    /* 경제통합거래처코드         */
+             , brwrnm                                       /* 차주명                     */
+             , vhcno                                        /* 차량번호                   */
+             , vhc_dsc                                      /* 차량구분코드               */
+             , vhc_drv_caffnm                               /* 수송자명                   */
+             , adj_na_trpl_c                                /* 정산경제통합거래처코드     */
+             , brwr_telno                                   /* 차주전화번호               */
+             , brwr_mpno                                    /* 차주휴대전화번호           */
+             , drv_caff_telno                               /* 수송자전화번호             */
+             , sra_load_wt                                  /* 축산적재중량               */
+             , sra_vhc_tncn                                 /* 축산차량톤수               */
+             , sra_load_psb_bulk                            /* 축산적재가능용적           */
+             , cartp_c                                      /* 차종코드                   */
+             , lvst_trpt_yn                                 /* 가축수송여부               */
+             , pvep_dt                                      /* 방역일자                   */
+             , edu_cpl_yn                                   /* 교육이수여부               */
+             , del_yn                                       /* 삭제여부                   */
+             , fsrg_dtm                                     /* 최초등록일시               */
+             , fsrgmn_eno                                   /* 최초등록자개인번호         */
+             , lschg_dtm                                    /* 최종변경일시               */
+             , ls_cmeno                                     /* 최종변경자개인번호         */
+         )values(
+               #{ss_na_bzplc}                            /* 경제통합사업장코드         */
+             , nvl(trim(#{VHC_SHRT_C}),'')                             /* 차량단축코드               */
+             , nvl(trim(#{NA_TRPL_C}),'')                              /* 경제통합거래처코드         */
+             , nvl(trim(#{BRWRNM}),'')                                 /* 차주명                     */
+             , nvl(trim(#{VHCNO}),'')                                  /* 차량번호                   */
+             , nvl(trim(#{VHC_DSC}),'')                                /* 차량구분코드               */
+             , nvl(trim(#{VHC_DRV_CAFFNM}),'')                         /* 수송자명                   */
+             , nvl(trim(#{ADJ_NA_TRPL_C}),'')                          /* 정산경제통합거래처코드     */
+             , nvl(trim(#{BRWR_TELNO}),'')                             /* 차주전화번호               */
+             , nvl(trim(#{BRWR_MPNO}),'')                              /* 차주휴대전화번호           */
+             , nvl(trim(#{DRV_CAFF_TELNO}),'')                         /* 수송자전화번호             */
+             , nvl(trim(#{SRA_LOAD_WT}),'')                            /* 축산적재중량               */
+             , nvl(trim(#{SRA_VHC_TNCN}),'')                           /* 축산차량톤수               */
+             , nvl(trim(#{SRA_LOAD_PSB_BULK}),'')                      /* 축산적재가능용적           */
+             , nvl(trim(#{CARTP_C}),'')                                /* 차종코드                   */
+             , nvl(trim(#{LVST_TRPT_YN}),'')                           /* 가축수송여부               */
+             , nvl(trim(#{PVEP_DT}),'')                                /* 방역일자                   */
+             , nvl(trim(#{EDU_CPL_YN}),'')                             /* 교육이수여부               */
+             , nvl(trim(#{DEL_YN}),'')                                 /* 삭제여부                   */
+             , SYSDATE                                   /* 최초등록일시               */
+             , #{ss_userid}                              /* 최초등록자개인번호         */
+             , SYSDATE                                   /* 최종변경일시               */
+             , #{ss_userid}                              /* 최종변경자개인번호         */
+         )
+    </insert>
+    <!-- 1500 -->
+    
+    <!-- 3300 -->
+    <delete id="LALM0899_delMca3300">
+          delete from tb_la_is_mm_kpn
+           where na_bzplc        = #{ss_na_bzplc}
+             and kpn_no          = nvl(trim(#{KPN_NO}),'')
+    </delete>
+    
+    <insert id="LALM0899_insMca3300">
+         insert into tb_la_is_mm_kpn
+         (
+               na_bzplc                                /* 경제통합사업장코드         */
+             , kpn_no                                  /* KPN번호                    */
+             , grd                                     /* 등급                       */
+             , birth                                   /* 생년월일                   */
+             , sra_wgh                                 /* 축산체중                   */
+             , pear_lons_mscl_area                     /* 배최장근면적               */
+             , mcin_grsdr                              /* 근내지방도                 */
+             , rmk_cntn                                /* 비고내용                   */
+             , sra_tr_upr                              /* 축산거래단가               */
+             , fsrg_dtm                                /* 최초등록일시               */
+             , fsrgmn_eno                              /* 최초등록자개인번호         */
+             , lschg_dtm                               /* 최종변경일시               */
+             , ls_cmeno                                /* 최종변경자개인번호         */
+         )values(
+               #{ss_na_bzplc}                       /* 경제통합사업장코드         */
+             , nvl(trim(#{KPN_NO}),'')                            /* KPN번호                    */
+             , nvl(trim(#{GRD}),'')                               /* 등급                       */
+             , nvl(trim(#{BIRTH}),'')                             /* 생년월일                   */
+             , nvl(trim(#{SRA_WGH}),'')                           /* 축산체중                   */
+             , nvl(trim(#{PEAR_LONS_MSCL_AREA}),'')               /* 배최장근면적               */
+             , nvl(trim(#{MCIN_GRSDR}),'')                        /* 근내지방도                 */
+             , nvl(trim(#{RMK_CNTN}),'')                          /* 비고내용                   */
+             , nvl(trim(#{SRA_TR_UPR}),'')                        /* 축산거래단가               */
+             , SYSDATE                              /* 최초등록일시               */
+             , #{ss_userid}                          /* 최초등록자개인번호         */
+             , SYSDATE                              /* 최종변경일시               */
+             , #{ss_userid}                          /* 최종변경자개인번호         */
+         )
+    </insert>
+    <!-- 3300 -->
+    
+    <!-- 1700 -->
+    <update id="LALM0899_delMca1700">
+        delete from tb_la_is_mh_fee
+         where na_bzplc        = #{ss_na_bzplc}
+           and apl_dt          = nvl(trim(#{APL_DT}),'')  
+           and auc_obj_dsc     = nvl(trim(#{AUC_OBJ_DSC}),'')  
+           and fee_rg_sqno     = nvl(trim(#{FEE_RG_SQNO}),'')  
+    </update>
+    
+    <insert id="LALM0899_insMca1700">
+        insert into tb_la_is_mh_fee
+        (
+              na_bzplc                               /* 경제통합사업장코드         */
+            , apl_dt                                 /* 적용일자                   */
+            , auc_obj_dsc                            /* 경매대상구분코드           */
+            , fee_rg_sqno                            /* 수수료등록일련번호         */
+            , na_fee_c                               /* 경제통합수수료코드         */
+            , sra_feenm                              /* 축산수수료명               */
+            , jnlz_bsn_dsc                           /* 분개업무구분코드           */
+            , sra_na_fee_c                           /* 축산경제통합수수료코드     */
+            , fee_apl_obj_c                          /* 수수료적용대상코드         */
+            , am_rto_dsc                             /* 금액비율구분코드           */
+            , sgno_prc_dsc                           /* 단수처리구분코드           */
+            , maco_fee_upr                           /* 조합원수수료단가           */
+            , nmaco_fee_upr                          /* 비조합원수수료단가         */
+            , ans_dsc                                /* 가감구분코드               */
+            , sbid_yn                                /* 낙찰여부                   */
+            , ppgcow_fee_dsc                         /* 번식우수수료구분코드       */
+            , del_yn                                 /* 삭제여부                   */
+            , fsrg_dtm                               /* 최초등록일시               */
+            , fsrgmn_eno                             /* 최초등록자개인번호         */
+            , lschg_dtm                              /* 최종변경일시               */
+            , ls_cmeno                               /* 최종변경자개인번호         */
+        )values
+        (
+              #{ss_na_bzplc}                      /* 경제통합사업장코드         */
+            , nvl(trim(#{APL_DT}),'')                           /* 적용일자                   */
+            , nvl(trim(#{AUC_OBJ_DSC}),'')                      /* 경매대상구분코드           */
+            , nvl(trim(#{FEE_RG_SQNO}),'')                      /* 수수료등록일련번호         */
+            , nvl(trim(#{NA_FEE_C}),'')                         /* 경제통합수수료코드         */
+            , nvl(trim(#{SRA_FEENM}),'')                        /* 축산수수료명               */
+            , nvl(trim(#{JNLZ_BSN_DSC}),'')                     /* 분개업무구분코드           */
+            , nvl(trim(#{SRA_NA_FEE_C}),'')                     /* 축산경제통합수수료코드     */
+            , nvl(trim(#{FEE_APL_OBJ_C}),'')                    /* 수수료적용대상코드         */
+            , nvl(trim(#{AM_RTO_DSC}),'')                       /* 금액비율구분코드           */
+            , nvl(trim(#{SGNO_PRC_DSC}),'')                     /* 단수처리구분코드           */
+            , nvl(trim(#{MACO_FEE_UPR}),'')                     /* 조합원수수료단가           */
+            , nvl(trim(#{NMACO_FEE_UPR}),'')                    /* 비조합원수수료단가         */
+            , nvl(trim(#{ANS_DSC}),'')                          /* 가감구분코드               */
+            , nvl(trim(#{SBID_YN}),'')                          /* 낙찰여부                   */
+            , nvl(trim(#{PPGCOW_FEE_DSC}),'')                   /* 번식우수수료구분코드       */
+            , nvl(trim(#{DEL_YN}),'')                           /* 삭제여부                   */
+            , SYSDATE                             /* 최초등록일시               */
+            , #{ss_userid}                         /* 최초등록자개인번호         */
+            , SYSDATE                             /* 최종변경일시               */
+            , #{ss_userid}                         /* 최종변경자개인번호         */
+        ) 
+    </insert>
+    <!-- 1700 -->
+    
+    <!-- 1800 -->
+    <insert id="LALM0899_insMca1800">
+        insert into tb_la_is_mh_bad_trmn
+        (
+              na_bzplc                            /* 경제통합사업장코드         */
+            , trmn_amnno                          /* 거래인관리번호             */
+            , rg_sqno                             /* 등록일련번호               */
+            , rg_dt                               /* 등록일자                   */
+            , sra_mwmnnm                          /* 축산중도매인명             */
+            , telno                               /* 전화번호                   */
+            , frlno
+            , na_trpl_c                           /* 경제통합거래처코드         */
+            , tr_pmss_yn                          /* 거래허용여부               */
+            , rg_bzplnm                           /* 등록사업장명               */
+            , rgmnm                               /* 등록자명                   */
+            , rgmn_telno                          /* 등록자전화번호             */
+            , acd_rg_rsnctt                       /* 사고등록사유내용           */
+            , fsrg_dtm                            /* 최초등록일시               */
+            , fsrgmn_eno                          /* 최초등록자개인번호         */
+            , lschg_dtm                           /* 최종변경일시               */
+            , ls_cmeno                            /* 최종변경자개인번호         */
+        ) values
+        (
+              #{ss_na_bzplc}                   /* 경제통합사업장코드         */
+            , nvl(trim(#{TRMN_AMNNO}),'')                      /* 거래인관리번호             */
+            , nvl(trim(#{RG_SQNO}),'')                         /* 등록일련번호               */
+            , nvl(trim(#{RG_DT}),'')                           /* 등록일자                   */
+            , nvl(trim(#{SRA_MWMNNM}),'')                      /* 축산중도매인명             */
+            , nvl(trim(#{TELNO}),'')                           /* 전화번호                   */
+            , nvl(trim(#{FRLNO}),'')  
+            , nvl(trim(#{NA_TRPL_C}),'')                       /* 경제통합거래처코드         */
+            , nvl(trim(#{TR_PMSS_YN}),'')                      /* 거래허용여부               */
+            , nvl(trim(#{RG_BZPLNM}),'')                         /* 등록사업장명               */
+            , nvl(trim(#{RGMNM}),'')                           /* 등록자명                   */
+            , nvl(trim(#{RGMN_TELNO}),'')                      /* 등록자전화번호             */
+            , nvl(trim(#{ACD_RG_RSNCTT}),'')                   /* 사고등록사유내용           */
+            , SYSDATE                          /* 최초등록일시               */
+            , #{ss_userid}                      /* 최초등록자개인번호         */
+            , SYSDATE                          /* 최종변경일시               */
+            , #{ss_userid}                      /* 최종변경자개인번호         */
+        )
+    </insert>
+    <!-- 1800 -->
+    
+    <!-- 3400 -->
+    <delete id="LALM0899_delMca3400">
+        delete from tb_la_is_mm_trpl
+         where na_bzplc              = #{ss_na_bzplc}
+           and lvst_mkt_trpl_dsc     = nvl(trim(#{LVST_MKT_TRPL_DSC}),'')
+           and lvst_mkt_trpl_amnno   = nvl(trim(#{LVST_MKT_TRPL_AMNNO}),'')
+    </delete>
+    
+    <insert id="LALM0899_insMca3400">
+        insert into tb_la_is_mm_trpl
+        (
+              na_bzplc                                /* 경제통합사업장코드         */
+            , lvst_mkt_trpl_dsc                       /* 가축시장거래처구분코드     */
+            , lvst_mkt_trpl_amnno                     /* 가축시장거래처관리번호     */
+            , na_trpl_c                               /* 경제통합거래처코드         */
+            , brkr_name                               /* 중개인성명                 */
+            , zip                                     /* 우편번호                   */
+            , dongup                                  /* 동이상주소                 */
+            , dongbw                                  /* 동이하주소                 */
+            , ohse_telno                              /* 자택전화번호               */
+            , cus_mpno                                /* 고객휴대전화번호           */
+            , pr_rkon_cm_alw                          /* 가격산정위원수당           */
+            , del_yn                                  /* 삭제여부                   */
+            , fsrg_dtm                                /* 최초등록일시               */
+            , fsrgmn_eno                              /* 최초등록자개인번호         */
+            , lschg_dtm                               /* 최종변경일시               */
+            , ls_cmeno                                /* 최종변경자개인번호         */
+        ) values
+        (
+              #{ss_na_bzplc}                       /* 경제통합사업장코드         */
+            , nvl(trim(#{LVST_MKT_TRPL_DSC}),'')                 /* 가축시장거래처구분코드     */
+            , nvl(trim(#{LVST_MKT_TRPL_AMNNO}),'')               /* 가축시장거래처관리번호     */
+            , nvl(trim(#{NA_TRPL_C}),'')                         /* 경제통합거래처코드         */
+            , nvl(trim(#{BRKR_NAME}),'')                         /* 중개인성명                 */
+            , nvl(trim(#{ZIP}),'')                               /* 우편번호                   */
+            , nvl(trim(#{DONGUP}),'')                            /* 동이상주소                 */
+            , nvl(trim(#{DONGBW}),'')                            /* 동이하주소                 */
+            , nvl(trim(#{OHSE_TELNO}),'')                        /* 자택전화번호               */
+            , nvl(trim(#{CUS_MPNO}),'')                          /* 고객휴대전화번호           */
+            , nvl(trim(#{PR_RKON_CM_ALW}),'')                    /* 가격산정위원수당           */
+            , nvl(trim(#{DEL_YN}),'')                            /* 삭제여부                   */
+            , SYSDATE                              /* 최초등록일시               */
+            , #{ss_userid}                          /* 최초등록자개인번호         */
+            , SYSDATE                              /* 최종변경일시               */
+            , #{ss_userid}                          /* 최종변경자개인번호         */
+        )
+    </insert>
+    <!-- 3400 -->
+    
+    
+    <select id="LALM0899_selMca1600" resultType="HashMap">
+    SELECT *
+    FROM (
+	    SELECT ROWNUM as NO, A.*
+	    FROM (
+		    SELECT 
+				 NA_BZPLC
+				,AUC_OBJ_DSC
+				,AUC_DT
+				,TO_CHAR(OSLP_NO) AS OSLP_NO
+				,TO_CHAR(LED_SQNO) AS LED_SQNO
+				,TO_CHAR(FHS_ID_NO) AS FHS_ID_NO
+	            ,TO_CHAR(FARM_AMNNO) AS FARM_AMNNO
+				,SOG_NA_TRPL_C
+				,VHC_SHRT_C
+				,RC_DT
+				,TO_CHAR(TRMN_AMNNO) AS TRMN_AMNNO
+				,TO_CHAR(LVST_AUC_PTC_MN_NO) AS LVST_AUC_PTC_MN_NO
+				,SRA_SRS_DSC
+				,TO_CHAR(SRA_INDV_AMNNO) AS SRA_INDV_AMNNO
+				,TO_CHAR(COW_SOG_WT) AS COW_SOG_WT
+				,TO_CHAR(FIR_LOWS_SBID_LMT_AM) AS FIR_LOWS_SBID_LMT_AM
+				,TO_CHAR(LOWS_SBID_LMT_AM) AS LOWS_SBID_LMT_AM
+				,TO_CHAR(SRA_SBID_UPR) AS SRA_SBID_UPR
+				,TO_CHAR(SRA_SBID_AM) AS SRA_SBID_AM
+				,TO_CHAR(SEL_STS_DSC) AS SEL_STS_DSC
+				,TO_CHAR(BRCL_ISP_CTFW_SMT_YN) AS BRCL_ISP_CTFW_SMT_YN
+				,TO_CHAR(BRCL_ISP_DT) AS BRCL_ISP_DT
+				,TO_CHAR(LWPR_CHG_NT) AS LWPR_CHG_NT
+				,TO_CHAR(VACN_DT) AS VACN_DT
+				,TO_CHAR(LVST_MKT_TRPL_AMNNO) AS LVST_MKT_TRPL_AMNNO
+				,MT12_OVR_YN
+				,PPGCOW_FEE_DSC
+				,PRNY_JUG_YN
+				,PRNY_YN
+				,NCSS_JUG_YN
+				,NCSS_YN
+				,TRPCS_PY_YN
+				,TO_CHAR(SRA_TRPCS) AS SRA_TRPCS
+				,TO_CHAR(SRA_PYIVA) AS SRA_PYIVA
+				,TO_CHAR(SRA_FED_SPY_AM) AS SRA_FED_SPY_AM
+				,TO_CHAR(TD_RC_CST) AS TD_RC_CST
+				,TO_CHAR(MT12_OVR_FEE) AS MT12_OVR_FEE
+				,AFISM_MOD_DT
+				,TO_CHAR(PRNY_MTCN) AS PRNY_MTCN
+				,AFISM_MOD_CTFW_SMT_YN
+				,RMHN_YN
+				,SRA_PDMNM
+				,SRA_PD_RGNNM
+				,RMK_CNTN
+				,TO_CHAR(AUC_PRG_SQ) AS AUC_PRG_SQ
+				,'' AS NA_CRC_CAN_DSC
+				,TO_CHAR(DEL_YN) AS SOGMN_RMT_DRUP_YN
+				,TO_CHAR(TMS_YN) AS BF_SOGMN_RMT_DRUP_YN
+				,SOGMN_C  
+				,TO_CHAR(FSRG_DTM, 'YYYYMMDDHH24MISS') AS FSRG_DTM
+				,FSRGMN_ENO
+				,TO_CHAR(LSCHG_DTM, 'YYYYMMDDHH24MISS') AS LSCHG_DTM
+				,LS_CMENO
+			FROM TB_LA_IS_MH_SOG_COW
+		   WHERE NA_BZPLC = #{ss_na_bzplc}
+		     AND AUC_OBJ_DSC in ('1', '2', '3')
+		     AND AUC_DT = #{auc_dt}
+		   ORDER BY oslp_no
+		   ) A)
+		WHERE NO BETWEEN #{st_pos} AND #{ed_pos} 
+    </select>
+    
+    <!-- 1900 -->
+    <select id="LALM0899_selMca1900Cnt" resultType="_int">
+        select count(*)
+          from (
+        select
+             a.na_bzplc,a.auc_obj_dsc,a.auc_dt,a.qcn,a.base_lmt_am,a.cut_am,a.sgno_prc_dsc,a.ddl_yn,a.tms_yn,a.del_yn,a.fsrg_dtm,a.fsrgmn_eno,a.lschg_dtm,a.ls_cmeno
+        from  tb_la_is_mh_auc_qcn a
+               ,tb_la_is_mh_sog_cow b
+        where a.na_bzplc    = #{ss_na_bzplc}
+          and a.auc_dt      = #{auc_dt}
+          and a.auc_dt      =   b.auc_dt
+          and a.na_bzplc    =  b.na_bzplc
+          and b.sel_sts_dsc  != '11'
+          and b.lows_sbid_lmt_AM > 0
+          group by
+          a.na_bzplc,a.auc_obj_dsc,a.auc_dt,a.qcn,a.base_lmt_am,a.cut_am,a.sgno_prc_dsc,a.ddl_yn,a.tms_yn,a.del_yn,a.fsrg_dtm,a.fsrgmn_eno,a.lschg_dtm,a.ls_cmeno
+          )
+    </select>
+    
+    <select id="LALM0899_selMca1900" resultType="HashMap">
+        SELECT *
+          FROM (
+          SELECT ROWNUM as NO , A.*
+          FROM (
+	    select
+	         TO_CHAR(a.na_bzplc)            as na_bzplc    /*경제통합사업장코드*/
+			,TO_CHAR(a.auc_obj_dsc)         as auc_obj_dsc /*경매대상구분코드*/
+			,TO_CHAR(a.auc_dt)              as auc_dt      /*경매일자*/
+			,TO_CHAR(a.qcn)                 as qcn         /*차수*/
+			,TO_CHAR(a.base_lmt_am)         as base_lmt_am /*기초한도금액*/
+			,TO_CHAR(a.cut_am)              as cut_am      /*절사단위금액(비육우)*/
+			,TO_CHAR(a.sgno_prc_dsc)        as sgno_prc_dsc  /*절사구분(비육우)*/
+			,TO_CHAR(a.ddl_yn)              as ddl_yn        /*마감여부*/
+			,TO_CHAR(a.tms_yn)              as tms_yn        /*전송여부*/
+			,TO_CHAR(a.del_yn)              as del_yn        /*삭제여부*/
+			,TO_CHAR(a.fsrg_dtm, 'YYYYMMDDHH24MISS') as fsrg_dtm     /*최종등록일시*/
+			,TO_CHAR(a.fsrgmn_eno)                   as fsrgmn_eno   /*최초등록자개인번호*/
+			,TO_CHAR(a.lschg_dtm, 'YYYYMMDDHH24MISS') as lschg_dtm        /*최종변경일시*/
+			,TO_CHAR(a.ls_cmeno)                      as ls_cmeno          /*최종변경자개인번호*/
+			,TO_CHAR(count(b.sra_indv_amnno)) as tt_scr
+	    from  tb_la_is_mh_auc_qcn a
+	           ,tb_la_is_mh_sog_cow b
+	    where a.na_bzplc    = #{ss_na_bzplc}
+	      and a.auc_dt      = #{auc_dt}
+	      and a.auc_dt      =   b.auc_dt
+	      and a.na_bzplc    =  b.na_bzplc
+	      and b.sel_sts_dsc  != '11'
+	      and b.lows_sbid_lmt_AM > 0
+	      group by
+	      a.na_bzplc,a.auc_obj_dsc,a.auc_dt,a.qcn,a.base_lmt_am,a.cut_am,a.sgno_prc_dsc,a.ddl_yn,a.tms_yn,a.del_yn,a.fsrg_dtm,a.fsrgmn_eno,a.lschg_dtm,a.ls_cmeno
+	    ) A)
+        WHERE NO BETWEEN #{st_pos} AND #{ed_pos}     
+    </select>
+    <!-- 1900 -->
+    
+    <!-- 2000 -->
+    <select id="LALM0899_selMca2000Cnt" resultType="_int">
+        select
+              count(*)
+        from  tb_la_is_mh_mwmn_adj
+        where na_bzplc   = #{ss_na_bzplc}
+          and auc_dt     = #{auc_dt}
+    
+    </select>
+    
+    <select id="LALM0899_selMca2000" resultType="HashMap">
+        SELECT *
+          FROM (
+          SELECT ROWNUM as NO , A.*
+          FROM (
+          select
+	              TO_CHAR(na_bzplc) as na_bzplc                       /* 경제통합사업장코드    */
+				, TO_CHAR(trmn_amnno) as trmn_amnno                   /* 거래인관리번호        */
+				, TO_CHAR(auc_obj_dsc) as auc_obj_dsc                 /* 경매대상구분          */
+				, TO_CHAR(auc_dt) as auc_dt                           /* 경매일자              */
+				, TO_CHAR(rv_sqno) as rv_sqno                         /* 입금일련번호          */
+				, TO_CHAR(rv_dt) as rv_dt                             /* 입금일자              */
+				, TO_CHAR(sra_rv_tpc) as sra_rv_tpc                   /* 축산입금종류구분코드  */
+				, TO_CHAR(sra_rv_am) as sra_rv_am                     /* 축산입금금액          */
+				, TO_CHAR(rmk_cntn) as rmk_cntn                       /* 비고내용              */
+				, TO_CHAR(tms_yn) as tms_yn                           /* 전송여부              */
+				, TO_CHAR(del_yn) as del_yn                           /* 삭제여부              */
+				, TO_CHAR(fsrg_dtm, 'YYYYMMDDHH24MISS') as fsrg_dtm   /* 최초등록일시          */
+				, TO_CHAR(fsrgmn_eno) as fsrgmn_eno                   /* 최초등록자개인번호    */
+				, TO_CHAR(lschg_dtm, 'YYYYMMDDHH24MISS') as lschg_dtm /* 최종변경일시          */
+				, TO_CHAR(ls_cmeno) as ls_cmeno                       /* 최종변경자개인번호    */
+	    from   tb_la_is_mh_mwmn_adj
+	    where na_bzplc   = #{ss_na_bzplc}
+	      and auc_dt     = #{auc_dt}
+        order by trmn_amnno,auc_dt,auc_obj_dsc, rv_sqno  
+        ) A)
+        WHERE NO BETWEEN #{st_pos} AND #{ed_pos} 
+    </select>
+    <!-- 2000 -->
+    
+    <!-- 2100 -->
+    <select id="LALM0899_selMca2100Cnt" resultType="_int">
+        select
+                  count(*)
+        from  tb_la_is_mh_atdr_log
+        where na_bzplc    = #{ss_na_bzplc}
+          and auc_obj_dsc = case when #{auc_obj_dsc} = '0' then auc_obj_dsc else #{auc_obj_dsc} end
+          and auc_dt      = #{auc_dt}
+    </select>
+    
+    <select id="LALM0899_selMca2100" resultType="HashMap">
+        SELECT *
+          FROM (
+          SELECT ROWNUM as NO , A.*
+          FROM (
+			    select
+			              TO_CHAR(na_bzplc)                        as na_bzplc               /* 경제통합사업장코드  */
+				        , TO_CHAR(auc_obj_dsc)                     as auc_obj_dsc            /* 경매대상구분코드    */
+				        , TO_CHAR(auc_dt)                          as auc_dt                 /* 경매일자            */
+				        , TO_CHAR(oslp_no)                         as oslp_no                /* 원표번호            */
+				        , TO_CHAR(rg_sqno)                         as rg_sqno                /* 등록일련번호        */
+				        , TO_CHAR(trmn_amnno)                      as trmn_amnno             /* 거래인관리번호      */
+				        , TO_CHAR(lvst_auc_ptc_mn_no)              as lvst_auc_ptc_mn_no     /* 가축경매참여자번호  */
+				        , TO_CHAR(atdr_am)                         as atdr_am                /* 응찰금액            */
+				        , TO_CHAR(rmk_cntn)                        as rmk_cntn               /* 비고내용            */
+				        , TO_CHAR(atdr_dtm, 'YYYYMMDDHH24MISS') as atdr_dtm               /* 응찰일시            */
+				        , TO_CHAR(mmo_inp_yn)                      as mmo_inp_yn             /* 수기입력여부        */
+			    from  tb_la_is_mh_atdr_log
+			    where na_bzplc    = #{ss_na_bzplc}
+			      and auc_obj_dsc = case when #{auc_obj_dsc} = '0' then auc_obj_dsc else #{auc_obj_dsc} end
+			      and auc_dt      = #{auc_dt}
+			      order by auc_dt
+        ) A)
+        WHERE NO BETWEEN #{st_pos} AND #{ed_pos} 
+    </select>
+    <!-- 2100 -->
+    
+    <!-- 2700 -->
+    <select id="LALM0899_selMca2700Cnt" resultType="_int">
+	     select
+	            count(*)
+	        from  tb_la_is_mh_auc_entr
+	        where na_bzplc    = #{ss_na_bzplc}
+	          and auc_dt      = #{auc_dt}
+    </select>
+    
+    <select id="LALM0899_selMca2700" resultType="HashMap">
+        SELECT *
+          FROM (
+          SELECT ROWNUM as NO , A.*
+          FROM (
+        select
+		      TO_CHAR(na_bzplc) as  na_bzplc                      /* 경제통합사업장코드         */
+			, TO_CHAR(auc_dt) as  auc_dt                          /* 경매일자                   */
+			, TO_CHAR(auc_obj_dsc) as  auc_obj_dsc                /* 경매대상구분코드           */
+			, TO_CHAR(lvst_auc_ptc_mn_no) as  lvst_auc_ptc_mn_no  /* 가축경매참여자번호         */
+			, TO_CHAR(trmn_amnno) as  trmn_amnno                  /* 거래인관리번호             */
+			, TO_CHAR(tr_dfn_yn) as  tr_dfn_yn                    /* 거래확정여부               */
+			, TO_CHAR(auc_entr_grn_am) as  auc_entr_grn_am        /* 경매참가보증금액           */
+			, TO_CHAR(rtrn_yn) as  rtrn_yn                        /* 반납여부                   */
+			, TO_CHAR(del_yn) as  del_yn                          /* 삭제여부                   */
+		from  tb_la_is_mh_auc_entr
+		where na_bzplc    = #{ss_na_bzplc}
+		  and auc_dt      = #{auc_dt}
+	    order by auc_dt, auc_obj_dsc, lvst_auc_ptc_mn_no
+        ) A)
+        WHERE NO BETWEEN #{st_pos} AND #{ed_pos} 
+    </select>
+    <!-- 2700 -->
+    
+    
+    <insert id="LALM0899_insMca3100">
+            MERGE INTO TB_LA_IS_MM_SMS A
+            USING DUAL ON(A.NA_BZPLC      = #{SS_NA_BZPLC}               AND 
+                          A.SMS_FWDG_DT   = TO_CHAR(SYSDATE, 'YYYYMMDD') AND
+                          A.SMS_FWDG_SQNO = #{SMS_FWDG_SQNO}             AND
+                          A.AUC_OBJ_DSC   = #{AUC_OBJ_DSC}               AND 
+                          A.TRMN_AMNNO    = trim(#{TRMN_AMNNO}))
+             WHEN MATCHED THEN
+                  UPDATE SET TMS_CN    = (SELECT MAX(TMS_CN) + 1 FROM TB_LA_IS_MM_SMS B WHERE B.NA_BZPLC      = #{SS_NA_BZPLC}               AND 
+															                                  B.SMS_FWDG_DT   = TO_CHAR(SYSDATE, 'YYYYMMDD') AND
+															                                  B.SMS_FWDG_SQNO = #{SMS_FWDG_SQNO}             AND
+															                                  B.AUC_OBJ_DSC   = #{AUC_OBJ_DSC}               AND 
+															                                  B.TRMN_AMNNO    = trim(#{TRMN_AMNNO})),
+                             LSCHG_DTM = SYSDATE,
+                             LS_CMENO  = #{SS_USERID}
+            WHEN NOT MATCHED THEN
+            INSERT (
+		            NA_BZPLC,
+		            SMS_FWDG_DT,
+		            SMS_FWDG_SQNO,
+		            AUC_OBJ_DSC,
+		            TRMN_AMNNO,
+		            DPAMN_DSC,
+		            SEL_STS_DSC,
+		            RMS_MN_NAME,
+		            SMS_RMS_MPNO,
+		            IO_TRMSNM,
+		            SMS_TRMS_TELNO,
+		            SMS_FWDG_CNTN,
+		            TMS_YN,
+		            TMS_CN,
+		            FSRG_DTM,
+		            FSRGMN_ENO,
+		            LSCHG_DTM,
+		            LS_CMENO
+		            )
+			VALUES(
+			        #{NA_BZPLC},
+			        TO_CHAR(SYSDATE, 'YYYYMMDD'),
+			        (SELECT NVL(MAX(SMS_FWDG_SQNO),0) + 1 FROM TB_LA_IS_MM_SMS),
+			        #{AUC_OBJ_DSC},
+                    trim(#{TRMN_AMNNO}),
+			        #{DPAMN_DSC},
+			        #{SEL_STS_DSC},
+			        #{RMS_MN_NAME},
+			        #{SMS_RMS_MPNO},
+			        #{IO_TRMSNM},
+			        #{SMS_TRMS_TELNO},
+			        #{MSG_CNTN},
+			        #{TMS_YN},
+			        1,
+			        SYSDATE,
+			        #{SS_USERID},
+			        SYSDATE,
+			        #{SS_USERID}
+			)
+    </insert>
+    
+    
+    <select id="LALM0899_selMca3100_101" resultType="HashMap">
+        select
+               a.na_bzplc
+		     , replace(a.cus_mpno,'-','')     as cus_mpno          /* 고객휴대폰   */
+		     , a.sra_mwmnnm || '님'  as usrnm                      /* 응찰자명     */
+		     , b.na_bzplnm || substr(c.auc_dt,5,2) || '월'
+		                    || substr(c.auc_dt,7,2) || '일'
+		                    || ' 경매시장예정'
+		                    || (SELECT '(' || LISTAGG(auc_obj_dsc,',') WITHIN GROUP (ORDER BY auc_obj_dsc) || ')' AS msg
+		                        FROM(
+		                        select case when auc_obj_dsc = '1' then '송아지'
+		                                    when auc_obj_dsc = '2' then '비육우'
+		                                    else '번식우'
+		                               end as auc_obj_dsc
+		                          from tb_la_is_mh_sog_cow
+		                         where na_bzplc = #{ss_na_bzplc}                    /* 경제통합사업장코드          */
+		                           and auc_dt   = #{auc_dt}
+		                           and auc_obj_dsc = case when #{auc_obj_dsc} = '1' then '1'
+		                                                  when #{auc_obj_dsc} = '2' then '2'
+		                                                  when #{auc_obj_dsc} = '3' then '3'
+		                                                  else auc_obj_dsc
+		                                             end
+		                                group by auc_obj_dsc
+		                        ))
+		                    || '총'  || TO_CHAR(c.tot_cnt) || '두'
+		                    || '(암' || TO_CHAR(c.am) || ','
+		                    || '수'  || TO_CHAR(c.su) || ') 입니다.'
+		                         as msg_cntn          /* 메세지내용   */
+               , D.TMS_YN
+               , D.SMS_FWDG_DT
+               , #{auc_obj_dsc} AS AUC_OBJ_DSC
+               , A.TRMN_AMNNO
+               , A.SRA_MWMNNM    AS RMS_MN_NAME    /* 수신자명         */
+               , A.CUS_MPNO      AS SMS_RMS_MPNO   /* 수신자전화번호   */
+               , B.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
+               , B.TELNO         AS SMS_TRMS_TELNO /* 발신자전화번호   */
+		    from tb_la_is_mm_mwmn    a
+		       , tb_la_is_mm_wmc     b
+		       , (select
+		                a.na_bzplc
+		              , a.auc_dt
+		              , count(a.auc_dt)                                                      as tot_cnt
+		              , sum(case when b.indv_sex_c     in ('1', '4', '6') then 1 else 0 end) as am
+		              , sum(case when b.indv_sex_c not in ('1', '4', '6') then 1 else 0 end) as su
+		
+		          from tb_la_is_mh_sog_cow a
+		             , tb_la_is_mm_indv    b
+		          where  a.na_bzplc            = #{ss_na_bzplc}
+		            and  a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
+		                                              when #{auc_obj_dsc} = '2' then '2'
+		                                              when #{auc_obj_dsc} = '3' then '3'
+		                                              else a.auc_obj_dsc
+		                                              end
+		            and  a.auc_dt              = #{auc_dt}
+		            and  a.del_yn              = '0'
+		            and  a.na_bzplc            = b.na_bzplc
+		            and  a.sra_indv_amnno      = b.sra_indv_amnno
+		            and  a.sra_srs_dsc         = b.sra_srs_dsc
+		          group by a.na_bzplc, a.auc_dt
+		         ) c		         
+              , tb_la_is_mm_sms d
+		    where  a.na_bzplc            = #{ss_na_bzplc}
+		      and  a.del_yn              = '0'
+		      and  a.na_bzplc            = b.na_bzplc
+		      and  a.na_bzplc            = c.na_bzplc
+			  and  a.na_bzplc            = d.na_bzplc(+)
+			  and  a.trmn_amnno          = d.trmn_amnno(+)
+			  and  d.auc_obj_dsc(+)      = #{auc_obj_dsc}
+              and  d.dpamn_dsc(+)        = '1'
+              and  d.sel_sts_dsc(+)      = '01'
+		    order by a.trmn_amnno
+    </select>
+    
+    <select id="LALM0899_selMca3100_102" resultType="HashMap">
+        select
+              a.na_bzplc
+		    , replace(a.cus_mpno,'-','')     as cus_mpno          /* 고객휴대폰   */
+		    , a.sra_mwmnnm || '님'   as usrnm              /* 응찰자명     */
+		    , b.na_bzplnm || ' '
+		                  || SUBSTR(c.auc_dt,5,2) || '월'
+		                  || SUBSTR(c.auc_dt,7,2) || '일'
+		                  || ' 경매집계'
+		                  || (SELECT '(' || LISTAGG(auc_obj_dsc,',') WITHIN GROUP (ORDER BY auc_obj_dsc) || ')' AS msg
+		                        FROM(
+		                        select case when auc_obj_dsc = '1' then '송아지'
+		                                    when auc_obj_dsc = '2' then '비육우'
+		                                    else '번식우'
+		                               end as auc_obj_dsc
+		                          from tb_la_is_mh_sog_cow
+		                         where na_bzplc = #{ss_na_bzplc}                    /* 경제통합사업장코드          */
+		                           and auc_dt   = #{auc_dt}
+		                           and auc_obj_dsc = case when #{auc_obj_dsc} = '1' then '1'
+		                                                  when #{auc_obj_dsc} = '2' then '2'
+		                                                  when #{auc_obj_dsc} = '3' then '3'
+		                                                  else auc_obj_dsc
+		                                             end
+		                                group by auc_obj_dsc
+		                        ))
+		                  || '총' || TO_CHAR(c.tot_cnt) || '두'
+		                  || '(암' || TO_CHAR(c.am) || '두.평균'
+		                  || case when c.am > 0 then TO_CHAR(ROUND(TO_NUMBER(c.am_amt / c.am / 10000)))
+		                         else '0'
+		                    end
+		                  || '만,수' || TO_CHAR(c.su) || '두.평균'
+		                  || case when c.su > 0 then TO_CHAR(ROUND(TO_NUMBER(c.su_amt / c.su / 10000))) || '만) 입니다.'
+		                         else '0' || '만) 입니다.'
+		                    end
+		                     as msg_cntn          /* 메세지내용   */
+               , D.TMS_YN
+               , D.SMS_FWDG_DT
+               , #{auc_obj_dsc} AS AUC_OBJ_DSC
+               , A.TRMN_AMNNO
+               , A.SRA_MWMNNM    AS RMS_MN_NAME    /* 수신자명         */
+               , A.CUS_MPNO      AS SMS_RMS_MPNO   /* 수신자전화번호   */
+               , B.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
+               , B.TELNO         AS SMS_TRMS_TELNO /* 발신자전화번호   */
+		from tb_la_is_mm_mwmn    a
+		   , tb_la_is_mm_wmc     b
+		   , (select
+		            a.na_bzplc
+		          , a.auc_dt
+		          , count(a.auc_dt)                                                                 as tot_cnt
+		          , sum(case when b.indv_sex_c     in ('1', '4', '6') then 1 else 0 end)             as am
+		          , sum(case when b.indv_sex_c     in ('1', '4', '6') then a.sra_sbid_am else 0 end) as am_amt
+		          , sum(case when b.indv_sex_c not in ('1', '4', '6') then 1 else 0 end)             as su
+		          , sum(case when b.indv_sex_c not in ('1', '4', '6') then a.sra_sbid_am else 0 end) as su_amt
+		      from tb_la_is_mh_sog_cow a
+		         , tb_la_is_mm_indv    b
+		      where  a.na_bzplc            = #{ss_na_bzplc}
+		        and  a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
+		                                          when #{auc_obj_dsc} = '2' then '2'
+		                                          when #{auc_obj_dsc} = '3' then '3'
+		                                          else a.auc_obj_dsc
+		                                     end
+		        and  a.auc_dt              = #{auc_dt}
+		        and  a.sel_sts_dsc         = '22'
+		        and  a.del_yn              = '0'
+		        and  a.na_bzplc            = b.na_bzplc
+		        and  a.sra_indv_amnno      = b.sra_indv_amnno
+		        and  a.sra_srs_dsc         = b.sra_srs_dsc
+		      group by a.na_bzplc, a.auc_dt
+		     ) c 
+          , tb_la_is_mm_sms d 
+		where  a.na_bzplc            = #{ss_na_bzplc}
+		  and  a.del_yn              = '0'
+		  and  a.na_bzplc            = b.na_bzplc
+		  and  a.na_bzplc            = c.na_bzplc
+          and  a.na_bzplc            = d.na_bzplc(+)
+          and  a.trmn_amnno          = d.trmn_amnno(+)
+          and  d.auc_obj_dsc(+)      = #{auc_obj_dsc}
+          and  d.dpamn_dsc(+)        = '1'
+          and  d.sel_sts_dsc(+)      = '02'
+		order by a.trmn_amnno
+    </select>
+    
+    <select id="LALM0899_selMca3100_103" resultType="HashMap">
+          select
+              a.na_bzplc
+            , replace(a.cus_mpno,'-','')     as cus_mpno          /* 고객휴대폰   */
+            , a.sra_mwmnnm || '님'   as usrnm              /* 응찰자명     */
+	        , b.na_bzplnm || ' '
+	                      || substr(c.auc_dt,5,2) || '월'
+	                      || substr(c.auc_dt,7,2) || '일'
+	                      || ' 경매집계'
+	                      || (SELECT '(' || LISTAGG(auc_obj_dsc,',') WITHIN GROUP (ORDER BY auc_obj_dsc) || ')' AS msg
+                                FROM(
+                                select case when auc_obj_dsc = '1' then '송아지'
+                                            when auc_obj_dsc = '2' then '비육우'
+                                            else '번식우'
+                                       end as auc_obj_dsc
+                                  from tb_la_is_mh_sog_cow
+                                 where na_bzplc = #{ss_na_bzplc}                    /* 경제통합사업장코드          */
+                                   and auc_dt   = #{auc_dt}
+                                   and auc_obj_dsc = case when #{auc_obj_dsc} = '1' then '1'
+                                                          when #{auc_obj_dsc} = '2' then '2'
+                                                          when #{auc_obj_dsc} = '3' then '3'
+                                                          else auc_obj_dsc
+                                                     end
+                                        group by auc_obj_dsc
+                                ))
+	                      || '암(최저' || TO_CHAR(ROUND(TO_NUMBER(c.am_min / 10000))) || '만.최고'
+	                      || TO_CHAR(TO_NUMBER(c.am_max / 10000)) || '만)'
+	                      || '수(최저' || TO_CHAR(ROUND(TO_NUMBER(d.su_min / 10000))) || '만.최고'
+	                      || TO_CHAR(TO_NUMBER(d.su_max / 10000)) || '만) 입니다.'
+	                         as msg_cntn          /* 메세지내용   */
+               , E.TMS_YN
+               , E.SMS_FWDG_DT
+               , #{auc_obj_dsc} AS AUC_OBJ_DSC
+               , A.TRMN_AMNNO
+               , A.SRA_MWMNNM    AS RMS_MN_NAME    /* 수신자명         */
+               , A.CUS_MPNO      AS SMS_RMS_MPNO   /* 수신자전화번호   */
+               , B.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
+               , B.TELNO         AS SMS_TRMS_TELNO /* 발신자전화번호   */
+	    from tb_la_is_mm_mwmn    a
+	       , tb_la_is_mm_wmc     b
+	       , (select
+	                a.na_bzplc
+	              , a.auc_dt
+	              , min(a.sra_sbid_am) as am_min
+	              , max(a.sra_sbid_am) as am_max
+	          from tb_la_is_mh_sog_cow a
+	             , tb_la_is_mm_indv    b
+	          where  a.na_bzplc            = #{ss_na_bzplc}
+	            and  a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
+	                                              when #{auc_obj_dsc} = '2' then '2'
+	                                              when #{auc_obj_dsc} = '3' then '3'
+	                                              else a.auc_obj_dsc
+	                                         end
+	            and  a.auc_dt              = #{auc_dt}
+	            and  a.sel_sts_dsc         = '22'
+	            and  a.del_yn              = '0'
+	            and  a.na_bzplc            = b.na_bzplc
+	            and  a.sra_indv_amnno      = b.sra_indv_amnno
+	            and  a.sra_srs_dsc         = b.sra_srs_dsc
+	            and  b.indv_sex_c          in ('1', '4', '6')
+	          group by a.na_bzplc, a.auc_dt
+	         ) c
+	       , (select
+	                a.na_bzplc
+	              , a.auc_dt
+	              , min(a.sra_sbid_am) as su_min
+	              , max(a.sra_sbid_am) as su_max
+	          from tb_la_is_mh_sog_cow a
+	             , tb_la_is_mm_indv    b
+	          where  a.na_bzplc            = #{ss_na_bzplc}
+	            and  a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
+	                                              when #{auc_obj_dsc} = '2' then '2'
+	                                              when #{auc_obj_dsc} = '3' then '3'
+	                                              else a.auc_obj_dsc
+	                                         end
+	            and  a.auc_dt              = #{auc_dt}
+	            and  a.sel_sts_dsc         = '22'
+	            and  a.del_yn              = '0'
+	            and  a.na_bzplc            = b.na_bzplc
+	            and  a.sra_indv_amnno      = b.sra_indv_amnno
+	            and  a.sra_srs_dsc         = b.sra_srs_dsc
+	            and  b.indv_sex_c         not in ('1', '4', '6')
+	          group by a.na_bzplc, a.auc_dt
+	         ) d
+          , tb_la_is_mm_sms e
+	    where  a.na_bzplc            = #{ss_na_bzplc}
+	      and  a.del_yn              = '0'
+	      and  a.na_bzplc            = b.na_bzplc
+          and  a.na_bzplc            = e.na_bzplc(+)
+          and  a.trmn_amnno          = e.trmn_amnno(+)
+          and  e.auc_obj_dsc(+)      = #{auc_obj_dsc}
+          and  e.dpamn_dsc(+)        = '1'
+          and  e.sel_sts_dsc(+)      = '03'
+	    order by a.trmn_amnno
+    </select>
+    
+    <select id="LALM0899_selMca3100_201" resultType="HashMap">
+        select
+              a.na_bzplc
+            , replace(d.cus_mpno,'-','')     as cus_mpno          /* 고객휴대폰   */
+            , d.ftsnm || '님'   as usrnm              /* 응찰자명     */
+		    , substr(a.auc_dt,5,2) || '월'
+		      || substr(a.auc_dt,7,2) || '일 '
+		      || ' 경매'
+		      || case when a.auc_obj_dsc = '1' then '(송아지) ' when a.auc_obj_dsc = '2' then '(비육우) ' else '(번식우) ' end
+		      || ' '
+		      || case when e.INDV_SEX_C = '0' then '없음'
+		             when e.INDV_SEX_C = '1' then '암'
+		             when e.INDV_SEX_C = '2' then '수'
+		             when e.INDV_SEX_C = '3' then '거세'
+		             when e.INDV_SEX_C = '4' then '미경산'
+		             when e.INDV_SEX_C = '5' then '비거세'
+		             when e.INDV_SEX_C = '6' then '프리마틴'
+		             else '공통'
+		        end
+		      || ' '
+		      || TO_CHAR(a.auc_prg_sq)
+		      ||  '번 개체번호:'
+		      ||   substr(a.sra_indv_amnno,7,9)
+		      || ' 입니다.'    as msg_cntn          /* 메세지내용   */
+               , f.TMS_YN
+               , f.SMS_FWDG_DT
+               , #{auc_obj_dsc}   AS AUC_OBJ_DSC
+               , A.auc_dt || A.oslp_no AS TRMN_AMNNO
+               , d.ftsnm         AS RMS_MN_NAME    /* 수신자명         */
+               , d.cus_mpno      AS SMS_RMS_MPNO   /* 수신자전화번호   */
+               , B.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
+               , B.TELNO         AS SMS_TRMS_TELNO /* 발신자전화번호   */
+		from tb_la_is_mh_sog_cow  a
+		   , tb_la_is_mm_wmc      b
+		   , tb_la_is_mm_fhs      d
+		   , tb_la_is_mm_indv     e
+          , tb_la_is_mm_sms f
+		where a.na_bzplc            = #{ss_na_bzplc}
+		  and a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
+		                                   when #{auc_obj_dsc} = '2' then '2'
+		                                   when #{auc_obj_dsc} = '3' then '3'
+		                                   else a.auc_obj_dsc
+		                              end
+		  and a.auc_dt              = #{auc_dt}
+		  and a.led_sqno            = 1
+		  and a.del_yn              = '0'       
+		  and a.na_bzplc            = b.na_bzplc
+		  and a.na_bzplc            = d.na_bzplc
+		  and a.fhs_id_no           = d.fhs_id_no
+		  and a.farm_amnno          = d.farm_amnno
+		  and  a.na_bzplc           = e.na_bzplc
+		  and  a.sra_indv_amnno     = e.sra_indv_amnno
+		  and  a.sra_srs_dsc        = e.sra_srs_dsc
+          and  a.na_bzplc           = f.na_bzplc(+)
+          and  A.auc_dt || A.oslp_no         = f.trmn_amnno(+)
+          and  f.auc_obj_dsc(+)     = #{auc_obj_dsc}
+          and  f.dpamn_dsc(+)       = '2'
+          and  f.sel_sts_dsc(+)     = '01'
+		order by a.auc_prg_sq
+    </select>
+    
+    <select id="LALM0899_selMca3100_202" resultType="HashMap">
+           select distinct a.auc_prg_sq
+            , a.na_bzplc
+            , replace(d.cus_mpno,'-','')     as cus_mpno          /* 고객휴대폰   */
+            , d.ftsnm || '님'   as usrnm              /* 응찰자명     */
+	        , substr(a.auc_dt,5,2) || '월'
+	          || substr(a.auc_dt,7,2) || '일 '
+	          || ' 경매'
+	          || case when a.auc_obj_dsc = '1' then '(송아지) ' when a.auc_obj_dsc = '2' then '(비육우) ' else '(번식우) ' end
+	          || ' '
+	          || case when e.INDV_SEX_C = '0' then '없음'
+	                  when e.INDV_SEX_C = '1' then '암'
+	                  when e.INDV_SEX_C = '2' then '수'
+	                  when e.INDV_SEX_C = '3' then '거세'
+	                  when e.INDV_SEX_C = '4' then '미경산'
+	                  when e.INDV_SEX_C = '5' then '비거세'
+	                  when e.INDV_SEX_C = '6' then '프리마틴'
+	                  else '공통'
+	             end
+	          || ' '
+	          || TO_CHAR(a.auc_prg_sq)
+	          || '번 '
+	          || case when #{ss_na_bzplc} = '8808990656557' or #{ss_na_bzplc} = '8808990762654' or #{ss_na_bzplc} = '8808990811710' then '' else '중량(' end
+	          || case when #{ss_na_bzplc} = '8808990656557' or #{ss_na_bzplc} = '8808990762654' or #{ss_na_bzplc} = '8808990811710' then '' --예천 : 8808990656557 , 테스트 8808990643625
+	                  else Replace(TO_CHAR(a.cow_sog_wt),'.000', '') || ' kg) '
+	             end                                                      
+	          || '낙찰가 ' || case when #{ss_na_bzplc} = '8808990689180' then REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(a.sra_sbid_am- (c.sra_sog_fee + c.sra_acd_rvgam + c.sra_ncss_jug_fee + c.sra_prny_jug_fee + c.sra_mdccs + c.sra_injt_fee + c.sra_shnm + c.sra_pdg_rc_fee + c.sra_rmhn_fee + c.sra_tru_fee+a.sra_pyiva + a.sra_trpcs + a.sra_fed_spy_am + a.td_rc_cst + a.mt12_ovr_fee))), '([0-9]{3})','\1,')),'^,','')
+	                            else REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(a.sra_sbid_am)), '([0-9]{3})','\1,')),'^,','') end --안동 봉화 : 8808990689180
+	          || '원 입니다.'         as msg_cntn     /* 메세지내용   */
+               , f.TMS_YN
+               , f.SMS_FWDG_DT
+               , #{auc_obj_dsc} AS AUC_OBJ_DSC
+               , A.auc_dt || A.oslp_no     AS TRMN_AMNNO
+               , d.ftsnm         AS RMS_MN_NAME    /* 수신자명         */
+               , d.cus_mpno      AS SMS_RMS_MPNO   /* 수신자전화번호   */
+               , B.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
+               , B.TELNO         AS SMS_TRMS_TELNO /* 발신자전화번호   */
+	    from tb_la_is_mh_sog_cow  a
+	       , tb_la_is_mm_wmc      b
+	       , tb_la_is_mm_fhs      d
+	       ,( select
+	                 na_bzplc
+	               , auc_dt
+	               , oslp_no
+	               , led_sqno
+	               ,auc_obj_dsc
+	               , sum(case when na_fee_c = '010' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_sog_fee       /* 출하수수료            */
+	               , sum(case when na_fee_c = '011' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_sel_fee       /* 판매수수료            */
+	               , sum(case when na_fee_c = '020' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_aco_ivsam     /* 조합출자금            */
+	               , sum(case when na_fee_c = '030' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_acd_rvgam     /* 사고적립금            */
+	               , sum(case when na_fee_c = '040' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_trpcs         /* 운송비                */
+	               , sum(case when na_fee_c = '050' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_ncss_jug_fee  /* 괴사감정료            */
+	               , sum(case when na_fee_c = '060' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_prny_jug_fee  /* 임신감정료            */
+	               , sum(case when na_fee_c = '070' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_mdccs         /* 검진비                */
+	               , sum(case when na_fee_c = '080' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_injt_fee      /* 주사료                */
+	               , sum(case when na_fee_c = '090' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_shnm          /* 자조금                */
+	               , sum(case when na_fee_c = '100' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_pdg_rc_fee    /* 혈통접수비            */
+	               , sum(case when na_fee_c = '110' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_rmhn_fee      /* 제각수수료            */
+	               , sum(case when na_fee_c = '120' then (case when ans_dsc = '1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_tru_fee       /* 위탁수수료            */
+	          from TB_LA_IS_MH_FEE_IMPS
+	          where na_bzplc        = #{ss_na_bzplc}                                                                                /* 경제통합사업장코드    */
+	            and auc_dt          = #{auc_dt} /* 경매일자              */
+	            and auc_obj_dsc     = case when #{auc_obj_dsc} = '1' then '1'
+	                                       when #{auc_obj_dsc} = '2' then '2'
+	                                       when #{auc_obj_dsc} = '3' then '3'
+	                                       else auc_obj_dsc
+	                                  end
+	            and fee_apl_obj_c   = '1'
+	            group by
+	                na_bzplc
+	               , auc_obj_dsc
+	               , auc_dt
+	               , oslp_no
+	               , led_sqno)c
+	       , tb_la_is_mm_indv     e
+          , tb_la_is_mm_sms f
+	    where  a.na_bzplc           = #{ss_na_bzplc} 
+	      and  a.auc_obj_dsc        =case when #{auc_obj_dsc} = '1' then '1'
+	                                      when #{auc_obj_dsc} = '2' then '2'
+	                                      when #{auc_obj_dsc} = '3' then '3'
+	                                      else a.auc_obj_dsc
+	                                 end
+	      and  a.auc_dt             = #{auc_dt}
+	      and  a.led_sqno           = 1
+	      and  a.sel_sts_dsc        = '22'
+	      and  a.del_yn             = '0'            
+	      and  a.na_bzplc           = b.na_bzplc
+	      and  a.na_bzplc           = d.na_bzplc
+	      and  a.fhs_id_no          = d.fhs_id_no
+	      and  a.farm_amnno         = d.farm_amnno
+	      and  a.na_bzplc           = e.na_bzplc
+	      and  a.sra_indv_amnno     = e.sra_indv_amnno
+	      and  a.sra_srs_dsc        = e.sra_srs_dsc
+	      and a.auc_dt            = c.auc_dt
+	      and a.oslp_no           = c.oslp_no
+	      and a.led_sqno          = c.led_sqno
+	      and a.auc_obj_dsc = c.auc_obj_dsc
+          and  a.na_bzplc            = f.na_bzplc(+)
+          and  A.auc_dt || A.oslp_no  = f.trmn_amnno(+)
+          and  f.auc_obj_dsc(+)      = #{auc_obj_dsc}
+          and  f.dpamn_dsc(+)        = '2'
+          and  f.sel_sts_dsc(+)      = '02'
+	    order by a.auc_prg_sq
+    </select>
+    
+    <select id="LALM0899_selMca3100_104" resultType="HashMap">
+        select    
+             a.na_bzplc
+	        , replace(b.cus_mpno,'-','')     as cus_mpno          /* 고객휴대폰   */
+	        , b.sra_mwmnnm || '님'   as usrnm              /* 응찰자명     */
+	        , '구미칠곡축협' || ' '
+	                      || substr(a.auc_dt,5,2) || '월'
+	                      || substr(a.auc_dt,7,2) || '일'
+	                      || ' 경매집계'
+	                      || case when '1' = '1' then '(송아지) '
+	                              when '1' = '2' then '(비육우) '
+	                              else                '(번식우) '
+	                         end
+	                      || '경매번호: '
+	                      || TO_CHAR(a.auc_prg_sq)
+	                      || ' 낙찰가: '
+	                      || REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(a.sra_sbid_am)), '([0-9]{3})','\1,')),'^,','')
+	                      || '원'
+	                      || (SELECT '(' || LISTAGG(auc_obj_dsc,',') WITHIN GROUP (ORDER BY auc_obj_dsc) || ')' AS msg
+	                        FROM(
+	                        select case when auc_obj_dsc = '1' then '송아지'
+	                                    when auc_obj_dsc = '2' then '비육우'
+	                                    else '번식우'
+	                               end as auc_obj_dsc
+	                          from tb_la_is_mh_sog_cow
+	                         where na_bzplc = #{ss_na_bzplc}                   /* 경제통합사업장코드          */
+	                           and auc_dt   = #{auc_dt}
+	                           and auc_obj_dsc = case when #{auc_obj_dsc} = '1' then '1'
+	                                                  when #{auc_obj_dsc} = '2' then '2'
+	                                                  when #{auc_obj_dsc} = '3' then '3'
+	                                                  else auc_obj_dsc
+	                                             end
+	                                group by auc_obj_dsc
+	                        ))
+	                      || ' 총납입할 금액은: '
+	                      || REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(h.io_am_15)), '([0-9]{3})','\1,')),'^,','')
+	                      || '원 입니다.'
+	                         as msg_cntn          /* 메세지내용   */
+               , f.TMS_YN
+               , f.SMS_FWDG_DT
+               , #{auc_obj_dsc} AS AUC_OBJ_DSC
+               , A.auc_dt || A.oslp_no AS TRMN_AMNNO
+               , b.sra_mwmnnm    AS RMS_MN_NAME    /* 수신자명         */
+               , b.cus_mpno      AS SMS_RMS_MPNO   /* 수신자전화번호   */
+               , g.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
+               , g.TELNO         AS SMS_TRMS_TELNO /* 발신자전화번호   */
+	    from TB_LA_IS_MH_SOG_COW a
+	         left outer join
+	                    (select
+	                           lvst_auc_ptc_mn_no        as lvst_auc_ptc_mn_no /* 참가번호            */
+	                         , trmn_amnno                as trmn_amnno         /* 거래인관리번호      */
+	                         , sum(auc_entr_grn_am)      as auc_entr_grn_am    /* 참가보증금          */
+	                     from TB_LA_IS_MH_AUC_ENTR
+	                     where na_bzplc            = #{ss_na_bzplc}
+	                       and auc_obj_dsc         = #{auc_obj_dsc}
+	                       and auc_dt              = #{auc_dt}
+	                       and del_yn              = '0'
+	                     group by lvst_auc_ptc_mn_no, trmn_amnno) d
+	              on  a.lvst_auc_ptc_mn_no     = d.lvst_auc_ptc_mn_no  /* 가축경매참여자번호          */
+	              and a.trmn_amnno             = d.trmn_amnno          /* 거래인번호                  */
+	              
+        left outer join tb_la_is_mm_wmc g on (a.na_bzplc = g.na_bzplc)
+        left outer join tb_la_is_mm_sms f on(a.na_bzplc = f.na_bzplc and A.auc_dt || A.oslp_no = f.trmn_amnno and f.dpamn_dsc = '1' and f.sel_sts_dsc = '04' and f.auc_obj_dsc = #{auc_obj_dsc})
+	         left outer join
+	                    (select
+	                           a.lvst_auc_ptc_mn_no
+	                         , a.trmn_amnno
+	                         , sum(a.sra_sbid_am)  + sum(b.sra_sel_fee) + sum(b.sra_etc_cst) as io_am_15
+	                     from TB_LA_IS_MH_SOG_COW a
+	                        , (select
+	                                  na_bzplc
+	                                  , auc_obj_dsc
+	                                  , auc_dt
+	                                  , oslp_no
+	                                  , led_sqno
+	                                  , sum(case when na_fee_c = '011' then (case when ans_dsc ='1' then 1 else -1 end) * sra_tr_fee else 0 end)        as sra_sel_fee
+	                                  , sum(case when na_fee_c not in ('011') then (case when ans_dsc ='1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_etc_cst
+	                             from TB_LA_IS_MH_FEE_IMPS
+	                             where na_bzplc            = #{ss_na_bzplc}
+	                               and auc_obj_dsc         = case when #{auc_obj_dsc} = '0' then auc_obj_dsc else '1' end
+	                               and auc_dt              = #{auc_dt}
+	                               and fee_apl_obj_c       = '2'                           /* 1:출하자, 2:낙찰자  */
+	                             group by na_bzplc
+	                                  , auc_obj_dsc
+	                                  , auc_dt
+	                                  , oslp_no
+	                                  , led_sqno) b
+	                     where a.na_bzplc        = #{ss_na_bzplc}
+	                       and a.auc_obj_dsc     = case when #{auc_obj_dsc} = '0' then a.auc_obj_dsc else '1' end
+	                       and a.auc_dt          = #{auc_dt}
+	                       and a.na_bzplc        = b.na_bzplc                    /* 경제통합사업장코드  */
+	                       and a.auc_dt          = b.auc_dt                      /* 경매일자            */
+	                       and a.auc_obj_dsc     = b.auc_obj_dsc                 /* 경매대상구분코드    */
+	                       and a.oslp_no         = b.oslp_no                     /* 경매일자            */
+	                       and a.led_sqno        = b.led_sqno                    /* 경매대상구분코드    */
+	                       and a.del_yn          = '0'
+	                       and a.led_sqno        = 1
+	                     group by a.lvst_auc_ptc_mn_no
+	                            , a.trmn_amnno ) h
+	              on  a.lvst_auc_ptc_mn_no     = h.lvst_auc_ptc_mn_no     /* 가축경매참여자번호          */
+	              and a.trmn_amnno             = h.trmn_amnno             /* 거래인번호                  */
+	
+	    inner join TB_LA_IS_MM_MWMN b
+	          on  a.na_bzplc               = b.na_bzplc               /* 경제통합사업장코드          */
+	          and a.trmn_amnno             = b.trmn_amnno             /* 거래인관리번호              */
+	
+	    where a.na_bzplc             = #{ss_na_bzplc}
+	      and a.auc_obj_dsc          = case when #{auc_obj_dsc} = '0' then a.auc_obj_dsc else '1' end
+	      and a.auc_dt               = #{auc_dt}
+	      and a.sel_sts_dsc          = '22'                   /* 판매상태구분코드            */
+	      and a.del_yn               = '0'
+	      and a.led_sqno             = 1
+	    order by TO_NUMBER(a.lvst_auc_ptc_mn_no) , a.auc_prg_sq
+    </select>
+    
+    <select id="LALM0899_selMca3100_201_9008" resultType="HashMap">
+	SELECT a.na_bzplc
+	       , replace( cus_mpno,'-','') as cus_mpno          /* 고객휴대폰   */
+	       , name  || '님'             as usrnm              /* 응찰자명     */
+	       ,substr(LISTAGG(', ' || msg_cntn) WITHIN GROUP (ORDER BY msg_cntn),2) as msg_cntn
+		   , TMS_YN
+		   , SMS_FWDG_DT
+		   , SMS_FWDG_SQNO
+		   , AUC_OBJ_DSC
+		   , TRMN_AMNNO
+		   , RMS_MN_NAME    /* 수신자명         */
+		   , SMS_RMS_MPNO   /* 수신자전화번호   */
+		   , IO_TRMSNM      /* 발신자명         */
+		   , SMS_TRMS_TELNO /* 발신자전화번호   */
+	 from(
+	     select
+	            a.fhs_id_no as fhs_id_no,
+	            d.ftsnm as name,
+	            b.na_bzplnm as na_bzplnm,
+	            d.cus_mpno as cus_mpno,
+	            b.telno as telno,
+	            substr(a.auc_dt, 5, 2) || '월' || substr(a.auc_dt, 7, 2) || '일 ' || ' 경매' ||
+	                     case when a.auc_obj_dsc = '1' then '(송) ' 
+	                          when a.auc_obj_dsc = '2' then '(비) ' 
+	                          else '(번) ' end || ' ' ||
+	                     case when e.INDV_SEX_C = '0'  then '없음'   
+	                          when e.INDV_SEX_C = '1'  then '암' 
+	                          when e.INDV_SEX_C = '2'  then '수' 
+	                          when e.INDV_SEX_C = '3'  then '거세' 
+	                          when e.INDV_SEX_C = '4'  then '미경산' 
+	                          when e.INDV_SEX_C = '5'  then '비거세' 
+	                          when e.INDV_SEX_C = '6'  then '프리마틴'
+	                          else '공통' end || ' ' || TO_CHAR(a.auc_prg_sq) || '번 개체 번호 :' || a.sra_indv_amnno
+	                     as msg_cntn
+		   , g.TMS_YN
+		   , g.SMS_FWDG_DT
+		   , #{auc_obj_dsc} AS AUC_OBJ_DSC
+		   , A.auc_dt || A.oslp_no as trmn_amnno
+		   , d.ftsnm         AS RMS_MN_NAME    /* 수신자명         */
+		   , d.cus_mpno      AS SMS_RMS_MPNO   /* 수신자전화번호   */
+		   , b.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
+		   , b.TELNO         AS SMS_TRMS_TELNO /* 발신자전화번호   */
+	     from tb_la_is_mh_sog_cow a,
+	          tb_la_is_mm_wmc     b,
+	          tb_la_is_mm_fhs     d,
+	          tb_la_is_mm_indv    e,
+              tb_la_is_mm_sms     g
+	     where a.na_bzplc = #{ss_na_bzplc}
+	       and a.auc_dt = #{auc_dt}
+	       and a.led_sqno = 1
+	       and a.del_yn = '0'
+	       and a.na_bzplc = b.na_bzplc
+	       and a.na_bzplc = d.na_bzplc
+	       and a.fhs_id_no = d.fhs_id_no
+	       and a.farm_amnno = d.farm_amnno
+	       and a.na_bzplc = e.na_bzplc
+	       and a.sra_indv_amnno = e.sra_indv_amnno
+	       and a.sra_srs_dsc = e.sra_srs_dsc
+	       and a.na_bzplc            = g.na_bzplc(+)
+	       and A.auc_dt || A.oslp_no  = g.trmn_amnno(+)
+	       and g.auc_obj_dsc(+)      = #{auc_obj_dsc}
+	       and g.dpamn_dsc(+)        = '2'
+	       and g.sel_sts_dsc(+)      = '01'
+	    )b
+	    GROUP BY na_bzplc, replace( cus_mpno,'-',''), name, fhs_id_no,TMS_YN, SMS_FWDG_DT, SMS_FWDG_SQNO
+			   , TRMN_AMNNO
+			   , RMS_MN_NAME    /* 수신자명         */
+			   , SMS_RMS_MPNO   /* 수신자전화번호   */
+			   , IO_TRMSNM      /* 발신자명         */
+			   , SMS_TRMS_TELNO /* 발신자전화번호   */
+    </select>
+    
+    <!-- 3500 -->
+    <select id="LALM0899_selMca3500Cnt" resultType="_int">
+        select
+              count(*)
+        from tb_la_is_mh_rkon_cm
+        where na_bzplc    = #{ss_na_bzplc}
+          and auc_dt      = #{auc_dt}
+    </select>
+    
+    <select id="LALM0899_selMca3500" resultType="HashMap">
+		 select
+		          TO_CHAR(na_bzplc)                      as na_bzplc                             /* 경제통합사업장코드         */
+		        , TO_CHAR(auc_obj_dsc)                   as auc_obj_dsc                          /* 경매대상구분코드           */
+		        , TO_CHAR(auc_dt)                        as auc_dt                               /* 경매일자                   */
+		        , TO_CHAR(pda_id)                        as pda_id                               /* PDAID                      */
+		        , TO_CHAR(lvst_mkt_trpl_amnno)           as lvst_mkt_trpl_amnno                  /* 가축시장거래처관리번호     */
+		        , TO_CHAR(rmk_cntn)                      as rmk_cntn                             /* 비고내용                   */
+		        , TO_CHAR(tms_yn)                        as tms_yn                               /* 전송여부                   */
+	    from tb_la_is_mh_rkon_cm
+	    where na_bzplc    = #{ss_na_bzplc}
+	      and auc_dt      = #{auc_dt}
+    </select>
+    <!-- 3500 -->
+    
+    <select id="LALM0899_selMca3700" resultType="HashMap">
+    SELECT *
+    FROM (
+        SELECT ROWNUM as NO, A.*
+        FROM (
+	        select
+	          TO_CHAR(na_bzplc)       as na_bzplc              /* 경제통합사업장코드                      */
+	        , TO_CHAR(auc_obj_dsc)    as auc_obj_dsc           /* 경매대상구분                            */
+	        , TO_CHAR(auc_dt)         as auc_dt                /* 경매일자                                */
+	        , TO_CHAR(oslp_no)        as oslp_no               /* 원표번호(경매번호)                      */
+	        , TO_CHAR(rg_sqno)        as rg_sqno               /* 등록일련번호                            */
+	        , TO_CHAR(sra_indv_amnno) as sra_indv_amnno        /* 축산개체관리번호(바코드, 귀표번호)      */
+	        , TO_CHAR(sra_srs_dsc)    as sra_srs_dsc           /* 축산축종구분코드                        */
+	        , TO_CHAR(indv_sex_c)     as indv_sex_c            /* 개체성별코드                            */
+	        , TO_CHAR(cow_sog_wt)     as cow_sog_wt            /* 우출하중량                              */
+	        , TO_CHAR(birth)          as birth                 /* 생년월일                                */
+	        , TO_CHAR(kpn_no)         as kpn_no                /* KPN번호                                 */
+	        , TO_CHAR(tms_yn)         as tms_yn                /* 전송여부                                */
+	        , TO_CHAR(del_yn)         as del_yn                /* 삭제여부                                */
+	        , TO_CHAR(fsrg_dtm,'YYYYMMDDHH24MISS') as fsrg_dtm              /* 최초등록일시                            */
+	        , TO_CHAR(fsrgmn_eno)     as fsrgmn_eno            /* 최초등록자개인번호                      */
+	        , TO_CHAR(lschg_dtm,'YYYYMMDDHH24MISS') as lschg_dtm             /* 최종변경일시                            */
+	        , TO_CHAR(ls_cmeno)       as ls_cmeno              /* 최종변경자개인번호                      */
+	    from tb_la_is_mh_calf
+	    where na_bzplc    = #{ss_na_bzplc}
+	      and auc_dt      = #{auc_dt}
+               ORDER BY oslp_no
+               ) A)
+            WHERE NO BETWEEN #{st_pos} AND #{ed_pos}
+    </select>
+    
+    <select id="LALM0899_selMca3800" resultType="HashMap">
+        select
+          TO_CHAR(a.na_bzplc)                 as na_bzplc
+        , TO_CHAR(a.fhs_id_no)                as fhs_id_no      
+        , TO_CHAR(a.farm_amnno)               as farm_amnno
+        , TO_CHAR(a.farm_id_no)               as farm_id_no
+        , TO_CHAR(NVL(a.na_trpl_c,''))        as na_trpl_c
+        , TO_CHAR(a.ftsnm)                    as sra_fhsnm
+        , TO_CHAR(NVL(substr(a.zip, 1,3),'')) as sra_fhs_fzip
+        , TO_CHAR(NVL(substr(a.zip, 4,6),'')) as sra_fhs_rzip
+        , TO_CHAR(a.dongup)                   as sra_fhs_dongup
+        , TO_CHAR(a.dongbw)                   as sra_fhs_dongbw
+        , TO_CHAR(case when length(Replace(a.ohse_telno,'-','')) = 9 then substr(a.ohse_telno, 1,2)
+               when length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2)  = '02' then substr(a.ohse_telno, 1,2)
+               when length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2) <![CDATA[<]]>> '02' then substr(a.ohse_telno, 1,3)
+               when length(Replace(a.ohse_telno,'-','')) = 11                                                         then substr(a.ohse_telno, 1,3)
+          end) as sra_fhs_atel
+        , TO_CHAR(case when length(Replace(a.ohse_telno,'-','')) = 9 then substr(Replace(a.ohse_telno,'-',''), 3,3)
+               when length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2)  = '02' then substr(Replace(a.ohse_telno,'-',''), 3,4)
+               when length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2) <![CDATA[<]]>> '02' then substr(Replace(a.ohse_telno,'-',''), 4,3)
+               when length(Replace(a.ohse_telno,'-','')) = 11                                                         then substr(Replace(a.ohse_telno,'-',''), 4,4)
+          end) as sra_fhs_htel
+        , TO_CHAR(case when length(Replace(a.ohse_telno,'-','')) = 9 then substr(Replace(a.ohse_telno,'-',''), 6,4)
+               when length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2)  = '02' then substr(Replace(a.ohse_telno,'-',''), 7,4)
+               when length(Replace(a.ohse_telno,'-','')) = 10 and substr(Replace(a.ohse_telno,'-',''),1,2) <![CDATA[<]]>> '02' then substr(Replace(a.ohse_telno,'-',''), 7,4)
+               when length(Replace(a.ohse_telno,'-','')) = 11                                                      then substr(Replace(a.ohse_telno,'-',''), 8,4)
+          end) as sra_fhs_stel
+        , TO_CHAR(NVL(substr(a.cus_mpno,1,3),'')) as sra_fhs_rep_mpsvno
+        , TO_CHAR(case when length(Replace(a.cus_mpno,'-','')) = 10 then substr(Replace(a.cus_mpno,'-',''), 4,3)
+               when length(Replace(a.cus_mpno,'-','')) = 11 then substr(Replace(a.cus_mpno,'-',''), 4,4)  end) as sra_fhs_rep_mphno
+        , TO_CHAR(case when length(Replace(a.cus_mpno,'-','')) = 10 then substr(Replace(a.cus_mpno,'-',''), 7,4)
+               when length(Replace(a.cus_mpno,'-','')) = 11 then substr(Replace(a.cus_mpno,'-',''), 8,4)  end) as sra_fhs_rep_mpsqno
+        , TO_CHAR(a.rmk_cntn)                     as rmk_cntn
+        , TO_CHAR(a.fsrg_dtm,'YYYYMMDDHH24MISS')  as fsrg_dtm
+        , TO_CHAR(a.fsrgmn_eno)                   as fsrgmn_eno
+        , TO_CHAR(a.lschg_dtm,'YYYYMMDDHH24MISS') as lschg_dtm
+        , TO_CHAR(a.ls_cmeno)                     as ls_cmeno
+        , TO_CHAR(a.maco_yn)                      as maco_yn              
+        , TO_CHAR(b.brc)                          as brc
+        , TO_CHAR(a.sra_farm_acno)                as sra_farm_acno
+    from tb_la_is_mm_fhs   a
+       , tb_la_is_mm_wmc   b
+    where a.na_bzplc    = #{ss_na_bzplc}
+      and a.na_bzplc    = b.na_bzplc
+      and a.anw_yn      = '9'
+      and substr(a.fhs_id_no,1,1) in ('T', 'N')
+      and a.lschg_dtm >= (select max(auc_dt) from TB_LA_IS_MH_AUC_QCN where tms_yn = '1')
+    </select>
+    
+    <select id="LALM0899_selMca3900" resultType="HashMap">
+	    SELECT *
+	    FROM (
+	        SELECT ROWNUM as NO, A.*
+	        FROM (
+			        select
+					  TO_CHAR(na_bzplc)      as na_bzplc                /* 경제통합사업장코드      */
+					, TO_CHAR(auc_obj_dsc)   as auc_obj_dsc             /* 경매대상구분            */
+					, TO_CHAR(auc_dt)        as auc_dt                  /* 경매일자                */
+					, TO_CHAR(oslp_no)       as oslp_no                 /* 원표번호(경매번호)      */
+					, TO_CHAR(led_sqno)      as led_sqno                /* 원장일련번호(경매 = 1)  */
+					, TO_CHAR(fee_rg_sqno)   as fee_rg_sqno             /* 수수료등록일련번호      */
+					, TO_CHAR(fee_apl_obj_c) as fee_apl_obj_c           /* 수수료적용대상코드      */
+					, TO_CHAR(ans_dsc)       as ans_dsc                 /* 가감구분코드            */
+					, TO_CHAR(sbid_yn)       as sbid_yn                 /* 낙찰여부                */
+					, TO_CHAR(sra_tr_fee)    as sra_tr_fee              /* 축산거래수수료          */
+					, TO_CHAR(apl_dt)        as apl_dt                  /* 적용일자                */
+					, TO_CHAR(na_fee_c)      as na_fee_c                /* 경제통합수수료코드      */
+			    from  tb_la_is_mh_fee_imps
+			    where na_bzplc    = #{ss_na_bzplc}
+			      and auc_dt      = #{auc_dt}
+	           ORDER BY oslp_no
+	           ) A)
+	        WHERE NO BETWEEN #{st_pos} AND #{ed_pos}
+    </select>
+    
+    <select id="LALM0899_selMca4000" resultType="HashMap">
+        select
+	          TO_CHAR(a.na_bzplc)                      as na_bzplc                         /* 경제통합사업장코드                  */
+	        , TO_CHAR(a.sra_indv_amnno)                as sra_indv_amnno                   /* 축산개체관리번호                    */
+	        , TO_CHAR(a.sra_indv_amnno)                as sra_indv_eart_no                 /* 축산개체관리번호                    */
+	        , TO_CHAR(substr(a.sra_indv_amnno, 11, 4)) as sra_indv_srch_eart_no            /* 축산개체관리번호                    */
+	        , TO_CHAR(substr(a.sra_indv_amnno,  7, 9)) as sra_indv_exst_eart_no            /* 축산개체관리번호                    */
+	        , TO_CHAR(a.sra_srs_dsc)                   as sra_srs_dsc                      /* 축산축종구분코드                    */
+	        , TO_CHAR(a.fhs_id_no)                     as fhs_id_no                        /* 농가식별번호                        */
+	        , TO_CHAR(a.farm_amnno)                    as farm_amnno                       /* 농장관리번호                        */
+	        , TO_CHAR(b.ftsnm)                         as sra_indv_ownrnm                  /* 농가명                              */
+	        , TO_CHAR(a.birth)                         as birth                            /* 생년월일                            */
+	        , TO_CHAR(a.mcow_dsc)                      as sra_indv_brdsra_rg_dsc           /* 어미구분코드                        */
+	        , TO_CHAR(a.kpn_no)                        as kpn_no                           /* KPN번호                             */
+	        , TO_CHAR(a.indv_sex_c)                    as indv_sex_c                       /* 개체성별코드                        */
+	        , TO_CHAR(a.mcow_sra_indv_amnno)           as mcow_sra_indv_eart_no            /* 어미소축산개체관리번호              */
+	        , TO_CHAR(a.matime)                        as sra_indv_mothr_matime            /* 산차                                */
+	        , TO_CHAR(a.sra_indv_pasg_qcn)             as sra_indv_pasg_qcn                /* 축산개체계대차수                    */
+	        , TO_CHAR(a.indv_id_no)                    as indv_id_no                       /* 개체식별번호                        */
+	        , TO_CHAR(a.sra_indv_brdsra_rg_no)         as sra_indv_brdsra_rg_no            /* 축산개체종축등록번호                */
+	        , TO_CHAR(a.rg_dsc)                        as rg_dsc                           /* 등록구분코드                        */
+	        , TO_CHAR('00')                            as sra_indv_dsc
+	        , TO_CHAR(c.brc)                           as brc                              /* 사무소                              */
+	        , TO_CHAR(a.fsrg_dtm,'YYYYMMDDHH24MISS')   as fsrg_dtm                         /* 최초등록일시                        */
+	        , TO_CHAR(a.fsrgmn_eno)                    as fsrgmn_eno                       /* 최초등록자개인번호                  */
+	        , TO_CHAR(a.lschg_dtm,'YYYYMMDDHH24MISS')  as lschg_dtm                        /* 최종변경일시                        */
+	        , TO_CHAR(a.ls_cmeno)                      as ls_cmeno                         /* 최종변경자개인번호                  */
+	     from tb_la_is_mm_indv a
+	        , tb_la_is_mm_fhs  b
+	        , tb_la_is_mm_wmc  c
+	    where a.na_bzplc     = #{ss_na_bzplc}
+	      and a.na_bzplc     = b.na_bzplc
+	      and a.fhs_id_no    = b.fhs_id_no
+	      and a.farm_amnno   = b.farm_amnno
+	      and a.na_bzplc     = c.na_bzplc
+	      and a.anw_yn       = '9'
+	    order by a.lschg_dtm desc
+    </select>
+    
+    
+    <select id="LALM0899_selMca1600_ChkAmnno" resultType="_int">
+        select count(*)
+          from tb_la_is_mm_indv a
+         where a.na_bzplc       = #{ss_na_bzplc}
+           and a.anw_yn         = '9'
+           and a.sra_indv_amnno = ''
+    </select>
+    
+    <select id="LALM0899_selMca1600_ChkAucObjDsc" resultType="_int">
+    select count(*)
+      from TB_LA_IS_MH_SOG_COW
+	 where na_bzplc      = #{ss_na_bzplc}                     /* 경제통합사업장코드          */
+	   and auc_dt        = #{auc_dt}
+	   and (auc_obj_dsc  = '' or auc_obj_dsc is null)
+    </select>
+    
+    <select id="LALM0899_selMca1600Cnt" resultType="_int">
+	    select count(*)
+	      from TB_LA_IS_MH_SOG_COW
+	     where na_bzplc      = #{ss_na_bzplc}                     /* 경제통합사업장코드          */
+	       and auc_dt        = #{auc_dt}
+    </select>
+    
+    <select id="LALM0899_selMca3900Cnt" resultType="_int">
+        select count(*)
+          from tb_la_is_mh_fee_imps
+         where na_bzplc    = #{ss_na_bzplc}
+           and auc_dt      = #{auc_dt}
+    </select>
+    
+    <select id="LALM0899_selMca3700Cnt" resultType="_int">
+        select
+              count(*)
+        from tb_la_is_mh_calf
+        where na_bzplc    = #{ss_na_bzplc}
+          and auc_dt      = #{auc_dt}
+    </select>
+    
+    <select id="LALM0899_selMca1300Cnt_A" resultType="_int">
+        select
+               count(*)
+          from tb_la_is_mm_mwmn a
+         where na_bzplc = #{ss_na_bzplc}
+    </select>
+    
+    <select id="LALM0899_selMca1300_A" resultType="HashMap">
+        SELECT *
+          FROM (
+          SELECT ROWNUM as NO , A.*
+          FROM (
+                select   
+                          a.na_bzplc            /* 경제통합사업장코드         */
+                        , a.trmn_amnno          /* 중도매인코드               */
+                        , a.mwmn_na_trpl_c      /* 경제통합거래처             */
+                        , a.sra_mwmnnm          /* 중도매인명                 */
+                        , a.frlno               /* 실명번호                   */
+                        , a.zip                 /* 우편번호                   */
+                        , a.dongup              /* 동이상주소                 */
+                        , a.dongbw              /* 동이하주소                 */
+                        , a.ohse_telno          /* 자택전화번호               */
+                        , a.cus_mpno            /* 고객휴대전화번호           */
+                        , a.maco_yn             /* 조합원여부                 */
+                        , a.jrdwo_dsc           /* 관내외구분                 */
+                        , a.psn_inf_ofr_agr_yn  /* 개인정보제공동의           */
+                        , a.tms_yn              /* 전송여부                   */
+                        , a.del_yn              /* 삭제여부                   */
+                        , a.fsrg_dtm            /* 최종등록일시               */
+                        , a.fsrgmn_eno          /* 최초등록자개인번호         */
+                        , a.lschg_dtm           /* 최종변경일시               */
+                        , a.ls_cmeno            /* 최종변경자개인번호         */
+                        , case when LENGTH(Replace(a.cus_rlno,'-','')) >= 13 and (substr(Replace(a.cus_rlno,'-',''),7,1) = 1 or substr(Replace(a.cus_rlno,'-',''),7,1) = 2)
+                               then Replace(substr(a.cus_rlno,1,6),'-','')
+                               else Replace(a.cus_rlno,'-','')
+                          end as cus_rlno
+                    from  tb_la_is_mm_mwmn a
+                    where a.na_bzplc    = #{ss_na_bzplc}
+                    order by a.trmn_amnno
+                    ) A)
+                WHERE NO BETWEEN #{st_pos} AND #{ed_pos}
+    </select>
+    
+    <select id="LALM0899_selMca3000" resultType="HashMap">
+        SELECT NA_BZPLC
+		     , #{mpno}   as MPNO
+		     , #{usrid}  as USRNM
+		     , #{pw}     as PW
+		  FROM TB_LA_IS_MM_USR
+		 WHERE usrid = #{usrid}
+    </select>
+    
+    <delete id="LALM0899_delMca2500">
+        delete from tb_la_is_mh_comn_apl
+         where bsn_dsc              = nvl(trim(#{BSN_DSC}),'')
+           and simp_c               = nvl(trim(#{SIMP_C}),'')
+           and simp_tpc             = nvl(trim(#{SIMP_TPC}),'')
+           and simp_c_grp_sqno      = nvl(trim(#{SIMP_C_GRP_SQNO}),'')
+    </delete>
+    
+    <insert id="LALM0899_insMca2500">
+        insert into tb_la_is_mh_comn_apl
+                (
+                      bsn_dsc
+                    , simp_c
+                    , simp_tpc
+                    , simp_c_grp_sqno
+                    , simp_c_yn
+                    , simp_cnm
+                    , pret_simp_tpc
+                    , pret_simp_c
+                    , sort_sq
+                    , amn_hcnt
+                    , amn_hcnt2
+                    , amn_hcnt3
+                    , amn_hcnt4
+                    , amn_hcnt5
+                    , amn_hcnt6
+                    , amn_hcnt7
+                    , amn_hcnt8
+                    , amn_hcnt9
+                    , amn_hcnt10
+                    , amn_hcnt11
+                    , fsrg_dtm
+                    , fsrgmn_eno
+                    , fsrgmn_na_bzplc
+                    , lschg_dtm
+                    , ls_cmeno
+                    , lscgmn_na_bzplc
+                )values(
+                      nvl(trim(#{BSN_DSC}),'')
+                    , nvl(trim(#{SIMP_C}),'')
+                    , nvl(trim(#{SIMP_TPC}),'')
+                    , nvl(trim(#{SIMP_C_GRP_SQNO}),'')
+                    , nvl(trim(#{SIMP_C_YN}),'')
+                    , nvl(trim(#{SIMP_CNM}),'')
+                    , nvl(trim(#{PRET_SIMP_TPC}),'')
+                    , nvl(trim(#{PRET_SIMP_C}),'')
+                    , nvl(trim(#{SORT_SQ}),'')
+                    , nvl(trim(#{AMN_HCNT}),'')
+                    , nvl(trim(#{AMN_HCNT2}),'')
+                    , nvl(trim(#{AMN_HCNT3}),'')
+                    , nvl(trim(#{AMN_HCNT4}),'')
+                    , nvl(trim(#{AMN_HCNT5}),'')
+                    , nvl(trim(#{AMN_HCNT6}),'')
+                    , nvl(trim(#{AMN_HCNT7}),'')
+                    , nvl(trim(#{AMN_HCNT8}),'')
+                    , nvl(trim(#{AMN_HCNT9}),'')
+                    , nvl(trim(#{AMN_HCNT10}),'')
+                    , nvl(trim(#{AMN_HCNT11}),'')
+                    , SYSDATE
+                    , #{ss_userid}
+                    , #{ss_na_bzplc}
+                    , SYSDATE
+                    , #{ss_userid}
+                    , #{ss_na_bzplc}
+                );
+    </insert>
+    
+    <delete id="LALM0899_delMca1800">
+        delete from tb_la_is_mh_bad_trmn
+         where na_bzplc = #{ss_na_bzplc}
+    </delete>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

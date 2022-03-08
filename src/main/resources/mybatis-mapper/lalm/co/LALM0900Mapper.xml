@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0900Mapper">
+    
+    <select id="LALM0900_selList" resultType="hashMap">
+        SELECT A.NA_BZPLC
+             , A.BLBD_DSC
+             , A.BBRD_SQNO
+             , A.RL_SQNO
+             , A.BBRD_TINM
+             , B.USRNM
+             , TO_CHAR(A.FSRG_DTM, 'YYYY-MM-DD HH24:MI:SS') AS FSRG_DTM
+             , A.BBRD_INQ_CN
+             , A.FIX_YN
+          FROM TB_LA_IS_MM_BLBD A
+          LEFT OUTER JOIN TB_LA_IS_MM_USR B
+            ON A.FSRGMN_ENO = B.USRID
+         WHERE 1=1
+           AND A.NA_BZPLC      = #{na_bzplc}
+        <choose>
+            <when test="blbd_dsc == null or blbd_dsc ==''">
+           AND A.BLBD_DSC      in ('2','3')
+            </when>
+            <otherwise>
+           AND A.BLBD_DSC      = #{blbd_dsc}
+            </otherwise>
+        </choose>  
+           AND A.RL_SQNO       = 0
+           AND A.BBRD_DEL_YN  != '1'
+           AND (NVL(#{cb_condi}, '0') = '1' AND A.BBRD_TINM LIKE '%'||#{bbrd_tinm_cntn}||'%' 
+             OR NVL(#{cb_condi}, '0') = '2' AND A.BBRD_CNTN LIKE '%'||#{bbrd_tinm_cntn}||'%' 
+             OR NVL(#{cb_condi}, '0') = '3' AND B.USRNM     LIKE '%'||#{bbrd_tinm_cntn}||'%')
+         ORDER BY FIX_YN desc, FSRG_DTM desc
+    </select>
+    
+    
+    <select id="LALM0900P1_selData" resultType="hashMap">
+    <![CDATA[        
+        SELECT A.NA_BZPLC
+             , A.BLBD_DSC
+             , A.BBRD_SQNO
+             , A.RL_SQNO
+             , A.BBRD_TINM
+             , A.BBRD_CNTN
+             , A.APDFL_ID
+             , A.PUP_UYN
+             , A.FIX_YN
+             , A.ST_DT
+             , A.ED_DT
+             , B.USRNM
+             , TO_CHAR(A.FSRG_DTM, 'YYYY-MM-DD HH24:MI:SS') AS FSRG_DTM
+             , A.BBRD_INQ_CN
+             , A.FIX_YN
+             , C.FLNM
+          FROM TB_LA_IS_MM_BLBD A
+          LEFT OUTER JOIN TB_LA_IS_MM_USR B
+            ON A.FSRGMN_ENO = B.USRID
+          LEFT OUTER JOIN TB_LA_IS_MM_APDFL C
+            ON A.APDFL_ID = C.APDFL_ID
+           AND C.RG_SQNO  = 1
+           AND C.DEL_YN  != '1'
+         WHERE 1=1
+           AND A.NA_BZPLC      = #{na_bzplc} 
+           AND A.BLBD_DSC      = #{blbd_dsc}                 /* 게시판구분코드       */
+           AND A.BBRD_SQNO     = #{bbrd_sqno}                /* 게시물일련번호       */
+           AND A.RL_SQNO       = #{rl_sqno}                  /* 댓글일련번호         */
+    ]]>
+    </select>
+    
+    
+    <insert id="LALM0900P1_insBlbd">
+        INSERT INTO TB_LA_IS_MM_BLBD(
+               NA_BZPLC                                /* 경제통합사업장코드   */
+             , BLBD_DSC                                /* 게시판구분코드       */
+             , BBRD_SQNO                               /* 게시물일련번호       */
+             , RL_SQNO                                 /* 댓글일련번호         */
+             , BBRD_TINM                               /* 게시물제목명         */
+             , BBRD_CNTN                               /* 게시물내용           */
+             , BBRD_INQ_CN                             /* 게시물조회건수       */
+             , APDFL_ID                                /* 첨부파일ID           */
+             , PUP_UYN                                 /* 팝업사용여부         */
+             , FIX_YN                                  /* 고정여부             */
+             , BBRD_DEL_YN                             /* 게시물삭제여부       */
+             , ST_DT                                   /* 시작일자             */
+             , ED_DT                                   /* 종료일자             */
+             , FSRG_DTM                                /* 최초등록일시         */
+             , FSRGMN_ENO                              /* 최초등록자개인번호   */
+             , LSCHG_DTM                               /* 최종변경일시         */
+             , LS_CMENO                                /* 최종변경자개인번호   */
+        ) VALUES (
+               #{na_bzplc}                             /* 경제통합사업장코드   */
+             , #{blbd_dsc}                             /* 게시판구분코드       */
+             , (SELECT NVL(MAX(BBRD_SQNO),0) + 1
+                  FROM TB_LA_IS_MM_BLBD
+                 WHERE NA_BZPLC = #{na_bzplc}
+                   AND BLBD_DSC = #{blbd_dsc}
+               )                                       /* 게시물일련번호       */
+             , #{rl_sqno}                              /* 댓글일련번호         */
+             , #{bbrd_tinm}                            /* 게시물제목명         */
+             , #{bbrd_cntn}                            /* 게시물내용           */
+             , 0                                       /* 게시물조회건수       */
+             , #{apdfl_id}                             /* 첨부파일ID           */
+             , #{pup_uyn}                              /* 팝업사용여부         */
+             , #{fix_yn}                               /* 고정여부             */
+             , '0'                                     /* 게시물삭제여부       */
+             , #{st_dt}                                /* 시작일자             */
+             , #{ed_dt}                                /* 종료일자             */
+             , SYSDATE                                 /* 최초등록일시         */
+             , #{ss_userid}                            /* 최초등록자개인번호   */
+             , SYSDATE                                 /* 최종변경일시         */
+             , #{ss_userid}                            /* 최종변경자개인번호   */
+        )   
+    </insert>
+            
+    <update id="LALM0900P1_updBlbd">
+        UPDATE TB_LA_IS_MM_BLBD SET
+               BBRD_TINM     = #{bbrd_tinm}                /* 게시물제목명         */
+             , BBRD_CNTN     = #{bbrd_cntn}                /* 게시물내용           */
+             , PUP_UYN       = #{pup_uyn}                  /* 팝업사용여부         */
+             , FIX_YN        = #{fix_yn}                   /* 고정여부             */
+             , ST_DT         = #{st_dt}                    /* 시작일자             */
+             , ED_DT         = #{ed_dt}                    /* 종료일자             */  
+             , LSCHG_DTM     = SYSDATE                     /* 최종변경일시         */
+             , LS_CMENO      = #{ss_userid}                /* 최종변경자개인번호   */
+         WHERE NA_BZPLC      = #{na_bzplc} 
+           AND BLBD_DSC      = #{blbd_dsc}                 /* 게시판구분코드       */
+           AND BBRD_SQNO     = #{bbrd_sqno}                /* 게시물일련번호       */
+           AND RL_SQNO       = #{rl_sqno}                  /* 댓글일련번호         */
+    </update>
+        
+    <delete id="LALM0900P1_delBlbd">
+    <![CDATA[
+        UPDATE TB_LA_IS_MM_BLBD SET
+               BBRD_DEL_YN   = '1'                         /* 게시물내용           */
+             , LSCHG_DTM     = SYSDATE                     /* 최종변경일시         */
+             , LS_CMENO      = #{ss_userid}                /* 최종변경자개인번호   */
+         WHERE NA_BZPLC      = #{na_bzplc} 
+           AND BLBD_DSC      = #{blbd_dsc}                 /* 게시판구분코드       */
+           AND BBRD_SQNO     = #{bbrd_sqno}                /* 게시물일련번호       */
+           AND RL_SQNO       = #{rl_sqno}                  /* 댓글일련번호         */
+         
+    ]]>
+    </delete>
+    
+    <update id="LALM0900P1_insBlbdInqCn">
+        UPDATE TB_LA_IS_MM_BLBD SET
+               BBRD_INQ_CN   = BBRD_INQ_CN + 1
+         WHERE NA_BZPLC      = #{na_bzplc} 
+           AND BLBD_DSC      = #{blbd_dsc}                 /* 게시판구분코드       */
+           AND BBRD_SQNO     = #{bbrd_sqno}                /* 게시물일련번호       */
+           AND RL_SQNO       = #{rl_sqno}                  /* 댓글일련번호         */
+    </update>
+    
+    <select id="LALM0900P1_selApdfl" resultType="String">
+        SELECT #{ss_na_bzplc}||TO_CHAR(SYSTIMESTAMP, 'YYYYMMDDHH24MISSFF3')
+          FROM DUAL
+    </select>
+    
+    <insert id="LALM0900P1_insApdfl">
+        INSERT INTO TB_LA_IS_MM_APDFL(
+            APDFL_ID
+          , RG_SQNO
+          , FLNM
+          , XCRNM
+          , FL_SZE
+          , FL_CNTN
+          , DEL_YN
+          , FSRG_DTM
+          , FSRGMN_ENO
+          , LSCHG_DTM
+          , LS_CMENO    
+        )VALUES(
+            #{apdfl_id}
+          , (SELECT NVL(MAX(RG_SQNO),0) + 1
+               FROM TB_LA_IS_MM_APDFL
+              WHERE APDFL_ID = #{apdfl_id}
+            )
+          , #{flnm}
+          , #{xcrnm}
+          , #{fl_sze}
+          , #{fl_cntn}
+          , '0'
+          , SYSDATE
+          , #{ss_userid}
+          , SYSDATE
+          , #{ss_userid}
+        )
+    </insert>
+    
+    <select id="LALM0900_selFileDownload" resultType="HashMap">
+        SELECT APDFL_ID
+		     , RG_SQNO
+		     , FLNM
+		     , XCRNM
+		     , FL_SZE
+		     , FL_CNTN
+		     , DEL_YN
+		  FROM TB_LA_IS_MM_APDFL
+		 WHERE APDFL_ID = #{apdfl_id}
+		   AND RG_SQNO  = 1
+		   AND DEL_YN  != '1'
+    </select>
+    
+    <delete id="LALM0900P1_delApdfl">
+        UPDATE TB_LA_IS_MM_APDFL
+           SET DEL_YN    = '1'
+             , LSCHG_DTM = SYSDATE
+             , LS_CMENO  = #{ss_userid} 
+         WHERE APDFL_ID = #{apdfl_id}
+           AND RG_SQNO  = 1
+    </delete>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

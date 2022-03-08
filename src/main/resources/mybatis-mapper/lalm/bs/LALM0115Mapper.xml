@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.bs.service.Impl.LALM0115Mapper">
+
+    <select id="LALM0115_selList" resultType="hashMap">
+	    SELECT
+	          VHC_SHRT_C            /* 차량단축코드               */
+	        , NA_TRPL_C             /* 경제통합거래처코드         */
+	        , CASE WHEN #{ss_security} = '1' THEN VHC_DRV_CAFFNM
+	               WHEN LENGTH(VHC_DRV_CAFFNM) = 2 THEN SUBSTR(VHC_DRV_CAFFNM,1,1) || '*' 
+	               WHEN LENGTH(VHC_DRV_CAFFNM) = 3 THEN SUBSTR(VHC_DRV_CAFFNM,1,1) || '*' || SUBSTR(VHC_DRV_CAFFNM,3,1) 
+	               WHEN LENGTH(VHC_DRV_CAFFNM) = 4 THEN SUBSTR(VHC_DRV_CAFFNM,1,1) || '**' || SUBSTR(VHC_DRV_CAFFNM,4,1)  
+	               WHEN LENGTH(VHC_DRV_CAFFNM) = 5 THEN SUBSTR(VHC_DRV_CAFFNM,1,2) || '**' || SUBSTR(VHC_DRV_CAFFNM,5,1)   END AS VHC_DRV_CAFFNM
+	        , CASE WHEN #{ss_security} = '1' THEN DRV_CAFF_TELNO
+	               WHEN LENGTH(REPLACE(DRV_CAFF_TELNO,'-','')) = 9  THEN SUBSTR(REPLACE(DRV_CAFF_TELNO,'-',''),1,2) || '-' || '***' || '-' || SUBSTR(REPLACE(DRV_CAFF_TELNO,'-',''),6,4)  
+	               WHEN LENGTH(REPLACE(DRV_CAFF_TELNO,'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(DRV_CAFF_TELNO,'-',''),1,2) = '02' 
+	                               											   THEN SUBSTR(REPLACE(DRV_CAFF_TELNO,'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(DRV_CAFF_TELNO,'-',''),7,4)  
+	                              											   ELSE SUBSTR(REPLACE(DRV_CAFF_TELNO,'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(DRV_CAFF_TELNO,'-',''),7,4)  END) 
+				   WHEN LENGTH(REPLACE(DRV_CAFF_TELNO,'-','')) = 11 or LENGTH(REPLACE(DRV_CAFF_TELNO,'-','')) = 12 THEN SUBSTR(REPLACE(DRV_CAFF_TELNO,'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(DRV_CAFF_TELNO,'-',''),8,4)                               											   
+	                               											   END AS DRV_CAFF_TELNO
+	        , VHCNO                 /* 차량번호                   */
+	        , CASE WHEN #{ss_security} = '1' THEN BRWRNM
+	              WHEN LENGTH(BRWRNM) = 2 THEN SUBSTR(BRWRNM,1,1) || '*' 
+	               WHEN LENGTH(BRWRNM) = 3 THEN SUBSTR(BRWRNM,1,1) || '*' || SUBSTR(BRWRNM,3,1) 
+	               WHEN LENGTH(BRWRNM) = 4 THEN SUBSTR(BRWRNM,1,1) || '**' || SUBSTR(BRWRNM,4,1)  
+	               WHEN LENGTH(BRWRNM) = 5 THEN SUBSTR(BRWRNM,1,2) || '**' || SUBSTR(BRWRNM,5,1)   END  AS BRWRNM             
+	        , VHC_DSC               /* 차량구분코드               */
+	        , CASE WHEN #{ss_security} = '1' THEN BRWR_TELNO
+	               WHEN LENGTH(REPLACE(BRWR_TELNO,'-','')) = 9  THEN SUBSTR(REPLACE(BRWR_TELNO,'-',''),1,2) || '-' || '***' || '-' || SUBSTR(REPLACE(BRWR_TELNO,'-',''),6,4)  
+	               WHEN LENGTH(REPLACE(BRWR_TELNO,'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(BRWR_TELNO,'-',''),1,2) = '02' 
+	                               											   THEN SUBSTR(REPLACE(BRWR_TELNO,'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(BRWR_TELNO,'-',''),7,4)  
+	                              											   ELSE SUBSTR(REPLACE(BRWR_TELNO,'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(BRWR_TELNO,'-',''),7,4)  END) 
+				   WHEN LENGTH(REPLACE(BRWR_TELNO,'-','')) = 11 or LENGTH(REPLACE(BRWR_TELNO,'-','')) = 12 THEN SUBSTR(REPLACE(BRWR_TELNO,'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(BRWR_TELNO,'-',''),8,4)                               											   
+	                               											   END  AS BRWR_TELNO               
+	        , CASE WHEN #{ss_security} = '1' THEN BRWR_MPNO
+	               WHEN LENGTH(REPLACE(BRWR_MPNO,'-','')) = 9  THEN SUBSTR(REPLACE(REPLACE(BRWR_MPNO,'-',''),'-',''),1,2) || '-' || '***' || '-' || SUBSTR(REPLACE(REPLACE(BRWR_MPNO,'-',''),'-',''),6,4)  
+	               WHEN LENGTH(REPLACE(BRWR_MPNO,'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(REPLACE(BRWR_MPNO,'-',''),'-',''),1,2) = '02' 
+	                               											   THEN SUBSTR(REPLACE(REPLACE(BRWR_MPNO,'-',''),'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(REPLACE(BRWR_MPNO,'-',''),'-',''),7,4)  
+	                              											   ELSE SUBSTR(REPLACE(REPLACE(BRWR_MPNO,'-',''),'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(REPLACE(BRWR_MPNO,'-',''),'-',''),7,4)  END) 
+				   WHEN LENGTH(REPLACE(BRWR_MPNO,'-','')) = 11 or LENGTH(REPLACE(BRWR_MPNO,'-','')) = 12 THEN SUBSTR(REPLACE(REPLACE(BRWR_MPNO,'-',''),'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(REPLACE(BRWR_MPNO,'-',''),'-',''),8,4)                               											   
+	                               											   END AS BRWR_MPNO          
+	        , SRA_LOAD_WT           /* 축산적재중량               */
+	        , SRA_VHC_TNCN          /* 축산차량톤수               */
+	        , SRA_LOAD_PSB_BULK     /* 축산적재가능용적           */
+	        , CARTP_C               /* 차종코드                   */
+	        , CASE WHEN LVST_TRPT_YN = '0' THEN '부' ELSE '여' END AS LVST_TRPT_YN          /* 가축수송여부               */
+	        , PVEP_DT               /* 방역일자                   */
+	        , CASE WHEN EDU_CPL_YN = '0' THEN '부' ELSE '여' END AS EDU_CPL_YN          /* 가축수송여부               */
+	    FROM TB_LA_IS_MM_VHC
+	    WHERE NA_BZPLC = #{ss_na_bzplc}
+	      AND DEL_YN   = '0'
+	      AND VHC_DRV_CAFFNM   LIKE '%'||#{vhc_drv_caffnm}||'%'
+    </select>
+        
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0913Mapper">
+    
+    <select id="LALM0913_selList" resultType="hashMap">
+    <![CDATA[
+         SELECT NA_BZPLC              /* 경제통합사업장코드       */
+		      , USRID                 /* 사용자아이디             */
+		      , USRNM                 /* 사용자명                 */
+		      , MPNO                  /* 사용자휴대번호           */
+		      , ENO                   /* 사용자개인번호           */
+		      , STRG_DT               /* 비밀번호변경일자         */
+		    FROM TB_LA_IS_MM_USR
+         WHERE NA_BZPLC       = #{ss_na_bzplc} 
+    ]]>
+    </select>
+    
+    <select id="LALM0913_selUser" resultType="hashMap">
+    <![CDATA[
+        SELECT COUNT(*) AS USER_CNT
+          FROM TB_LA_IS_MM_USR
+         WHERE usrid          = #{usrid}
+         
+    ]]>
+    </select>
+    
+    <insert id="LALM0913_insUser">
+    <![CDATA[
+         INSERT INTO TB_LA_IS_MM_USR(
+                 NA_BZPLC                           /* 경제통합사업장코드       */
+               , USRID                              /* 사용자아이디             */
+               , USRNM                              /* 사용자명                 */
+               , MPNO                               /* 사용자휴대번호           */
+               , PW                                 /* 비밀번호                 */
+               , ENO                                /* 사용자개인번호           */
+               , STRG_DT                            /* 비밀번호변경일자         */
+               , PWERR_NT                           /* 비밀번호오류횟수         */
+               , FSRG_DTM                           /* 최초등록일시             */
+               , FSRGMN_ENO                         /* 최초등록자개인번호       */
+               , LSCHG_DTM                          /* 최종변경일시             */
+               , LS_CMENO                           /* 최종변경자개인번호       */
+        )VALUES(
+                 #{ss_na_bzplc}                     /* 경제통합사업장코드       */
+               , #{usrid}                           /* 사용자아이디             */
+               , #{usrnm}                           /* 사용자명                 */
+               , #{mpno}                            /* 사용자휴대번호           */
+               , Damo.ENC_B64('KEY1', #{pw})        /* 비밀번호                 */
+               , #{usrid}                           /* 사용자개인번호           */
+               , TO_CHAR(SYSDATE,'YYYYMMDD')        /* 비밀번호변경일자         */
+               , 0                                  /* 비밀번호오류횟수         */
+               , SYSDATE                            /* 최초등록일시             */
+               , #{ss_userid}                       /* 최초등록자개인번호       */
+               , SYSDATE                            /* 최종변경일시             */
+               , #{ss_userid}                       /* 최종변경자개인번호       */
+        )         
+    ]]>
+    </insert>
+    
+    <update id="LALM0913_updUser">
+    <![CDATA[
+        UPDATE TB_LA_IS_MM_USR SET
+               USRNM     = #{usrnm}               /* 사용자명                 */
+             , MPNO      = #{mpno}                /* 사용자휴대번호           */
+             , LSCHG_DTM = SYSDATE                /* 최종변경일시             */
+             , LS_CMENO  = #{ss_userid}           /* 최종변경자개인번호       */
+         WHERE NA_BZPLC       = #{ss_na_bzplc} 
+           AND usrid          = #{usrid}
+         
+    ]]>
+    </update>
+    
+    <delete id="LALM0913_delUser">
+    <![CDATA[
+        DELETE 
+          FROM TB_LA_IS_MM_USR
+         WHERE NA_BZPLC       = #{ss_na_bzplc} 
+           AND usrid          = #{usrid}
+         
+    ]]>
+    </delete>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

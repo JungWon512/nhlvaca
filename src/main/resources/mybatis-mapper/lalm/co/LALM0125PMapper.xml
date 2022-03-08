@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0125PMapper">
+
+    <select id="LALM0125P_selList" resultType="hashMap">
+	    SELECT
+	         A.TRMN_AMNNO
+	        ,A.MWMN_NA_TRPL_C
+	        ,A.SRA_MWMNNM
+	        ,A.FRLNO
+	        ,A.ZIP
+	        ,A.DONGUP
+	        ,A.DONGBW
+	        ,A.OHSE_TELNO
+	        ,A.CUS_MPNO
+	        ,A.MACO_YN
+	        ,A.JRDWO_DSC
+	        ,A.PSN_INF_OFR_AGR_YN
+	        ,A.TMS_YN
+	        ,A.DEL_YN
+	        ,A.RMK_CNTN
+	        ,A.SMS_NO
+	        , CASE
+	            WHEN B.TRMN_AMNNO IS NULL THEN '0'
+	            ELSE '1' END   AS BAD_TRMN_AMNNO
+	    FROM TB_LA_IS_MM_MWMN A
+	     LEFT OUTER JOIN TB_LA_IS_MH_BAD_TRMN B
+	          ON  A.SRA_MWMNNM = B.SRA_MWMNNM
+	          AND A.FRLNO      = B.FRLNO
+	    WHERE A.NA_BZPLC = #{ss_na_bzplc}
+	       AND A.DEL_YN   = '0'
+	       <if test='v_trmn_amnno == "1"'>
+	           AND (A.TRMN_AMNNO       = #{sra_mwmnnm}
+	            or #{sra_mwmnnm}       is null)
+	       </if>	
+	       <if test='v_trmn_amnno == "2"'>
+		       AND A.SRA_MWMNNM LIKE '%' || #{sra_mwmnnm}  || '%' 
+	       </if>		       
+    </select>    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

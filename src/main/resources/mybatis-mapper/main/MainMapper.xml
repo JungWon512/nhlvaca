@@ -1,0 +1,723 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.main.service.Impl.MainMapper">
+
+	<select id="getUserList" resultType="java.util.LinkedHashMap" parameterType="Map">
+        SELECT USRID, USRNM, MPNO, NA_BZPLC, strg_dt
+          FROM TB_LA_IS_MM_USR          
+          <if test="data1 != null">
+         	WHERE usrnm LIKE '%'||#{data1}||'%' 
+          </if>
+    </select>
+    
+    <select id="selectMenuList" resultType="hashMap">
+    	SELECT A.MENU_ID
+             , A.MNNM_CNTN AS MENU_NM
+             , A.MENU_LVL_C
+             , A.SORT_SQ
+             , A.PGID
+             , B.FLNM
+             , A.UYN
+             , B.PGMNM
+             , A.ICON_NM
+             , CASE WHEN A.MENU_LVL_C = '2' THEN A.MENU_ID
+                    WHEN A.MENU_LVL_C = '3' THEN SUBSTR(A.MENU_ID, 1, 4) || '00'
+                    END AS SCD_MENU_ID
+             , CASE WHEN A.MENU_LVL_C = '2' THEN A.MNNM_CNTN
+                    WHEN A.MENU_LVL_C = '3' THEN  (SELECT MNNM_CNTN FROM TB_LA_IS_MM_MENU WHERE MENU_ID = SUBSTR(A.MENU_ID, 1, 4) || '00')
+                    END AS scd_menu_nm
+             FROM TB_LA_IS_MM_MENU A
+                , TB_LA_IS_MM_PGM  B
+                , (SELECT MENU_ID     
+                     FROM ( 
+                           SELECT SUBSTR(MENU_ID,1,4)||'00' AS MENU_ID
+                             FROM TB_LA_IS_MM_MENU_AUTH
+                            WHERE GRP_C   = #{ss_grp_c}
+                              AND AUTH_YN = '1'
+                            GROUP BY SUBSTR(MENU_ID,1,4)
+                            UNION ALL   
+                           SELECT MENU_ID
+                             FROM TB_LA_IS_MM_MENU_AUTH
+                            WHERE GRP_C   = #{ss_grp_c}
+                              AND AUTH_YN = '1'
+                            GROUP BY MENU_ID
+                          )
+                  ) C
+            WHERE A.MENU_LVL_C != '1'
+              AND A.UYN     = '1'
+              AND A.PGID    = B.PGID(+)
+              AND A.MENU_ID = C.MENU_ID
+            ORDER BY A.MENU_ID
+    </select>
+    
+    <select id="selectPopupList" resultType="hashMap">
+        SELECT A.PGID
+             , A.PGMNM
+             , A.FLNM
+          FROM TB_LA_IS_MM_PGM A 
+         WHERE A.PGM_DSC  = '2'
+           AND A.UYN     != '0'
+    </select>
+    
+    
+    <select id="selectBtnList" resultType="hashMap">
+        SELECT A.PGID       
+		      , MAX((CASE A.BTN_C WHEN '001' THEN A.UYN ELSE '0' END)) as B_REFRESH   
+              , MAX((CASE A.BTN_C WHEN '002' THEN A.UYN ELSE '0' END)) as B_SEARCH   
+              , MAX((CASE A.BTN_C WHEN '003' THEN A.UYN ELSE '0' END)) as B_SELECT
+              , MAX((CASE A.BTN_C WHEN '004' THEN A.UYN ELSE '0' END)) as B_INSERT  
+              , MAX((CASE A.BTN_C WHEN '005' THEN A.UYN ELSE '0' END)) as B_SAVE  
+		      , MAX((CASE A.BTN_C WHEN '006' THEN A.UYN ELSE '0' END)) as B_DELETE     
+		      , MAX((CASE A.BTN_C WHEN '007' THEN A.UYN ELSE '0' END)) as B_EXCEL   
+		      , MAX((CASE A.BTN_C WHEN '008' THEN A.UYN ELSE '0' END)) as B_PRINT   
+          FROM TB_LA_IS_MM_PGM_BTN A                                              
+         GROUP BY  A.PGID;
+    </select>
+    
+    <select id="selectBtnAuthList" resultType="hashMap">
+        SELECT B.WK_GRP_C AS GRP_C
+             , C.MENU_ID
+             , MAX(CASE C.BTN_TPC WHEN 'C' THEN NVL(C.AUTH_YN,'0') else '0' end) as AUTH_C
+             , MAX(CASE C.BTN_TPC WHEN 'R' THEN NVL(C.AUTH_YN,'0') else '0' end) as AUTH_R
+             , MAX(CASE C.BTN_TPC WHEN 'U' THEN NVL(C.AUTH_YN,'0') else '0' end) as AUTH_U
+             , MAX(CASE C.BTN_TPC WHEN 'D' THEN NVL(C.AUTH_YN,'0') else '0' end) as AUTH_D
+             , MAX(CASE C.BTN_TPC WHEN 'X' THEN NVL(C.AUTH_YN,'0') else '0' end) as AUTH_X
+             , MAX(CASE C.BTN_TPC WHEN 'P' THEN NVL(C.AUTH_YN,'0') else '0' end) as AUTH_P
+         FROM TB_LA_IS_MM_GRP       B
+         JOIN TB_LA_IS_MM_MENU_AUTH C ON(B.WK_GRP_C = C.GRP_C)
+        WHERE B.WK_GRP_C = #{ss_grp_c}
+        GROUP BY B.WK_GRP_C
+               , C.MENU_ID
+
+    </select>
+    
+    <select id="selectComboList" resultType="hashMap" parameterType="Map">
+        SELECT A.SIMP_C
+		     , A.SIMP_TPC
+		     , A.SIMP_C_GRP_SQNO
+		     , A.SIMP_C_YN
+		     , A.SIMP_CNM
+		     , A.PRET_SIMP_TPC
+		     , A.PRET_SIMP_C
+		     , A.SORT_SQ
+		     , A.AMN_HCNT
+		     , A.AMN_HCNT2
+		     , A.AMN_HCNT3
+		     , A.AMN_HCNT4
+		     , A.AMN_HCNT5
+		     , A.AMN_HCNT6
+		     , A.AMN_HCNT7
+		     , A.AMN_HCNT8
+		     , A.AMN_HCNT9
+		     , A.AMN_HCNT10
+		     , A.AMN_HCNT11
+		  FROM TB_LA_IS_MH_COMN_APL A	
+	     WHERE A.BSN_DSC = 'LM'
+	     ORDER BY A.SIMP_TPC
+	            , A.SORT_SQ	 
+    </select>
+    
+    <select id="selectWmcListData" resultType="hashMap" parameterType="Map">
+        SELECT
+	          NA_BZPLC            /* 경제통합사업장코드  */
+	        , NA_BZPLNM           /* 경제통합사업장명    */
+	        , BRC                 /* 사무소코드          */
+	        , BZNO                /* 대표사업자번호      */
+	        , REPMNM              /* 대표자명            */
+	        , ZIP                 /* 우편번호            */
+	        , DONGUP              /* 동이상주소          */
+	        , DONGBW              /* 동이하주소          */
+	        , TELNO               /* 대표전화번호        */
+	        , REP_BNK_C           /* 결제계좌은행        */
+	        , ACNO                /* 계좌번호            */
+	        , RMK_CNTN            /* 비고                */
+	        , FSRG_DTM            /* 최초등록일시        */
+	        , FSRGMN_ENO          /* 최초등록자개인번호  */
+	        , LSCHG_DTM           /* 최종변경일시        */
+	        , LS_CMENO            /* 최종변경자개인번호  */
+	        , SEAL_IMG_CNTN
+	        , BLOOD_AM
+	    FROM TB_LA_IS_MM_WMC
+	   WHERE NA_BZPLC = #{ss_na_bzplc}
+    </select>
+    
+    <select id="selectEnvListData" resultType="hashMap" parameterType="Map">
+	    SELECT
+	          NBFCT_AUC_UPR_DSC           /* 비육우단가기준              */
+	        , PHN_AUC_YN                  /* 음성경매여부                */
+	        , TD_RC_CST                   /* 당일접수비용                */
+	        , MT12_OVR_FEE                /* 12개월이상수수료            */
+	        , KPN_CIP                     /* KPN자리수                   */
+	        , EBBO_IP_ADDR1               /* 멀티A                       */
+	        , EBBO_PORT_NO1               /* 멀티A포트                   */
+	        , EBBO_IP_ADDR2               /* PDP A                       */
+	        , EBBO_PORT_NO2               /* PDP A 포트                  */
+	        , EBBO_IP_ADDR3               /* 멀티B                       */
+	        , EBBO_PORT_NO3               /* 멀티B포트                   */
+	        , EBBO_IP_ADDR4               /* PDP B                       */
+	        , EBBO_PORT_NO4               /* PDP B포트                   */
+	        , CALF_AUC_ATDR_UNT_AM        /* 송아지응찰단위금액          */
+	        , NBFCT_AUC_ATDR_UNT_AM       /* 비육우응찰단위금액          */
+	        , PPGCOW_AUC_ATDR_UNT_AM      /* 번식우응찰단위금액          */
+	        , CNNT_OBJ_SYS_DSC            /* 연계시스템구분              */
+	        , URL_NM                      /* 연계시스템URL               */
+	        , MULTI_AUCNO                 /* 멀티자릿수-경매번호         */
+	        , MULTI_FTSNM                 /* 멀티자릿수-출하주           */
+	        , MULTI_WEIGHT                /* 멀티자릿수-중량             */
+	        , MULTI_SEX                   /* 멀티자릿수-성별             */
+	        , MULTI_QCN                   /* 멀티자릿수-계대             */
+	        , MULTI_MATIME                /* 멀티자릿수-산차             */
+	        , MULTI_SBID_LMT_AM           /* 멀티자릿수-응찰하한가       */
+	        , MULTI_SBID_UPR              /* 멀티자릿수-낙찰가           */
+	        , MULTI_MWMNNM                /* 멀티자릿수-낙찰자           */
+	        , PDP_AUCNO                   /* PDP자릿수-경매번호          */
+	        , PDP_FTSNM                   /* PDP자릿수-출하주            */
+	        , PDP_WEIGHT                  /* PDP자릿수-중량              */
+	        , PDP_SEX                     /* PDP자릿수-성별              */
+	        , PDP_QCN                     /* PDP자릿수-계대              */
+	        , PDP_MATIME                  /* PDP자릿수-산차              */
+	        , PDP_SBID_LMT_AM             /* PDP자릿수-응찰하한가        */
+	        , PDP_SBID_UPR                /* PDP자릿수-낙찰가            */
+	        , PDP_MWMNNM                  /* PDP자릿수-낙찰자            */
+	        , SRA_FED_SPY_YN_FEE          /* 사료미사용추가수수료        */
+	        , BRKR_NAME_HOST              /* 수의사병원명                */
+	        , FEE_CHK_DNA_YN_FEE          /* 친자확인출하수수료          */
+	        , SELFEE_CHK_DNA_YN_FEE       /* 친자확인판매수수료          */
+	    FROM TB_LA_IS_MM_ENV_EST
+	   WHERE NA_BZPLC = #{ss_na_bzplc}
+    </select>
+    
+    
+    <update id="updatePassword">
+    <![CDATA[
+        UPDATE TB_LA_IS_MM_USR SET
+               PW        = Damo.ENC_B64('KEY1', #{io_new_pw})
+             , PWERR_NT  = 0
+             , STRG_DT   = TO_CHAR(SYSDATE,'YYYYMMDD')
+             , LSCHG_DTM = SYSDATE
+             , LS_CMENO  = #{usrid}
+         WHERE NA_BZPLC  = (SELECT na_bzplc FROM TB_LA_IS_MM_USR WHERE usrid = #{usrid})  
+           AND usrid     = #{usrid}
+           AND attc_no   = #{usr_pw}
+    ]]>
+    </update>
+    
+        
+    <select id="signCheck" parameterType="hashMap" resultType="Integer">    
+    	select count(*)
+    	  from TB_LA_IS_MM_USR
+    	 where usrid = #{user_id}
+    </select>
+       
+    <select id="selectNaList" resultType="HashMap">
+         SELECT 
+		        NA_BZPLC
+		      , NA_BZPLNM 
+		   FROM TB_LA_IS_MM_WMC
+		  GROUP BY NA_BZPLC, NA_BZPLNM
+    </select>
+    
+    <select id="signIn" parameterType="hashMap" resultType="hashMap">
+    	SELECT A.NA_BZPLC
+		     , B.NA_BZPLNM
+		     , A.usrid          /* 사용자아이디          */
+		     , A.usrnm          /* 사용자명              */
+		     , A.mpno           /* 사용자휴대번호        */
+		     , A.eno            /* 사용자개인번호        */
+		     , A.strg_dt        /* 사용권한              */
+		     , A.pwerr_nt       /* 패스워드틀린횟수      */
+		     , A.fsrg_dtm       /* 최초등록일시          */
+		     , A.fsrgmn_eno     /* 최초등록자개인번호    */
+		     , A.lschg_dtm      /* 최종변경일시          */
+		     , A.ls_cmeno       /* 최종변경자개인번호    */
+             , NVL(C.GRP_C, '002') AS GRP_C /*권한코드 권한코드 없을시 일반사용자(002)*/
+		  FROM TB_LA_IS_MM_USR A,
+		       TB_LA_IS_MM_WMC B,
+               TB_LA_IS_MM_GRP_USR C
+		 WHERE A.NA_BZPLC = B.NA_BZPLC(+)		 
+           AND A.USRID    = C.USRID(+)
+		   AND A.USRID    = #{user_id}
+    </select>
+    
+    <update id="updPwerr_nt">
+       UPDATE TB_LA_IS_MM_USR
+          SET pwerr_nt = #{PWERR_NT} + 1
+        WHERE na_bzplc = #{NA_BZPLC}
+          AND usrid    = #{USRID}
+    </update>
+    
+    <update id="updNaBzplc">
+       UPDATE TB_LA_IS_MM_USR
+          SET na_bzplc = #{na_bzplc}
+        WHERE na_bzplc = #{ss_na_bzplc}
+          AND usrid    = #{ss_userid}
+    </update>
+    
+        <update id="updPwerr_ntInit">
+       UPDATE TB_LA_IS_MM_USR
+          SET pwerr_nt = 0
+        WHERE na_bzplc = #{NA_BZPLC}
+          AND usrid    = #{USRID}
+    </update>
+    
+    <select id="selChkPw" resultType="_int">
+        SELECT count(*)
+          FROM TB_LA_IS_MM_USR
+         WHERE PW    = Damo.ENC_B64('KEY1', #{user_pw})
+           AND USRID = #{usrid}
+    </select>
+    
+    
+    <select id="MainSogQcn_selList" resultType="hashMap">
+        SELECT '1월'            AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0101' AND #{cb_year} ||'0131'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0101' AND #{cb_year} ||'0131'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0101' AND #{cb_year} ||'0131'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+)
+          AND A.na_bzplc   = #{ss_na_bzplc}
+        UNION ALL
+        SELECT '2월'            AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0201' AND #{cb_year} ||'0231'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0201' AND #{cb_year} ||'0231'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0201' AND #{cb_year} ||'0231'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+)
+          AND A.NA_BZPLC   = #{ss_na_bzplc} 
+        UNION ALL
+        SELECT '3월'            AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0301' AND #{cb_year} ||'0331'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0301' AND #{cb_year} ||'0331'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0301' AND #{cb_year} ||'0331'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+) 
+          AND A.na_bzplc     = #{ss_na_bzplc} 
+        UNION ALL
+        SELECT '4월'            AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0401' AND #{cb_year} ||'0431'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0401' AND #{cb_year} ||'0431'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0401' AND #{cb_year} ||'0431'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+) 
+          AND A.na_bzplc     = #{ss_na_bzplc}
+        UNION ALL
+        SELECT '5월'            AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0501' AND #{cb_year} ||'0531'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0501' AND #{cb_year} ||'0531'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0501' AND #{cb_year} ||'0531'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+)
+          AND A.na_bzplc     = #{ss_na_bzplc}
+        UNION ALL
+        SELECT '6월'            AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0601' AND #{cb_year} ||'0631'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0601' AND #{cb_year} ||'0631'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc}
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0601' AND #{cb_year} ||'0631'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+)  
+          AND A.na_bzplc     = #{ss_na_bzplc}
+        UNION ALL
+        SELECT '7월'            AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0701' AND #{cb_year} ||'0731'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0701' AND #{cb_year} ||'0731'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0701' AND #{cb_year} ||'0731'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+)  
+          AND A.na_bzplc     = #{ss_na_bzplc}
+        UNION ALL
+        SELECT '8월'            AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0801' AND #{cb_year} ||'0831'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0801' AND #{cb_year} ||'0831'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0801' AND #{cb_year} ||'0831'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+)  
+          AND A.na_bzplc     = #{ss_na_bzplc}
+        UNION ALL
+        SELECT '9월'            AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0901' AND #{cb_year} ||'0931'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0901' AND #{cb_year} ||'0931'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'0901' AND #{cb_year} ||'0931'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+)  
+          AND A.na_bzplc     = #{ss_na_bzplc}
+        UNION ALL
+        SELECT '10월'           AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'1001' AND #{cb_year} ||'1031'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'1001' AND #{cb_year} ||'1031'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'1001' AND #{cb_year} ||'1031'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+)
+          AND A.na_bzplc     = #{ss_na_bzplc}
+        UNION ALL
+        SELECT '11월'           AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'1101' AND #{cb_year} ||'1131'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'1101' AND #{cb_year} ||'1131'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'1101' AND #{cb_year} ||'1131'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+)  
+          AND A.na_bzplc     = #{ss_na_bzplc}
+        UNION ALL
+        SELECT '12월'           AS MONTHNM
+             , nvl(B.SOCOW, 0) AS SOCOW
+             , nvl(C.BICOW, 0) AS BICOW
+             , nvl(D.BUCOW, 0) AS BUCOW
+          FROM TB_LA_IS_MM_WMC              A
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS SOCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'1201' AND #{cb_year} ||'1231'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '1'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) B
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BICOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'1201' AND #{cb_year} ||'1231'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '2'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) C
+             , (SELECT A.NA_BZPLC
+                     , COUNT(*) AS BUCOW
+                  FROM TB_LA_IS_MH_SOG_COW  A
+                WHERE A.AUC_DT       BETWEEN #{cb_year} ||'1201' AND #{cb_year} ||'1231'
+                  AND A.NA_BZPLC     = #{ss_na_bzplc} 
+                  AND A.AUC_OBJ_DSC  = '3'
+                  AND A.DEL_YN       = '0'
+                 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC) D
+        WHERE A.NA_BZPLC   = B.NA_BZPLC(+)
+          AND A.NA_BZPLC   = C.NA_BZPLC(+)
+          AND A.NA_BZPLC   = D.NA_BZPLC(+)  
+          AND A.na_bzplc     = #{ss_na_bzplc}
+    </select>    
+   
+    <select id="MainNotice_selList" resultType="hashMap">
+        SELECT ROWNUM, A.*
+          FROM 
+        (
+        SELECT A.NA_BZPLC
+             , A.BLBD_DSC
+             , A.BBRD_SQNO
+             , A.RL_SQNO
+             , CASE WHEN LENGTH(A.BBRD_TINM) > 20 THEN SUBSTR(A.BBRD_TINM,1,19)||'...'
+               ELSE A.BBRD_TINM END AS BBRD_TINM
+             , B.USRNM
+             , TO_CHAR(A.FSRG_DTM, 'YYYY-MM-DD') AS FSRG_DTM
+             , A.BBRD_INQ_CN
+             , A.FIX_YN
+          FROM TB_LA_IS_MM_BLBD A
+          LEFT OUTER JOIN TB_LA_IS_MM_USR B
+            ON A.FSRGMN_ENO = B.USRID
+         WHERE 1=1
+           AND A.NA_BZPLC      = #{na_bzplc}
+           AND A.BLBD_DSC      = '2'
+           AND A.RL_SQNO       = 0
+           AND A.BBRD_DEL_YN  != '1'
+         ORDER BY FIX_YN desc, FSRG_DTM desc
+       ) A
+         WHERE ROWNUM <![CDATA[ <= ]]> 10  
+    </select>      
+    
+    <select id="MainSogYear_selList" resultType="hashMap">
+    <![CDATA[
+		SELECT TO_CHAR(SYSDATE, 'YYYY') - 10 + LEVEL AS CB_YEAR
+		     , TO_CHAR(SYSDATE, 'YYYY') - 10 + LEVEL || '년' AS CB_YEARNM
+		FROM DUAL 
+		CONNECT BY LEVEL <11
+		ORDER BY CB_YEAR DESC
+	]]>
+    </select>       
+    
+    
+
+</mapper>

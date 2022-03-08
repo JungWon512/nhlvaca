@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ar.service.Impl.LALM0211Mapper">
+
+    <select id="LALM0211_selList" resultType="hashMap">
+    <![CDATA[
+         SELECT NA_BZPLC                     /* 경제통합사업장코드      */
+              , APL_DT                       /* 적용일자                */
+              , AUC_OBJ_DSC                  /* 경매대상구분코드        */
+              , FEE_RG_SQNO                  /* 수수료등록일련번호      */
+              , NA_FEE_C                     /* 경제통합수수료코드      */
+              , SRA_FEENM                    /* 축산수수료명            */
+              , JNLZ_BSN_DSC                 /* 분개업무구분코드        */
+              , SRA_NA_FEE_C                 /* 축산경제통합수수료코드  */
+              , FEE_APL_OBJ_C                /* 수수료적용대상코드      */
+              , AM_RTO_DSC                   /* 금액비율구분코드        */
+              , SGNO_PRC_DSC                 /* 단수처리구분코드        */
+              , MACO_FEE_UPR                 /* 조합원수수료단가        */
+              , NMACO_FEE_UPR                /* 비조합원수수료단가      */
+              , (SELECT AMN_HCNT
+                   FROM TB_LA_IS_MH_COMN_APL
+                  WHERE SIMP_TPC = 'ANS_DSC'
+                    AND SIMP_C   = ANS_DSC)  AS AMN_HCNT   /* 가감구분코드            */
+              , SBID_YN                      /* 낙찰여부                */
+              , PPGCOW_FEE_DSC               /* 번식우수수료구분코드    */
+              , DEL_YN                       /* 삭제여부                */
+              , FSRG_DTM                     /* 최초등록일시            */
+              , FSRGMN_ENO                   /* 최초등록자개인번호      */
+              , LSCHG_DTM                    /* 최종변경일시            */
+              , LS_CMENO                     /* 최종변경자개인번호      */
+           FROM TB_LA_IS_MH_FEE
+          WHERE NA_BZPLC             = #{ss_na_bzplc}
+            AND AUC_OBJ_DSC          = #{auc_obj_dsc}
+            AND APL_DT               = (SELECT MAX(APL_DT)
+                                          FROM TB_LA_IS_MH_FEE
+                                         WHERE NA_BZPLC             = #{ss_na_bzplc}
+                                           AND AUC_OBJ_DSC          = #{auc_obj_dsc}
+                                           AND APL_DT              <= #{apl_dt}
+                                           AND DEL_YN               = '0')
+            AND DEL_YN               = '0'
+          ORDER BY AUC_OBJ_DSC
+              , FEE_APL_OBJ_C
+              , NA_FEE_C
+              , PPGCOW_FEE_DSC
+    ]]>
+    </select>
+
+    <select id="LALM0211_selList2" resultType="hashMap">
+         SELECT
+           A.AUC_PRG_SQ                                  /* 경매진행순서                      */
+         , B.DONGUP || B.DONGBW AS DONG                  /* 축산농장동이상주소                */
+         , B.FTSNM                                       /* 축산농가명                        */
+         , A.AUC_OBJ_DSC                                 /* 경매대상구분코드                  */
+         , SUBSTR(A.SRA_INDV_AMNNO,1,2) AS SRA_INDV_AMNNO1                             /* 축산개체관리번호                  */
+         , SUBSTR(A.SRA_INDV_AMNNO,2,5) AS SRA_INDV_AMNNO2                              /* 축산개체관리번호                  */
+         , SUBSTR(A.SRA_INDV_AMNNO,7)   AS SRA_INDV_AMNNO3                              /* 축산개체관리번호                  */
+         , A.RMHN_YN                                     /* 제각여부                          */
+         , RTRIM(D.KPN_NO) AS KPN_NO                     /* KPN번호                           */
+         , D.RG_DSC                                      /* 등록구분코드                      */
+         , D.INDV_SEX_C                                  /* 개체성별코드                      */
+         , A.PRNY_MTCN AS MTCN                           /* 임신개월수                        */
+
+    FROM TB_LA_IS_MH_SOG_COW     A
+    LEFT OUTER JOIN TB_LA_IS_MM_VHC C
+         ON  A.NA_BZPLC            = C.NA_BZPLC
+         AND A.VHC_SHRT_C          = C.VHC_SHRT_C
+
+    LEFT OUTER JOIN TB_LA_IS_MM_MWMN E
+         ON  A.NA_BZPLC            = E.NA_BZPLC
+         AND A.TRMN_AMNNO          = E.TRMN_AMNNO                      /* 거래인관리번호              */
+
+    LEFT OUTER JOIN TB_LA_IS_MM_TRPL F
+         ON  A.NA_BZPLC            = F.NA_BZPLC
+         AND '1'                   = F.LVST_MKT_TRPL_DSC               /* 가축시장거래처구분코드      */
+         AND A.LVST_MKT_TRPL_AMNNO = F.LVST_MKT_TRPL_AMNNO             /* 가축시장거래처관리번호      */
+
+    LEFT OUTER JOIN TB_LA_IS_MH_CALF G
+         ON  A.NA_BZPLC            = G.NA_BZPLC                        /* 경제통합사업장코드          */
+         AND A.AUC_OBJ_DSC         = G.AUC_OBJ_DSC                     /* 경매대상구분코드            */
+         AND A.AUC_DT              = G.AUC_DT                          /* 경매일자                    */
+         AND A.OSLP_NO             = G.OSLP_NO                         /* 원표번호                    */
+         AND 1                     = G.RG_SQNO                         /* 등록일련번호                */
+       , TB_LA_IS_MM_FHS         B
+       , TB_LA_IS_MM_INDV        D
+   WHERE  A.NA_BZPLC               = B.NA_BZPLC                                                                                            /* 경제통합사업장코드          */
+      AND A.FHS_ID_NO              = B.FHS_ID_NO                                                                                           /* 농가식별번호                */
+      AND A.FARM_AMNNO             = B.FARM_AMNNO                                                                                          /* 농장거래번호                */
+AND A.AUC_DT between '20150601' AND '20150631'
+      
+      AND A.NA_BZPLC               = D.NA_BZPLC                                                                                            /* 경제통합사업장코드          */
+      AND A.SRA_SRS_DSC            = D.SRA_SRS_DSC                                                                                         /* 축산축종구분코드            */
+      AND A.SRA_INDV_AMNNO         = D.SRA_INDV_AMNNO
+    ORDER BY A.AUC_PRG_SQ
+    </select>
+    
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,108 @@
+@charset "utf-8";
+
+@media (max-width: 1024px) {
+
+.fl_L.m_full, .fl_R.m_full{float:none;margin-bottom:20px;width:100% !important;}
+
+/* 트리영역 */
+.tree_left{padding-left:0 !important;}
+.tree_box{position:static;margin-bottom:20px;width:100% !important;}
+.tree_area{border:1px solid #d9d9d9;overflow:auto;width:100%;height:auto !important;}
+
+/* main */
+.main .cont_bottom{margin-left:0;}
+.main .cont_bottom .main_notice{float:none;margin-bottom:10px;margin-left:0;width:100%;}
+
+.main .noticeSec{width:100%;}
+
+.alert_msg{top:55px;}
+.alert_msg:before{right:25px;top:-5px;width:5px;height:5px;-webkit-background-size:5px auto;background-size:5px auto;}
+
+
+}
+
+@media (max-width: 767px) {
+
+.btn{min-width:65px;}
+.tb_btn{padding:0 6px;}
+
+.scroll_section.m_bdn{border:0;}
+/* tab_box */
+.tab_box .tab_list li a{padding:9px 10px 7px;min-width:100px;}
+
+.grayTable colgroup{display:none;}
+.grayTable.rsp_v tr:first-child th{border:0 !important;}
+.grayTable.rsp_v tr:first-child td{border:0 !important;}
+.grayTable.rsp_v th{display:block;padding:4px 10px;border:0;}
+.grayTable.rsp_v td{display:block;padding:4px 10px;border:0;}
+.grayTable.rsp_h table{border:0;}
+.grayTable.rsp_h thead th{display:none;}
+.grayTable.rsp_h td{display:block;padding:0px 5px 5px !important;border:0 !important;}
+.grayTable.rsp_h tbody tr{display:block;margin-top:20px;border-top:1px solid #d2d2d2;border-bottom:1px solid #d2d2d2;}
+.grayTable.rsp_h tbody tr:first-child{margin-top:0;}
+.grayTable.rsp_h tbody tr:first-child td{border:0 !important;}
+.grayTable.rsp_h tbody td:before{display:block;margin:0 -5px 6px;padding:5px;content:attr(data-th);background-color:#ddd;}
+.grayTable td.ta_c{text-align:left !important;}
+
+.blueTable colgroup{display:none;}
+.blueTable colgroup col{display:none;}
+.blueTable.rsp_v th{display:block;margin-top:5px;padding:4px 10px;}
+.blueTable.rsp_v td{display:block;padding:4px 10px;}
+.blueTable.rsp_h thead th{display:none;}
+.blueTable.rsp_h td{display:block;padding:4px 10px;}
+/*
+.listTable table{width:100%;text-align:left;}
+.listTable colgroup{display:none;}
+.listTable thead th{display:none;}
+.listTable thead th.th_chkAll{display:block;margin-bottom:10px;}
+.listTable tbody tr{display:block;margin-top:20px;}
+.listTable tbody tr:first-child{margin-top:0;}
+.listTable tbody td:before{display:block;margin:0 -5px 7px;padding:5px;content:attr(data-th);background-color:#ddd;}
+.listTable tbody td{display:block;padding:0 5px 10px;width:100%;border-right:0;height:auto;}
+*/
+.noticeTable.rsp_h table{width:100%;text-align:left;}
+.noticeTable.rsp_h colgroup{display:none;}
+.noticeTable.rsp_h thead th{display:none;}
+.noticeTable.rsp_h tbody tr{display:block;margin-top:20px;border-top:1px solid #000;}
+.noticeTable.rsp_h tbody tr:first-child{margin-top:0;border-top:0;}
+.noticeTable.rsp_h tbody td:before{display:block;margin:0 -5px 7px;padding:5px;content:attr(data-th);background-color:#ddd;}
+.noticeTable.rsp_h tbody td{display:block;padding:0 5px 5px;width:100%;border-right:0;height:auto;text-align:left;}
+
+.noticeTable.rsp_v colgroup{display:none;}
+.noticeTable.rsp_v tbody tr{display:block;}
+.noticeTable.rsp_v tbody th{display:block;margin-bottom:10px;padding:10px 0 10px 5px;width:100%;}
+.noticeTable.rsp_v tbody tr:first-child{margin-top:0;}
+.noticeTable.rsp_v tbody td{display:block;padding:0 5px 5px;width:100%;border-top:0;height:auto;text-align:left;}
+
+.label_chkAll{display:inline;}
+
+/* popup */
+.pop_head{padding:11px 10px 12px ;background:#e34132;overflow:hidden}
+.pop_head p{font-size:14px;line-height:18px}
+.pop_body{padding:20px 10px}
+
+/* mix_btn_area */
+.mix_btn_area .m_block{display:block;margin-bottom:10px;text-align:left;}
+
+
+.main .main_graph2{padding-bottom:0;}
+.main .main_graph2 .slide_item {padding:0 0 40px;}
+.main_graph2 .c_tit{bottom:51%;}
+
+}
+
+
+@media (max-width: 640px) {
+/* tab_box */
+.tab_box .tab_list li a{padding:9px 5px 7px;min-width:60px;}
+
+/* layer popup */
+.layer-title{padding:10px;font-size:13px;}
+.layer-cont{padding:10px;}
+.layer_popup_close{padding:11px;font-size:13px;}
+
+}
+
+@media (max-width: 360px) {
+.login_wrap .login_box .inner{width:300px;}
+}

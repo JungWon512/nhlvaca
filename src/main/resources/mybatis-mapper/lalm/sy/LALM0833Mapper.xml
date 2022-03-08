@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.sy.service.Impl.LALM0833Mapper">
+
+    <select id="LALM0833_selGrpCode" resultType="hashMap">
+        SELECT A.WK_GRP_C
+		     , A.WK_GRPNM
+		  FROM TB_LA_IS_MM_GRP     A
+		 WHERE 1=1
+		 <if test='dsc == "1"'>
+            AND A.wk_grp_c != '002'
+         </if>      		 
+    </select>
+
+    <select id="LALM0833_selList" resultType="hashMap"> 
+		SELECT A.WK_GRP_C
+		     , A.WK_GRPNM
+		     , A.UYN
+		     , B.USRID
+		     , B.APL_STS_DSC
+		     , B.APL_ST_DT
+		     , B.APL_ED_DT
+		  FROM TB_LA_IS_MM_GRP     A
+		  JOIN TB_LA_IS_MM_GRP_USR B ON(A.WK_GRP_C = B.GRP_C)
+		 WHERE 1=1
+		   AND A.wk_grp_c != '002'
+         <if test='wk_grp_c != null and wk_grp_c != ""'>
+            AND A.wk_grp_c = #{wk_grp_c}
+          </if>      
+         <if test='usrid != null and usrid != ""'>
+            AND B.usrid = #{usrid}
+          </if>                
+         <if test='apl_sts_dsc != null and apl_sts_dsc != ""'>
+            AND B.apl_sts_dsc = #{apl_sts_dsc}
+          </if>      
+          
+    </select>
+    
+    <insert id="LALM0833_insUsr">
+     INSERT INTO TB_LA_IS_MM_GRP_USR
+         ( grp_c
+         , usrid
+         , apl_sts_dsc
+         , apl_st_dt
+         , apl_ed_dt
+         , fsrg_dtm
+         , fsrgmn_eno
+         , lschg_dtm
+         , ls_cmeno
+         ) VALUES (
+             #{de_wk_grp_c}
+           , #{de_usrid}
+           , #{de_apl_sts_dsc}
+           , #{de_apl_st_dt}
+           , #{de_apl_ed_dt}
+           , SYSDATE
+           , #{ss_userid}
+           , SYSDATE
+           , #{ss_userid}
+         )
+    </insert>
+    
+    <update id="LALM0833_updUsr">
+        UPDATE TB_LA_IS_MM_GRP_USR
+           SET apl_sts_dsc = #{de_apl_sts_dsc} 
+             , apl_st_dt   = #{de_apl_st_dt} 
+             , apl_ed_dt   = #{de_apl_ed_dt}
+             , lschg_dtm   = SYSDATE 
+             , ls_cmeno    = #{ss_userid}
+         WHERE grp_c       = #{de_wk_grp_c}
+           AND usrid       = #{de_usrid}
+    </update>
+    
+    <delete id="LALM0833_delUsr">
+        DELETE FROM TB_LA_IS_MM_GRP_USR
+         WHERE grp_c       = #{de_wk_grp_c}
+           AND usrid       = #{de_usrid}
+    </delete>
+        
+    <select id="LALM0833_selGrpList" resultType="hashMap">
+        SELECT WK_GRP_C
+             , WK_GRPNM
+             , UYN 
+         FROM TB_LA_IS_MM_GRP              
+    </select>
+    
+    <delete id="LALM0833_delGrpList">
+     DELETE FROM TB_LA_IS_MM_GRP
+      WHERE WK_GRP_C       = #{wk_grp_c}
+    </delete>
+    
+    <insert id="LALM0833_updGrpList">
+        MERGE INTO TB_LA_IS_MM_GRP A
+            USING DUAL ON(A.WK_GRP_C     = #{wk_grp_c})
+             WHEN MATCHED THEN
+                  UPDATE SET WK_GRPNM    = #{wk_grpnm},
+                             UYN         = #{uyn},
+                             LSCHG_DTM   = SYSDATE,
+                             LS_CMENO    = #{ss_userid}
+            WHEN NOT MATCHED THEN
+            INSERT (
+                    WK_GRP_C,
+                    WK_GRPNM,
+                    UYN,
+                    FSRG_DTM,
+                    FSRGMN_ENO,
+                    LSCHG_DTM,
+                    LS_CMENO
+                    )
+            VALUES(
+                    #{wk_grp_c},
+                    #{wk_grpnm},
+                    #{uyn},
+                    SYSDATE,
+                    #{ss_userid},
+                    SYSDATE,
+                    #{ss_userid}
+            )
+    
+    </insert>
+    
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

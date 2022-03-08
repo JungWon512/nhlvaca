@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.sy.service.Impl.LALM0831Mapper">
+
+    <select id="LALM0831_selList" resultType="hashMap">
+        SELECT A.menu_id
+             , A.mnnm_cntn
+             , A.menu_lvl_c
+             , A.sort_sq
+             , A.pgid
+             , A.uyn
+             , A.icon_nm
+             , CASE WHEN A.menu_lvl_c = '2' THEN A.menu_id
+                    WHEN A.menu_lvl_c = '3' THEN SUBSTR(A.menu_id, 1, 4) || '00'
+                    END AS pId
+             , CASE WHEN A.menu_lvl_c = '2' THEN A.mnnm_cntn
+                    WHEN A.menu_lvl_c = '3' THEN  (SELECT mnnm_cntn FROM TB_LA_IS_MM_MENU WHERE menu_id = SUBSTR(A.menu_id, 1, 4) || '00')
+                    END AS scd_menu_nm
+             FROM TB_LA_IS_MM_MENU A
+            WHERE A.menu_lvl_c != '1'
+    </select>
+    
+    <insert id="LALM0831_insMenu">
+		INSERT INTO TB_LA_IS_MM_MENU(
+		  menu_id
+		, mnnm_cntn
+		, menu_lvl_c
+		, sort_sq
+		, pgid
+		, uyn
+		, icon_nm
+		, fsrg_dtm
+		, fsrgmn_eno
+		, lschg_dtm
+		, ls_cmeno)
+		VALUES(
+		  #{menu_id}
+		, #{mnnm_cntn}
+		, #{menu_lvl_c}
+		, #{sort_sq}
+		, #{pgid}
+		, #{uyn}
+		, #{icon_nm}
+		, SYSDATE
+		, #{ss_userid}
+		, SYSDATE
+		, #{ss_userid}
+		)
+    </insert>
+    
+    <update id="LALM0831_updMenu">
+        UPDATE TB_LA_IS_MM_MENU
+		   SET menu_id    = #{menu_id}
+		     , mnnm_cntn  = #{mnnm_cntn}
+		     , menu_lvl_c = #{menu_lvl_c}
+		     , sort_sq    = #{sort_sq}
+		     , pgid       = #{pgid}
+		     , uyn        = #{uyn}
+		     , icon_nm    = #{icon_nm} 
+		     , lschg_dtm  = SYSDATE
+		     , ls_cmeno   = #{ss_userid}
+		 WHERE menu_id = #{menu_id}
+    </update>
+    
+    <delete id="LALM0831_delMenu">
+        DELETE FROM TB_LA_IS_MM_MENU WHERE menu_id = #{menu_id}
+    </delete>
+    
+    <insert id="LALM0831_insMenuAuth">
+        INSERT INTO TB_LA_IS_MM_MENU_AUTH(
+          menu_id
+        , grp_c
+        , btn_tpc
+        , auth_yn
+        , fsrg_dtm
+        , fsrgmn_eno
+        , lschg_dtm
+        , ls_cmeno)
+        VALUES(
+          #{menu_id}
+        , #{grp_c}
+        , #{btn_tpc}
+        , '1'
+        , SYSDATE
+        , #{ss_userid}
+        , SYSDATE
+        , #{ss_userid}
+        )
+    </insert>
+    
+    <delete id="LALM0831_delMenuAuth">
+        DELETE FROM TB_LA_IS_MM_MENU_AUTH WHERE menu_id = #{menu_id}
+    </delete>
+
+</mapper>

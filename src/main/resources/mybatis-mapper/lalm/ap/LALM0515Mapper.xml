@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ap.service.Impl.LALM0515Mapper">
+
+    <select id="LALM0515_selList" resultType="hashMap">
+    <![CDATA[   
+	    SELECT
+	           SUBSTR(A.AUC_DT, 1, 4) || '-' || SUBSTR(A.AUC_DT, 5, 2) || '-' || SUBSTR(A.AUC_DT, 7, 2) AS AUC_DT                   /* 경매일자                   */
+	         , CASE WHEN A.AUC_OBJ_DSC = '1' THEN '송아지' 
+	                WHEN A.AUC_OBJ_DSC = '2' THEN '비육우'
+	                WHEN A.AUC_OBJ_DSC = '3' THEN '번식우' ELSE '일괄' END       AS AUC_OBJ_DSC              /* 경매대상구분코드               */
+	         , D.FHS_ID_NO || '-' || D.FARM_AMNNO                            AS FHS_ID_NO                /* 출하자코드                 */
+	         , CASE WHEN #{ss_security} = '1' THEN D.FTSNM
+	                WHEN LENGTH(D.FTSNM) = 2 THEN SUBSTR(D.FTSNM,1,1) || '*' 
+	                WHEN LENGTH(D.FTSNM) = 3 THEN SUBSTR(D.FTSNM,1,1) || '*'  || SUBSTR(D.FTSNM,3,1) 
+	                WHEN LENGTH(D.FTSNM) = 4 THEN SUBSTR(D.FTSNM,1,1) || '**' || SUBSTR(D.FTSNM,4,1)  
+                    WHEN LENGTH(D.FTSNM) = 5 THEN SUBSTR(D.FTSNM,1,2) || '**' || SUBSTR(D.FTSNM,5,1)  
+                    WHEN LENGTH(D.FTSNM) > 5 THEN SUBSTR(D.FTSNM,1,2) || '**' || SUBSTR(D.FTSNM,5,1)
+               ELSE '**' END AS FTSNM  /* 출하자명                     */ 
+	         , CASE WHEN D.MACO_YN   = '1' THEN '조합원' ELSE '비조합원' END	 AS MACO_YN                  /* 조합원여부                 */
+	         , CASE WHEN D.JRDWO_DSC = '1' THEN '관내' ELSE '관외' END	         AS JRDWO_DSC                /* 관내외구분                 */                        
+	         , A.AUC_PRG_SQ                                         AS AUC_PRG_SQ               /* 경매진행순서                 */
+	         , CASE WHEN #{ss_security} = '1' THEN D.DONGUP ||' '|| D.DONGBW
+	                ELSE D.DONGUP ||' '||  TRIM(LPAD(' ', LENGTH(D.DONGBW) +1, '*')) END AS DONGUP                   /* 주소                      */
+	         , SUBSTR(A.SRA_INDV_AMNNO, 1, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9)    AS SRA_INDV_AMNNO           /* 축산개체관리번호               */
+			 , CASE WHEN C.INDV_SEX_C = '0' THEN '없음'
+				    WHEN C.INDV_SEX_C = '1' THEN '암'
+				    WHEN C.INDV_SEX_C = '2' THEN '수'
+				    WHEN C.INDV_SEX_C = '3' THEN '거세'
+				    WHEN C.INDV_SEX_C = '4' THEN '미경산'
+				    WHEN C.INDV_SEX_C = '5' THEN '비거세'
+				    WHEN C.INDV_SEX_C = '6' THEN '프리마틴'
+				    WHEN C.INDV_SEX_C = '9' THEN '공통' ELSE '없음' END 	  AS INDV_SEX_C               /* 개체성별코드                 */        
+	         , SUBSTR(C.BIRTH, 1, 4) || '-' || SUBSTR(C.BIRTH, 5, 2) || '-' || SUBSTR(C.BIRTH, 7, 2)  AS BIRTH 
+	         , SUBSTR(C.MCOW_SRA_INDV_AMNNO, 1, 3) || '-' ||  SUBSTR(C.MCOW_SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(C.MCOW_SRA_INDV_AMNNO, 7, 9) AS MCOW_SRA_INDV_AMNNO      /* 어미소축산개체관리번호            */
+	         , nvl(A.LOWS_SBID_LMT_AM, 0)                                   AS LOWS_SBID_LMT_AM         /* 최저낙찰한도금액               */
+	         , nvl(A.COW_SOG_WT, 0)                                         AS COW_SOG_WT               /* 우출하중량                 */
+	         , CASE WHEN A.SEL_STS_DSC = '22'
+	                THEN nvl(A.SRA_SBID_UPR, 0) ELSE 0 END                  AS SRA_SBID_UPR             /* 낙찰단가                   */
+	         , CASE WHEN A.SEL_STS_DSC = '22'                       
+	                THEN nvl(A.SRA_SBID_AM, 0) ELSE 0 END                   AS SRA_SBID_AM              /* 낙찰금액                   */
+	         , nvl(B.SRA_SOG_FEE, 0)                                        AS SRA_SOG_FEE              /* 출하수수료                 */
+	         , (nvl(B.SRA_ACO_IVSAM, 0) + NVL(A.SRA_PYIVA, 0))                        AS SRA_PYIVA                /* 조합출자금                 */
+	         , nvl(B.SRA_ACD_RVGAM, 0)                                      AS SRA_ACD_RVGAM            /* 사고적립금                 */
+	         , (nvl(B.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0))                    AS SRA_TRPCS                /* 운송비                   */
+	         , nvl(B.SRA_NCSS_JUG_FEE, 0)                                   AS SRA_NCSS_JUG_FEE         /* 괴사감정료                 */
+	         , nvl(B.SRA_PRNY_JUG_FEE, 0)                                   AS SRA_PRNY_JUG_FEE         /* 임신감정료                 */
+	         , nvl(B.SRA_MDCCS, 0)                                          AS SRA_MDCCS                /* 검진비                   */
+	         , nvl(B.SRA_INJT_FEE, 0)                                       AS SRA_INJT_FEE             /* 주사료                   */
+	         , nvl(B.SRA_SHNM, 0)                                           AS SRA_SHNM                 /* 자조금                   */
+	         , nvl(B.SRA_PDG_RC_FEE, 0)                                     AS SRA_PDG_RC_FEE           /* 혈통접수비                 */
+	         , nvl(B.SRA_RMHN_FEE, 0)                                       AS SRA_RMHN_FEE             /* 제각수수료                 */
+	         , nvl(B.SRA_TRU_FEE , 0)                                       AS SRA_TRU_FEE              /* 위탁수수료                 */
+	         , nvl(A.SRA_FED_SPY_AM, 0)                                     AS SRA_FED_SPY_AM           /* 사료공급금액                */
+	         , nvl(A.TD_RC_CST, 0)                                          AS TD_RC_CST                /* 당일접수비용                */
+	         , nvl(A.MT12_OVR_FEE, 0)                                       AS MT12_OVR_FEE             /* 12개월이상수수료             */
+	         , nvl(NVL(A.SRA_SBID_AM , 0)- (NVL(B.SRA_SOG_FEE, 0) + (nvl(B.SRA_ACO_IVSAM, 0) + NVL(A.SRA_PYIVA, 0)) + NVL(B.SRA_ACD_RVGAM, 0) + NVL(B.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS , 0)
+	                          + NVL(B.SRA_NCSS_JUG_FEE, 0) + NVL(B.SRA_PRNY_JUG_FEE, 0) + NVL(B.SRA_MDCCS, 0) + NVL(B.SRA_INJT_FEE , 0)
+	                          + NVL(B.SRA_SHNM, 0) + NVL(B.SRA_PDG_RC_FEE, 0) + NVL(B.SRA_RMHN_FEE, 0) + NVL(B.SRA_TRU_FEE , 0)
+	                          + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0)), 0) AS TOT_AM      /* 정산금액  */
+	         , CASE WHEN #{ss_security} = '1' THEN E.VHC_DRV_CAFFNM
+	                WHEN LENGTH(E.VHC_DRV_CAFFNM) = 2 THEN SUBSTR(E.VHC_DRV_CAFFNM,1,1) || '*' 
+	                WHEN LENGTH(E.VHC_DRV_CAFFNM) = 3 THEN SUBSTR(E.VHC_DRV_CAFFNM,1,1) || '*'  || SUBSTR(E.VHC_DRV_CAFFNM,3,1) 
+	                WHEN LENGTH(E.VHC_DRV_CAFFNM) = 4 THEN SUBSTR(E.VHC_DRV_CAFFNM,1,1) || '**' || SUBSTR(E.VHC_DRV_CAFFNM,4,1)  
+	                WHEN LENGTH(E.VHC_DRV_CAFFNM) = 5 THEN SUBSTR(E.VHC_DRV_CAFFNM,1,2) || '**' || SUBSTR(E.VHC_DRV_CAFFNM,5,1)
+	                WHEN LENGTH(E.VHC_DRV_CAFFNM) > 5 THEN SUBSTR(E.VHC_DRV_CAFFNM,1,2) || '**' || SUBSTR(E.VHC_DRV_CAFFNM,5,1) 
+	           ELSE '**' END AS VHC_DRV_CAFFNM  /* 수송자명                     */ 			 
+	         , CASE WHEN A.DNA_YN_CHK   = '1' THEN '여' ELSE '부' END        AS DNA_YN_CHK       /* 친자검사여부               */
+	         , CASE WHEN A.DNA_YN_CHK   = '1' THEN '일치' 
+	                WHEN A.DNA_YN   = '2' THEN '불일치' ELSE '미확인' END  AS DNA_YN           /* 친자검사결과               */  
+	         , A.RMK_CNTN                                           AS RMK_CNTN                 /* 비고내용*/
+	         , CASE WHEN A.PRNY_JUG_YN   = '1' THEN '여' ELSE '부' END            AS PRNY_JUG_YN              /* 임신감정여부               */
+	         , CASE WHEN A.PRNY_YN   = '1' THEN '여' ELSE '부' END                AS PRNY_YN                  /* 임신여부                   */
+	         , CASE WHEN D.SRA_FED_SPY_YN   = '1' THEN '여' ELSE '부' END         AS SRA_FED_SPY_YN           /* 사료미사용여부             */         
+	         , CASE WHEN #{ss_security} = '1' THEN G.FTSNM
+	                WHEN LENGTH(G.FTSNM) = 2 THEN SUBSTR(G.FTSNM,1,1) || '*' 
+	                WHEN LENGTH(G.FTSNM) = 3 THEN SUBSTR(G.FTSNM,1,1) || '*' || SUBSTR(G.FTSNM,3,1) 
+	                WHEN LENGTH(G.FTSNM) = 4 THEN SUBSTR(G.FTSNM,1,1) || '**' || SUBSTR(G.FTSNM,4,1)  
+	                WHEN LENGTH(G.FTSNM) = 5 THEN SUBSTR(G.FTSNM,1,2) || '**' || SUBSTR(G.FTSNM,5,1) 
+	                WHEN LENGTH(G.FTSNM) > 5 THEN SUBSTR(G.FTSNM,1,2) || '**' || SUBSTR(G.FTSNM,5,1) 
+	           ELSE '**' END AS ACNO_OWNER               /* 예금주                   */
+	         , CASE WHEN A.SOGMN_C = '' OR A.SOGMN_C IS NULL 
+	                THEN (CASE WHEN D.SRA_FARM_ACNO = '' OR D.SRA_FARM_ACNO IS NULL 
+	                           THEN (CASE WHEN #{ss_security} != '1' THEN SUBSTR(D.NEW_SRA_FARM_ACNO,1,3) || TRIM(LPAD(' ', LENGTH(SUBSTR(D.NEW_SRA_FARM_ACNO,4,20)) +1, '*')) ELSE D.NEW_SRA_FARM_ACNO END)
+	                           ELSE (CASE WHEN #{ss_security} != '1' THEN SUBSTR(D.SRA_FARM_ACNO,1,3) || TRIM(LPAD(' ', LENGTH(SUBSTR(D.SRA_FARM_ACNO,4,20)) +1, '*')) ELSE D.SRA_FARM_ACNO END)
+	                      END)
+	                ELSE (CASE WHEN G.SRA_FARM_ACNO = '' OR G.SRA_FARM_ACNO IS NULL 
+	                           THEN (CASE WHEN #{ss_security} != '1' THEN SUBSTR(D.NEW_SRA_FARM_ACNO,1,3) || TRIM(LPAD(' ', LENGTH(SUBSTR(D.NEW_SRA_FARM_ACNO,4,20)) +1, '*')) ELSE D.NEW_SRA_FARM_ACNO END)
+	                           ELSE (CASE WHEN #{ss_security} != '1' THEN SUBSTR(D.SRA_FARM_ACNO,1,3) || TRIM(LPAD(' ', LENGTH(SUBSTR(D.SRA_FARM_ACNO,4,20)) +1, '*')) ELSE D.SRA_FARM_ACNO END)
+	                      END)
+	                END                                              AS SRA_FARM_ACNO           /* 계좌번호                 */                
+	        , CASE WHEN #{ss_security} = '1' THEN D.OHSE_TELNO
+	               WHEN LENGTH(REPLACE(D.OHSE_TELNO,'-','')) = 9  THEN SUBSTR(REPLACE(D.OHSE_TELNO,'-',''),1,2) || '-***-' || SUBSTR(REPLACE(D.OHSE_TELNO,'-',''),6,4)  
+	               WHEN LENGTH(REPLACE(D.OHSE_TELNO,'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(D.OHSE_TELNO,'-',''),1,2) = '02' 
+	                               											 THEN SUBSTR(REPLACE(D.OHSE_TELNO,'-',''),1,2) || '-****-' || SUBSTR(REPLACE(D.OHSE_TELNO,'-',''),7,4)  
+	                              											 ELSE SUBSTR(REPLACE(D.OHSE_TELNO,'-',''),1,3) || '-***-' || SUBSTR(REPLACE(D.OHSE_TELNO,'-',''),7,4)  END) 
+				   WHEN LENGTH(REPLACE(D.OHSE_TELNO,'-','')) IN(11,12) THEN SUBSTR(REPLACE(D.OHSE_TELNO,'-',''),1,3) || '-****-' || SUBSTR(REPLACE(D.OHSE_TELNO,'-',''),8,4)                               											   
+	          END                                                    AS OHSE_TELNO              /* 출하주 전화번호           */
+	        , CASE WHEN #{ss_security} = '1' THEN D.CUS_MPNO
+	               WHEN LENGTH(REPLACE(D.CUS_MPNO,'-','')) = 9  THEN SUBSTR(REPLACE(D.CUS_MPNO,'-',''),1,2) || '-***-' || SUBSTR(REPLACE(D.CUS_MPNO,'-',''),6,4)  
+	               WHEN LENGTH(REPLACE(D.CUS_MPNO,'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(D.CUS_MPNO,'-',''),1,2) = '02' 
+	                               										   THEN SUBSTR(REPLACE(D.CUS_MPNO,'-',''),1,2) || '-****-' || SUBSTR(REPLACE(D.CUS_MPNO,'-',''),7,4)  
+	                              										   ELSE SUBSTR(REPLACE(D.CUS_MPNO,'-',''),1,3) || '-***-' || SUBSTR(REPLACE(D.CUS_MPNO,'-',''),7,4)  END) 
+				   WHEN LENGTH(REPLACE(D.CUS_MPNO,'-','')) IN(11,12) THEN SUBSTR(REPLACE(D.CUS_MPNO,'-',''),1,3) || '-****-' || SUBSTR(REPLACE(D.CUS_MPNO,'-',''),8,4)                               											   
+	          END                                                    AS CUS_MPNO                /* 출하주 핸드폰번호          */      
+	       
+           , A.RMHN_YN                                 /* 제각여부                          */
+	    FROM TB_LA_IS_MH_SOG_COW  A
+	       , (SELECT NA_BZPLC
+	               , AUC_OBJ_DSC
+	               , AUC_DT
+	               , OSLP_NO
+	               , LED_SQNO
+	               , SUM(CASE WHEN NA_FEE_C = '010' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SOG_FEE       /* 출하수수료            */
+	               , SUM(CASE WHEN NA_FEE_C = '011' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SEL_FEE       /* 판매수수료            */
+	               , SUM(CASE WHEN NA_FEE_C = '020' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ACO_IVSAM     /* 조합출자금            */
+	               , SUM(CASE WHEN NA_FEE_C = '030' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ACD_RVGAM     /* 사고적립금            */
+	               , SUM(CASE WHEN NA_FEE_C = '040' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_TRPCS         /* 운송비                */
+	               , SUM(CASE WHEN NA_FEE_C = '050' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_NCSS_JUG_FEE  /* 괴사감정료            */
+	               , SUM(CASE WHEN NA_FEE_C = '060' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_PRNY_JUG_FEE  /* 임신감정료            */
+	               , SUM(CASE WHEN NA_FEE_C = '070' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_MDCCS         /* 검진비                */
+	               , SUM(CASE WHEN NA_FEE_C = '080' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_INJT_FEE      /* 주사료                */
+	               , SUM(CASE WHEN NA_FEE_C = '090' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SHNM          /* 자조금                */
+	               , SUM(CASE WHEN NA_FEE_C = '100' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_PDG_RC_FEE    /* 혈통접수비            */
+	               , SUM(CASE WHEN NA_FEE_C = '110' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_RMHN_FEE      /* 제각수수료            */
+	               , SUM(CASE WHEN NA_FEE_C = '120' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_TRU_FEE       /* 위탁수수료            */
+	          FROM TB_LA_IS_MH_FEE_IMPS
+	          WHERE NA_BZPLC        = #{ss_na_bzplc}                                                                                                /* 경제통합사업장코드    */
+	            AND AUC_OBJ_DSC     = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END
+	            AND AUC_DT          BETWEEN #{auc_st_dt} AND #{auc_ed_dt}                                                                           /* 경매일자              */
+	            AND FEE_APL_OBJ_C   = '1'                                                                                                           /* 1.출하자 2.낙찰자     */
+	          GROUP BY
+	                   NA_BZPLC
+	                 , AUC_OBJ_DSC
+	                 , AUC_DT
+	                 , OSLP_NO
+	                 , LED_SQNO
+	         ) B
+	       , TB_LA_IS_MM_INDV     C
+	       , TB_LA_IS_MM_FHS      D
+	       , TB_LA_IS_MM_VHC      E
+	       , TB_LA_IS_MM_FHS     G
+	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}                                                                   /* 경제통합사업장코드            */
+	      AND A.AUC_OBJ_DSC     = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END
+	      AND A.AUC_DT            BETWEEN #{auc_st_dt} AND #{auc_ed_dt}                                              /* 경매일자                   */
+	      AND A.DEL_YN            = '0'
+	      AND A.LED_SQNO          = 1
+	      AND A.LOWS_SBID_LMT_AM  > 0
+	      AND A.NA_BZPLC          = B.NA_BZPLC
+	      AND A.AUC_OBJ_DSC       = B.AUC_OBJ_DSC
+	      AND A.AUC_DT            = B.AUC_DT
+	      AND A.OSLP_NO           = B.OSLP_NO
+	      AND A.LED_SQNO          = B.LED_SQNO
+	      AND A.NA_BZPLC          = C.NA_BZPLC
+	      AND A.SRA_SRS_DSC       = C.SRA_SRS_DSC
+	      AND A.SRA_INDV_AMNNO    = C.SRA_INDV_AMNNO
+	      AND A.NA_BZPLC          = D.NA_BZPLC
+	      AND A.FHS_ID_NO         = D.FHS_ID_NO
+	      AND A.FARM_AMNNO        = D.FARM_AMNNO
+	      AND A.NA_BZPLC          = E.NA_BZPLC(+)
+	      AND A.VHC_SHRT_C        = E.VHC_SHRT_C(+)
+	      AND CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN A.FHS_ID_NO ELSE A.SOGMN_C  END = G.FHS_ID_NO
+	      AND (CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN A.FARM_AMNNO ELSE 0 END) =
+	          (CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN G.FARM_AMNNO ELSE 0 END)  
+	      AND (D.FHS_ID_NO        = #{fhs_id_no}
+	       OR #{fhs_id_no}      IS NULL)
+	      AND (D.FTSNM            = #{ftsnm}
+	       OR #{ftsnm}          IS NULL)
+	      AND (D.jrdwo_dsc       = #{v_jrdwo_dsc}
+	       OR #{v_jrdwo_dsc}          IS NULL)    
+	    ORDER BY A.AUC_DT, A.AUC_OBJ_DSC, D.FHS_ID_NO, A.AUC_PRG_SQ
+	                    
+	
+    ]]>
+    </select>
+        
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

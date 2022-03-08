@@ -1,0 +1,2828 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//dtd mapper 3.0//en"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ap.service.Impl.LALM0513Mapper">
+
+	<select id="LALM0513_selMhAucQcn" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          NA_BZPLC		  /* 경제통합사업장코드	*/
+	        , AUC_OBJ_DSC	  /* 경매대상구분코드	*/
+	        , AUC_DT		  /* 경매일자			*/
+	        , QCN			  /* 차수				*/
+	        , BASE_LMT_AM	  /* 기초한도금액		*/
+	        , CUT_AM          /* 절사단위금액		*/
+	        , SGNO_PRC_DSC    /* 단수처리구분코드	*/
+	        , DDL_YN		  /* 마감여부			*/
+	        , DEL_YN		  /* 삭제여부			*/
+	    FROM TB_LA_IS_MH_AUC_QCN
+	    WHERE NA_BZPLC         = #{ss_na_bzplc}		/* 경제통합사업장코드		*/
+	      AND AUC_OBJ_DSC      = #{auc_obj_dsc}		/* 경매대상구분코드		*/
+	      AND AUC_DT           = #{auc_dt}			/* 경매일자			*/
+		
+	]]>
+	</select>
+	
+	<select id="LALM0513_selMhFeeImps" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          SUM(CASE WHEN AA.FEE_APL_OBJ_C   = '1' THEN AA.SRA_UBD_FEE ELSE 0 END)   AS FHS_SRA_UBD_FEE
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C   = '2' THEN AA.SRA_UBD_FEE ELSE 0 END)   AS SEL_SRA_UBD_FEE
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C   = '1' THEN AA.INDV_SEX_C  ELSE 0 END)   AS AM_UBD_HDCN
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C   = '2' THEN AA.INDV_SEX_C  ELSE 0 END)   AS SU_UBD_HDCN
+	
+	    FROM (SELECT
+	                A.NA_BZPLC
+	              , A.AUC_OBJ_DSC
+	              , A.AUC_DT
+	              , SUM(CASE WHEN B.INDV_SEX_C IN ('1', '4', '6') THEN 1 ELSE 0 END) AS INDV_SEX_C
+	              , SUM(NVL(C.SRA_UBD_FEE, 0) + NVL(A.SRA_TRPCS, 0)
+	                                  + NVL(A.SRA_PYIVA, 0)
+	                                  + NVL(A.SRA_FED_SPY_AM, 0)
+	                                  + NVL(A.TD_RC_CST, 0)
+	                                  + NVL(A.MT12_OVR_FEE, 0)) AS SRA_UBD_FEE
+	              , '1' AS FEE_APL_OBJ_C
+	
+	          FROM TB_LA_IS_MH_SOG_COW   A
+	             , TB_LA_IS_MM_INDV      B
+	             , (SELECT
+	                      NA_BZPLC
+	                    , AUC_OBJ_DSC
+	                    , AUC_DT
+	                    , OSLP_NO
+	                    , LED_SQNO
+	                    , SUM(CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE)  AS SRA_UBD_FEE
+	
+	                FROM TB_LA_IS_MH_FEE_IMPS
+	                WHERE NA_BZPLC        = #{ss_na_bzplc}
+	                  AND AUC_DT          = #{auc_dt}
+	                  AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                  AND FEE_APL_OBJ_C   = '1'
+	                GROUP BY NA_BZPLC
+	                       , AUC_OBJ_DSC
+	                       , AUC_DT
+	                       , OSLP_NO
+	                       , LED_SQNO
+	               ) C
+	
+	          WHERE A.NA_BZPLC          = #{ss_na_bzplc}
+	            AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND A.AUC_DT            = #{auc_dt}
+	            AND A.DEL_YN            = '0'
+	            AND A.LED_SQNO          = 1
+	            AND (A.SEL_STS_DSC      = '23' OR A.SEL_STS_DSC  = '11')
+	            AND A.LOWS_SBID_LMT_AM  > 0
+	
+	            AND A.NA_BZPLC          = B.NA_BZPLC
+	            AND A.SRA_SRS_DSC       = B.SRA_SRS_DSC
+	            AND A.SRA_INDV_AMNNO    = B.SRA_INDV_AMNNO
+	
+	            AND A.NA_BZPLC          = C.NA_BZPLC
+	            AND A.AUC_OBJ_DSC       = C.AUC_OBJ_DSC
+	            AND A.AUC_DT            = C.AUC_DT
+	            AND A.OSLP_NO           = C.OSLP_NO
+	            AND A.LED_SQNO          = C.LED_SQNO
+	
+	          GROUP BY A.NA_BZPLC
+	                 , A.AUC_OBJ_DSC
+	                 , A.AUC_DT
+	
+	          UNION ALL
+	
+	          SELECT
+	                A.NA_BZPLC
+	              , A.AUC_OBJ_DSC
+	              , A.AUC_DT
+	              , SUM(CASE WHEN B.INDV_SEX_C NOT IN ('1', '4', '6') THEN 1 ELSE 0 END) AS INDV_SEX_C
+	              , SUM(C.SRA_UBD_FEE) AS SRA_UBD_FEE
+	              , '2' AS FEE_APL_OBJ_C
+	
+	          FROM TB_LA_IS_MH_SOG_COW   A
+	             , TB_LA_IS_MM_INDV      B
+	             , (SELECT
+	                      NA_BZPLC
+	                    , AUC_OBJ_DSC
+	                    , AUC_DT
+	                    , OSLP_NO
+	                    , LED_SQNO
+	                    , SUM(CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE)  AS SRA_UBD_FEE
+	
+	                FROM TB_LA_IS_MH_FEE_IMPS
+	                WHERE NA_BZPLC        = #{ss_na_bzplc}
+	                  AND AUC_DT          = #{auc_dt}
+	                  AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                  AND FEE_APL_OBJ_C   = '2'
+	                GROUP BY NA_BZPLC
+	                       , AUC_OBJ_DSC
+	                       , AUC_DT
+	                       , OSLP_NO
+	                       , LED_SQNO
+	               ) C
+	
+	          WHERE A.NA_BZPLC          = #{ss_na_bzplc}
+	            AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND A.AUC_DT            = #{auc_dt}
+	            AND A.DEL_YN            = '0'
+	            AND A.LED_SQNO          = 1
+	            AND (A.SEL_STS_DSC      = '23' OR A.SEL_STS_DSC  = '11')
+	            AND A.LOWS_SBID_LMT_AM  > 0
+	
+	            AND A.NA_BZPLC          = B.NA_BZPLC
+	            AND A.SRA_SRS_DSC       = B.SRA_SRS_DSC
+	            AND A.SRA_INDV_AMNNO    = B.SRA_INDV_AMNNO
+	
+	            AND A.NA_BZPLC          = C.NA_BZPLC
+	            AND A.AUC_OBJ_DSC       = C.AUC_OBJ_DSC
+	            AND A.AUC_DT            = C.AUC_DT
+	            AND A.OSLP_NO           = C.OSLP_NO
+	            AND A.LED_SQNO          = C.LED_SQNO
+	
+	          GROUP BY A.NA_BZPLC
+	                 , A.AUC_OBJ_DSC
+	                 , A.AUC_DT
+	         ) AA
+	]]>
+	</select>
+
+
+	<select id="LALM0513_selList" resultType="hashMap">
+	<![CDATA[
+		SELECT
+          A.AUC_PRG_SQ
+        , A.LVST_AUC_PTC_MN_NO
+        
+        , CASE WHEN #{ss_security} = '1' THEN B.SRA_MWMNNM
+           WHEN LENGTH(B.SRA_MWMNNM) = 2 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '*' 
+           WHEN LENGTH(B.SRA_MWMNNM) = 3 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '*'  || SUBSTR(B.SRA_MWMNNM,3,1) 
+           WHEN LENGTH(B.SRA_MWMNNM) = 4 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '**' || SUBSTR(B.SRA_MWMNNM,4,1)  
+           WHEN LENGTH(B.SRA_MWMNNM) >= 5 THEN SUBSTR(B.SRA_MWMNNM,1,2) || '**' || SUBSTR(B.SRA_MWMNNM,5,1)  END AS SRA_MWMNNM /*축산중도매인명*/
+        
+        , B.DONGUP
+        
+        , CASE WHEN #{ss_security} = '1' THEN B.DONGBW
+        	   		ELSE '******' END AS DONGBW								/* 동이하마스킹주소		*/
+        
+        , A.SRA_SBID_AM
+        , E.SRA_SEL_FEE
+        , E.SRA_ETC_CST
+        , D.AUC_ENTR_GRN_AM
+        , H.IO_AM_15
+        , F.SRA_RV_AM
+        , B.TRMN_AMNNO
+        , C.INDV_SEX_C
+        , A.LOWS_SBID_LMT_AM
+        
+        , CASE WHEN #{ss_security} = '1' THEN B.DONGUP || ' ' || B.DONGBW
+        	   		ELSE B.DONGUP || ' ' || '******' END AS ADR								/* 동이하마스킹주소		*/
+        
+		, NVL(H.IO_AM_15, 0) - NVL(F.SRA_RV_AM, 0) AS NOTPAY
+
+    FROM TB_LA_IS_MH_SOG_COW A
+    LEFT OUTER JOIN
+                    (SELECT
+                           LVST_AUC_PTC_MN_NO        AS LVST_AUC_PTC_MN_NO      /* 참가번호            */
+                         , TRMN_AMNNO                AS TRMN_AMNNO              /* 거래인관리번호      */
+                         , SUM(AUC_ENTR_GRN_AM)      AS AUC_ENTR_GRN_AM         /* 참가보증금          */
+                     FROM TB_LA_IS_MH_AUC_ENTR
+                     WHERE NA_BZPLC            = #{ss_na_bzplc}
+                       AND AUC_OBJ_DSC         = #{auc_obj_dsc}
+                       AND AUC_DT              = #{auc_dt}
+                       AND DEL_YN              = '0'
+                     GROUP BY LVST_AUC_PTC_MN_NO, TRMN_AMNNO) D
+         ON  A.LVST_AUC_PTC_MN_NO     = D.LVST_AUC_PTC_MN_NO      /* 가축경매참여자번호          */
+         AND A.TRMN_AMNNO             = D.TRMN_AMNNO              /* 거래인번호                  */
+    LEFT OUTER JOIN
+                    (SELECT
+                           A.LVST_AUC_PTC_MN_NO
+                         , A.TRMN_AMNNO
+                         , NVL(SUM(A.SRA_SBID_AM), 0)  + NVL(SUM(B.SRA_SEL_FEE), 0) + NVL(SUM(B.SRA_ETC_CST), 0) AS IO_AM_15
+                     FROM TB_LA_IS_MH_SOG_COW A
+                        , (SELECT
+                                 NA_BZPLC
+	                           , AUC_OBJ_DSC
+	                           , AUC_DT
+	                           , OSLP_NO
+	                           , LED_SQNO
+	                           , SUM(CASE WHEN NA_FEE_C = '011' THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SEL_FEE
+	                           , SUM(CASE WHEN NA_FEE_C NOT IN ('011') THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END)                       AS SRA_ETC_CST
+	                       FROM TB_LA_IS_MH_FEE_IMPS
+	                       WHERE NA_BZPLC            = #{ss_na_bzplc}
+	                         AND AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                         AND AUC_DT              = #{auc_dt}
+	                         AND FEE_APL_OBJ_C       = '2'                           /* 1출하자, 2낙찰자  */
+	                       GROUP BY NA_BZPLC
+	                              , AUC_OBJ_DSC
+	                              , AUC_DT
+	                              , OSLP_NO
+	                              , LED_SQNO) B
+                     WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+                       AND A.AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+                       AND A.AUC_DT          = #{auc_dt}
+                       AND A.NA_BZPLC        = B.NA_BZPLC                    /* 경제통합사업장코드  */
+                       AND A.AUC_DT          = B.AUC_DT                      /* 경매일자            */
+                       AND A.AUC_OBJ_DSC     = B.AUC_OBJ_DSC                 /* 경매대상구분코드    */
+                       AND A.OSLP_NO         = B.OSLP_NO                     /* 경매일자            */
+                       AND A.LED_SQNO        = B.LED_SQNO                    /* 경매대상구분코드    */
+                       AND A.DEL_YN          = '0'
+                       AND A.LED_SQNO        = 1
+                     GROUP BY A.LVST_AUC_PTC_MN_NO
+                            , A.TRMN_AMNNO ) H
+         ON  A.LVST_AUC_PTC_MN_NO     = H.LVST_AUC_PTC_MN_NO     /* 가축경매참여자번호          */
+         AND A.TRMN_AMNNO             = H.TRMN_AMNNO             /* 거래인번호                  */
+
+    INNER JOIN TB_LA_IS_MM_MWMN B
+          ON  A.NA_BZPLC               = B.NA_BZPLC               /* 경제통합사업장코드          */
+          AND A.TRMN_AMNNO             = B.TRMN_AMNNO             /* 거래인관리번호              */
+
+    INNER JOIN TB_LA_IS_MM_INDV    C
+          ON  A.NA_BZPLC               = C.NA_BZPLC               /* 경제통합사업장코드          */
+          AND A.SRA_SRS_DSC            = C.SRA_SRS_DSC            /* 축산축종구분코드            */
+          AND A.SRA_INDV_AMNNO         = C.SRA_INDV_AMNNO         /* 축산개체관리번호            */
+
+    LEFT OUTER JOIN
+                    (SELECT
+                           NA_BZPLC
+                         , AUC_OBJ_DSC
+                         , AUC_DT
+                         , OSLP_NO
+                         , LED_SQNO
+                         , SUM(CASE WHEN NA_FEE_C = '011' THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SEL_FEE
+                         , SUM(CASE WHEN NA_FEE_C NOT IN ('011') THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ETC_CST
+                     FROM TB_LA_IS_MH_FEE_IMPS
+                     WHERE NA_BZPLC        = #{ss_na_bzplc}
+                       AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+                       AND AUC_DT          = #{auc_dt}
+                       AND FEE_APL_OBJ_C   = '2'                           /* 1출하자, 2낙찰자  */
+                     GROUP BY NA_BZPLC
+                            , AUC_OBJ_DSC
+                            , AUC_DT
+                            , OSLP_NO
+                            , LED_SQNO
+                    ) E
+         ON  A.NA_BZPLC               = E.NA_BZPLC            /* 경제통합사업장코드          */
+         AND A.AUC_OBJ_DSC            = E.AUC_OBJ_DSC         /* 경매대상구분코드            */
+         AND A.AUC_DT                 = E.AUC_DT              /* 경매일자                    */
+         AND A.OSLP_NO                = E.OSLP_NO             /* 원표번호                    */
+         AND A.LED_SQNO               = E.LED_SQNO            /* 원장일련번호                */
+
+    LEFT OUTER JOIN
+                    (SELECT
+                           NA_BZPLC
+                         , TRMN_AMNNO
+                         , AUC_OBJ_DSC
+                         , AUC_DT
+                         , SUM(SRA_RV_AM) AS SRA_RV_AM
+                     FROM TB_LA_IS_MH_MWMN_ADJ
+                     WHERE NA_BZPLC            = #{ss_na_bzplc}
+                       AND AUC_OBJ_DSC         = #{auc_obj_dsc}
+                       AND AUC_DT              = #{auc_dt}
+                       AND DEL_YN              = '0'
+                     GROUP BY NA_BZPLC, TRMN_AMNNO, AUC_OBJ_DSC, AUC_DT
+                    )F
+         ON  A.NA_BZPLC               = F.NA_BZPLC                                                                               /* 경제통합사업장코드          */
+         AND A.TRMN_AMNNO             = F.TRMN_AMNNO                                                                             /* 거래인번호                  */
+         AND A.AUC_OBJ_DSC            = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE F.AUC_OBJ_DSC END    /* 대상구분코드                */
+         AND A.AUC_DT                 = F.AUC_DT                                                                                 /* 경매일자                    */
+
+    WHERE A.NA_BZPLC             = #{ss_na_bzplc}
+      AND A.AUC_OBJ_DSC          = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+      AND A.AUC_DT               = #{auc_dt}
+      AND A.SEL_STS_DSC          = '22'                   /* 판매상태구분코드	         */
+      AND A.DEL_YN               = '0'
+      AND A.LED_SQNO             = 1
+
+    ORDER BY TO_NUMBER(A.LVST_AUC_PTC_MN_NO), A.AUC_PRG_SQ
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_2" resultType="hashMap">
+	<![CDATA[
+		SELECT
+		          A.AUC_DT                              /* 경매일자        */
+		        , B.TRMN_AMNNO                          /* 거래인관리번호  */
+		        
+		        , CASE WHEN #{ss_security} = '1' THEN B.SRA_MWMNNM
+	              WHEN LENGTH(B.SRA_MWMNNM) = 2 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '*' 
+	              WHEN LENGTH(B.SRA_MWMNNM) = 3 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '*'  || SUBSTR(B.SRA_MWMNNM,3,1) 
+	              WHEN LENGTH(B.SRA_MWMNNM) = 4 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '**' || SUBSTR(B.SRA_MWMNNM,4,1)  
+	              WHEN LENGTH(B.SRA_MWMNNM) >= 5 THEN SUBSTR(B.SRA_MWMNNM,1,2) || '**' || SUBSTR(B.SRA_MWMNNM,5,1)  END AS SRA_MWMNNM /*축산중도매인명*/ 
+		        
+		        , A.AUC_PRG_SQ                          /* 경매진행순서    */
+		        , B.DONGUP                              /* 동이상 주소     */
+		        
+		        , CASE WHEN #{ss_security} = '1' THEN B.DONGBW
+        	   		ELSE '******' END AS DONGBW								/* 동이하마스킹주소		*/
+		        
+		        , CASE WHEN #{ss_security} = '1' THEN C.FTSNM
+	              WHEN LENGTH(C.FTSNM) = 2 THEN SUBSTR(C.FTSNM,1,1) || '*' 
+	              WHEN LENGTH(C.FTSNM) = 3 THEN SUBSTR(C.FTSNM,1,1) || '*'  || SUBSTR(C.FTSNM,3,1) 
+	              WHEN LENGTH(C.FTSNM) = 4 THEN SUBSTR(C.FTSNM,1,1) || '**' || SUBSTR(C.FTSNM,4,1)  
+	              WHEN LENGTH(C.FTSNM) >= 5 THEN SUBSTR(C.FTSNM,1,2) || '**' || SUBSTR(C.FTSNM,5,1)  END AS FTSNM /*축산중도매인명*/
+		        
+		        , CASE WHEN #{ss_security} = '1' THEN C.OHSE_TELNO
+	                WHEN LENGTH(REPLACE(RTRIM(C.OHSE_TELNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(C.OHSE_TELNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(C.OHSE_TELNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),8,4)                                             
+	                                              END  AS OHSE_TELNO
+		        
+		        , CASE WHEN #{ss_security} = '1' THEN C.CUS_MPNO
+	                WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),8,4)                                             
+	                                              END  AS CUS_MPNO
+		        
+		        , SUBSTR(A.SRA_INDV_AMNNO, 1, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9)  AS SRA_INDV_AMNNO
+		        
+		        , E.BIRTH                               /* 생년월일        */
+		        , A.COW_SOG_WT                          /* 우출하중량      */
+		        , E.MCOW_DSC                            /* 어미구분코드    */
+		        , RTRIM(E.KPN_NO) AS KPN_NO             /* kpn번호         */
+		        , E.INDV_SEX_C                          /* 성별            */
+		        , A.SRA_SBID_AM                         /* 낙찰가격        */
+		        , NVL(G.SRA_SEL_FEE, 0) + NVL(G.SRA_ETC_CST, 0)  AS FEE_AM  /* 총매매수수료    */
+		        , A.LVST_AUC_PTC_MN_NO                  /* 참가번호관리    */
+		        , C.DONGUP       AS FHS_DONGUP
+		        , C.DONGBW       AS FHS_DONGBW
+		        , E.MATIME                              /* 산차            */
+		        , C.FHS_ID_NO || '-' || C.FARM_AMNNO AS FHS_ID_NO
+		        
+		        , CASE WHEN #{ss_security} = '1' THEN C.DONGUP || ' ' || C.DONGBW
+        	   		ELSE C.DONGUP || ' ' || '******' END AS ADR								/* 동이하마스킹주소		*/
+		
+		    FROM TB_LA_IS_MH_SOG_COW  A
+		    LEFT OUTER JOIN
+		                    (SELECT
+		                           NA_BZPLC                           /* 경제통합사업장코드          */
+		                         , AUC_OBJ_DSC                        /* 경매대상구분코드            */
+		                         , AUC_DT                             /* 경매일자                    */
+		                         , OSLP_NO                            /* 원표번호                    */
+		                         , LED_SQNO                           /* 원장일련번호                */
+		                         , SUM(
+		                               (CASE WHEN NA_FEE_C = '011' THEN SRA_TR_FEE ELSE  0 END) *
+		                               (CASE WHEN ANS_DSC  = '1'   THEN 1          ELSE -1 END)
+		                              ) AS SRA_SEL_FEE
+		                         , SUM(
+		                               (CASE WHEN NA_FEE_C <> '011' THEN SRA_TR_FEE ELSE  0 END) *
+		                               (CASE WHEN ANS_DSC  = '1'    THEN 1          ELSE -1 END)
+		                              ) AS SRA_ETC_CST
+		                     FROM TB_LA_IS_MH_FEE_IMPS
+		                     WHERE NA_BZPLC            = #{ss_na_bzplc}
+		                       AND AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+		                       AND AUC_DT              = #{auc_dt}
+		                       AND FEE_APL_OBJ_C       = '2'           				      /* 대상구분 - 1.출하자, 2.낙찰자 */
+		                     GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, LED_SQNO
+		                    )G
+		         ON  A.NA_BZPLC       = G.NA_BZPLC
+		         AND A.AUC_OBJ_DSC    = G.AUC_OBJ_DSC
+		         AND A.AUC_DT         = G.AUC_DT
+		         AND A.OSLP_NO        = G.OSLP_NO
+		         AND A.LED_SQNO       = G.LED_SQNO
+		       , TB_LA_IS_MM_MWMN     B
+		       , TB_LA_IS_MM_FHS      C
+		       , TB_LA_IS_MM_INDV     E
+		
+		    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
+		      AND A.AUC_OBJ_DSC    = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+		      AND A.AUC_DT         = #{auc_dt}
+		      AND A.DEL_YN         = '0'
+		      AND A.LED_SQNO       = 1
+		      AND A.SEL_STS_DSC    = '22'
+		
+		      AND A.NA_BZPLC       = B.NA_BZPLC
+		      AND A.TRMN_AMNNO     = B.TRMN_AMNNO
+		
+		      AND A.NA_BZPLC       = C.NA_BZPLC
+		      AND A.FHS_ID_NO      = C.FHS_ID_NO
+		      AND A.FARM_AMNNO     = C.FARM_AMNNO
+		
+		      AND A.NA_BZPLC       = E.NA_BZPLC
+		      AND A.SRA_SRS_DSC    = E.SRA_SRS_DSC
+		      AND A.SRA_INDV_AMNNO = E.SRA_INDV_AMNNO
+	  ]]>
+		<if test='fhs_id_no != null and fhs_id_no != ""'>
+		      AND B.TRMN_AMNNO     = #{fhs_id_no}			    /* 거래인관리번호 */
+		</if>
+		<if test='cb_auc_obj_dsc != null and cb_auc_obj_dsc != ""'>
+		      AND B.SRA_MWMNNM  LIKE #{ftsnm}||'%'	        /* 축산중도매인명 */
+		</if>
+	<![CDATA[
+		    ORDER BY TO_NUMBER(A.LVST_AUC_PTC_MN_NO), A.AUC_PRG_SQ 
+    
+	]]>
+	</select>
+	<select  id="LALM0513_selList_3" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          A.AUC_DT
+	        , A.AUC_PRG_SQ
+	        , B.DONGUP
+	        , B.DONGBW
+	        , CASE WHEN #{ss_security} = '1' THEN ftsnm
+              WHEN LENGTH(ftsnm) = 2 THEN SUBSTR(ftsnm,1,1) || '*' 
+              WHEN LENGTH(ftsnm) = 3 THEN SUBSTR(ftsnm,1,1) || '*'  || SUBSTR(ftsnm,3,1) 
+              WHEN LENGTH(ftsnm) = 4 THEN SUBSTR(ftsnm,1,1) || '**' || SUBSTR(ftsnm,4,1)  
+              WHEN LENGTH(ftsnm) >= 5 THEN SUBSTR(ftsnm,1,2) || '**' || SUBSTR(ftsnm,5,1)  END AS ftsnm /*출하자명*/ 
+	         , B.FTSNM
+	        , SUBSTR(A.SRA_INDV_AMNNO, 1, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9)  AS SRA_INDV_AMNNO
+	        , C.BIRTH
+	        , C.MATIME
+	        , C.MCOW_DSC
+	        , C.SRA_INDV_PASG_QCN
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.OHSE_TELNO
+	                WHEN LENGTH(REPLACE(RTRIM(B.OHSE_TELNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(B.OHSE_TELNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(B.OHSE_TELNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),8,4)                                             
+	                                              END  AS OHSE_TELNO
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.CUS_MPNO
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),8,4)                                             
+	                                              END  AS CUS_MPNO
+	        
+	        , RTRIM(C.KPN_NO)    AS KPN_NO
+	        , A.COW_SOG_WT
+	        , A.LOWS_SBID_LMT_AM
+	        , A.SRA_SBID_AM
+	        , CASE WHEN #{ss_security} = '1' THEN vhc_drv_caffnm
+              WHEN LENGTH(vhc_drv_caffnm) = 2 THEN SUBSTR(vhc_drv_caffnm,1,1) || '*' 
+              WHEN LENGTH(vhc_drv_caffnm) = 3 THEN SUBSTR(vhc_drv_caffnm,1,1) || '*'  || SUBSTR(vhc_drv_caffnm,3,1) 
+              WHEN LENGTH(vhc_drv_caffnm) = 4 THEN SUBSTR(vhc_drv_caffnm,1,1) || '**' || SUBSTR(vhc_drv_caffnm,4,1)  
+              WHEN LENGTH(vhc_drv_caffnm) >= 5 THEN SUBSTR(vhc_drv_caffnm,1,2) || '**' || SUBSTR(vhc_drv_caffnm,5,1)  END AS vhc_drv_caffnm /*수송자명*/ 
+	        , A.SEL_STS_DSC
+	        , CASE WHEN #{ss_security} = '1' THEN sra_mwmnnm
+              WHEN LENGTH(sra_mwmnnm) = 2 THEN SUBSTR(sra_mwmnnm,1,1) || '*' 
+              WHEN LENGTH(sra_mwmnnm) = 3 THEN SUBSTR(sra_mwmnnm,1,1) || '*'  || SUBSTR(sra_mwmnnm,3,1) 
+              WHEN LENGTH(sra_mwmnnm) = 4 THEN SUBSTR(sra_mwmnnm,1,1) || '**' || SUBSTR(sra_mwmnnm,4,1)  
+              WHEN LENGTH(sra_mwmnnm) >= 5 THEN SUBSTR(sra_mwmnnm,1,2) || '**' || SUBSTR(sra_mwmnnm,5,1)  END AS sra_mwmnnm /*낙찰자명*/ 
+	        , A.LVST_AUC_PTC_MN_NO
+	        , C.INDV_SEX_C
+	        , B.FHS_ID_NO || '-' || B.FARM_AMNNO AS FHS_ID_NO
+	        , A.SRA_SBID_UPR
+	        , B.DONGUP || ' ' || TRIM(LPAD(' ', LENGTH(B.DONGBW) +1, '*')) AS ADR
+			
+	    FROM TB_LA_IS_MH_SOG_COW  A
+	    LEFT OUTER JOIN TB_LA_IS_MM_VHC      D
+	         ON  A.NA_BZPLC        = D.NA_BZPLC
+	         AND A.VHC_SHRT_C      = D.VHC_SHRT_C
+	    LEFT OUTER JOIN TB_LA_IS_MM_MWMN     E
+	         ON  A.NA_BZPLC        = E.NA_BZPLC
+	         AND A.TRMN_AMNNO      = E.TRMN_AMNNO
+	
+	       , TB_LA_IS_MM_FHS      B
+	       , TB_LA_IS_MM_INDV     C
+	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.AUC_DT            = #{auc_dt}
+	      AND A.DEL_YN            = '0'
+	      AND A.LED_SQNO          = 1
+	]]>
+	      <if test='sel_sts_dsc != null and sel_sts_dsc != "" and sel_sts_dsc != "0"'>
+	      AND A.SEL_STS_DSC       = #{sel_sts_dsc}
+	      </if>
+	      <if test='indv_sex_c != null and indv_sex_c != ""'>
+	      AND C.INDV_SEX_C        = #{indv_sex_c}
+	      </if>
+	<![CDATA[
+	      AND A.NA_BZPLC          = B.NA_BZPLC
+	      AND A.FHS_ID_NO         = B.FHS_ID_NO
+	      AND A.FARM_AMNNO        = B.FARM_AMNNO
+	
+	      AND A.NA_BZPLC          = C.NA_BZPLC
+	      AND A.SRA_SRS_DSC       = C.SRA_SRS_DSC
+	      AND A.SRA_INDV_AMNNO    = C.SRA_INDV_AMNNO
+	
+	    ORDER BY A.AUC_DT, A.AUC_PRG_SQ, B.FHS_ID_NO
+	]]>
+	</select>
+	
+	<select  id="LALM0513_selList_4" resultType="hashMap">
+	 <![CDATA[
+		SELECT
+	          A.TRMN_AMNNO
+	        , CASE WHEN #{ss_security} = '1' THEN sra_mwmnnm
+               WHEN LENGTH(sra_mwmnnm) = 2 THEN SUBSTR(sra_mwmnnm,1,1) || '*' 
+               WHEN LENGTH(sra_mwmnnm) = 3 THEN SUBSTR(sra_mwmnnm,1,1) || '*'  || SUBSTR(sra_mwmnnm,3,1) 
+               WHEN LENGTH(sra_mwmnnm) = 4 THEN SUBSTR(sra_mwmnnm,1,1) || '**' || SUBSTR(sra_mwmnnm,4,1)  
+               WHEN LENGTH(sra_mwmnnm) >= 5 THEN SUBSTR(sra_mwmnnm,1,2) || '**' || SUBSTR(sra_mwmnnm,5,1)  END AS sra_mwmnnm  /* 축산도매인명*/
+            , A.AUC_DT
+	        , A.LVST_AUC_PTC_MN_NO
+	        , COUNT(A.SRA_INDV_AMNNO)  AS SRA_AUC_SBID_HDCN   /* 축산경매낙찰두수    */
+	        , SUM(A.SRA_SBID_AM)       AS SRA_SBID_AM         /* 축산낙찰금액        */
+	        , SUM(C.SRA_SEL_FEE)       AS SRA_SEL_FEE		    /* 축산판매수수료      */
+	        , SUM(C.SRA_SHNM)          AS SRA_SHNM            /* 축산자조금          */
+	        , SUM(C.SRA_ETC_CST)       AS SRA_ETC_CST         /* 축산기타비용        */
+	        , SUM(C.SRA_SEL_FEE) + SUM(C.SRA_SHNM)
+	                             + SUM(C.SRA_ETC_CST)       AS TOT_FEE
+	        , E.AUC_ENTR_GRN_AM
+	        , NVL(D.CSH_RV_AM, 0)   AS CSH_RV_AM           /* 현금입금금액        */
+	        , NVL(D.CK_RV_AM,  0)   AS CK_RV_AM            /* 수표입금금액        */
+	        , NVL(D.FTR_AM,    0)   AS FTR_AM              /* 통장입금금액        */
+	        , NVL(D.ETC_RV_AM, 0)   AS ETC_RV_AM           /* 기타입금금액        */
+	        , NVL(D.SRA_RV_AM, 0)   AS SRA_RV_AM           /* 입금금액            */
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.OHSE_TELNO
+	                WHEN LENGTH(REPLACE(RTRIM(B.OHSE_TELNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(B.OHSE_TELNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(B.OHSE_TELNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),8,4)                                             
+	                                              END  AS OHSE_TELNO /* 고객전화번호          */
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.CUS_MPNO
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),8,4)                                             
+	                                              END  AS CUS_MPNO /* 고객휴대폰          */
+	
+	        , (SUM(C.SRA_SEL_FEE) + SUM(C.SRA_SHNM) + SUM(C.SRA_ETC_CST)) + SUM(A.SRA_SBID_AM) AS TOT_AM
+	        , ((SUM(C.SRA_SEL_FEE) + SUM(C.SRA_SHNM) + SUM(C.SRA_ETC_CST)) + SUM(A.SRA_SBID_AM)) - NVL(D.SRA_RV_AM, 0) AS NPAY_AM
+	
+	    FROM TB_LA_IS_MH_SOG_COW  A
+	
+	    LEFT OUTER JOIN (SELECT
+	                           NA_BZPLC
+	                         , AUC_OBJ_DSC
+	                         , AUC_DT
+	                         , OSLP_NO
+	                         , LED_SQNO
+	                         , SUM(
+	                               (CASE WHEN NA_FEE_C = '011' THEN SRA_TR_FEE ELSE  0 END) *
+	                               (CASE WHEN ANS_DSC  = '1'   THEN 1          ELSE -1 END)
+	                              ) AS SRA_SEL_FEE                /* 축산판매수수료              */
+	                         , SUM(
+	                               (CASE WHEN NA_FEE_C = '090' THEN SRA_TR_FEE ELSE  0 END) *
+	                               (CASE WHEN ANS_DSC  = '1'   THEN 1          ELSE -1 END)
+	                              ) AS SRA_SHNM                   /* 축산자조금                  */
+	                         , SUM(
+	                               (CASE WHEN NA_FEE_C <> '011' AND NA_FEE_C <> '090' THEN SRA_TR_FEE ELSE  0 END) *
+	                               (CASE WHEN ANS_DSC  = '1'                          THEN 1          ELSE -1 END)
+	                              ) AS SRA_ETC_CST                /* 축산기타비용                */
+	                     FROM TB_LA_IS_MH_FEE_IMPS
+	                     WHERE NA_BZPLC       = #{ss_na_bzplc}
+	                       AND AUC_OBJ_DSC    = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                       AND AUC_DT         = #{auc_dt}
+	                       AND FEE_APL_OBJ_C  = '2'                             	 /* 대상구분 - 1.출하자, 2.낙찰자 */
+	                     GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, LED_SQNO
+	                    ) C
+	         ON  A.NA_BZPLC       = C.NA_BZPLC
+	         AND A.AUC_OBJ_DSC    = C.AUC_OBJ_DSC
+	         AND A.AUC_DT         = C.AUC_DT
+	         AND A.OSLP_NO        = C.OSLP_NO
+	         AND A.LED_SQNO       = C.LED_SQNO
+	
+	    LEFT OUTER JOIN (SELECT
+	                           TRMN_AMNNO
+	                         , SUM(SRA_RV_AM)                                                  AS SRA_RV_AM
+	                         , SUM(CASE WHEN SRA_RV_TPC =  '1' THEN SRA_RV_AM ELSE 0 END)      AS CSH_RV_AM
+	                         , SUM(CASE WHEN SRA_RV_TPC =  '2' THEN SRA_RV_AM ELSE 0 END)      AS CK_RV_AM
+	                         , SUM(CASE WHEN SRA_RV_TPC =  '3' THEN SRA_RV_AM ELSE 0 END)      AS FTR_AM
+	                         , SUM(CASE WHEN SRA_RV_TPC =  '9' THEN SRA_RV_AM ELSE 0 END)      AS ETC_RV_AM
+	
+	                     FROM TB_LA_IS_MH_MWMN_ADJ
+	                     WHERE NA_BZPLC       = #{ss_na_bzplc}
+	                       AND AUC_OBJ_DSC    = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                       AND AUC_DT         = #{auc_dt}
+	                     GROUP BY TRMN_AMNNO
+	                    ) D
+	        ON  A.TRMN_AMNNO    = D.TRMN_AMNNO
+	    LEFT OUTER JOIN TB_LA_IS_MH_AUC_ENTR E
+	         ON  A.NA_BZPLC      = E.NA_BZPLC
+	         AND A.AUC_DT        = E.AUC_DT
+	         AND A.AUC_OBJ_DSC   = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE E.AUC_OBJ_DSC END
+	         AND A.TRMN_AMNNO    = E.TRMN_AMNNO
+	         AND A.LVST_AUC_PTC_MN_NO = E.LVST_AUC_PTC_MN_NO
+	         AND A.AUC_OBJ_DSC = E.AUC_OBJ_DSC
+	
+	       , TB_LA_IS_MM_MWMN     B
+	
+	    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC    = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.AUC_DT         = #{auc_dt}
+	      AND A.DEL_YN         = '0'
+	      AND A.LED_SQNO       = 1
+	
+	      AND A.SEL_STS_DSC    = '22'
+	      AND A.NA_BZPLC       = B.NA_BZPLC
+	      AND A.TRMN_AMNNO     = B.TRMN_AMNNO
+	
+	    GROUP BY A.TRMN_AMNNO
+	           , A.AUC_DT
+	           , A.LVST_AUC_PTC_MN_NO
+	           , B.SRA_MWMNNM
+	           , B.CUS_MPNO
+	           , B.OHSE_TELNO
+	           , D.SRA_RV_AM
+	           , D.CSH_RV_AM
+	           , D.CK_RV_AM
+	           , D.FTR_AM
+	           , D.ETC_RV_AM
+	           , E.AUC_ENTR_GRN_AM
+	
+	    ORDER BY TO_NUMBER(A.LVST_AUC_PTC_MN_NO), A.TRMN_AMNNO
+    ]]>
+	</select>
+	
+	
+	<select id="LALM0513_selList_5" resultType="hashMap">
+	<![CDATA[
+		SELECT 
+			  H.SRA_TR_FEE2
+	        , A.AUC_OBJ_DSC
+	        , A.AUC_PRG_SQ
+	        , SUBSTRING(C.BIRTH, -6) AS FNBIRTH
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN C.FTSNM
+                WHEN LENGTH(C.FTSNM) = 2 THEN SUBSTR(C.FTSNM,1,1) || '*' 
+                WHEN LENGTH(C.FTSNM) = 3 THEN SUBSTR(C.FTSNM,1,1) || '*' || SUBSTR(C.FTSNM,3,1) 
+                WHEN LENGTH(C.FTSNM) = 4 THEN SUBSTR(C.FTSNM,1,1) || '**' || SUBSTR(C.FTSNM,4,1)  
+                WHEN LENGTH(C.FTSNM) >= 5 THEN SUBSTR(C.FTSNM,1,2) || '**' || SUBSTR(C.FTSNM,5,1)   END AS FTSNM /* 농가 이름 */
+                          
+	        , C.FHS_ID_NO || '-' || C.FARM_AMNNO AS FHS_ID_NO
+	        , C.NA_TRPL_C
+	        , C.DONGUP
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN C.DONGBW
+        	   ELSE '******' END AS DONGBW								/* 동이하마스킹주소		*/
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN C.CUS_MPNO
+	                WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),8,4)                                             
+	                                              END  AS CUS_MPNO /* 고객휴대폰          */
+	    
+	        , SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9) AS SRA_INDV_AMNNO
+	        , D.INDV_SEX_C
+	        , D.BIRTH
+	        , A.LOWS_SBID_LMT_AM
+	        , CASE WHEN A.SEL_STS_DSC     = '22' THEN A.SRA_SBID_AM ELSE 0 END  AS SRA_SBID_AM
+	        , F.SRA_SOG_FEE                       AS SRA_SOG_FEE
+	        , NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0)
+	                        + NVL(A.SRA_FED_SPY_AM, 0)
+	                        + NVL(A.TD_RC_CST, 0)
+	                        + NVL(A.MT12_OVR_FEE, 0)      AS SRA_ETC_CST
+	        , NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)           AS SRA_TRPCS
+	        , F.ACD_RVG_AM                        AS ACD_RVG_AM
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN E.VHC_DRV_CAFFNM
+                WHEN LENGTH(E.VHC_DRV_CAFFNM) = 2 THEN SUBSTR(E.VHC_DRV_CAFFNM,1,1) || '*' 
+                WHEN LENGTH(E.VHC_DRV_CAFFNM) = 3 THEN SUBSTR(E.VHC_DRV_CAFFNM,1,1) || '*' || SUBSTR(E.VHC_DRV_CAFFNM,3,1) 
+                WHEN LENGTH(E.VHC_DRV_CAFFNM) = 4 THEN SUBSTR(E.VHC_DRV_CAFFNM,1,1) || '**' || SUBSTR(E.VHC_DRV_CAFFNM,4,1)  
+                WHEN LENGTH(E.VHC_DRV_CAFFNM) >= 5 THEN SUBSTR(E.VHC_DRV_CAFFNM,1,2) || '**' || SUBSTR(E.VHC_DRV_CAFFNM,5,1)   END AS VHC_DRV_CAFFNM /* 수송자 */
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.SRA_MWMNNM
+                WHEN LENGTH(B.SRA_MWMNNM) = 2 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '*' 
+                WHEN LENGTH(B.SRA_MWMNNM) = 3 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '*' || SUBSTR(B.SRA_MWMNNM,3,1) 
+                WHEN LENGTH(B.SRA_MWMNNM) = 4 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '**' || SUBSTR(B.SRA_MWMNNM,4,1)  
+                WHEN LENGTH(B.SRA_MWMNNM) >= 5 THEN SUBSTR(B.SRA_MWMNNM,1,2) || '**' || SUBSTR(B.SRA_MWMNNM,5,1)   END AS SRA_MWMNNM /* 낙찰자 */
+	        
+	        , A.COW_SOG_WT
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN G.FTSNM
+                WHEN LENGTH(G.FTSNM) = 2 THEN SUBSTR(G.FTSNM,1,1) || '*' 
+                WHEN LENGTH(G.FTSNM) = 3 THEN SUBSTR(G.FTSNM,1,1) || '*' || SUBSTR(G.FTSNM,3,1) 
+                WHEN LENGTH(G.FTSNM) = 4 THEN SUBSTR(G.FTSNM,1,1) || '**' || SUBSTR(G.FTSNM,4,1)  
+                WHEN LENGTH(G.FTSNM) >= 5 THEN SUBSTR(G.FTSNM,1,2) || '**' || SUBSTR(G.FTSNM,5,1)   END AS ACNO_OWNER /* 예금주 */
+	        
+	        , A.SEL_STS_DSC
+	        
+	        
+	        , NVL(F.SRA_SOG_FEE, 0) + NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0)
+	        	+ NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0) + NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0) + NVL(F.ACD_RVG_AM, 0) AS FHS_TOT_AM
+	        
+	        , CASE WHEN A.SEL_STS_DSC     = '22' 
+		        THEN NVL(A.SRA_SBID_AM, 0) - (NVL(F.SRA_SOG_FEE, 0) + NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0)
+		        + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0) + NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0) + NVL(F.ACD_RVG_AM, 0)) 
+		        ELSE 0  - (NVL(F.SRA_SOG_FEE, 0) + NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0)
+		        + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0) + NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0) + NVL(F.ACD_RVG_AM, 0)) END  AS TOT_AM
+	        
+	        , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <= 4 AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434')
+                     THEN 4 
+                ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 END AS MTCN      /* 월령 의령=8808990656199  원주=8808990656434 */
+                
+	        , CASE WHEN A.SEL_STS_DSC = '22' THEN A.SRA_SBID_UPR ELSE 0 END AS SRA_SBID_UPR
+	        , CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN
+	                    CASE WHEN (C.SRA_FARM_ACNO = '' OR C.SRA_FARM_ACNO IS NULL) THEN
+	                         CASE WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 12 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,8) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 13 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,9) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 14 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,10) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 15 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,11) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 16 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,12) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 17 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,13) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 18 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,14) || '****'
+	                              ELSE C.NEW_SRA_FARM_ACNO
+	                         END
+	                    ELSE
+	                         CASE WHEN LENGTH(C.SRA_FARM_ACNO) = 12 THEN SUBSTRING(C.SRA_FARM_ACNO,1,8) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 13 THEN SUBSTRING(C.SRA_FARM_ACNO,1,9) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 14 THEN SUBSTRING(C.SRA_FARM_ACNO,1,10) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 15 THEN SUBSTRING(C.SRA_FARM_ACNO,1,11) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 16 THEN SUBSTRING(C.SRA_FARM_ACNO,1,12) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 17 THEN SUBSTRING(C.SRA_FARM_ACNO,1,13) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 18 THEN SUBSTRING(C.SRA_FARM_ACNO,1,14) || '****'
+	                              ELSE C.SRA_FARM_ACNO END
+	                         END
+	               ELSE
+	                    CASE WHEN (G.SRA_FARM_ACNO = '' OR G.SRA_FARM_ACNO IS NULL) THEN
+	                         CASE WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 12 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,8) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 13 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,9) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 14 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,10) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 15 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,11) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 16 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,12) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 17 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,13) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 18 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,14) || '****'
+	                              ELSE G.NEW_SRA_FARM_ACNO
+	                         END
+	                    ELSE
+	                         CASE WHEN LENGTH(G.SRA_FARM_ACNO) = 12 THEN SUBSTRING(G.SRA_FARM_ACNO,1,8) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 13 THEN SUBSTRING(G.SRA_FARM_ACNO,1,9) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 14 THEN SUBSTRING(G.SRA_FARM_ACNO,1,10) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 15 THEN SUBSTRING(G.SRA_FARM_ACNO,1,11) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 16 THEN SUBSTRING(G.SRA_FARM_ACNO,1,12) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 17 THEN SUBSTRING(G.SRA_FARM_ACNO,1,13) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 18 THEN SUBSTRING(G.SRA_FARM_ACNO,1,14) || '****'
+	                              ELSE G.SRA_FARM_ACNO END
+	                         END
+	          END AS SRA_FARM_ACNO
+	          
+	          , CASE WHEN #{ss_security} = '1' THEN C.DONGUP || ' ' || C.DONGBW
+        	   	ELSE C.DONGUP || ' ' || '******' END AS ADR				/* 동이하마스킹주소		*/
+	
+	     FROM TB_LA_IS_MH_SOG_COW  A
+	    LEFT OUTER JOIN (SELECT
+	                           NA_BZPLC
+	                         , AUC_OBJ_DSC
+	                         , AUC_DT
+	                         , OSLP_NO
+	                         , LED_SQNO
+	                         , SUM(CASE WHEN NA_FEE_C = '010' THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END)                      AS SRA_SOG_FEE
+	                         , SUM(CASE WHEN NA_FEE_C = '030' THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END)                      AS ACD_RVG_AM
+	                         , SUM(CASE WHEN NA_FEE_C = '040' THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END)                      AS SRA_TRPCS
+	                         , SUM(CASE WHEN NA_FEE_C NOT IN ('010', '030','040') THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END)  AS SRA_ETC_CST
+	                     FROM TB_LA_IS_MH_FEE_IMPS
+	                     WHERE NA_BZPLC        = #{ss_na_bzplc}
+	                       AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                       AND AUC_DT          = #{auc_dt}
+	                       AND FEE_APL_OBJ_C   = '1'
+	                     GROUP BY NA_BZPLC
+						     , AUC_OBJ_DSC
+						     , AUC_DT
+						     , OSLP_NO
+						     , LED_SQNO
+	                    )F
+	         ON  A.NA_BZPLC          = F.NA_BZPLC
+	         AND A.AUC_OBJ_DSC       = F.AUC_OBJ_DSC
+	         AND A.AUC_DT            = F.AUC_DT
+	         AND A.OSLP_NO           = F.OSLP_NO
+	         AND A.LED_SQNO          = F.LED_SQNO
+	
+	    LEFT OUTER JOIN TB_LA_IS_MM_VHC      E
+	         ON  A.NA_BZPLC       = E.NA_BZPLC
+	         AND A.VHC_SHRT_C     = E.VHC_SHRT_C
+	
+	    LEFT OUTER JOIN TB_LA_IS_MM_MWMN     B
+	         ON  A.NA_BZPLC       = B.NA_BZPLC
+	         AND A.TRMN_AMNNO     = B.TRMN_AMNNO
+	
+	    LEFT OUTER JOIN (SELECT A.OSLP_NO
+	                          , A.AUC_PRG_SQ
+	                          , A.LVST_AUC_PTC_MN_NO
+	                          , A.TRMN_AMNNO
+	                          , SUM(A.SRA_SBID_AM) AS SRA_SBID_AM
+	                          , SUM(A.SRA_SBID_AM) + SUM(B.SRA_TR_FEE) AS IO_AM_15
+	                          , SUM(B.SRA_TR_FEE) AS SRA_TR_FEE2
+	                     FROM TB_LA_IS_MH_SOG_COW A
+	                        , (SELECT NA_BZPLC
+	                                , AUC_OBJ_DSC
+	                                , AUC_DT
+	                                , OSLP_NO
+	                                , LED_SQNO
+	                                , SUM(CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END * SRA_TR_FEE) AS SRA_TR_FEE
+	   	                       FROM TB_LA_IS_MH_FEE_IMPS
+	                           WHERE NA_BZPLC      = #{ss_na_bzplc}
+	                             AND AUC_OBJ_DSC   = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                             AND AUC_DT        = #{auc_dt}
+	                             AND FEE_APL_OBJ_C = '2'
+	                           GROUP BY NA_BZPLC
+	                                  , AUC_OBJ_DSC
+	                                  , AUC_DT
+	                                  , OSLP_NO
+	                                  , LED_SQNO
+	                          ) B
+	                     WHERE A.NA_BZPLC    = #{ss_na_bzplc}
+	                       AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                       AND A.AUC_DT      = #{auc_dt}
+	                       AND A.NA_BZPLC    = B.NA_BZPLC
+	                       AND A.AUC_DT      = B.AUC_DT
+	                       AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
+	                       AND A.OSLP_NO     = B.OSLP_NO
+	                       AND A.LED_SQNO    = B.LED_SQNO
+	                       AND A.DEL_YN      = '0'
+	                       AND A.LED_SQNO    = 1
+	                     GROUP BY A.OSLP_NO
+	                            , A.AUC_PRG_SQ
+	                            , A.LVST_AUC_PTC_MN_NO
+	                            , A.TRMN_AMNNO
+	                    ) H
+	         ON A.OSLP_NO = H.OSLP_NO
+	
+	       , TB_LA_IS_MM_FHS     C
+	       , TB_LA_IS_MM_INDV    D
+	       , TB_LA_IS_MM_FHS     G
+	
+	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.AUC_DT            = #{auc_dt}
+	      AND A.DEL_YN            = '0'
+	      AND A.LED_SQNO          = 1
+	      AND A.LOWS_SBID_LMT_AM  > 0
+	      AND A.NA_BZPLC          = C.NA_BZPLC
+	      AND A.FHS_ID_NO         = C.FHS_ID_NO
+	      AND A.FARM_AMNNO        = C.FARM_AMNNO
+	      AND A.NA_BZPLC          = G.NA_BZPLC
+	      AND CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN A.FHS_ID_NO ELSE A.SOGMN_C  END = G.FHS_ID_NO
+	      AND (CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN A.FARM_AMNNO ELSE 0 END) =
+	          (CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN G.FARM_AMNNO ELSE 0 END)
+	
+	      AND A.NA_BZPLC          = D.NA_BZPLC
+	      AND A.SRA_SRS_DSC       = D.SRA_SRS_DSC
+	      AND A.SRA_INDV_AMNNO    = D.SRA_INDV_AMNNO
+	]]>
+	<if test='fhs_id_no != null and fhs_id_no != ""'>
+	      AND C.FHS_ID_NO         = #{fhs_id_no}
+	</if>
+	<if test='ftsnm != null and ftsnm != ""'>
+	      AND C.FTSNM             = #{ftsnm}
+	</if>
+	<if test='sel_sts_dsc != null and sel_sts_dsc != ""'>
+	      AND A.SEL_STS_DSC       = #{sel_sts_dsc}
+	</if>
+	<if test='auc_prg_sq != null and auc_prg_sq != ""'>
+	      AND A.AUC_PRG_SQ        =  #{auc_prg_sq}
+	</if>
+	<![CDATA[
+	    ORDER BY A.AUC_OBJ_DSC, A.AUC_PRG_SQ, FHS_ID_NO
+	]]>
+	</select>
+	
+	<select id="LALM0513_selSubList_5" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          A.AUC_OBJ_DSC
+	        , A.AUC_PRG_SQ
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN C.FTSNM
+                WHEN LENGTH(C.FTSNM) = 2 THEN SUBSTR(C.FTSNM,1,1) || '*' 
+                WHEN LENGTH(C.FTSNM) = 3 THEN SUBSTR(C.FTSNM,1,1) || '*' || SUBSTR(C.FTSNM,3,1) 
+                WHEN LENGTH(C.FTSNM) = 4 THEN SUBSTR(C.FTSNM,1,1) || '**' || SUBSTR(C.FTSNM,4,1)  
+                WHEN LENGTH(C.FTSNM) >= 5 THEN SUBSTR(C.FTSNM,1,2) || '**' || SUBSTR(C.FTSNM,5,1)   END AS FTSNM /* 농가 이름 */
+	        
+	        , C.FHS_ID_NO || '-' || C.FARM_AMNNO AS FHS_ID_NO
+	        , C.NA_TRPL_C
+	        , C.DONGUP
+	        , C.DONGBW
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN C.CUS_MPNO
+	                WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),8,4)                                             
+	                                              END  AS CUS_MPNO /* 고객휴대폰          */
+	                                              
+	        , SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9) AS SRA_INDV_AMNNO
+	        , D.BIRTH
+	        , D.INDV_SEX_C
+	        , A.LOWS_SBID_LMT_AM
+	        , CASE WHEN A.SEL_STS_DSC = '22' THEN A.SRA_SBID_AM
+	               ELSE 0
+	          END                                 AS SRA_SBID_AM
+	        , F.SRA_SOG_FEE                       AS SRA_SOG_FEE		  	         /* 출하자 축산출하수수료               */
+	        , NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0)
+	                        + NVL(A.SRA_FED_SPY_AM, 0)
+	                        + NVL(A.TD_RC_CST, 0)
+	                        + NVL(A.MT12_OVR_FEE, 0)      AS SRA_ETC_CST                   /* 출하자 축산기타비용                 */
+	        , NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)           AS SRA_TRPCS                     /* 운송비                              */
+	        , F.ACD_RVG_AM                        AS ACD_RVG_AM                    /* 사고적립금                          */
+	        , G.FTSNM                             AS ACNO_OWNER
+	        , E.VHC_DRV_CAFFNM
+	        , B.SRA_MWMNNM
+	        , A.COW_SOG_WT
+	        , A.SEL_STS_DSC						                                     /* 판매상태구분코드                    */
+	        , CASE WHEN A.SEL_STS_DSC = '22' THEN A.SRA_SBID_UPR
+	               ELSE 0
+	          END AS SRA_SBID_UPR
+	        , CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN CASE WHEN (C.SRA_FARM_ACNO = '' OR C.SRA_FARM_ACNO IS NULL) THEN C.NEW_SRA_FARM_ACNO
+	                                                                    ELSE C.SRA_FARM_ACNO
+	                                                               END
+	               ELSE CASE WHEN (G.SRA_FARM_ACNO = '' OR G.SRA_FARM_ACNO IS NULL) THEN G.NEW_SRA_FARM_ACNO
+	                         ELSE G.SRA_FARM_ACNO
+	                    END
+	          END AS SRA_FARM_ACNO
+	       , C.DONGUP || ' ' || TRIM(LPAD(' ', LENGTH(C.DONGBW) +1, '*')) AS ADR
+	       , NVL(F.SRA_SOG_FEE, 0) + 
+	        (NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0)) +
+	        (NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) + NVL(F.ACD_RVG_AM, 0) AS FHS_TOT_AM
+	       , CASE WHEN A.SEL_STS_DSC = '22' THEN 
+			         NVL(A.SRA_SBID_AM, 0) - (NVL(F.SRA_SOG_FEE, 0) + 
+			        (NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0)) +
+			        (NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) + NVL(F.ACD_RVG_AM, 0))
+	         ELSE 0 - (NVL(F.SRA_SOG_FEE, 0) + 
+			        (NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0)) +
+			        (NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) + NVL(F.ACD_RVG_AM, 0))
+	         END                                 AS TOT_AM
+	       , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <= 4 AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434')
+                     THEN 4 
+                ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 END AS MTCN      /* 월령 의령=8808990656199  원주=8808990656434 */
+	       
+	    FROM TB_LA_IS_MH_SOG_COW  A
+	    LEFT OUTER JOIN (SELECT
+	                           NA_BZPLC
+	                         , AUC_OBJ_DSC
+	                         , AUC_DT
+	                         , OSLP_NO
+	                         , LED_SQNO
+	                         , SUM(CASE WHEN NA_FEE_C = '010' THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SOG_FEE
+	                         , SUM(CASE WHEN NA_FEE_C = '030' THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS ACD_RVG_AM
+	                         , SUM(CASE WHEN NA_FEE_C = '040' THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_TRPCS
+	                         , SUM(CASE WHEN NA_FEE_C NOT IN ('010', '030','040') THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ETC_CST
+	                     FROM TB_LA_IS_MH_FEE_IMPS
+	                     WHERE NA_BZPLC        = #{ss_na_bzplc}
+	                       AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                       AND AUC_DT          = #{auc_dt}
+	                       AND FEE_APL_OBJ_C   = '1'                           /* 1:출하자, 2:낙찰자  */
+	                     GROUP BY NA_BZPLC
+	                            , AUC_OBJ_DSC
+	                            , AUC_DT
+	                            , OSLP_NO
+	                            , LED_SQNO
+	                    )F
+	         ON  A.NA_BZPLC       = F.NA_BZPLC
+	         AND A.AUC_OBJ_DSC    = F.AUC_OBJ_DSC
+	         AND A.AUC_DT         = F.AUC_DT
+	         AND A.OSLP_NO        = F.OSLP_NO
+	         AND A.LED_SQNO       = F.LED_SQNO
+	
+	    LEFT OUTER JOIN TB_LA_IS_MM_VHC      E
+	         ON  A.NA_BZPLC       = E.NA_BZPLC
+	         AND A.VHC_SHRT_C     = E.VHC_SHRT_C
+	
+	    LEFT OUTER JOIN TB_LA_IS_MM_MWMN     B
+	         ON  A.NA_BZPLC       = B.NA_BZPLC
+	         AND A.TRMN_AMNNO     = B.TRMN_AMNNO
+	
+	       , TB_LA_IS_MM_FHS     C
+	       , TB_LA_IS_MM_INDV    D
+	       , TB_LA_IS_MM_FHS     G
+	
+	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.AUC_DT            = #{auc_dt}
+	      AND A.DEL_YN            = '0'
+	      AND A.LED_SQNO          = 1
+	      AND A.LOWS_SBID_LMT_AM  > 0
+	
+	      AND A.NA_BZPLC          = C.NA_BZPLC
+	      AND A.FHS_ID_NO         = C.FHS_ID_NO
+	      AND A.FARM_AMNNO        = C.FARM_AMNNO
+	      AND A.NA_BZPLC          = G.NA_BZPLC
+	      AND CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN A.FHS_ID_NO ELSE A.SOGMN_C  END = G.FHS_ID_NO
+	      AND (CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN A.FARM_AMNNO ELSE 0 END) =
+	          (CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN G.FARM_AMNNO ELSE 0 END)
+	
+	      AND A.NA_BZPLC          = D.NA_BZPLC
+	      AND A.SRA_SRS_DSC       = D.SRA_SRS_DSC
+	      AND A.SRA_INDV_AMNNO    = D.SRA_INDV_AMNNO
+	      
+	]]>
+	<if test='fhs_id_no != null and fhs_id_no != ""'>
+	      AND C.FHS_ID_NO         = #{fhs_id_no}
+	</if>
+	<if test='ftsnm != null and ftsnm != ""'>
+	      AND C.FTSNM             = #{ftsnm}
+	</if>
+	<if test='sel_sts_dsc != null and sel_sts_dsc != ""'>
+	      AND A.SEL_STS_DSC       = #{sel_sts_dsc}
+	</if>
+	<![CDATA[
+	    ORDER BY A.AUC_OBJ_DSC, A.AUC_PRG_SQ, FHS_ID_NO
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_6" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          A.AUC_PRG_SQ
+	        , CASE WHEN #{ss_security} = '1' THEN B.FTSNM
+               WHEN LENGTH(B.FTSNM) = 2 THEN SUBSTR(B.FTSNM,1,1) || '*' 
+               WHEN LENGTH(B.FTSNM) = 3 THEN SUBSTR(B.FTSNM,1,1) || '*'  || SUBSTR(B.FTSNM,3,1) 
+               WHEN LENGTH(B.FTSNM) = 4 THEN SUBSTR(B.FTSNM,1,1) || '**' || SUBSTR(B.FTSNM,4,1)  
+               WHEN LENGTH(B.FTSNM) >= 5 THEN SUBSTR(B.FTSNM,1,2) || '**' || SUBSTR(B.FTSNM,5,1)  END AS FTSNM  
+            , B.DONGUP
+	        , B.DONGBW
+	        , CASE WHEN #{ss_security} = '1' THEN C.SRA_MWMNNM
+               WHEN LENGTH(C.SRA_MWMNNM) = 2 THEN SUBSTR(C.SRA_MWMNNM,1,1) || '*' 
+               WHEN LENGTH(C.SRA_MWMNNM) = 3 THEN SUBSTR(C.SRA_MWMNNM,1,1) || '*'  || SUBSTR(C.SRA_MWMNNM,3,1) 
+               WHEN LENGTH(C.SRA_MWMNNM) = 4 THEN SUBSTR(C.SRA_MWMNNM,1,1) || '**' || SUBSTR(C.SRA_MWMNNM,4,1)  
+               WHEN LENGTH(C.SRA_MWMNNM) >= 5 THEN SUBSTR(C.SRA_MWMNNM,1,2) || '**' || SUBSTR(C.SRA_MWMNNM,5,1)  END AS SRA_MWMNNM  
+           
+	        , CASE WHEN A.SEL_STS_DSC = '22' THEN A.SRA_SBID_AM ELSE 0 END     AS SRA_SBID_AM
+	        , D.SRA_SEL_FEE                                                    AS SRA_SEL_FEE
+	        , D.SRA_SHNM                                                       AS SRA_SHNM
+	        , NVL(D.SRA_ETC_CST, 0) + NVL(A.SRA_TRPCS, 0)
+	                        + NVL(A.SRA_PYIVA, 0)
+	                        + NVL(A.SRA_FED_SPY_AM, 0)
+	                        + NVL(A.TD_RC_CST, 0)
+	                        + NVL(A.MT12_OVR_FEE, 0)                                   AS SRA_ETC_CST
+	        , B.RMK_CNTN
+	        , B.FHS_ID_NO || '-' || B.FARM_AMNNO                               AS FHS_ID_NO
+	        , A.COW_SOG_WT
+	        , CASE WHEN A.SEL_STS_DSC = '22' THEN SRA_SBID_UPR ELSE 0 END      AS SRA_SBID_UPR
+	        , B.DONGUP || ' ' || TRIM(LPAD(' ', LENGTH(B.DONGBW) +1, '*')) AS ADR
+	        , NVL(D.SRA_SEL_FEE, 0) + NVL(D.SRA_SHNM, 0) + NVL(D.SRA_ETC_CST, 0) + NVL(A.SRA_TRPCS, 0)
+	         + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0) AS TOT_FEE
+	        
+	        , CASE WHEN A.SRA_SBID_AM != 0 THEN 
+	          NVL(A.SRA_SBID_AM, 0) - (NVL(D.SRA_SEL_FEE, 0) + NVL(D.SRA_SHNM, 0) + NVL(D.SRA_ETC_CST, 0) + NVL(A.SRA_TRPCS, 0)
+	                                + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0))
+	                ELSE 0 END     AS SBT_PY_AM
+	
+	    FROM TB_LA_IS_MH_SOG_COW  A
+	    LEFT OUTER JOIN (SELECT
+	                           NA_BZPLC
+	                         , AUC_OBJ_DSC
+							 , AUC_DT                 
+							 , OSLP_NO                
+							 , LED_SQNO               
+							 , SUM(
+								   (CASE WHEN NA_FEE_C = '011' THEN SRA_TR_FEE ELSE  0 END) *
+								   (CASE WHEN ANS_DSC  = '1'   THEN 1          ELSE -1 END)
+								   ) AS SRA_SEL_FEE     
+							 , SUM(
+								   (CASE WHEN NA_FEE_C = '090' THEN SRA_TR_FEE ELSE  0 END) *
+								   (CASE WHEN ANS_DSC  = '1'   THEN 1          ELSE -1 END)
+								   ) AS SRA_SHNM        
+							 , SUM(
+								   (CASE WHEN NA_FEE_C <> '011' AND NA_FEE_C <> '090' THEN SRA_TR_FEE ELSE  0 END) *
+								   (CASE WHEN ANS_DSC  = '1'                          THEN 1          ELSE -1 END)
+								   ) AS SRA_ETC_CST     
+	                     FROM TB_LA_IS_MH_FEE_IMPS
+	                     WHERE NA_BZPLC       = #{ss_na_bzplc}
+	                       AND AUC_OBJ_DSC    = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                       AND AUC_DT         = #{auc_dt}
+	                       AND FEE_APL_OBJ_C       = '1'        
+	                     GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, LED_SQNO
+	                    ) D
+	         ON  A.NA_BZPLC       = D.NA_BZPLC
+	         AND A.AUC_OBJ_DSC    = D.AUC_OBJ_DSC
+	         AND A.AUC_DT         = D.AUC_DT
+	         AND A.OSLP_NO        = D.OSLP_NO
+	         AND A.LED_SQNO       = D.LED_SQNO
+	    LEFT OUTER JOIN TB_LA_IS_MM_MWMN     C
+	         ON  A.NA_BZPLC       = C.NA_BZPLC
+	         AND A.TRMN_AMNNO     = C.TRMN_AMNNO
+	
+	       , TB_LA_IS_MM_FHS      B
+	
+	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.AUC_DT            = #{auc_dt}
+	      AND A.DEL_YN            = '0'
+	      AND A.LED_SQNO          = 1
+	      AND A.LOWS_SBID_LMT_AM  > 0
+	
+	      AND A.NA_BZPLC          = B.NA_BZPLC
+	      AND A.FHS_ID_NO         = B.FHS_ID_NO
+	      AND A.FARM_AMNNO        = B.FARM_AMNNO
+	]]>
+	<if test='fhs_id_no != null and fhs_id_no != ""'>
+	      AND B.FHS_ID_NO         = #{fhs_id_no}
+	</if>
+	<if test='ftsnm != null and ftsnm != ""'>
+	      AND B.FTSNM             = #{ftsnm}
+	</if>
+	<![CDATA[
+	    ORDER BY A.AUC_PRG_SQ, FHS_ID_NO
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_7" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          B.VHC_SHRT_C
+	        , CASE WHEN #{ss_security} = '1' THEN vhc_drv_caffnm
+               WHEN LENGTH(vhc_drv_caffnm) = 2 THEN SUBSTR(vhc_drv_caffnm,1,1) || '*' 
+               WHEN LENGTH(vhc_drv_caffnm) = 3 THEN SUBSTR(vhc_drv_caffnm,1,1) || '*'  || SUBSTR(vhc_drv_caffnm,3,1) 
+               WHEN LENGTH(vhc_drv_caffnm) = 4 THEN SUBSTR(vhc_drv_caffnm,1,1) || '**' || SUBSTR(vhc_drv_caffnm,4,1)  
+               WHEN LENGTH(vhc_drv_caffnm) >= 5 THEN SUBSTR(vhc_drv_caffnm,1,2) || '**' || SUBSTR(vhc_drv_caffnm,5,1)  END AS vhc_drv_caffnm  /* 수송자명*/
+           
+	        , CASE WHEN (NVL(C.TRPCS,0) + NVL(A.SRA_TRPCS, 0)) > 0 THEN COUNT(A.SRA_INDV_AMNNO)
+	               ELSE 0
+	          END                        AS SRA_INDV_AMNNO
+	        , SUM(NVL(C.TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) AS TRPCS
+	        , TRIM(B.VHCNO)             AS VHCNO
+	        , CASE WHEN #{ss_security} = '1' THEN B.BRWR_MPNO
+                WHEN LENGTH(REPLACE(RTRIM(B.BRWR_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(B.BRWR_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(B.BRWR_MPNO),'-',''),6,4)  
+                WHEN LENGTH(REPLACE(RTRIM(B.BRWR_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(B.BRWR_MPNO),'-',''),1,2) = '02' 
+                                                                               THEN SUBSTR(REPLACE(RTRIM(B.BRWR_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(B.BRWR_MPNO),'-',''),7,4)  
+                                                                               ELSE SUBSTR(REPLACE(RTRIM(B.BRWR_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(B.BRWR_MPNO),'-',''),7,4)  
+                                                                               END) 
+                WHEN LENGTH(REPLACE(RTRIM(B.BRWR_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(B.BRWR_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(B.BRWR_MPNO),'-',''),8,4)                                             
+                                              END  AS BRWR_MPNO 
+	    FROM TB_LA_IS_MH_SOG_COW A
+	       , (SELECT
+	                NA_BZPLC
+	              , AUC_OBJ_DSC
+	              , AUC_DT
+	              , OSLP_NO
+	              , LED_SQNO
+	              , SUM((CASE WHEN NA_FEE_C = '040' THEN SRA_TR_FEE ELSE  0 END) *
+	                    (CASE WHEN ANS_DSC  = '1'   THEN 1          ELSE -1 END)
+	                   ) AS TRPCS
+	
+	          FROM TB_LA_IS_MH_FEE_IMPS
+	          WHERE NA_BZPLC        = #{ss_na_bzplc}
+	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND AUC_DT          = #{auc_dt}
+	            AND FEE_APL_OBJ_C   = '1'
+	          GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, LED_SQNO
+	         ) C
+	       , TB_LA_IS_MM_VHC     B
+	
+	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.AUC_DT            = #{auc_dt}
+	      AND A.DEL_YN            = '0'
+	      AND A.LED_SQNO          = 1
+	      AND A.LOWS_SBID_LMT_AM  > 0
+	
+	      AND A.NA_BZPLC          = B.NA_BZPLC
+	      AND A.VHC_SHRT_C        = B.VHC_SHRT_C
+	      AND A.NA_BZPLC          = C.NA_BZPLC
+	      AND A.AUC_OBJ_DSC       = C.AUC_OBJ_DSC
+	      AND A.AUC_DT            = C.AUC_DT
+	      AND A.OSLP_NO           = C.OSLP_NO
+	      AND A.LED_SQNO          = C.LED_SQNO
+	]]>
+	<if test='mhsogcow9_chk == 1'>
+	      AND A.SEL_STS_DSC    = '22'
+	</if>
+	<![CDATA[
+	    GROUP BY B.VHC_SHRT_C
+	           , B.VHC_DRV_CAFFNM
+	           , B.VHCNO
+	           , B.BRWR_MPNO
+	           , C.TRPCS
+	           , A.SRA_TRPCS
+	
+	    HAVING SUM(NVL(C.TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) > 0
+	
+	    ORDER BY VHC_SHRT_C
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_8" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          B.RG_DSC                         AS RG_DSC                             /* 등록구분                       */
+	        , B.INDV_SEX_C			                                                 /* 성별                           */
+	        , COUNT(A.SRA_INDV_AMNNO)          AS TOT_HDCN                           /* 두수                           */
+	        , SUM(A.COW_SOG_WT)                AS TOT_WT                             /* 우출하 총 중량                 */
+	        , FLOOR(AVG(A.COW_SOG_WT))         AS AVG_WT                             /* 우출하 평균 중량               */
+	        , SUM(A.LOWS_SBID_LMT_AM)          AS LOWS_SBID_LMT_AM                   /* 응찰하한가 총계                */
+	        , FLOOR(AVG(A.LOWS_SBID_LMT_AM))   AS AVG_PR                             /* 응찰하한가 평균                */
+	
+	        /*	의령 8808990656199, 곡성 8808990656717, 서산 8808990656694, 괴산증평: 8808990656670, 영천: 8808990656687, 포항: 8808990679549, 영덕울진: 8808990785431, 수원: 8808990656496, 고령성주: 8808990659695 */
+	        , CASE WHEN #{auc_obj_dsc} = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN SUM(A.SRA_SBID_AM) ELSE SUM(A.SRA_SBID_UPR) END)
+	               ELSE SUM(A.SRA_SBID_AM) END  AS SRA_SBID_AM                       /* 축산낙찰금액                   */
+	        , CASE WHEN #{auc_obj_dsc} = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN AVG(A.SRA_SBID_AM) ELSE AVG(A.SRA_SBID_UPR) END)
+	               ELSE AVG(A.SRA_SBID_AM) END  AS SRA_AVG_SBID_UPR                  /* 축산평균낙찰금액               */
+	        , NVL((CASE WHEN #{auc_obj_dsc} = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN AVG(A.SRA_SBID_AM) ELSE AVG(A.SRA_SBID_UPR) END)
+	               ELSE AVG(A.SRA_SBID_AM) END), 0) - NVL(AVG(A.LOWS_SBID_LMT_AM), 0) AS BIGO
+	
+	    FROM TB_LA_IS_MH_SOG_COW A
+	       , TB_LA_IS_MM_INDV    B
+	    WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	      AND A.AUC_DT          = #{auc_dt}
+	      AND A.DEL_YN          = '0'
+	      AND A.LED_SQNO        = 1
+	      AND A.SEL_STS_DSC     = '22'                                 /* 낙찰건         	       */
+	      AND A.NA_BZPLC        = B.NA_BZPLC
+	      AND A.SRA_SRS_DSC     = B.SRA_SRS_DSC                        /* 축산축종구분코드         */
+	      AND A.SRA_INDV_AMNNO  = B.SRA_INDV_AMNNO                     /* 축산개체관리번호         */
+	
+	    GROUP BY B.RG_DSC,B.INDV_SEX_C
+	
+	    ORDER BY B.RG_DSC
+	]]>
+	</select>
+	
+	<select id="LALM0513_selSubList_8" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          A.INDV_SEX_C       AS INDV_SEX_C
+	        , FLOOR(A.MAX_SRA_SBID_AM)  AS MAX_SRA_SBID_AM
+	        , FLOOR(A.MIN_SRA_SBID_AM)  AS MIN_SRA_SBID_AM
+	        , FLOOR(A.AVG_SRA_SBID_AM)  AS AVG_SRA_SBID_AM
+	        , A.TOT_SU           AS TOT_SU
+	        , A.COW_SOG_WT       AS COW_SOG_WT
+	        , B.FTSNM            AS AM_MAX_SRA_MWMNNM     
+	        , C.FTSNM            AS AM_LOWS_SRA_MWMNNM    
+	        , D.FTSNM            AS SU_MAX_SRA_MWMNNM     
+	        , E.FTSNM            AS SU_LOWS_SRA_MWMNNM    
+	        , G.FTSNM            AS NO_MAX_SRA_MWMNNM     
+	        , H.FTSNM            AS NO_LOWS_SRA_MWMNNM    
+	        , I.FTSNM            AS ETC_MAX_SRA_MWMNNM	  
+	        , J.FTSNM            AS ETC_LOWS_SRA_MWMNNM   
+	        , F.TOT_TOT_SU       AS TOT_TOT_SU
+	    FROM (SELECT
+	                CASE WHEN C.INDV_SEX_C   = '1' THEN '1'
+	                     WHEN C.INDV_SEX_C   = '2' THEN '2'
+	                     WHEN C.INDV_SEX_C   = '3' THEN '3'
+	                     WHEN C.INDV_SEX_C   = '6' THEN '1'
+	                     ELSE '4' END AS INDV_SEX_C
+	              , CASE WHEN #{auc_obj_dsc} = '2' THEN MAX(A.SRA_SBID_UPR)
+	                     ELSE MAX(A.SRA_SBID_AM)  END       AS MAX_SRA_SBID_AM
+	              , CASE WHEN #{auc_obj_dsc} = '2' THEN MIN(A.SRA_SBID_UPR)
+	                     ELSE MIN(A.SRA_SBID_AM)  END       AS MIN_SRA_SBID_AM
+	              , CASE WHEN #{auc_obj_dsc} = '2' THEN AVG(A.SRA_SBID_UPR)
+	                     ELSE AVG(A.SRA_SBID_AM)  END       AS AVG_SRA_SBID_AM
+	              , COUNT(A.SRA_INDV_AMNNO)                 AS TOT_SU
+	              , SUM(A.COW_SOG_WT)                       AS COW_SOG_WT
+	          FROM TB_LA_IS_MH_SOG_COW A
+	             , TB_LA_IS_MM_INDV    C
+	          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	            AND A.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	            AND A.AUC_DT          = #{auc_dt}
+	            AND A.DEL_YN          = '0'
+	            AND A.LED_SQNO        = 1
+	            AND A.SEL_STS_DSC     = '22'
+	            AND A.NA_BZPLC        = C.NA_BZPLC
+	            AND A.SRA_SRS_DSC     = C.SRA_SRS_DSC
+	            AND A.SRA_INDV_AMNNO  = C.SRA_INDV_AMNNO
+	          GROUP BY CASE WHEN C.INDV_SEX_C   = '1' THEN '1'
+	                        WHEN C.INDV_SEX_C   = '2' THEN '2'
+	                        WHEN C.INDV_SEX_C   = '3' THEN '3'
+	                        WHEN C.INDV_SEX_C   = '6' THEN '1'
+	                        ELSE '4' END) A
+	         LEFT OUTER JOIN
+	                         (SELECT CASE WHEN C.INDV_SEX_C   = '1' THEN '1'
+	                                            WHEN C.INDV_SEX_C   = '2' THEN '2'
+	                                            WHEN C.INDV_SEX_C   = '3' THEN '3'
+	                                            WHEN C.INDV_SEX_C   = '6' THEN '1'
+	                                            ELSE '4' END AS INDV_SEX_C
+	                              , B.FTSNM || '(' || A.FHS_ID_NO || '-' || A.FARM_AMNNO || ')' AS FTSNM
+	                              , A.SRA_SBID_AM
+	
+	                          FROM TB_LA_IS_MH_SOG_COW A
+	                             , TB_LA_IS_MM_FHS     B
+	                             , TB_LA_IS_MM_INDV    C
+	                          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	                            AND A.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                            AND A.AUC_DT          = #{auc_dt}
+	                            AND A.DEL_YN          = '0'
+	                            AND A.LED_SQNO        = 1
+	                            AND A.NA_BZPLC        = C.NA_BZPLC
+	                            AND A.SRA_SRS_DSC     = C.SRA_SRS_DSC
+	                            AND A.SRA_INDV_AMNNO  = C.SRA_INDV_AMNNO
+	                            AND C.INDV_SEX_C      IN ('1', '6')
+	                            AND A.NA_BZPLC        = B.NA_BZPLC
+	                            AND A.FHS_ID_NO       = B.FHS_ID_NO
+	                            AND A.FARM_AMNNO      = B.FARM_AMNNO
+	                            AND CASE WHEN #{auc_obj_dsc} = '2' THEN A.SRA_SBID_UPR ELSE A.SRA_SBID_AM  END
+	                                = (SELECT CASE WHEN #{auc_obj_dsc} = '2' THEN MAX(TT.SRA_SBID_UPR) ELSE MAX(TT.SRA_SBID_AM)  END
+	                                   FROM TB_LA_IS_MH_SOG_COW TT
+	                                        LEFT OUTER JOIN TB_LA_IS_MM_INDV DD
+	                                             ON TT.NA_BZPLC = DD.NA_BZPLC
+	                                             AND TT.SRA_INDV_AMNNO = DD.SRA_INDV_AMNNO
+	                                   WHERE TT.NA_BZPLC        = #{ss_na_bzplc}
+	                                     AND TT.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                                     AND TT.AUC_DT          = #{auc_dt}
+	                                     AND TT.DEL_YN          = '0'
+	                                     AND TT.LED_SQNO        = 1
+	                                     AND TT.SEL_STS_DSC     = '22'
+	                                     AND DD.INDV_SEX_C      IN ('1', '6')
+	                                   GROUP BY CASE WHEN DD.INDV_SEX_C = '1' THEN '1'
+	                                                 WHEN DD.INDV_SEX_C = '2' THEN '2'
+	                                                 WHEN DD.INDV_SEX_C = '3' THEN '3'
+	                                                 WHEN DD.INDV_SEX_C = '6' THEN '1'
+	                                                 ELSE '4' END
+	                                  )
+	                            AND ROWNUM = 1
+	                         ) B ON A.INDV_SEX_C      = B.INDV_SEX_C
+	         LEFT OUTER JOIN (SELECT CASE WHEN C.INDV_SEX_C   = '1' THEN '1'
+	                                             WHEN C.INDV_SEX_C   = '2' THEN '2'
+	                                             WHEN C.INDV_SEX_C   = '3' THEN '3'
+	                                             WHEN C.INDV_SEX_C   = '6' THEN '1'
+	                                             ELSE '4' END AS INDV_SEX_C
+	                              , B.FTSNM || '(' || A.FHS_ID_NO || '-' || A.FARM_AMNNO || ')' AS FTSNM
+	                              , A.SRA_SBID_AM
+	
+	                          FROM TB_LA_IS_MH_SOG_COW A
+	                             , TB_LA_IS_MM_FHS     B
+	                             , TB_LA_IS_MM_INDV    C
+	                          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	                            AND A.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                            AND A.AUC_DT          = #{auc_dt}
+	                            AND A.DEL_YN          = '0'
+	                            AND A.LED_SQNO        = 1
+	                            AND A.SEL_STS_DSC     = '22'
+	                            AND A.NA_BZPLC        = C.NA_BZPLC
+	                            AND A.SRA_SRS_DSC     = C.SRA_SRS_DSC
+	                            AND A.SRA_INDV_AMNNO  = C.SRA_INDV_AMNNO
+	                            AND C.INDV_SEX_C      IN ('1', '6')
+	                            AND A.NA_BZPLC        = B.NA_BZPLC
+	                            AND A.FHS_ID_NO       = B.FHS_ID_NO
+	                            AND A.FARM_AMNNO      = B.FARM_AMNNO
+	                            AND  CASE WHEN #{auc_obj_dsc} = '2' THEN A.SRA_SBID_UPR ELSE A.SRA_SBID_AM  END
+	                                = (SELECT CASE WHEN #{auc_obj_dsc} = '2' THEN MIN(TT.SRA_SBID_UPR) ELSE MIN(TT.SRA_SBID_AM)  END
+	                                   FROM TB_LA_IS_MH_SOG_COW TT
+	                                        LEFT OUTER JOIN TB_LA_IS_MM_INDV DD
+	                                             ON  TT.NA_BZPLC = DD.NA_BZPLC
+	                                             AND TT.SRA_INDV_AMNNO = DD.SRA_INDV_AMNNO
+	                                   WHERE TT.NA_BZPLC        = #{ss_na_bzplc}
+	                                     AND TT.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                                     AND TT.AUC_DT          = #{auc_dt}
+	                                     AND TT.DEL_YN          = '0'
+	                                     AND TT.LED_SQNO        = 1
+	                                     AND TT.SEL_STS_DSC     = '22'
+	                                     AND DD.INDV_SEX_C      IN ('1', '6')
+	                                   GROUP BY CASE WHEN DD.INDV_SEX_C = '1' THEN '1'
+	                                                 WHEN DD.INDV_SEX_C = '2' THEN '2'
+	                                                 WHEN DD.INDV_SEX_C = '3' THEN '3'
+	                                                 WHEN DD.INDV_SEX_C = '6' THEN '1'
+	                                                 ELSE '4' END
+	                                  )
+	                            AND ROWNUM = 1
+	                         ) C ON A.INDV_SEX_C      = C.INDV_SEX_C
+	
+	         LEFT OUTER JOIN (SELECT CASE WHEN C.INDV_SEX_C   = '1' THEN '1'
+	                                            WHEN C.INDV_SEX_C   = '2' THEN '2'
+	                                            WHEN C.INDV_SEX_C   = '3' THEN '3'
+	                                            WHEN C.INDV_SEX_C   = '6' THEN '1'
+	                                            ELSE '4' END AS INDV_SEX_C
+	                              , B.FTSNM || '(' || A.FHS_ID_NO || '-' || A.FARM_AMNNO || ')' AS FTSNM
+	                              , A.SRA_SBID_AM
+	
+	                          FROM TB_LA_IS_MH_SOG_COW A
+	                             , TB_LA_IS_MM_FHS     B
+	                             , TB_LA_IS_MM_INDV    C
+	                          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	                            AND A.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                            AND A.AUC_DT          = #{auc_dt}
+	                            AND A.DEL_YN          = '0'
+	                            AND A.LED_SQNO        = 1
+	                            AND A.SEL_STS_DSC     = '22'
+	                            AND A.NA_BZPLC        = C.NA_BZPLC
+	                            AND A.SRA_SRS_DSC     = C.SRA_SRS_DSC
+	                            AND A.SRA_INDV_AMNNO  = C.SRA_INDV_AMNNO
+	                            AND C.INDV_SEX_C      = '2'
+	                            AND A.NA_BZPLC        = B.NA_BZPLC
+	                            AND A.FHS_ID_NO       = B.FHS_ID_NO
+	                            AND A.FARM_AMNNO      = B.FARM_AMNNO
+	                            AND CASE WHEN #{auc_obj_dsc} = '2' THEN A.SRA_SBID_UPR ELSE A.SRA_SBID_AM  END
+	                                = (SELECT CASE WHEN #{auc_obj_dsc} = '2' THEN MAX(TT.SRA_SBID_UPR) ELSE MAX(TT.SRA_SBID_AM)  END
+	                                   FROM TB_LA_IS_MH_SOG_COW TT
+	                                        LEFT OUTER JOIN TB_LA_IS_MM_INDV DD
+	                                             ON  TT.NA_BZPLC       = DD.NA_BZPLC
+	                                             AND TT.SRA_INDV_AMNNO = DD.SRA_INDV_AMNNO
+	                                   WHERE TT.NA_BZPLC        = #{ss_na_bzplc}
+	                                     AND TT.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                                     AND TT.AUC_DT          = #{auc_dt}
+	                                     AND TT.DEL_YN          = '0'
+	                                     AND TT.LED_SQNO        = 1
+	                                     AND TT.SEL_STS_DSC     = '22'
+	                                     AND DD.INDV_SEX_C      = '2'
+	                                  )
+	                            AND ROWNUM = 1
+	                         ) D ON A.INDV_SEX_C      = D.INDV_SEX_C
+	         LEFT OUTER JOIN (SELECT CASE WHEN C.INDV_SEX_C   = '1' THEN '1'
+	                                            WHEN C.INDV_SEX_C   = '2' THEN '2'
+	                                            WHEN C.INDV_SEX_C   = '3' THEN '3'
+	                                            WHEN C.INDV_SEX_C   = '6' THEN '1'
+	                                            ELSE '4' END AS INDV_SEX_C
+	                              , B.FTSNM || '(' || A.FHS_ID_NO || '-' || A.FARM_AMNNO || ')' AS FTSNM
+	                              , A.SRA_SBID_AM
+	
+	                          FROM TB_LA_IS_MH_SOG_COW A
+	                             , TB_LA_IS_MM_FHS     B
+	                             , TB_LA_IS_MM_INDV    C
+	                          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	                            AND A.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                            AND A.AUC_DT          = #{auc_dt}
+	                            AND A.DEL_YN          = '0'
+	                            AND A.LED_SQNO        = 1
+	                            AND A.SEL_STS_DSC     = '22'
+	                            AND A.NA_BZPLC        = C.NA_BZPLC
+	                            AND A.SRA_SRS_DSC     = C.SRA_SRS_DSC
+	                            AND A.SRA_INDV_AMNNO  = C.SRA_INDV_AMNNO
+	                            AND C.INDV_SEX_C      = '2'
+	                            AND A.NA_BZPLC        = B.NA_BZPLC
+	                            AND A.FHS_ID_NO       = B.FHS_ID_NO
+	                            AND A.FARM_AMNNO      = B.FARM_AMNNO
+	                            AND CASE WHEN #{auc_obj_dsc} = '2' THEN A.SRA_SBID_UPR ELSE A.SRA_SBID_AM  END
+	                                = (SELECT CASE WHEN #{auc_obj_dsc} = '2' THEN MIN(TT.SRA_SBID_UPR) ELSE MIN(TT.SRA_SBID_AM)  END
+	                                   FROM TB_LA_IS_MH_SOG_COW TT
+	                                        LEFT OUTER JOIN TB_LA_IS_MM_INDV DD
+	                                             ON  TT.NA_BZPLC = DD.NA_BZPLC
+	                                             AND TT.SRA_INDV_AMNNO = DD.SRA_INDV_AMNNO
+	                                   WHERE TT.NA_BZPLC        = #{ss_na_bzplc}
+	                                     AND TT.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                                     AND TT.AUC_DT          = #{auc_dt}
+	                                     AND TT.DEL_YN          = '0'
+	                                     AND TT.LED_SQNO        = 1
+	                                     AND TT.SEL_STS_DSC     = '22'
+	                                     AND DD.INDV_SEX_C      = '2'
+	                                  )
+	                            AND ROWNUM = 1
+	                         ) E ON A.INDV_SEX_C      = E.INDV_SEX_C
+												    
+	         LEFT OUTER JOIN (SELECT CASE WHEN C.INDV_SEX_C   = '1' THEN '1'
+	                                            WHEN C.INDV_SEX_C   = '2' THEN '2'
+	                                            WHEN C.INDV_SEX_C   = '3' THEN '3'
+	                                            WHEN C.INDV_SEX_C   = '6' THEN '1'
+	                                            ELSE '4' END AS INDV_SEX_C
+	                              , B.FTSNM || '(' || A.FHS_ID_NO || '-' || A.FARM_AMNNO || ')' AS FTSNM
+	                              , A.SRA_SBID_AM
+	
+	                          FROM TB_LA_IS_MH_SOG_COW A
+	                             , TB_LA_IS_MM_FHS     B
+	                             , TB_LA_IS_MM_INDV    C
+	                          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	                            AND A.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                            AND A.AUC_DT          = #{auc_dt}
+	                            AND A.DEL_YN          = '0'
+	                            AND A.LED_SQNO        = 1
+	                            AND A.SEL_STS_DSC     = '22'
+	                            AND A.NA_BZPLC        = C.NA_BZPLC
+	                            AND A.SRA_SRS_DSC     = C.SRA_SRS_DSC
+	                            AND A.SRA_INDV_AMNNO  = C.SRA_INDV_AMNNO
+	                            AND C.INDV_SEX_C      = '3'
+	                            AND A.NA_BZPLC        = B.NA_BZPLC
+	                            AND A.FHS_ID_NO       = B.FHS_ID_NO
+	                            AND A.FARM_AMNNO      = B.FARM_AMNNO
+	                            AND CASE WHEN #{auc_obj_dsc} = '2' THEN A.SRA_SBID_UPR ELSE A.SRA_SBID_AM  END
+	                                = (SELECT CASE WHEN #{auc_obj_dsc} = '2' THEN MAX(TT.SRA_SBID_UPR) ELSE MAX(TT.SRA_SBID_AM)  END
+	                                   FROM TB_LA_IS_MH_SOG_COW TT
+	                                        LEFT OUTER JOIN TB_LA_IS_MM_INDV DD
+	                                             ON  TT.NA_BZPLC       = DD.NA_BZPLC
+	                                             AND TT.SRA_INDV_AMNNO = DD.SRA_INDV_AMNNO
+	                                   WHERE TT.NA_BZPLC        = #{ss_na_bzplc}
+	                                     AND TT.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                                     AND TT.AUC_DT          = #{auc_dt}
+	                                     AND TT.DEL_YN          = '0'
+	                                     AND TT.LED_SQNO        = 1
+	                                     AND TT.SEL_STS_DSC     = '22'
+	                                     AND DD.INDV_SEX_C      = '3'
+	                                   GROUP BY CASE WHEN DD.INDV_SEX_C = '1' THEN '1'
+	                                                 WHEN DD.INDV_SEX_C = '2' THEN '2'
+	                                                 WHEN DD.INDV_SEX_C = '3' THEN '3'
+	                                                 ELSE '4' END
+	                                  )
+	                            AND ROWNUM = 1
+	                         ) G ON A.INDV_SEX_C      = G.INDV_SEX_C
+	         LEFT OUTER JOIN (SELECT CASE WHEN C.INDV_SEX_C   = '1' THEN '1'
+	                                            WHEN C.INDV_SEX_C   = '2' THEN '2'
+	                                            WHEN C.INDV_SEX_C   = '3' THEN '3'
+	                                            WHEN C.INDV_SEX_C   = '6' THEN '1'
+	                                            ELSE '4' END AS INDV_SEX_C
+	                              , B.FTSNM || '(' || A.FHS_ID_NO || '-' || A.FARM_AMNNO || ')' AS FTSNM
+	                              , A.SRA_SBID_AM
+	
+	                          FROM TB_LA_IS_MH_SOG_COW A
+	                             , TB_LA_IS_MM_FHS     B
+	                             , TB_LA_IS_MM_INDV    C
+	                          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	                            AND A.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                            AND A.AUC_DT          = #{auc_dt}
+	                            AND A.DEL_YN          = '0'
+	                            AND A.LED_SQNO        = 1
+	                            AND A.SEL_STS_DSC     = '22'
+	                            AND A.NA_BZPLC        = C.NA_BZPLC
+	                            AND A.SRA_SRS_DSC     = C.SRA_SRS_DSC
+	                            AND A.SRA_INDV_AMNNO  = C.SRA_INDV_AMNNO
+	                            AND C.INDV_SEX_C      = '3'
+	                            AND A.NA_BZPLC        = B.NA_BZPLC
+	                            AND A.FHS_ID_NO       = B.FHS_ID_NO
+	                            AND A.FARM_AMNNO      = B.FARM_AMNNO
+	                            AND CASE WHEN #{auc_obj_dsc} = '2' THEN A.SRA_SBID_UPR ELSE A.SRA_SBID_AM  END
+	                                = (SELECT CASE WHEN #{auc_obj_dsc} = '2' THEN MIN(TT.SRA_SBID_UPR) ELSE MIN(TT.SRA_SBID_AM)  END
+	                                   FROM TB_LA_IS_MH_SOG_COW TT
+	                                        LEFT OUTER JOIN TB_LA_IS_MM_INDV DD
+	                                             ON  TT.NA_BZPLC = DD.NA_BZPLC
+	                                             AND TT.SRA_INDV_AMNNO = DD.SRA_INDV_AMNNO
+	                                   WHERE TT.NA_BZPLC        = #{ss_na_bzplc}
+	                                     AND TT.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                                     AND TT.AUC_DT          = #{auc_dt}
+	                                     AND TT.DEL_YN          = '0'
+	                                     AND TT.LED_SQNO        = 1
+	                                     AND TT.SEL_STS_DSC     = '22'
+	                                     AND DD.INDV_SEX_C      = '3'
+	                                   GROUP BY CASE WHEN DD.INDV_SEX_C = '1' THEN '1'
+	                                                 WHEN DD.INDV_SEX_C = '2' THEN '2'
+	                                                 WHEN DD.INDV_SEX_C = '3' THEN '3'
+	                                                 ELSE '4' END
+						                        )
+						                  AND ROWNUM = 1
+	                         )H ON A.INDV_SEX_C      = H.INDV_SEX_C
+	         LEFT OUTER JOIN (SELECT CASE WHEN C.INDV_SEX_C   = '1' THEN '1'
+	                                            WHEN C.INDV_SEX_C   = '2' THEN '2'
+	                                            WHEN C.INDV_SEX_C   = '3' THEN '3'
+	                                            WHEN C.INDV_SEX_C   = '6' THEN '1'
+	                                            ELSE '4' END AS INDV_SEX_C
+	                              , B.FTSNM || '(' || A.FHS_ID_NO || '-' || A.FARM_AMNNO || ')' AS FTSNM
+	                              , A.SRA_SBID_AM
+	
+	                          FROM TB_LA_IS_MH_SOG_COW A
+	                             , TB_LA_IS_MM_FHS     B
+	                             , TB_LA_IS_MM_INDV    C
+	                          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	                            AND A.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                            AND A.AUC_DT          = #{auc_dt}
+	                            AND A.DEL_YN          = '0'
+	                            AND A.LED_SQNO        = 1
+	                            AND A.SEL_STS_DSC     = '22'
+	                            AND A.NA_BZPLC        = C.NA_BZPLC
+	                            AND A.SRA_SRS_DSC     = C.SRA_SRS_DSC
+	                            AND A.SRA_INDV_AMNNO  = C.SRA_INDV_AMNNO
+	                            AND (C.INDV_SEX_C = '0' OR C.INDV_SEX_C > '3')
+	                            AND A.NA_BZPLC        = B.NA_BZPLC
+	                            AND A.FHS_ID_NO       = B.FHS_ID_NO
+	                            AND A.FARM_AMNNO      = B.FARM_AMNNO
+	                            AND CASE WHEN #{auc_obj_dsc} = '2' THEN A.SRA_SBID_UPR ELSE A.SRA_SBID_AM  END
+	                                = (SELECT CASE WHEN #{auc_obj_dsc} = '2' THEN MAX(TT.SRA_SBID_UPR) ELSE MAX(TT.SRA_SBID_AM)  END
+	                                   FROM TB_LA_IS_MH_SOG_COW TT
+	                                        LEFT OUTER JOIN TB_LA_IS_MM_INDV DD
+	                                             ON  TT.NA_BZPLC = DD.NA_BZPLC
+	                                             AND TT.SRA_INDV_AMNNO = DD.SRA_INDV_AMNNO
+	                                   WHERE TT.NA_BZPLC        = #{ss_na_bzplc}
+	                                     AND TT.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                                     AND TT.AUC_DT          = #{auc_dt}
+	                                     AND TT.DEL_YN          = '0'
+	                                     AND TT.LED_SQNO        = 1
+	                                     AND TT.SEL_STS_DSC     = '22'
+	                                     AND (DD.INDV_SEX_C = '0' OR DD.INDV_SEX_C > '3')
+	                                  )
+	                            AND ROWNUM = 1
+	                         ) I ON A.INDV_SEX_C      = I.INDV_SEX_C
+	         LEFT OUTER JOIN (SELECT CASE WHEN C.INDV_SEX_C   = '1' THEN '1'
+	                                            WHEN C.INDV_SEX_C   = '2' THEN '2'
+	                                            WHEN C.INDV_SEX_C   = '3' THEN '3'
+	                                            WHEN C.INDV_SEX_C   = '6' THEN '1'
+	                                            ELSE '4' END AS INDV_SEX_C
+	                              , B.FTSNM || '(' || A.FHS_ID_NO || '-' || A.FARM_AMNNO || ')' AS FTSNM
+	                              , A.SRA_SBID_AM
+	
+	                          FROM TB_LA_IS_MH_SOG_COW A
+	                             , TB_LA_IS_MM_FHS     B
+	                             , TB_LA_IS_MM_INDV    C
+	                          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	                            AND A.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                            AND A.AUC_DT          = #{auc_dt}
+	                            AND A.DEL_YN          = '0'
+	                            AND A.LED_SQNO        = 1
+	                            AND A.SEL_STS_DSC     = '22'
+	                            AND A.NA_BZPLC        = C.NA_BZPLC
+	                            AND A.SRA_SRS_DSC     = C.SRA_SRS_DSC
+	                            AND A.SRA_INDV_AMNNO  = C.SRA_INDV_AMNNO
+	                            AND (C.INDV_SEX_C = '0' OR C.INDV_SEX_C > '3')
+	                            AND A.NA_BZPLC        = B.NA_BZPLC
+	                            AND A.FHS_ID_NO       = B.FHS_ID_NO
+	                            AND A.FARM_AMNNO      = B.FARM_AMNNO
+	                            AND CASE WHEN #{auc_obj_dsc} = '2' THEN A.SRA_SBID_UPR ELSE A.SRA_SBID_AM  END
+	                                = (SELECT CASE WHEN #{auc_obj_dsc} = '2' THEN MIN(TT.SRA_SBID_UPR) ELSE MIN(TT.SRA_SBID_AM)  END
+	                                   FROM TB_LA_IS_MH_SOG_COW TT
+	                                        LEFT OUTER JOIN TB_LA_IS_MM_INDV DD
+	                                             ON  TT.NA_BZPLC = DD.NA_BZPLC
+	                                             AND TT.SRA_INDV_AMNNO = DD.SRA_INDV_AMNNO
+	                                   WHERE TT.NA_BZPLC        = #{ss_na_bzplc}
+	                                     AND TT.AUC_OBJ_DSC     = #{auc_obj_dsc}
+	                                     AND TT.AUC_DT          = #{auc_dt}
+	                                     AND TT.DEL_YN          = '0'
+	                                     AND TT.LED_SQNO        = 1
+	                                     AND TT.SEL_STS_DSC     = '22'
+	                                     AND (DD.INDV_SEX_C = '0' OR DD.INDV_SEX_C > '3')
+	                                  )
+	                            AND ROWNUM = 1
+	                         ) J ON A.INDV_SEX_C      = J.INDV_SEX_C
+	         LEFT OUTER JOIN (SELECT CASE WHEN CC.INDV_SEX_C   = '1' THEN '1'
+	                                      WHEN CC.INDV_SEX_C   = '2' THEN '2'
+	                                      WHEN CC.INDV_SEX_C   = '3' THEN '3'
+	                                      WHEN CC.INDV_SEX_C   = '6' THEN '1'
+	                                      ELSE '4' END AS INDV_SEX_C  , COUNT(*) AS TOT_TOT_SU
+	                          FROM TB_LA_IS_MH_SOG_COW AA
+	                             , TB_LA_IS_MM_INDV    CC
+	                          WHERE AA.NA_BZPLC         = #{ss_na_bzplc}
+	                            AND AA.AUC_OBJ_DSC      = #{auc_obj_dsc}
+	                            AND AA.AUC_DT           = #{auc_dt}
+	                            AND AA.DEL_YN           = '0'
+	                            AND AA.LED_SQNO         = 1
+	                            AND AA.NA_BZPLC         = CC.NA_BZPLC
+	                            AND AA.SRA_SRS_DSC      = CC.SRA_SRS_DSC
+	                            AND AA.SRA_INDV_AMNNO   = CC.SRA_INDV_AMNNO
+	                          GROUP BY CASE WHEN CC.INDV_SEX_C   = '1' THEN '1'
+	                                        WHEN CC.INDV_SEX_C   = '2' THEN '2'
+	                                        WHEN CC.INDV_SEX_C   = '3' THEN '3'
+	                                        WHEN CC.INDV_SEX_C   = '6' THEN '1'
+	                                        ELSE '4' END) F
+	              ON A.INDV_SEX_C      = F.INDV_SEX_C
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_9" resultType="hashMap">
+	<![CDATA[
+		SELECT
+		    SUM(AA.SRA_SBID_AM) - (SUM(AA.SRA_SOG_FEE) + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.PRNY_JUG_AM    ELSE 0 END)
+                                                  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.NCSS_JUG_AM    ELSE 0 END)
+                                                  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.SRA_TRPCS      ELSE 0 END)
+                                                  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.SRA_PYIVA      ELSE 0 END)
+                                                  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.INJT_AM        ELSE 0 END)
+                                                  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.SRA_FED_SPY_AM ELSE 0 END)
+                                                  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.ACD_RVG_AM     ELSE 0 END)
+                                                  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.SRA_SHNM       ELSE 0 END)
+                                                  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.TD_RC_CST      ELSE 0 END)
+                                                  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.MT12_OVR_FEE   ELSE 0 END)
+                                                  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.IO_SRA_FEE1    ELSE 0 END)
+        										  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.IO_SRA_FEE2    ELSE 0 END)
+        										  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.IO_SRA_FEE3    ELSE 0 END)
+        										  + SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.TRU_FEE        ELSE 0 END)
+        										  + NVL(#{fhs_sra_ubd_fee}, 0)) AS YU_FHS_TOT
+        										  
+		    , SUM(AA.SRA_SBID_AM) + (SUM(AA.SRA_SEL_FEE + CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.SRA_ETC_CST ELSE 0 END)) AS ACRV_AM
+	    	, SUM(AA.SRA_SBID_AM) + (SUM(AA.SRA_SEL_FEE + CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.SRA_ETC_CST ELSE 0 END)) AS IO_NPAY_AM19
+	    	, SUM(AA.SRA_SBID_AM) - SUM(AA.SRA_SOG_FEE + CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.SRA_ETC_CST ELSE 0 END) AS TOT_SOG_AM
+	    	
+	        , SUM(AA.SRA_AUC_SBID_HDCN)                                                                                     AS "SRA_AUC_SBID_HDCN"        /* 축산경매낙찰두수           */
+	        , SUM(AA.NO_SRA_AUC_SBID_HDCN)                                                                                  AS "NO_SRA_AUC_SBID_HDCN"     /* 축산미출장낙찰두수         */
+	
+	        , SUM(AA.SRA_SBID_AM)                                                                                           AS "SRA_SBID_AM"              /* 축산경매낙찰금액           */
+	        , SUM(AA.SRA_SEL_FEE + CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.SRA_ETC_CST ELSE 0 END)                    	    AS "TOT_FEE"                  /* 낙찰자 총 수수료           */
+	        , SUM(AA.SRA_SOG_FEE + CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.SRA_ETC_CST ELSE 0 END)                    	    AS "FEE_SAM"                  /* 출하자 총 수수료           */
+	        , E.AUC_ENTR_GRN_AM                                                                                             AS "AUC_ENTR_GRN_AM"          /* 경매참가보증금액           */
+	        , D.SRA_RV_AM                                                                                                   AS "SRA_RV_AM"                /* 중도매인입금금액           */
+	
+	        , SUM(AA.SRA_SOG_HDCN)                                                                                          AS "SRA_SOG_HDCN"             /* 축산출하두수               */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.SRA_SOG_HDCN ELSE 0 END)                         AS "FEME_SOG_HDCNTT"          /* 축산 암컷 출하두수         */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.SRA_SOG_HDCN ELSE 0 END)                         AS "MALE_SOG_HDCNTT"          /* 축산 수컷 출하두수         */
+	        , SUM(CASE WHEN AA.INDV_SEX_C    = '3' THEN AA.SRA_SOG_HDCN ELSE 0 END)                                         AS "NO_SOG_HDCNTT"            /* 축산 거세 출하두수         */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.SRA_AUC_SBID_HDCN ELSE 0 END)                    AS "FEME_HDCN"                /* 축산경매 암컷 낙찰두수     */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.SRA_AUC_SBID_HDCN ELSE 0 END)                    AS "MALE_HDCN"                /* 축산경매 수컷 낙찰두수     */
+	        , SUM(CASE WHEN AA.INDV_SEX_C    = '3' THEN AA.SRA_AUC_SBID_HDCN ELSE 0 END)                                    AS "NO_HDCN"                  /* 축산경매 거세 낙찰두수     */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.YSRA_AUC_SBID_HDCN ELSE 0 END)                   AS "SRA_FEME_HDCN"            /* 축산경매 암컷 출장두수     */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.YSRA_AUC_SBID_HDCN ELSE 0 END)                   AS "SRA_MALE_HDCN"            /* 축산경매 수컷 출장두수     */
+	        , SUM(CASE WHEN AA.INDV_SEX_C    = '3' THEN AA.YSRA_AUC_SBID_HDCN ELSE 0 END)                                   AS "SRA_NO_HDCN"              /* 축산경매 거세 출장두수     */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.NO_SRA_AUC_SBID_HDCN ELSE 0 END)                 AS "NO_FEME_HDCN"             /* 축산경매 암컷 미출장두수   */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.NO_SRA_AUC_SBID_HDCN ELSE 0 END)                 AS "NO_MALE_HDCN"             /* 축산경매 수컷 미출장두수   */
+	        , SUM(CASE WHEN AA.INDV_SEX_C    = '3' THEN AA.NO_SRA_AUC_SBID_HDCN ELSE 0 END)                                 AS "NO_NO_HDCN"               /* 축산경매 거세 미출장두수   */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.SRA_SBID_AM ELSE 0 END)                          AS "IO_FEME_SRA_SBID_AM"      /* 암컷축산낙찰금액           */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.SRA_SBID_AM ELSE 0 END)                          AS "IO_MALE_SRA_SBID_AM"      /* 수컷축산낙찰금액           */
+	        , SUM(CASE WHEN AA.INDV_SEX_C    = '3' THEN AA.SRA_SBID_AM ELSE 0 END)                                          AS "IO_NO_SRA_SBID_AM"        /* 거세축산낙찰금액           */
+	
+	        , SUM(AA.SRA_SOG_FEE)                                                                                           AS "SRA_SOG_FEE"              /* 총 출하수수료              */
+	        , SUM(AA.SRA_SEL_FEE)                                                                                           AS "SRA_SEL_FEE"              /* 총 판매수수료              */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.SRA_SOG_FEE ELSE 0 END)                          AS "SRA_FEE"                  /* 암 출하수수료              */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.SRA_SOG_FEE ELSE 0 END)                          AS "IO_SRA_FEE18"             /* 수 출하수수료              */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.SRA_SEL_FEE ELSE 0 END)                          AS "SRA_TR_FEE"               /* 암 판매수수료              */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.SRA_SEL_FEE ELSE 0 END)                          AS "IO_SRA_FEE19"             /* 수 판매수수료              */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.SRA_ETC_CST ELSE 0 END)                          AS "SRA_ETC_CST"              /* 암 기타비용                */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.SRA_ETC_CST ELSE 0 END)                          AS "IO_SRA_FEE20"             /* 수 기타비용                */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.PRNY_JUG_AM ELSE 0 END)                          AS "PRNY_JUG_AM"              /* 암 임신감정료              */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.PRNY_JUG_AM ELSE 0 END)                          AS "IO_SRA_FEE4"              /* 수 임신감정료              */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.NCSS_JUG_AM ELSE 0 END)                          AS "NCSS_JUG_AM"              /* 암 괴사감정료              */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.NCSS_JUG_AM ELSE 0 END)                          AS "IO_SRA_FEE5"              /* 수 괴사감정료              */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.SRA_TRPCS ELSE 0 END)                            AS "SRA_TRPCS"                /* 암 운송비                  */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.SRA_TRPCS ELSE 0 END)                            AS "IO_SRA_FEE6"              /* 수 운송비                  */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.SRA_PYIVA ELSE 0 END)                            AS "SRA_PYIVA"                /* 암 출자금                  */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.SRA_PYIVA ELSE 0 END)                            AS "IO_SRA_FEE7"              /* 수 출자금                  */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.INJT_AM ELSE 0 END)                              AS "INJT_AM"                  /* 암 주사료                   */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.INJT_AM ELSE 0 END)                              AS "IO_SRA_FEE8"              /* 수 주사료                   */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.SRA_FED_SPY_AM ELSE 0 END)                       AS "SRA_FED_SPY_AM"           /* 암 사료대금                 */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.SRA_FED_SPY_AM ELSE 0 END)                       AS "IO_SRA_FEE9"              /* 수 사료대금                 */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.ACD_RVG_AM ELSE 0 END)                           AS "ACD_RVG_AM"               /* 암 사고적립금               */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.ACD_RVG_AM ELSE 0 END)                           AS "IO_SRA_FEE10"             /* 수 사고적립금               */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.SRA_SHNM ELSE 0 END)                             AS "SRA_SHNM"                 /* 암 축산자조금               */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.SRA_SHNM ELSE 0 END)                             AS "IO_SRA_FEE11"             /* 수 축산자조금               */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.TD_RC_CST ELSE 0 END)                            AS "TD_RC_CST"                /* 암 당일접수비용             */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.TD_RC_CST ELSE 0 END)                            AS "IO_SRA_FEE12"             /* 수 당일접수비용             */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.MT12_OVR_FEE ELSE 0 END)                         AS "MT12_OVR_FEE"             /* 암 12개월이상수수료         */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.MT12_OVR_FEE ELSE 0 END)                         AS "IO_SRA_FEE13"             /* 수 12개월이상수수료         */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.IO_SRA_FEE1 ELSE 0 END)                          AS "IO_SRA_FEE1"              /* 암 검진비                   */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.IO_SRA_FEE1 ELSE 0 END)                          AS "IO_SRA_FEE14"             /* 수 검진비                   */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.IO_SRA_FEE2 ELSE 0 END)                          AS "IO_SRA_FEE2"              /* 암 혈통접수비               */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.IO_SRA_FEE2 ELSE 0 END)                          AS "IO_SRA_FEE15"             /* 수 혈통접수비               */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.IO_SRA_FEE3 ELSE 0 END)                          AS "IO_SRA_FEE3"              /* 암 제각수수료               */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.IO_SRA_FEE3 ELSE 0 END)                          AS "IO_SRA_FEE16"             /* 수 제각수수료               */
+	
+	        , SUM(CASE WHEN AA.INDV_SEX_C       IN ('1', '4', '6') THEN AA.TRU_FEE ELSE 0 END)                              AS "TRU_FEE"                  /* 암 위탁수수료               */
+	        , SUM(CASE WHEN AA.INDV_SEX_C   NOT IN ('1', '4', '6') THEN AA.TRU_FEE ELSE 0 END)                              AS "IO_SRA_FEE17"             /* 수 위탁수수료               */
+	
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.PRNY_JUG_AM    ELSE 0 END) AS "FHS_FEE_PRNY_JUG_AM"                                            /* 임신감정료                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.PRNY_JUG_AM    ELSE 0 END) AS "MWMM_FEE_PRNY_JUG_AM"                                            /* 중도매인 임신감정료                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.NCSS_JUG_AM    ELSE 0 END) AS "FHS_FEE_NCSS_JUG_AM"                                            /* 괴사감정료                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.SRA_TRPCS      ELSE 0 END) AS "FHS_FEE_SRA_TRPCS"                                              /* 운송비                      */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.SRA_PYIVA      ELSE 0 END) AS "FHS_FEE_SRA_PYIVA"                                              /* 출자금                      */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.INJT_AM        ELSE 0 END) AS "FHS_FEE_INJT_AM"                                                /* 주사료                      */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.SRA_FED_SPY_AM ELSE 0 END) AS "FHS_FEE_SRA_FED_SPY_AM"                                         /* 사료대금                    */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.ACD_RVG_AM     ELSE 0 END) AS "FHS_FEE_ACD_RVG_AM"                                             /* 사고적립금액                */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.SRA_SHNM       ELSE 0 END) AS "FHS_FEE_SRA_SHNM"                                               /* 축산자조금                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.TD_RC_CST      ELSE 0 END) AS "FHS_FEE_TD_RC_CST"                                              /* 당일접수비용                */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.MT12_OVR_FEE   ELSE 0 END) AS "FHS_FEE_MT12_OVR_FEE"                                           /* 12개월이상수수료            */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.IO_SRA_FEE1    ELSE 0 END) AS "FHS_FEE_IO_SRA_FEE1"                                            /* 검진비                      */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.IO_SRA_FEE2    ELSE 0 END) AS "FHS_FEE_IO_SRA_FEE2"                                            /* 혈통접수비                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.IO_SRA_FEE3    ELSE 0 END) AS "FHS_FEE_IO_SRA_FEE3"                                            /* 제각수수료                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '1' THEN AA.TRU_FEE        ELSE 0 END) AS "FHS_FEE_TRU_FEE"                                                /* 위탁수수료                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.PRNY_JUG_AM    ELSE 0 END) AS "SEL_FEE_PRNY_JUG_AM"                                            /* 임신감정료                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.NCSS_JUG_AM    ELSE 0 END) AS "SEL_FEE_NCSS_JUG_AM"                                            /* 괴사감정료                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.SRA_TRPCS      ELSE 0 END) AS "SEL_FEE_SRA_TRPCS"                                              /* 운송비                      */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.SRA_PYIVA      ELSE 0 END) AS "SEL_FEE_SRA_PYIVA"                                              /* 출자금                      */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.INJT_AM        ELSE 0 END) AS "SEL_FEE_INJT_AM"                                                /* 주사료                      */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.SRA_FED_SPY_AM ELSE 0 END) AS "SEL_FEE_SRA_FED_SPY_AM"                                         /* 사료대금                    */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.ACD_RVG_AM     ELSE 0 END) AS "SEL_FEE_ACD_RVG_AM"                                             /* 사고적립금액                */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.SRA_SHNM       ELSE 0 END) AS "SEL_FEE_SRA_SHNM"                                               /* 축산자조금                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.TD_RC_CST      ELSE 0 END) AS "SEL_FEE_TD_RC_CST"                                              /* 당일접수비용                */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.MT12_OVR_FEE   ELSE 0 END) AS "SEL_FEE_MT12_OVR_FEE"                                           /* 12개월이상수수료            */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.IO_SRA_FEE1    ELSE 0 END) AS "SEL_FEE_IO_SRA_FEE1"                                            /* 검진비                      */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.IO_SRA_FEE2    ELSE 0 END) AS "SEL_FEE_IO_SRA_FEE2"                                            /* 혈통접수비                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.IO_SRA_FEE3    ELSE 0 END) AS "SEL_FEE_IO_SRA_FEE3"                                            /* 제각수수료                  */
+	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C = '2' THEN AA.TRU_FEE        ELSE 0 END) AS "SEL_FEE_TRU_FEE"                                                /* 위탁수수료                  */
+	    FROM (
+	          SELECT
+	                A.NA_BZPLC                                                           AS NA_BZPLC                       /* 경제통합사업장코드  */
+	              , A.AUC_OBJ_DSC                                                        AS AUC_OBJ_DSC                    /* 경매대상구분코드    */
+	              , A.AUC_DT                                                             AS AUC_DT                         /* 경매일자            */
+	              , '1'                                                                  AS FEE_APL_OBJ_C                  /* 1:출하자, 2:낙찰자  */
+	              , B.INDV_SEX_C AS INDV_SEX_C
+	              , COUNT(A.SRA_INDV_AMNNO)                                              AS SRA_SOG_HDCN                   /* 축산출하두수        */
+	              , SUM(CASE WHEN A.SEL_STS_DSC = '22'THEN 1 ELSE 0 END)                 AS SRA_AUC_SBID_HDCN              /* 축산경매낙찰두수    */
+	              , SUM(CASE WHEN A.LOWS_SBID_LMT_AM != '0' THEN 1 ELSE 0 END)           AS YSRA_AUC_SBID_HDCN		       /* 축산출장낙찰두수    */
+	              , SUM(CASE WHEN A.LOWS_SBID_LMT_AM  = '0' THEN 1 ELSE 0 END)           AS NO_SRA_AUC_SBID_HDCN           /* 축산미출장낙찰두수  */
+	              , SUM(CASE WHEN A.SEL_STS_DSC = '22' THEN A.SRA_SBID_AM ELSE 0 END)    AS SRA_SBID_AM                    /* 축산낙찰금액        */
+	              , SUM(C.SRA_SOG_FEE)                                                   AS SRA_SOG_FEE                    /* 출하수수료          */
+	              , 0                                                                    AS SRA_SEL_FEE                    /* 판매수수료          */
+	              , SUM(C.PRNY_JUG_AM)                                                   AS PRNY_JUG_AM                    /* 임신감정료          */
+	              , SUM(C.NCSS_JUG_AM)                                                   AS NCSS_JUG_AM                    /* 괴사감정료          */
+	              , SUM(NVL(C.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0))                       AS SRA_TRPCS                      /* 운송비              */
+	              , SUM(NVL(C.SRA_PYIVA, 0) + NVL(A.SRA_PYIVA, 0))                       AS SRA_PYIVA                      /* 출자금              */
+	              , SUM(C.INJT_AM)                                                       AS INJT_AM                        /* 주사료              */
+	              , SUM(A.SRA_FED_SPY_AM)                                                AS SRA_FED_SPY_AM                 /* 사료대금            */
+	              , SUM(C.ACD_RVG_AM)                                                    AS ACD_RVG_AM                     /* 사고적립금액        */
+	              , SUM(C.SRA_SHNM)                                                      AS SRA_SHNM                       /* 축산자조금          */
+	              , SUM(A.TD_RC_CST)                                                     AS TD_RC_CST                      /* 당일접수비용        */
+	              , SUM(A.MT12_OVR_FEE)                                                  AS MT12_OVR_FEE                   /* 12개월이상수수료    */
+	              , SUM(C.IO_SRA_FEE1)                                                   AS IO_SRA_FEE1                    /* 검진비              */
+	              , SUM(C.IO_SRA_FEE2)                                                   AS IO_SRA_FEE2                    /* 혈통접수비          */
+	              , SUM(C.IO_SRA_FEE3)                                                   AS IO_SRA_FEE3                    /* 제각수수료          */
+	              , SUM(C.TRU_FEE)                                                       AS TRU_FEE                        /* 위탁수수료          */
+	
+	              , SUM(NVL(C.SRA_PYIVA, 0)
+	                    + NVL(C.ACD_RVG_AM, 0)
+	]]>
+	<choose>
+				<when test='mhsogcow9_chk == 1'>
+					+ CASE WHEN A.SEL_STS_DSC='22' THEN (NVL(C.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) ELSE 0 END
+				</when>
+				<otherwise>
+					+ (NVL(C.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0))
+				</otherwise>
+	</choose>
+	<![CDATA[
+	
+	                    + NVL(C.NCSS_JUG_AM, 0)
+	                    + NVL(C.PRNY_JUG_AM, 0)
+	                    + NVL(C.IO_SRA_FEE1, 0)
+	                    + NVL(C.INJT_AM, 0)
+	                    + NVL(C.SRA_SHNM, 0)
+	                    + NVL(C.IO_SRA_FEE2, 0)
+	                    + NVL(C.IO_SRA_FEE3, 0)
+	                    + NVL(C.TRU_FEE, 0)
+	                    + NVL(A.SRA_PYIVA, 0)
+	                    + NVL(A.SRA_FED_SPY_AM, 0)
+	                    + NVL(A.TD_RC_CST, 0)
+	                    + NVL(A.MT12_OVR_FEE, 0))                                        AS SRA_ETC_CST                    /* 축산기타비용    		 */
+	
+	          FROM TB_LA_IS_MH_SOG_COW   A
+	             , TB_LA_IS_MM_INDV      B
+	             , (SELECT
+	                      NA_BZPLC
+	                    , AUC_OBJ_DSC
+	                    , AUC_DT
+	                    , OSLP_NO
+	                    , LED_SQNO
+	                    , SUM(CASE WHEN NA_FEE_C = '010' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS SRA_SOG_FEE      /* 출하수수료          */
+	                    , SUM(CASE WHEN NA_FEE_C = '011' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS SRA_SEL_FEE      /* 판매수수료          */
+	                    , SUM(CASE WHEN NA_FEE_C = '020' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS SRA_PYIVA        /* 조합출자금          */
+	                    , SUM(CASE WHEN NA_FEE_C = '030' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS ACD_RVG_AM       /* 사고적립금          */
+	                    , SUM(CASE WHEN NA_FEE_C = '040' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS SRA_TRPCS        /* 운송비              */
+	    	            , SUM(CASE WHEN NA_FEE_C = '050' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS NCSS_JUG_AM      /* 괴사감정료          */
+	    	            , SUM(CASE WHEN NA_FEE_C = '060' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS PRNY_JUG_AM      /* 임신감정료          */
+	    	            , SUM(CASE WHEN NA_FEE_C = '070' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS IO_SRA_FEE1      /* 검진비              */
+	    	            , SUM(CASE WHEN NA_FEE_C = '080' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS INJT_AM          /* 주사료              */
+	                    , SUM(CASE WHEN NA_FEE_C = '090' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS SRA_SHNM         /* 자조금              */
+	                    , SUM(CASE WHEN NA_FEE_C = '100' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS IO_SRA_FEE2      /* 혈통접수비          */
+	                    , SUM(CASE WHEN NA_FEE_C = '110' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS IO_SRA_FEE3      /* 제각수수료          */
+	                    , SUM(CASE WHEN NA_FEE_C = '120' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS TRU_FEE          /* 위탁수수료          */
+	
+			        FROM TB_LA_IS_MH_FEE_IMPS
+	                WHERE NA_BZPLC        = #{ss_na_bzplc}                                                                                         /* 경제통합사업장코드  */
+	                  AND AUC_DT          = #{auc_dt}                                                                                      /* 경매일자            */
+	                  AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END          /* 경매대상구분코드    */
+	                  AND FEE_APL_OBJ_C   = '1'                                                                                                       /* 1:출하자, 2:낙찰자  */
+	
+	                GROUP BY NA_BZPLC
+	                       , AUC_OBJ_DSC
+	                       , AUC_DT
+	                       , OSLP_NO
+	                       , LED_SQNO
+	               ) C
+	
+	          WHERE A.NA_BZPLC          = #{ss_na_bzplc}
+	            AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND A.AUC_DT            = #{auc_dt}
+	            AND A.DEL_YN            = '0'
+	            AND A.LED_SQNO          = 1
+	
+	            AND A.NA_BZPLC          = B.NA_BZPLC
+	            AND A.SRA_SRS_DSC       = B.SRA_SRS_DSC
+	            AND A.SRA_INDV_AMNNO    = B.SRA_INDV_AMNNO
+	
+	            AND A.NA_BZPLC          = C.NA_BZPLC
+	            AND A.AUC_OBJ_DSC       = C.AUC_OBJ_DSC
+	            AND A.AUC_DT            = C.AUC_DT
+	            AND A.OSLP_NO           = C.OSLP_NO
+	            AND A.LED_SQNO          = C.LED_SQNO
+	
+	          GROUP BY A.NA_BZPLC                                                 /* 경제통합사업장코드  */
+	                 , A.AUC_OBJ_DSC                                              /* 경매대상구분코드    */
+	                 , A.AUC_DT                                                   /* 경매일자            */
+	                 , B.INDV_SEX_C 			                                  /* 개체성별코드        */
+	
+	          UNION ALL
+	
+	          SELECT
+	                A.NA_BZPLC                                             AS NA_BZPLC                /* 경제통합사업장코드  */
+	              , A.AUC_OBJ_DSC                                          AS AUC_OBJ_DSC             /* 경매대상구분코드    */
+	              , A.AUC_DT                                               AS AUC_DT                  /* 경매일자            */
+	              , '2'                                                    AS FEE_APL_OBJ_C           /* 1:출하자, 2:낙찰자  */
+	              , B.INDV_SEX_C AS INDV_SEX_C
+	              , 0                                                      AS SRA_SOG_HDCN            /* 축산출하두수        */
+	              , 0                                                      AS SRA_AUC_SBID_HDCN       /* 축산경매낙찰두수    */
+	              , 0                                                      AS YSRA_AUC_SBID_HDCN      /* 축산미출장낙찰두수  */
+	              , 0                                                      AS NO_SRA_AUC_SBID_HDCN    /* 축산미출장낙찰두수  */
+	              , 0                                                      AS SRA_SBID_AM             /* 축산낙찰금액        */
+	              , 0                                                      AS SRA_SOG_FEE             /* 출하수수료          */
+	              , SUM(C.SRA_SEL_FEE)                                     AS SRA_SEL_FEE             /* 판매수수료          */
+	              , SUM(C.PRNY_JUG_AM)                                     AS PRNY_JUG_AM             /* 임신감정료          */
+	              , SUM(C.NCSS_JUG_AM)                                     AS NCSS_JUG_AM             /* 괴사감정료          */
+	              , SUM(C.SRA_TRPCS)                                       AS SRA_TRPCS               /* 운송비              */
+	              , SUM(C.SRA_PYIVA)                                       AS SRA_PYIVA               /* 출자금              */
+	              , SUM(C.INJT_AM)                                         AS INJT_AM                 /* 주사료              */
+	              , 0                                                      AS SRA_FED_SPY_AM          /* 사료대금            */
+	              , SUM(C.ACD_RVG_AM)                                      AS ACD_RVG_AM              /* 사고적립금액        */
+	              , SUM(C.SRA_SHNM)                                        AS SRA_SHNM                /* 축산자조금          */
+	              , 0                                                      AS TD_RC_CST               /* 당일접수비용        */
+	              , 0                                                      AS MT12_OVR_FEE            /* 12개월이상수수료    */
+	              , SUM(C.IO_SRA_FEE1)                                     AS IO_SRA_FEE1             /* 검진비              */
+	              , SUM(C.IO_SRA_FEE2)                                     AS IO_SRA_FEE2             /* 혈통접수비          */
+	              , SUM(C.IO_SRA_FEE3)                                     AS IO_SRA_FEE3             /* 제각수수료          */
+	              , SUM(C.TRU_FEE)                                         AS TRU_FEE                 /* 위탁수수료          */
+	
+	              , SUM(NVL(C.SRA_PYIVA, 0)
+	                    + NVL(C.ACD_RVG_AM, 0)
+	                    + NVL(C.SRA_TRPCS, 0)
+	                    + NVL(C.NCSS_JUG_AM, 0)
+	                    + NVL(C.PRNY_JUG_AM, 0)
+	                    + NVL(C.IO_SRA_FEE1, 0)
+	                    + NVL(C.INJT_AM, 0)
+	                    + NVL(C.SRA_SHNM, 0)
+	                    + NVL(C.IO_SRA_FEE2, 0)
+	                    + NVL(C.IO_SRA_FEE3, 0)
+	                    + NVL(C.TRU_FEE, 0)
+	                   )                                                   AS SRA_ETC_CST             /* 축산기타비용 		 */
+	
+	
+	          FROM TB_LA_IS_MH_SOG_COW   A
+	             , TB_LA_IS_MM_INDV      B
+	             , (SELECT
+	                      NA_BZPLC
+	                    , AUC_OBJ_DSC
+	                    , AUC_DT
+	                    , OSLP_NO
+	                    , LED_SQNO
+	                    , SUM(CASE WHEN NA_FEE_C = '010' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS SRA_SOG_FEE      /* 출하수수료        */
+	                    , SUM(CASE WHEN NA_FEE_C = '011' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS SRA_SEL_FEE      /* 판매수수료        */
+	                    , SUM(CASE WHEN NA_FEE_C = '020' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS SRA_PYIVA        /* 조합출자금        */
+	                    , SUM(CASE WHEN NA_FEE_C = '030' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS ACD_RVG_AM       /* 사고적립금        */
+	                    , SUM(CASE WHEN NA_FEE_C = '040' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS SRA_TRPCS        /* 운송비            */
+	                    , SUM(CASE WHEN NA_FEE_C = '050' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS NCSS_JUG_AM      /* 괴사감정료        */
+	                    , SUM(CASE WHEN NA_FEE_C = '060' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS PRNY_JUG_AM      /* 임신감정료        */
+	                    , SUM(CASE WHEN NA_FEE_C = '070' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS IO_SRA_FEE1      /* 검진비            */
+	                    , SUM(CASE WHEN NA_FEE_C = '080' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS INJT_AM          /* 주사료            */
+	                    , SUM(CASE WHEN NA_FEE_C = '090' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS SRA_SHNM         /* 자조금            */
+	                    , SUM(CASE WHEN NA_FEE_C = '100' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS IO_SRA_FEE2      /* 혈통접수비        */
+	                    , SUM(CASE WHEN NA_FEE_C = '110' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS IO_SRA_FEE3      /* 제각수수료        */
+	                    , SUM(CASE WHEN NA_FEE_C = '120' THEN CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE ELSE 0 END) AS TRU_FEE          /* 위탁수수료        */
+	
+	                FROM TB_LA_IS_MH_FEE_IMPS
+	                WHERE NA_BZPLC        = #{ss_na_bzplc}                                                                                         /* 경제통합사업장코드  */
+	                  AND AUC_DT          = #{auc_dt}                                                                                      /* 경매일자            */
+	                  AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END          /* 경매대상구분코드    */
+	                  AND FEE_APL_OBJ_C   = '2'                                                                                                       /* 1:출하자, 2:낙찰자  */
+	
+	                GROUP BY NA_BZPLC
+	                       , AUC_OBJ_DSC
+	                       , AUC_DT
+	                       , OSLP_NO
+	                       , LED_SQNO
+	               ) C
+	
+	          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	            AND A.AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND A.AUC_DT          = #{auc_dt}
+	            AND A.DEL_YN          = '0'
+	            AND A.LED_SQNO        = 1
+	            AND A.SEL_STS_DSC     = '22'
+	
+	            AND A.NA_BZPLC        = B.NA_BZPLC
+	            AND A.SRA_SRS_DSC     = B.SRA_SRS_DSC
+	            AND A.SRA_INDV_AMNNO  = B.SRA_INDV_AMNNO
+	
+	            AND A.NA_BZPLC        = C.NA_BZPLC
+	            AND A.AUC_OBJ_DSC     = C.AUC_OBJ_DSC
+	            AND A.AUC_DT          = C.AUC_DT
+	            AND A.OSLP_NO         = C.OSLP_NO
+	            AND A.LED_SQNO        = C.LED_SQNO
+	
+	          GROUP BY A.NA_BZPLC                                                   /* 경제통합사업장코드  */
+	                 , A.AUC_OBJ_DSC                                                /* 경매대상구분코드    */
+	                 , A.AUC_DT                                                     /* 경매일자            */
+	                 , B.INDV_SEX_C 			                                    /* 개체성별코드        */
+	
+	         ) AA
+	       , (SELECT
+	                SUM(SRA_RV_AM)    AS SRA_RV_AM
+	          FROM TB_LA_IS_MH_MWMN_ADJ
+	          WHERE NA_BZPLC        = #{ss_na_bzplc}
+	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND AUC_DT          = #{auc_dt}
+	            AND DEL_YN          = '0') D
+	
+	       , (SELECT
+	                SUM(AUC_ENTR_GRN_AM)   AS AUC_ENTR_GRN_AM          /* 경매참가보증금액    */
+	          FROM TB_LA_IS_MH_AUC_ENTR
+	          WHERE NA_BZPLC        = #{ss_na_bzplc}
+	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND AUC_DT          = #{auc_dt}
+	            AND DEL_YN          = '0') E
+	
+	          GROUP BY E.AUC_ENTR_GRN_AM
+	                 , D.SRA_RV_AM
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_10" resultType="hashMap">
+	<![CDATA[
+	 	SELECT
+          A.LVST_AUC_PTC_MN_NO                             AS LVST_AUC_PTC_MN_NO
+        , E.TRMN_AMNNO                                     AS TRMN_AMNNO
+        , CASE WHEN #{ss_security} = '1' THEN E.SRA_MWMNNM
+           WHEN LENGTH(E.SRA_MWMNNM) = 2 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*' 
+           WHEN LENGTH(E.SRA_MWMNNM) = 3 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*'  || SUBSTR(E.SRA_MWMNNM,3,1) 
+           WHEN LENGTH(E.SRA_MWMNNM) = 4 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '**' || SUBSTR(E.SRA_MWMNNM,4,1)  
+           WHEN LENGTH(E.SRA_MWMNNM) >= 5 THEN SUBSTR(E.SRA_MWMNNM,1,2) || '**' || SUBSTR(E.SRA_MWMNNM,5,1)  END AS SRA_MWMNNM /*축산중도매인명*/
+        , A.AUC_PRG_SQ                                     AS AUC_PRG_SQ
+        , SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9)  AS SRA_INDV_AMNNO
+        , F.AUC_ENTR_GRN_AM                                AS AUC_ENTR_GRN_AM
+        , A.SRA_SBID_AM                                    AS SRA_SBID_AM
+        , B.SRA_SOG_FEE                                    AS SRA_SOG_FEE
+        , B.SRA_SEL_FEE                                    AS SRA_SEL_FEE
+        , B.SRA_ACO_IVSAM                                  AS SRA_ACO_IVSAM
+        , B.SRA_ACD_RVGAM                                  AS SRA_ACD_RVGAM
+        , B.SRA_TRPCS                                      AS SRA_TRPCS
+        , B.SRA_NCSS_JUG_FEE                               AS SRA_NCSS_JUG_FEE
+        , B.SRA_PRNY_JUG_FEE                               AS SRA_PRNY_JUG_FEE
+        , B.SRA_MDCCS                                      AS SRA_MDCCS
+        , B.SRA_INJT_FEE                                   AS SRA_INJT_FEE
+        , B.SRA_SHNM                                       AS SRA_SHNM
+        , B.SRA_PDG_RC_FEE                                 AS SRA_PDG_RC_FEE
+        , B.SRA_RMHN_FEE                                   AS SRA_RMHN_FEE
+        , B.SRA_TRU_FEE                                    AS SRA_TRU_FEE
+        , H.IO_AM_15                                       AS IO_AM_15
+        , G.SRA_RV_AM                                      AS SRA_RV_AM
+        , BB.INDV_SEX_C                                    AS INDV_SEX_C
+        , SUBSTR(I.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(I.SRA_INDV_AMNNO, 7, 9)  AS CALF_SRA_INDV_AMNNO
+
+    FROM TB_LA_IS_MH_SOG_COW  A
+    
+    		LEFT OUTER JOIN  (SELECT
+                NA_BZPLC
+              , AUC_OBJ_DSC
+              , AUC_DT
+              , OSLP_NO
+              , LED_SQNO
+              , SUM(CASE WHEN NA_FEE_C = '010' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SOG_FEE
+              , SUM(CASE WHEN NA_FEE_C = '011' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SEL_FEE
+              , SUM(CASE WHEN NA_FEE_C = '020' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ACO_IVSAM
+              , SUM(CASE WHEN NA_FEE_C = '030' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ACD_RVGAM
+              , SUM(CASE WHEN NA_FEE_C = '040' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_TRPCS
+              , SUM(CASE WHEN NA_FEE_C = '050' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_NCSS_JUG_FEE
+              , SUM(CASE WHEN NA_FEE_C = '060' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_PRNY_JUG_FEE
+              , SUM(CASE WHEN NA_FEE_C = '070' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_MDCCS
+              , SUM(CASE WHEN NA_FEE_C = '080' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_INJT_FEE
+              , SUM(CASE WHEN NA_FEE_C = '090' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SHNM
+              , SUM(CASE WHEN NA_FEE_C = '100' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_PDG_RC_FEE
+              , SUM(CASE WHEN NA_FEE_C = '110' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_RMHN_FEE
+              , SUM(CASE WHEN NA_FEE_C = '120' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_TRU_FEE
+
+          FROM TB_LA_IS_MH_FEE_IMPS
+          WHERE NA_BZPLC        = #{ss_na_bzplc}
+            AND AUC_DT          = #{auc_dt}
+            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+            AND FEE_APL_OBJ_C      = '2'
+				    AND SRA_TR_FEE        <> 0
+
+          GROUP BY NA_BZPLC
+                 , AUC_OBJ_DSC
+                 , AUC_DT
+                 , OSLP_NO
+                 , LED_SQNO
+         ) B
+		          ON  A.NA_BZPLC           = B.NA_BZPLC
+				      AND A.AUC_OBJ_DSC        = B.AUC_OBJ_DSC
+				      AND A.AUC_DT             = B.AUC_DT
+				      AND A.OSLP_NO            = B.OSLP_NO
+				      AND A.LED_SQNO           = B.LED_SQNO
+				      
+
+         LEFT OUTER JOIN TB_LA_IS_MH_CALF I
+              ON  A.NA_BZPLC            = I.NA_BZPLC
+              AND A.AUC_OBJ_DSC         = I.AUC_OBJ_DSC
+              AND A.AUC_DT              = I.AUC_DT
+              AND A.OSLP_NO             = I.OSLP_NO
+              AND 1                     = I.RG_SQNO
+
+         INNER JOIN (SELECT
+                           NA_BZPLC
+                         , SRA_SRS_DSC
+                         , SRA_INDV_AMNNO
+                         , INDV_SEX_C
+                     FROM TB_LA_IS_MM_INDV
+			]]>
+		    	<if test='indv_sex_c != null and indv_sex_c != ""'>
+		     			   AND INDV_SEX_C = #{indv_sex_c}
+		    	</if>
+			<![CDATA[
+                    ) BB
+               ON  A.NA_BZPLC       = BB.NA_BZPLC
+               AND A.SRA_SRS_DSC    = BB.SRA_SRS_DSC
+               AND A.SRA_INDV_AMNNO = BB.SRA_INDV_AMNNO
+
+         LEFT OUTER JOIN (SELECT
+                                NA_BZPLC
+                              , TRMN_AMNNO
+                              , AUC_DT
+                              , AUC_OBJ_DSC
+                              , SUM(SRA_RV_AM) AS SRA_RV_AM
+
+                          FROM TB_LA_IS_MH_MWMN_ADJ
+                          WHERE NA_BZPLC        = #{ss_na_bzplc}
+                            AND AUC_OBJ_DSC     = #{auc_obj_dsc}
+                            AND AUC_DT          = #{auc_dt}
+                            AND DEL_YN          = '0'
+
+                          GROUP BY NA_BZPLC
+                                 , TRMN_AMNNO
+                                 , AUC_DT
+                                 , AUC_OBJ_DSC ) G
+
+              ON  A.NA_BZPLC           = G.NA_BZPLC
+              AND A.TRMN_AMNNO         = G.TRMN_AMNNO
+              AND A.AUC_OBJ_DSC        = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE G.AUC_OBJ_DSC END
+              AND A.AUC_DT             = G.AUC_DT
+
+         INNER JOIN TB_LA_IS_MM_MWMN E
+               ON  A.NA_BZPLC           = E.NA_BZPLC
+               AND A.TRMN_AMNNO         = E.TRMN_AMNNO
+
+         INNER JOIN TB_LA_IS_MH_AUC_ENTR F
+               ON  A.NA_BZPLC           = F.NA_BZPLC
+               AND A.AUC_DT             = F.AUC_DT
+	]]>
+		<choose>
+			<when test='auc_obj_dsc != 0'>
+					AND F.AUC_OBJ_DSC        = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+			</when>
+			<otherwise>
+					AND A.AUC_OBJ_DSC        = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+			</otherwise>
+		</choose>
+	<![CDATA[
+	               AND A.LVST_AUC_PTC_MN_NO = F.LVST_AUC_PTC_MN_NO
+	               AND A.TRMN_AMNNO         = F.TRMN_AMNNO
+	               AND F.DEL_YN             = '0'
+	
+	       , (SELECT
+	                A.LVST_AUC_PTC_MN_NO
+	              , A.TRMN_AMNNO
+	              , SUM(A.SRA_SBID_AM)                      AS SRA_SBID_AM
+	              , SUM(A.SRA_SBID_AM)  + SUM(B.SRA_TR_FEE) AS IO_AM_15
+	          FROM TB_LA_IS_MH_SOG_COW A
+	             , (SELECT
+	                      NA_BZPLC
+	                    , AUC_OBJ_DSC
+	                    , AUC_DT
+	                    , OSLP_NO
+	                    , LED_SQNO
+	                    , SUM(CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE) AS SRA_TR_FEE
+	                FROM TB_LA_IS_MH_FEE_IMPS
+	                WHERE NA_BZPLC            = #{ss_na_bzplc}
+	                  AND AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                  AND AUC_DT              = #{auc_dt}
+	                  AND FEE_APL_OBJ_C       = '2'
+	                GROUP BY NA_BZPLC
+	                       , AUC_OBJ_DSC
+	                       , AUC_DT
+	                       , OSLP_NO
+	                       , LED_SQNO) B
+	          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+	            AND A.AUC_OBJ_DSC     =  CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND A.AUC_DT          = #{auc_dt}
+	            AND A.NA_BZPLC        = B.NA_BZPLC
+	            AND A.AUC_DT          = B.AUC_DT
+	            AND A.AUC_OBJ_DSC     = B.AUC_OBJ_DSC
+	            AND A.OSLP_NO         = B.OSLP_NO
+	            AND A.LED_SQNO        = B.LED_SQNO
+	            AND A.DEL_YN          = '0'
+	            AND A.LED_SQNO        = 1
+	          GROUP BY A.LVST_AUC_PTC_MN_NO
+		                , A.TRMN_AMNNO
+	         ) H
+	
+	    WHERE A.NA_BZPLC           = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC        = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.AUC_DT             = #{auc_dt}
+	]]>
+		<if test='fhs_id_no != null and fhs_id_no != ""'>
+			AND A.TRMN_AMNNO         = #{fhs_id_no}
+		</if>
+	<![CDATA[
+      AND A.DEL_YN             = '0'
+      AND A.LED_SQNO           = 1
+      AND A.SEL_STS_DSC        = '22'
+
+      AND A.TRMN_AMNNO         = H.TRMN_AMNNO
+
+    ORDER BY TO_NUMBER(A.LVST_AUC_PTC_MN_NO) , A.AUC_PRG_SQ
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_11" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          B.SRA_SOG_FEE
+	        , B.SRA_SEL_FEE
+	        , NVL(B.SRA_ACO_IVSAM, 0) + NVL(A.SRA_PYIVA, 0)   AS SRA_PYIVA
+	        , B.SRA_ACD_RVGAM
+	        , NVL(B.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)       AS SRA_TRPCS
+	        , B.SRA_NCSS_JUG_FEE
+	        , B.SRA_PRNY_JUG_FEE
+	        , B.SRA_MDCCS
+	        , B.SRA_INJT_FEE
+	        , B.SRA_SHNM
+	        , B.SRA_PDG_RC_FEE
+	        , B.SRA_RMHN_FEE
+	        , B.SRA_TRU_FEE
+	        , A.SRA_FED_SPY_AM
+	        , A.TD_RC_CST
+	        , A.MT12_OVR_FEE
+	        , A.AUC_DT
+	        , A.AUC_OBJ_DSC
+	        , D.FHS_ID_NO || '-' || D.FARM_AMNNO AS FHS_ID_NO
+	        , D.FARM_AMNNO
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN D.DONGUP || ' ' || D.DONGBW
+        	   ELSE D.DONGUP || ' ' || '******' END AS ADR								/* 동이하마스킹주소		*/
+	        
+	        , A.COW_SOG_WT
+	        , A.AUC_PRG_SQ
+	        , CASE WHEN #{ss_security} = '1' THEN D.FTSNM
+               WHEN LENGTH(D.FTSNM) = 2 THEN SUBSTR(D.FTSNM,1,1) || '*' 
+               WHEN LENGTH(D.FTSNM) = 3 THEN SUBSTR(D.FTSNM,1,1) || '*' || SUBSTR(D.FTSNM,3,1) 
+               WHEN LENGTH(D.FTSNM) = 4 THEN SUBSTR(D.FTSNM,1,1) || '**' || SUBSTR(D.FTSNM,4,1)  
+               WHEN LENGTH(D.FTSNM) >= 5 THEN SUBSTR(D.FTSNM,1,2) || '**' || SUBSTR(D.FTSNM,5,1)   END AS FTSNM /* 농가 이름 */ 
+               
+	        , SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9)  AS SRA_INDV_AMNNO
+	        , C.INDV_SEX_C
+	        , A.LOWS_SBID_LMT_AM
+	        , CASE WHEN A.SEL_STS_DSC = '22' THEN A.SRA_SBID_AM
+	               ELSE 0
+	          END                             AS SRA_SBID_AM
+	        , CASE WHEN A.SEL_STS_DSC = '22' THEN A.SRA_SBID_UPR
+	               ELSE 0
+	          END                             AS SRA_SBID_UPR
+	
+	        , SUBSTRING(G.SRA_INDV_AMNNO, 4, 12) AS CALF_SRA_INDV_AMNNO
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN E.SRA_MWMNNM
+               WHEN LENGTH(E.SRA_MWMNNM) = 2 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*' 
+               WHEN LENGTH(E.SRA_MWMNNM) = 3 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*' || SUBSTR(E.SRA_MWMNNM,3,1) 
+               WHEN LENGTH(E.SRA_MWMNNM) = 4 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '**' || SUBSTR(E.SRA_MWMNNM,4,1)  
+               WHEN LENGTH(E.SRA_MWMNNM) >= 5 THEN SUBSTR(E.SRA_MWMNNM,1,2) || '**' || SUBSTR(E.SRA_MWMNNM,5,1)   END AS SRA_MWMNNM /* 농가 이름 */ 
+	        
+	        , NVL((CASE WHEN A.SEL_STS_DSC = '22' THEN A.SRA_SBID_AM ELSE 0 END), 0) - 
+			 (NVL(B.SRA_SOG_FEE, 0) + (NVL(B.SRA_ACO_IVSAM, 0) + NVL(A.SRA_PYIVA, 0)) + NVL(B.SRA_ACD_RVGAM, 0) + (NVL(B.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) + 
+			  NVL(B.SRA_NCSS_JUG_FEE, 0) + NVL(B.SRA_PRNY_JUG_FEE, 0) + NVL(B.SRA_MDCCS, 0) + NVL(B.SRA_INJT_FEE, 0) + NVL(B.SRA_SHNM, 0) + NVL(B.SRA_PDG_RC_FEE, 0) +
+			  NVL(B.SRA_RMHN_FEE, 0) + NVL(B.SRA_TRU_FEE, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0)) AS TOT_AM
+			, NVL(B.sra_acd_rvgam, 0) + NVL(B.sra_ncss_jug_fee, 0) + NVL(B.sra_prny_jug_fee, 0) + NVL(B.sra_mdccs, 0) + NVL(B.sra_shnm, 0) + NVL(B.sra_pdg_rc_fee, 0) + 
+			  NVL(B.sra_rmhn_fee, 0) + NVL(B.sra_tru_fee, 0) + NVL(A.sra_fed_spy_am, 0) + NVL(A.td_rc_cst, 0) + NVL(A.mt12_ovr_fee, 0) AS TOT_FEE
+			, REPLACE(RTRIM(C.KPN_NO), 'KPN', '') AS KPN_NO
+	    FROM TB_LA_IS_MH_SOG_COW  A
+	         LEFT OUTER JOIN TB_LA_IS_MH_CALF G
+	              ON  A.NA_BZPLC            = G.NA_BZPLC
+	              AND A.AUC_OBJ_DSC         = G.AUC_OBJ_DSC
+	              AND A.AUC_DT              = G.AUC_DT
+	              AND A.OSLP_NO             = G.OSLP_NO
+	              AND 1                     = G.RG_SQNO
+	
+	         LEFT OUTER JOIN TB_LA_IS_MM_MWMN E
+	              ON  A.NA_BZPLC       = E.NA_BZPLC
+	              AND A.TRMN_AMNNO     = E.TRMN_AMNNO
+	
+	       , TB_LA_IS_MM_INDV     C
+	       , TB_LA_IS_MM_FHS      D
+	       , (SELECT
+	                NA_BZPLC
+	              , AUC_OBJ_DSC
+	              , AUC_DT
+	              , OSLP_NO
+	              , LED_SQNO
+	              , SUM(CASE WHEN NA_FEE_C = '010' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SOG_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '011' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SEL_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '020' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ACO_IVSAM
+	              , SUM(CASE WHEN NA_FEE_C = '030' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ACD_RVGAM
+	              , SUM(CASE WHEN NA_FEE_C = '040' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_TRPCS
+	              , SUM(CASE WHEN NA_FEE_C = '050' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_NCSS_JUG_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '060' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_PRNY_JUG_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '070' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_MDCCS
+	              , SUM(CASE WHEN NA_FEE_C = '080' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_INJT_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '090' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SHNM
+	              , SUM(CASE WHEN NA_FEE_C = '100' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_PDG_RC_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '110' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_RMHN_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '120' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_TRU_FEE
+	
+	          FROM TB_LA_IS_MH_FEE_IMPS
+	          WHERE NA_BZPLC        = #{ss_na_bzplc}
+	            AND AUC_DT          = #{auc_dt}
+	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND FEE_APL_OBJ_C   = CASE WHEN NA_FEE_C = '011' THEN  '2' ELSE  '1' END
+	
+	          GROUP BY NA_BZPLC
+	                 , AUC_OBJ_DSC
+	                 , AUC_DT
+	                 , OSLP_NO
+	                 , LED_SQNO
+	         ) B
+	
+	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
+	      AND A.AUC_DT            = #{auc_dt}
+	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.DEL_YN            = '0'
+	      AND A.LED_SQNO          = 1
+	      AND A.LOWS_SBID_LMT_AM  > 0
+	
+	      AND A.NA_BZPLC          = B.NA_BZPLC(+)
+	      AND A.AUC_OBJ_DSC       = B.AUC_OBJ_DSC(+)
+	      AND A.AUC_DT            = B.AUC_DT(+)
+	      AND A.OSLP_NO           = B.OSLP_NO(+)
+	      AND A.LED_SQNO          = B.LED_SQNO(+)
+	
+	      AND A.NA_BZPLC          = C.NA_BZPLC
+	      AND A.SRA_SRS_DSC       = C.SRA_SRS_DSC
+	      AND A.SRA_INDV_AMNNO    = C.SRA_INDV_AMNNO
+	
+	      AND A.NA_BZPLC          = D.NA_BZPLC
+	      AND A.FHS_ID_NO         = D.FHS_ID_NO
+	      AND A.FARM_AMNNO        = D.FARM_AMNNO
+	]]>
+	<if test='fhs_id_no != null and fhs_id_no != ""'>
+         AND A.FHS_ID_NO         = #{fhs_id_no}
+	</if>
+	<if test='ftsnm != null and ftsnm != ""'>
+	      AND D.FTSNM             = #{ftsnm}
+	</if>
+	<![CDATA[
+	    ORDER BY  A.AUC_PRG_SQ
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_11_print" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          A.AUC_DT
+	        , A.AUC_OBJ_DSC
+	        , D.FHS_ID_NO || '-' || D.FARM_AMNNO AS FHS_ID_NO
+	        , D.FTSNM
+	        , D.DONGUP || ' ' || D.DONGBW AS ADR
+	    FROM TB_LA_IS_MH_SOG_COW  A
+	         LEFT OUTER JOIN TB_LA_IS_MH_CALF G
+	              ON  A.NA_BZPLC            = G.NA_BZPLC
+	              AND A.AUC_OBJ_DSC         = G.AUC_OBJ_DSC
+	              AND A.AUC_DT              = G.AUC_DT
+	              AND A.OSLP_NO             = G.OSLP_NO
+	              AND 1                     = G.RG_SQNO
+	
+	         LEFT OUTER JOIN TB_LA_IS_MM_MWMN E
+	              ON  A.NA_BZPLC       = E.NA_BZPLC
+	              AND A.TRMN_AMNNO     = E.TRMN_AMNNO
+	
+	       , TB_LA_IS_MM_INDV     C
+	       , TB_LA_IS_MM_FHS      D
+	       , (SELECT
+	                NA_BZPLC
+	              , AUC_OBJ_DSC
+	              , AUC_DT
+	              , OSLP_NO
+	              , LED_SQNO
+	              , SUM(CASE WHEN NA_FEE_C = '010' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SOG_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '011' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SEL_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '020' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ACO_IVSAM
+	              , SUM(CASE WHEN NA_FEE_C = '030' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ACD_RVGAM
+	              , SUM(CASE WHEN NA_FEE_C = '040' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_TRPCS
+	              , SUM(CASE WHEN NA_FEE_C = '050' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_NCSS_JUG_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '060' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_PRNY_JUG_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '070' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_MDCCS
+	              , SUM(CASE WHEN NA_FEE_C = '080' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_INJT_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '090' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SHNM
+	              , SUM(CASE WHEN NA_FEE_C = '100' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_PDG_RC_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '110' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_RMHN_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '120' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_TRU_FEE
+	
+	          FROM TB_LA_IS_MH_FEE_IMPS
+	          WHERE NA_BZPLC        = #{ss_na_bzplc}
+	            AND AUC_DT          = #{auc_dt}
+	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND FEE_APL_OBJ_C   = CASE WHEN NA_FEE_C = '011' THEN  '2' ELSE  '1' END	
+	          GROUP BY NA_BZPLC
+	                 , AUC_OBJ_DSC
+	                 , AUC_DT
+	                 , OSLP_NO
+	                 , LED_SQNO
+	         ) B	
+	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
+	      AND A.AUC_DT            = #{auc_dt}
+	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.DEL_YN            = '0'
+	      AND A.LED_SQNO          = 1
+	      AND A.LOWS_SBID_LMT_AM  > 0	
+	      AND A.NA_BZPLC          = B.NA_BZPLC(+)
+	      AND A.AUC_OBJ_DSC       = B.AUC_OBJ_DSC(+)
+	      AND A.AUC_DT            = B.AUC_DT(+)
+	      AND A.OSLP_NO           = B.OSLP_NO(+)
+	      AND A.LED_SQNO          = B.LED_SQNO(+)
+	      AND A.NA_BZPLC          = C.NA_BZPLC
+	      AND A.SRA_SRS_DSC       = C.SRA_SRS_DSC
+	      AND A.SRA_INDV_AMNNO    = C.SRA_INDV_AMNNO	
+	      AND A.NA_BZPLC          = D.NA_BZPLC
+	      AND A.FHS_ID_NO         = D.FHS_ID_NO
+	      AND A.FARM_AMNNO        = D.FARM_AMNNO
+	]]>
+	<if test='fhs_id_no != null and fhs_id_no != ""'>
+         AND A.FHS_ID_NO         = #{fhs_id_no}
+	</if>
+	<if test='ftsnm != null and ftsnm != ""'>
+	      AND D.FTSNM             = #{ftsnm}
+	</if>
+	    GROUP BY A.AUC_DT
+		       , A.AUC_OBJ_DSC
+		       , D.FHS_ID_NO || '-' || D.FARM_AMNNO
+		       , D.FTSNM
+		       , D.DONGUP || ' ' || D.DONGBW 
+	<![CDATA[
+	    ORDER BY  A.AUC_OBJ_DSC
+	]]>
+	</select>
+	
+	
+	
+	
+	
+	<select id="LALM0513_selList_12" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          B.LVST_MKT_TRPL_AMNNO      AS "LVST_MKT_TRPL_AMNNO"
+	        , CASE WHEN #{ss_security} = '1' THEN brkr_name
+              WHEN LENGTH(brkr_name) = 2 THEN SUBSTR(brkr_name,1,1) || '*' 
+              WHEN LENGTH(brkr_name) = 3 THEN SUBSTR(brkr_name,1,1) || '*'  || SUBSTR(brkr_name,3,1) 
+              WHEN LENGTH(brkr_name) = 4 THEN SUBSTR(brkr_name,1,1) || '**' || SUBSTR(brkr_name,4,1)  
+              WHEN LENGTH(brkr_name) >= 5 THEN SUBSTR(brkr_name,1,2) || '**' || SUBSTR(brkr_name,5,1)  END AS brkr_name /*수의사명*/ 
+	        , SUM(C.SRA_NCSS_JUG_FEE)    AS "SRA_NCSS_JUG_FEE"
+	        , SUM(C.SRA_PRNY_JUG_FEE)    AS "SRA_PRNY_JUG_FEE"
+	        , SUM(C.SRA_MDCCS)           AS "SRA_MDCCS"
+	        , SUM(C.SRA_INJT_FEE)        AS "SRA_INJT_FEE"
+	        , SUM(NVL(C.SRA_NCSS_JUG_FEE, 0)
+	            + NVL(C.SRA_PRNY_JUG_FEE, 0)
+	            + NVL(C.SRA_MDCCS, 0)
+	            + NVL(C.SRA_INJT_FEE, 0))        AS "FEE_SAM"
+	
+	    FROM TB_LA_IS_MH_SOG_COW  A
+	       , TB_LA_IS_MM_TRPL     B
+	       , (SELECT
+	                NA_BZPLC
+	              , AUC_OBJ_DSC
+	              , AUC_DT
+	              , OSLP_NO
+	              , LED_SQNO
+	              , SUM(CASE WHEN NA_FEE_C = '050' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_NCSS_JUG_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '060' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_PRNY_JUG_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '070' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_MDCCS
+	              , SUM(CASE WHEN NA_FEE_C = '080' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_INJT_FEE
+	
+	          FROM TB_LA_IS_MH_FEE_IMPS
+	          WHERE NA_BZPLC        = #{ss_na_bzplc}
+	            AND AUC_DT          = #{auc_dt}
+	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	
+	          GROUP BY NA_BZPLC
+	                 , AUC_OBJ_DSC
+	                 , AUC_DT
+	                 , OSLP_NO
+	                 , LED_SQNO
+	         ) C
+	
+	    WHERE A.NA_BZPLC            = #{ss_na_bzplc}
+	      AND A.AUC_DT              = #{auc_dt}
+	      AND A.AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.DEL_YN              = '0'
+	      AND A.LED_SQNO            = 1
+	      AND A.LOWS_SBID_LMT_AM    > 0
+	
+	      AND A.NA_BZPLC            = B.NA_BZPLC
+	      AND A.LVST_MKT_TRPL_AMNNO = B.LVST_MKT_TRPL_AMNNO
+	      AND B.LVST_MKT_TRPL_DSC   = '1'
+	
+	      AND A.NA_BZPLC            = C.NA_BZPLC
+	      AND A.AUC_OBJ_DSC         = C.AUC_OBJ_DSC
+	      AND A.AUC_DT              = C.AUC_DT
+	      AND A.OSLP_NO             = C.OSLP_NO
+	      AND A.LED_SQNO            = C.LED_SQNO
+	]]>
+	<if test='fhs_id_no != null and fhs_id_no != ""'>
+	      AND B.LVST_MKT_TRPL_AMNNO = #{fhs_id_no}
+	</if>
+	<if test='ftsnm != null and ftsnm != ""'>
+	      AND B.BRKR_NAME           = #{ftsnm}
+	</if>
+	<![CDATA[
+	
+	    GROUP BY B.LVST_MKT_TRPL_AMNNO
+	           , B.BRKR_NAME
+	    ORDER BY  LVST_MKT_TRPL_AMNNO
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_13" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          A.NA_BZPLC
+	        , '경매'								AS IO_TR_TPC_NM
+	        , A.AUC_OBJ_DSC						AS SRA_INDV_DSC
+	        , A.AUC_DT
+	        , A.OSLP_NO
+	        , A.LED_SQNO
+	        , A.FHS_ID_NO
+	        , A.FARM_AMNNO
+	        , A.SOG_NA_TRPL_C
+	        , A.VHC_SHRT_C
+	        , A.RC_DT
+	        , A.TRMN_AMNNO
+	        , A.LVST_AUC_PTC_MN_NO
+	        , A.SRA_SRS_DSC
+	        , A.SRA_INDV_AMNNO                  AS SRA_INDV_EART_NO
+	        , A.COW_SOG_WT						AS COW_SOG_WT
+	        , A.FIR_LOWS_SBID_LMT_AM
+	        , A.LOWS_SBID_LMT_AM				AS LOWS_SBID_LMT_AM
+	        , A.SRA_SBID_UPR
+	        , A.SRA_SBID_AM						AS SRA_SBID_AM
+	        , A.SEL_STS_DSC
+	        , A.BRCL_ISP_CTFW_SMT_YN
+	        , A.BRCL_ISP_DT
+	        , A.LWPR_CHG_NT
+	        , A.VACN_DT
+	        , A.LVST_MKT_TRPL_AMNNO
+	        , A.MT12_OVR_YN
+	        , A.PPGCOW_FEE_DSC
+	        , A.PRNY_JUG_YN
+	        , A.PRNY_YN
+	        , A.NCSS_JUG_YN
+	        , A.NCSS_YN
+	        , A.TRPCS_PY_YN
+	        , A.SRA_TRPCS
+	        , A.SRA_PYIVA
+	        , A.SRA_FED_SPY_AM
+	        , A.TD_RC_CST
+	        , A.AFISM_MOD_DT
+	        , A.PRNY_MTCN
+	        , A.AFISM_MOD_CTFW_SMT_YN
+	        , A.RMHN_YN
+	        , A.SRA_PDMNM
+	        , A.SRA_PD_RGNNM
+	        , A.RMK_CNTN
+	        , A.AUC_PRG_SQ
+	        , A.DEL_YN
+	        , A.TMS_YN
+	        , A.FSRG_DTM
+	        , A.FSRGMN_ENO
+	        , B.MACO_YN							AS MACO_YN
+	        , C.VHC_DRV_CAFFNM
+	        , B.DONGUP						    AS SRA_FARM_DONGUP
+	        , B.DONGBW						    AS SRA_FARM_DONGBW
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.FTSNM
+              WHEN LENGTH(B.FTSNM) = 2 THEN SUBSTR(B.FTSNM,1,1) || '*' 
+              WHEN LENGTH(B.FTSNM) = 3 THEN SUBSTR(B.FTSNM,1,1) || '*'  || SUBSTR(B.FTSNM,3,1) 
+              WHEN LENGTH(B.FTSNM) = 4 THEN SUBSTR(B.FTSNM,1,1) || '**' || SUBSTR(B.FTSNM,4,1)  
+              WHEN LENGTH(B.FTSNM) >= 5 THEN SUBSTR(B.FTSNM,1,2) || '**' || SUBSTR(B.FTSNM,5,1)  END AS SRA_FHSNM /* 농장명 */ 
+	        
+	        , B.FTSNM							AS SLPL_NA_CLNTNM
+	        , B.FHS_ID_NO
+	        , D.INDV_SEX_C
+	        , D.BIRTH							AS SRA_INDV_BIRTH
+	        , D.SRA_INDV_PASG_QCN
+	        , D.SRA_INDV_BRDSRA_RG_NO
+	        , REPLACE(RTRIM(D.KPN_NO), 'KPN', '')					AS SRA_INDV_KPN_NO
+	        , D.MCOW_SRA_INDV_AMNNO
+	        , D.MATIME               		    AS SRA_INDV_MOTHR_MATIME
+	        , D.RG_DSC
+	        , D.MCOW_DSC						AS SRA_INDV_MCOW_BRDSRA_RG_DSC
+	        , A.MOD_KPN_NO
+	        , B.MACO_YN
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN E.SRA_MWMNNM
+              WHEN LENGTH(E.SRA_MWMNNM) = 2 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*' 
+              WHEN LENGTH(E.SRA_MWMNNM) = 3 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*'  || SUBSTR(E.SRA_MWMNNM,3,1) 
+              WHEN LENGTH(E.SRA_MWMNNM) = 4 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '**' || SUBSTR(E.SRA_MWMNNM,4,1)  
+              WHEN LENGTH(E.SRA_MWMNNM) >= 5 THEN SUBSTR(E.SRA_MWMNNM,1,2) || '**' || SUBSTR(E.SRA_MWMNNM,5,1)  END AS SRA_MWMNNM /* 판매자명 */ 
+	        
+	        , E.DONGUP							AS DONGUP
+	        , E.DONGBW							AS DONGBW
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.CUS_MPNO
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),8,4)                                             
+	                                              END  AS SRA_FARM_CUS_MPNO
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN E.CUS_MPNO
+	                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),8,4)                                             
+	                                              END  AS CUS_MPNO
+	        
+	        , E.FRLNO							AS FRLNO
+	        , E.CUS_RLNO						AS CUS_RLNO
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.DONGUP || ' ' || B.DONGBW
+        	   		ELSE B.DONGUP || ' ' || '******' END AS SOG_DONG								/* 동이하마스킹주소		*/
+        	   		
+        	, CASE WHEN #{ss_security} = '1' THEN E.DONGUP || ' ' || E.DONGBW
+        	   		ELSE E.DONGUP || ' ' || '******' END AS MWMN_DONG								/* 동이하마스킹주소		*/
+	
+	    FROM TB_LA_IS_MH_SOG_COW A
+	
+	         LEFT OUTER JOIN TB_LA_IS_MM_VHC C
+	              ON  C.NA_BZPLC    = A.NA_BZPLC
+	              AND C.VHC_SHRT_C  = A.VHC_SHRT_C
+	
+	         LEFT OUTER JOIN TB_LA_IS_MM_MWMN E
+	              ON  A.NA_BZPLC    = E.NA_BZPLC
+	              AND A.TRMN_AMNNO  = E.TRMN_AMNNO
+	
+	       , TB_LA_IS_MM_FHS  B
+	       , TB_LA_IS_MM_INDV D
+	
+	    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
+	      AND A.AUC_DT         = #{auc_dt}
+	      AND A.LED_SQNO       = '1'
+	      AND A.DEL_YN         = '0'
+	      AND A.SEL_STS_DSC	   = '22'
+	
+	      AND B.NA_BZPLC       = A.NA_BZPLC
+	      AND B.FHS_ID_NO      = A.FHS_ID_NO
+	      AND B.FARM_AMNNO     = A.FARM_AMNNO
+	
+	      AND A.NA_BZPLC       = D.NA_BZPLC
+	      AND A.SRA_INDV_AMNNO = D.SRA_INDV_AMNNO
+	      AND A.SRA_SRS_DSC    = D.SRA_SRS_DSC
+	
+	    ORDER BY A.AUC_PRG_SQ
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_14_IsMmFhs" resultType="hashMap">
+	<![CDATA[
+		SELECT
+	          A.NA_BZPLC              AS NA_BZPLC
+	        , A.AUC_OBJ_DSC           AS AUC_OBJ_DSC
+	        , A.AUC_DT                AS AUC_DT
+	        , A.FHS_ID_NO             AS FHS_ID_NO
+	        , A.FARM_AMNNO            AS FARM_AMNNO
+	        , A.RMK_CNTN              AS RMK_CNTN
+	        , SUBSTR(A.SRA_INDV_AMNNO, 1, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9)  AS SRA_INDV_EART_NO
+	        , CASE WHEN #{ss_security} = '1' THEN B.FTSNM
+              WHEN LENGTH(B.FTSNM) = 2 THEN SUBSTR(B.FTSNM,1,1) || '*' 
+              WHEN LENGTH(B.FTSNM) = 3 THEN SUBSTR(B.FTSNM,1,1) || '*'  || SUBSTR(B.FTSNM,3,1) 
+              WHEN LENGTH(B.FTSNM) = 4 THEN SUBSTR(B.FTSNM,1,1) || '**' || SUBSTR(B.FTSNM,4,1)  
+              WHEN LENGTH(B.FTSNM) >= 5 THEN SUBSTR(B.FTSNM,1,2) || '**' || SUBSTR(B.FTSNM,5,1)  END AS SRA_FHSNM
+	        , B.DONGUP                AS SRA_FARM_DONGUP
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.DONGBW
+        	   		ELSE '******' END AS SRA_FARM_DONGBW								/* 동이하마스킹주소		*/
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.OHSE_TELNO
+	                WHEN LENGTH(REPLACE(RTRIM(B.OHSE_TELNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(B.OHSE_TELNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(B.OHSE_TELNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),8,4)                                             
+	                                              END  AS OHSE_TELNO
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.CUS_MPNO
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),8,4)                                             
+	                                              END  AS FARM_TELNO
+	        
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN B.DONGUP || ' ' || B.DONGBW
+        	   		ELSE B.DONGUP || ' ' || '******' END AS ADR								/* 동이하마스킹주소		*/
+	
+	    FROM TB_LA_IS_MH_SOG_COW A
+	       , TB_LA_IS_MM_FHS     B
+	
+	    WHERE A.NA_BZPLC     = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC  = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.AUC_DT       = #{auc_dt}
+	]]>
+	<if test='name != null and name != ""'>
+	      AND B.FTSNM        = #{name}
+	</if>
+	<![CDATA[
+	      AND A.LED_SQNO     = '1'
+	]]>
+		<if test='sra_indv_amnno != null and sra_indv_amnno != ""'>
+		      AND A.SRA_INDV_AMNNO LIKE #{sra_indv_amnno}
+		</if>
+	<![CDATA[	
+	      AND B.NA_BZPLC     = A.NA_BZPLC
+	      AND B.FHS_ID_NO    = A.FHS_ID_NO
+	      AND B.FARM_AMNNO   = A.FARM_AMNNO
+	
+	    ORDER BY SRA_FHSNM
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_14_IsMmMwmn" resultType="hashMap">
+	<![CDATA[
+		SELECT  /*DYNAMIC_KEYWORD*//*+ TB_LA_IS_MH_SOG_COW_VS033.VIEW */
+	          A.NA_BZPLC              AS NA_BZPLC
+	        , A.AUC_OBJ_DSC           AS AUC_OBJ_DSC
+	        , A.AUC_DT                AS AUC_DT
+	        , A.TRMN_AMNNO            AS FHS_ID_NO
+	        , A.RMK_CNTN              AS RMK_CNTN
+	        , SUBSTR(A.SRA_INDV_AMNNO, 1, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9)  AS SRA_INDV_EART_NO
+	        , CASE WHEN #{ss_security} = '1' THEN E.SRA_MWMNNM
+              WHEN LENGTH(E.SRA_MWMNNM) = 2 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*' 
+              WHEN LENGTH(E.SRA_MWMNNM) = 3 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*'  || SUBSTR(E.SRA_MWMNNM,3,1) 
+              WHEN LENGTH(E.SRA_MWMNNM) = 4 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '**' || SUBSTR(E.SRA_MWMNNM,4,1)  
+              WHEN LENGTH(E.SRA_MWMNNM) >= 5 THEN SUBSTR(E.SRA_MWMNNM,1,2) || '**' || SUBSTR(E.SRA_MWMNNM,5,1)  END AS SRA_FHSNM
+	        , E.DONGUP                AS SRA_FARM_DONGUP
+	        , CASE WHEN #{ss_security} = '1' THEN B.DONGBW
+        	   		ELSE '******' END AS SRA_FARM_DONGBW								/* 동이하마스킹주소		*/
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN E.OHSE_TELNO
+	                WHEN LENGTH(REPLACE(RTRIM(E.OHSE_TELNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(E.OHSE_TELNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(E.OHSE_TELNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(E.OHSE_TELNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(E.OHSE_TELNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(E.OHSE_TELNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(E.OHSE_TELNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(E.OHSE_TELNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(E.OHSE_TELNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(E.OHSE_TELNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(E.OHSE_TELNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(E.OHSE_TELNO),'-',''),8,4)                                             
+	                                              END  AS OHSE_TELNO
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN E.CUS_MPNO
+	                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),6,4)  
+	                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) = '02' 
+	                                                                               THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),7,4)  
+	                                                                               ELSE SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),7,4)  
+	                                                                               END) 
+	                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),8,4)                                             
+	                                              END  AS FARM_TELNO
+	        
+	        , CASE WHEN #{ss_security} = '1' THEN E.DONGUP || ' ' || E.DONGBW
+        	   		ELSE E.DONGUP || ' ' || '******' END AS ADR								/* 동이하마스킹주소		*/
+	
+	    FROM TB_LA_IS_MH_SOG_COW A
+	       , TB_LA_IS_MM_MWMN    E
+	
+	    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC    = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND A.AUC_DT         = #{auc_dt}
+	]]>
+	<if test='name != null and name != ""'>
+	      AND E.SRA_MWMNNM     = #{name}
+	</if>
+	<![CDATA[
+	      AND A.LED_SQNO       = '1'
+	]]>
+		<if test='sra_indv_amnno != null and sra_indv_amnno != ""'>
+		      AND A.SRA_INDV_AMNNO LIKE #{sra_indv_amnno}
+		</if>
+	<![CDATA[	
+	      AND A.NA_BZPLC       = E.NA_BZPLC
+	      AND A.TRMN_AMNNO     = E.TRMN_AMNNO
+	
+	    ORDER BY SRA_FHSNM
+	]]>
+	</select>
+	
+	<select id="LALM0513_selList_15" resultType="hashMap">
+	<![CDATA[
+		SELECT
+		      A.LVST_MKT_TRPL_AMNNO
+			, F.BRKR_NAME
+			, COUNT(*) AS COUNT
+			, COUNT(*) * #{count_fee}  AS SRA_PRNY_JUG_FEE
+		FROM TB_LA_IS_MH_SOG_COW A
+		LEFT OUTER JOIN TB_LA_IS_MM_TRPL F
+		     ON  A.LVST_MKT_TRPL_AMNNO = F.LVST_MKT_TRPL_AMNNO
+		     AND F.LVST_MKT_TRPL_DSC   = '1'
+		WHERE A.AUC_DT              = #{auc_dt}
+		  AND A.SEL_STS_DSC         = '22'
+		  AND A.LVST_MKT_TRPL_AMNNO IS NOT NULL
+    ]]>
+	<if test='fhs_id_no != null and fhs_id_no != ""'>
+		  AND F.LVST_MKT_TRPL_AMNNO = #{fhs_id_no}
+	</if>
+	<if test='ftsnm != null and ftsnm != ""'>
+		  AND F.BRKR_NAME           = #{ftsnm}
+	</if>
+	<![CDATA[
+		GROUP BY A.LVST_MKT_TRPL_AMNNO, F.BRKR_NAME
+		ORDER BY 1
+	]]>
+	</select>
+</mapper>
+	

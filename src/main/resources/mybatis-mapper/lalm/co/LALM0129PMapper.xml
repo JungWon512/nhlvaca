@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0129PMapper">
+
+    <select id="LALM0129P_selList" resultType="hashMap">
+	    SELECT
+	          B.SRA_MWMNNM                    /* 축산중도매인명             */
+	        , A.TRMN_AMNNO                    /* 거래인관리번호     */
+	        , A.LVST_AUC_PTC_MN_NO            /* 가축경매참여자번호 */
+	        , B.CUS_MPNO                      /* 고객휴대전화번호           */
+	        , A.TR_DFN_YN                     /* 거래확정여부       */
+	        , A.RTRN_YN                       /* 반납여부           */
+	        , B.PSN_INF_OFR_AGR_YN            /* 개인정보제공동의여부       */
+	        , A.AUC_DT                        /* 경매일자           */
+	        , B.FRLNO                         /* 실명번호                   */
+	        , B.ZIP                           /* 우편번호                   */
+	        , B.DONGUP                        /* 동이상주소                 */
+	        , B.DONGBW                        /* 동이하주소                 */
+	        , B.OHSE_TELNO                    /* 자택전화번호               */
+	        , B.MACO_YN                       /* 조합원여부                 */
+	        , B.JRDWO_DSC                     /* 관내외구분코드             */
+	        , B.TMS_YN                        /* 전송여부                   */
+	        , A.DEL_YN                        /* 삭제여부           */
+	        , A.AUC_ENTR_GRN_AM                /* 경매참가보증금액   */
+	        , B.MWMN_NA_TRPL_C                /* 중도매인경제통합거래처코드 */
+	      FROM TB_LA_IS_MH_AUC_ENTR A
+	         , TB_LA_IS_MM_MWMN B
+	     WHERE A.NA_BZPLC             = #{ss_na_bzplc} 
+	       AND A.AUC_DT               = #{auc_dt} 
+	       AND A.AUC_OBJ_DSC          = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	       AND A.DEL_YN               = '0'
+	       AND A.NA_BZPLC             = B.NA_BZPLC
+	       AND A.TRMN_AMNNO           = B.TRMN_AMNNO
+	       <if test='v_trmn_amnno == "1"'>
+	           AND (A.TRMN_AMNNO         = #{sra_mwmnnm}
+	            OR  A.LVST_AUC_PTC_MN_NO = #{sra_mwmnnm})
+	       </if>	
+	       <if test='v_trmn_amnno == "2"'>
+		       AND B.SRA_MWMNNM LIKE '%' || #{sra_mwmnnm}  || '%' 
+	       </if>	          
+    </select>    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

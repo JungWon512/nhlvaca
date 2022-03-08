@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.sy.service.Impl.LALM0834Mapper">
+
+    <select id="LALM0834_selList" resultType="hashMap"> 
+			SELECT 
+			       A.MENU_ID
+			     , A.MNNM_CNTN
+			     , #{wk_grp_c} AS GRP_C
+			     , MAX(CASE B.BTN_TPC WHEN 'R' THEN NVL(B.AUTH_YN,'0') else '0' end) as AUTH_R
+			     , MAX(CASE B.BTN_TPC WHEN 'U' THEN NVL(B.AUTH_YN,'0') else '0' end) as AUTH_U
+			     , MAX(CASE B.BTN_TPC WHEN 'C' THEN NVL(B.AUTH_YN,'0') else '0' end) as AUTH_C
+			     , MAX(CASE B.BTN_TPC WHEN 'D' THEN NVL(B.AUTH_YN,'0') else '0' end) as AUTH_D
+			     , MAX(CASE B.BTN_TPC WHEN 'X' THEN NVL(B.AUTH_YN,'0') else '0' end) as AUTH_X
+			     , MAX(CASE B.BTN_TPC WHEN 'P' THEN NVL(B.AUTH_YN,'0') else '0' end) as AUTH_P
+			  FROM TB_LA_IS_MM_MENU A,
+			       TB_LA_IS_MM_MENU_AUTH B
+			 WHERE A.MENU_ID = B.MENU_ID(+)
+               AND B.GRP_C(+) = #{wk_grp_c}
+               AND A.MENU_ID != '000000'
+         <if test='lvl_2_menu_id != null and lvl_2_menu_id != ""'>
+           AND SUBSTR(A.MENU_ID, 0 ,4) = SUBSTR(#{lvl_2_menu_id}, 0, 4)
+          </if>
+          GROUP BY A.MENU_ID, A.MNNM_CNTN
+         ORDER BY MENU_ID ASC
+    </select>
+    
+    <delete id="LALM0834_delList">
+        DELETE FROM TB_LA_IS_MM_MENU_AUTH WHERE MENU_ID = #{menu_id} AND GRP_C = #{grp_c}
+    </delete>
+    
+    <insert id="LALM0834_insList">
+        INSERT INTO TB_LA_IS_MM_MENU_AUTH(MENU_ID, GRP_C , BTN_TPC, AUTH_YN, FSRG_DTM, FSRGMN_ENO, LSCHG_DTM, LS_CMENO)
+        VALUES(#{menu_id}, #{grp_c}, #{btn_tpc}, #{auth_yn}, SYSDATE, #{ss_userid}, SYSDATE, #{ss_userid})
+    </insert>
+    
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

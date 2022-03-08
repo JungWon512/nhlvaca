@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ap.service.Impl.LALM0514Mapper">
+
+    <select id="LALM0514_selList" resultType="hashMap">
+    <![CDATA[   
+         SELECT 
+               DECODE(GROUPING(A.AUC_OBJ_DSC), 1, '일계' ,substr(A.AUC_DT,1, 4) || '-' || substr(A.AUC_DT,5, 2) || '-' || substr(A.AUC_DT,7, 2)) AS AUC_DT                                                          
+             , A.AUC_OBJ_DSC                                        AS AUC_OBJ_DSC     
+             , A.RG_DSC                                             AS RG_DSC          
+             , A.INDV_SEX_C                                         AS INDV_SEX_C
+	         , ROUND(SUM(A.TOT_HDCN3) ) 							AS TOT_HDCN3
+	         , ROUND(SUM(A.TOT_HDCN) ) 								AS TOT_HDCN
+	         , ROUND(SUM(A.TOT_HDCN2) ) 							AS TOT_HDCN2
+	         , ROUND(SUM(A.TOT_WT) ) 								AS TOT_WT
+	         , ROUND(SUM(A.TOT_WT)/SUM(A.TOT_HDCN)) 				AS AVG_WT
+	         , ROUND(SUM(A.LOWS_SBID_LMT_AM) ) 						AS LOWS_SBID_LMT_AM
+	         , ROUND(SUM(A.LOWS_SBID_LMT_AM)/SUM(A.TOT_HDCN) ) 	AS AVG_PR
+	         , ROUND(SUM(A.SRA_SBID_AM) ) 							AS SRA_SBID_AM
+	         , ROUND(SUM(A.SRA_SBID_AM) /SUM(A.TOT_HDCN)) 			AS SRA_AVG_SBID_UPR
+	         , ROUND(SUM(A.SRA_SBID_AM) /SUM(A.TOT_HDCN) -  SUM(A.LOWS_SBID_LMT_AM)/SUM(A.TOT_HDCN)) AS BIGO
+	         , ROUND(MAX(A.MAX_SRA_SBID_AM) )						AS MAX_SRA_SBID_AM
+	         , ROUND(MIN(A.MIN_SRA_SBID_AM) ) 						AS MIN_SRA_SBID_AM
+		  FROM (
+			    SELECT
+                       A.AUC_DT                                                                                 AS AUC_DT
+                     , A.AUC_OBJ_DSC                                                                            AS AUC_OBJ_DSC
+                     , A.RG_DSC                                                                                 AS RG_DSC
+                     , A.INDV_SEX_C                                                                             AS INDV_SEX_C
+                     , NVL(A.TOT_HDCN, 0) + NVL(B.TOT_HDCN, 0)                                                  AS TOT_HDCN3
+                     , NVL(A.TOT_HDCN, 0)                                                                       AS TOT_HDCN
+                     , NVL(B.TOT_HDCN, 0)                                                                       AS TOT_HDCN2
+                     , NVL(A.TOT_WT, 0)                                                                         AS TOT_WT
+                     , NVL(ROUND(A.AVG_WT), 0)                                                                  AS AVG_WT
+                     , NVL(A.LOWS_SBID_LMT_AM, 0)                                                               AS LOWS_SBID_LMT_AM
+                     , NVL(ROUND(A.AVG_PR),0)                                                                   AS AVG_PR             
+                     , NVL(A.SRA_SBID_AM, 0)                                                                    AS SRA_SBID_AM
+                     , NVL(ROUND(A.SRA_AVG_SBID_UPR), 0)                                                        AS SRA_AVG_SBID_UPR
+                     , NVL(ROUND(A.SRA_AVG_SBID_UPR-A.AVG_PR), 0)                                               AS BIGO
+                     , NVL(A.MAX_SRA_SBID_AM, 0)                                                                AS MAX_SRA_SBID_AM
+                     , NVL(A.MIN_SRA_SBID_AM, 0)                                                                AS MIN_SRA_SBID_AM
+			     FROM(
+			          SELECT
+			                 CASE WHEN B.RG_DSC != '09' THEN '등 록' else '없 음' END AS RG_DSC                     /* 등록구분                       */
+			               , A.AUC_DT                         AS AUC_DT                                        /* 경매일자                       */
+			               , A.AUC_OBJ_DSC                    AS AUC_OBJ_DSC                                   /* 경매대상구분코드               */
+			               , CASE WHEN B.INDV_SEX_C IN ('1', '4', '6') THEN '1' ELSE '2' END AS INDV_SEX_C     /* 성별                           */
+			               , COUNT(A.SRA_INDV_AMNNO)          AS TOT_HDCN                                      /* 두수                           */
+			               , SUM(A.COW_SOG_WT)                AS TOT_WT                                        /* 우출하 총 중량                 */
+			               , AVG(A.COW_SOG_WT)                AS AVG_WT                                        /* 우출하 평균 중량               */
+			               , SUM(A.LOWS_SBID_LMT_AM)          AS LOWS_SBID_LMT_AM                              /* 응찰하한가 총계                */
+			               , AVG(A.LOWS_SBID_LMT_AM)          AS AVG_PR                                        /* 응찰하한가 평균                */
+			            
+			               /* 의령: 8808990656199 / 문경: 8808990656427 / 서산: 8808990656694 / 괴산증평: 8808990656670 / 영천: 8808990656687 / 포항: 8808990679549 / 영덕울진: 8808990785431 / 수원: 8808990656496  / 고령성주: 8808990659695 */
+			               , CASE WHEN A.AUC_OBJ_DSC = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656427' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN SUM(A.SRA_SBID_AM) ELSE SUM(A.SRA_SBID_UPR) END)
+			                      ELSE SUM(A.SRA_SBID_AM) END  AS SRA_SBID_AM                                  /* 축산낙찰금액                   */
+			               , CASE WHEN A.AUC_OBJ_DSC = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656427' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN AVG(A.SRA_SBID_AM) ELSE AVG(A.SRA_SBID_UPR) END)
+			                      ELSE AVG(A.SRA_SBID_AM) END  AS SRA_AVG_SBID_UPR                             /* 축산평균낙찰금액               */
+			               , CASE WHEN A.AUC_OBJ_DSC = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656427' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN MAX(A.SRA_SBID_AM) ELSE MAX(A.SRA_SBID_UPR) END)
+			                      ELSE MAX(A.SRA_SBID_AM) END  AS MAX_SRA_SBID_AM                                /* 축산최고가                        */
+			               , CASE WHEN A.AUC_OBJ_DSC = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656427' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN MIN(A.SRA_SBID_AM) ELSE MIN(A.SRA_SBID_UPR) END)
+			                      ELSE MIN(A.SRA_SBID_AM) END  AS MIN_SRA_SBID_AM                              /* 축산최저가                     */
+			            FROM TB_LA_IS_MH_SOG_COW A
+			               , TB_LA_IS_MM_INDV    B
+						  WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+						    AND A.AUC_OBJ_DSC     = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END
+						    AND A.AUC_DT          BETWEEN #{auc_st_dt} AND #{auc_ed_dt} 
+			                AND A.DEL_YN          = '0'
+			                AND A.LED_SQNO        = 1
+			                AND A.SEL_STS_DSC     = '22'                                 /* 낙찰건                      */
+			                AND A.NA_BZPLC        = B.NA_BZPLC
+			                AND A.SRA_SRS_DSC     = B.SRA_SRS_DSC                        /* 축산축종구분코드         */
+			                AND A.SRA_INDV_AMNNO  = B.SRA_INDV_AMNNO                     /* 축산개체관리번호         */
+			          GROUP BY CASE WHEN B.RG_DSC != '09' THEN '등 록' ELSE '없 음' END,
+			                     CASE WHEN B.INDV_SEX_C IN ('1', '4', '6') THEN '1' ELSE '2' END,
+			                   A.AUC_DT, A.AUC_OBJ_DSC              ) A
+			        ,(
+			            SELECT
+			                   CASE WHEN B.RG_DSC != '09' THEN '등 록' else '없 음' END AS RG_DSC                   /* 등록구분                       */
+			                 , A.AUC_DT                         AS AUC_DT                                        /* 경매일자                       */
+			                 , A.AUC_OBJ_DSC                    AS AUC_OBJ_DSC                                   /* 경매대상구분코드               */
+			                 , CASE WHEN B.INDV_SEX_C IN ('1', '4', '6') THEN '1' ELSE '2' END AS INDV_SEX_C     /* 성별                           */
+			                 , COUNT(A.SRA_INDV_AMNNO)          AS TOT_HDCN                                      /* 두수                           */
+			                 , SUM(A.COW_SOG_WT)                AS TOT_WT                                        /* 우출하 총 중량                 */
+			                 , AVG(A.COW_SOG_WT)                AS AVG_WT                                        /* 우출하 평균 중량               */
+			                 , SUM(A.LOWS_SBID_LMT_AM)          AS LOWS_SBID_LMT_AM                              /* 응찰하한가 총계                */
+			                 , AVG(A.LOWS_SBID_LMT_AM)          AS AVG_PR                                        /* 응찰하한가 평균                */
+			          
+			                 /*    의령 요청 8808990656199    / 문경:8808990656427 / 서산:8808990656694 / 괴산증평: 8808990656670 / 영천:8808990656687 / 포항: 8808990679549 / 영덕울진: 8808990785431 / 수원: 8808990656496 / 고령성주: 8808990659695 */
+			                 , CASE WHEN A.AUC_OBJ_DSC = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656427' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN SUM(A.SRA_SBID_AM) ELSE SUM(A.SRA_SBID_UPR) END)
+			                        ELSE SUM(A.SRA_SBID_AM) END  AS SRA_SBID_AM                                  /* 축산낙찰금액                   */
+			                 , CASE WHEN A.AUC_OBJ_DSC = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656427' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN AVG(A.SRA_SBID_AM) ELSE AVG(A.SRA_SBID_UPR) END)
+			                        ELSE AVG(A.SRA_SBID_AM) END  AS SRA_AVG_SBID_UPR                             /* 축산평균낙찰금액               */
+			                 , CASE WHEN A.AUC_OBJ_DSC = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656427' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN MAX(A.SRA_SBID_AM) ELSE MAX(A.SRA_SBID_UPR) END)
+			                        ELSE MAX(A.SRA_SBID_AM) END  AS MAX_SRA_SBID_AM                                /* 축산최고가                      */
+			                 , CASE WHEN A.AUC_OBJ_DSC = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656427' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN MIN(A.SRA_SBID_AM) ELSE MIN(A.SRA_SBID_UPR) END)
+			                        ELSE MIN(A.SRA_SBID_AM) END  AS MIN_SRA_SBID_AM                              /* 축산최저가                     */
+			              FROM TB_LA_IS_MH_SOG_COW A
+			                 , TB_LA_IS_MM_INDV    B
+						  WHERE A.NA_BZPLC        = #{ss_na_bzplc}
+						    AND A.AUC_OBJ_DSC     = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END
+						    AND A.AUC_DT          BETWEEN #{auc_st_dt} AND #{auc_ed_dt} 
+			                AND A.DEL_YN          = '0'
+			                AND A.LED_SQNO        = 1
+			                AND A.SEL_STS_DSC     != '22'                                /* 유찰건                      */
+			                AND A.NA_BZPLC        = B.NA_BZPLC
+			                AND A.SRA_SRS_DSC     = B.SRA_SRS_DSC                        /* 축산축종구분코드         */
+		                    AND A.SRA_INDV_AMNNO  = B.SRA_INDV_AMNNO                     /* 축산개체관리번호         */
+			           GROUP BY CASE WHEN B.RG_DSC != '09' THEN '등 록' ELSE '없 음' END
+			                  , CASE WHEN B.INDV_SEX_C IN ('1', '4', '6') THEN '1' ELSE '2' END
+			                  , A.AUC_DT, A.AUC_OBJ_DSC        ) B
+			    WHERE 1=1                    
+			      AND A.RG_DSC          = B.RG_DSC(+)
+			      AND A.AUC_DT          = B.AUC_DT(+)
+			      AND A.AUC_OBJ_DSC     = B.AUC_OBJ_DSC(+)
+			      AND A.INDV_SEX_C      = B.INDV_SEX_C(+)
+			    ORDER BY A.AUC_DT, A.AUC_OBJ_DSC, CASE WHEN A.RG_DSC != '09' THEN '등 록' ELSE '없 음' END
+			    )    A
+		GROUP BY ROLLUP (A.AUC_DT, (A.AUC_OBJ_DSC, A.RG_DSC , A.INDV_SEX_C))
+		HAVING GROUPING_ID(A.AUC_DT) IN(0,3)
+	                    
+	
+    ]]>
+    </select>
+        
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

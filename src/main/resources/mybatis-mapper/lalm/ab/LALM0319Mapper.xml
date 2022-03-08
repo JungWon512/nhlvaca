@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ab.service.Impl.LALM0319Mapper">
+
+	<select id="LALM0319_selList" resultType="hashMap">
+	<![CDATA[
+		SELECT
+			  A.NA_BZPLC						 /* 경제통합사업장코드		   */
+			, A.AUC_OBJ_DSC					 	 /* 경매대상구분코드           */
+			, A.AUC_DT							 /* 경매일자                   */
+			, A.OSLP_NO							 /* 원표번호                   */
+			, A.LED_SQNO						 /* 원장일련번호               */
+			, A.AUC_PRG_SQ						 /* 경매진행순서               */
+			, A.SRA_INDV_AMNNO                    /* 귀표번호			  */
+	  	  	, B.BIRTH                              /* 생년월일			  */
+	  	  	, B.INDV_SEX_C						 /* 성별					   */
+			, RTRIM(B.KPN_NO) AS KPN_NO			/* KPN번호					   */
+ 	   		, B.MATIME							 /* 산차					   */
+	   	 	, B.SRA_INDV_PASG_QCN				 /* 계대					   */
+			, A.COW_SOG_WT						 /* 우출하중량                 */
+	  		, B.MCOW_DSC						 /* 어미구분				   */
+			, A.LOWS_SBID_LMT_AM				 /* 최저낙찰한도금액           */
+			, A.TRMN_AMNNO						 /* 거래인관리번호             */
+			, A.LVST_AUC_PTC_MN_NO				 /* 경매참여자번호			   */
+			, A.SEL_STS_DSC						 /* 판매상태구분코드           */
+			, A.DEL_YN							 /* 삭제여부                   */
+			, A.FIR_LOWS_SBID_LMT_AM			 /* 최초최저낙찰한도금액       */
+			, A.SRA_SBID_AM						 /* 축산낙찰금액               */
+			, A.SRA_SRS_DSC						 /* 축산축종구분			   */
+			
+		 FROM TB_LA_IS_MH_SOG_COW A
+		 	 ,TB_LA_IS_MM_INDV B
+	    WHERE A.NA_BZPLC	     = #{ss_na_bzplc}
+	      AND A.AUC_OBJ_DSC      = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+		  AND A.AUC_DT           = #{auc_dt}
+		  AND A.DEL_YN           = '0'
+	      AND A.LED_SQNO         = '1'
+	      AND A.SEL_STS_DSC      = '11'
+	      AND A.LOWS_SBID_LMT_AM > 0
+		  AND B.NA_BZPLC         = A.NA_BZPLC
+	      AND B.SRA_SRS_DSC      = A.SRA_SRS_DSC
+	      AND B.SRA_INDV_AMNNO   = A.SRA_INDV_AMNNO
+	    ORDER BY A.AUC_PRG_SQ
+      
+      
+    ]]>
+	</select>
+	<select id="LALM0319_sel_entr" resultType="hashMap">
+		SELECT 
+			 A.NA_BZPLC                         /* 경제통합사업장코드                  */
+		  	,A.AUC_DT                           /* 경매일자                            */
+	    	,A.LVST_AUC_PTC_MN_NO               /* 가축시장경매참여자번호              */
+		  	,B.TRMN_AMNNO                       /* 거래인관리번호                      */
+		  	,B.SRA_MWMNNM                       /* 축산중도매인명                      */
+		  	,B.CUS_MPNO                         /* 고객휴대전화번호                    */
+		  	,B.DONGUP                           /* 동이상주소                          */
+		  	,B.DONGBW                           /* 동이하주소                          */
+		  	,B.FRLNO                            /* 실명번호                            */
+		 FROM TB_LA_IS_MH_AUC_ENTR A
+  	   	 	, TB_LA_IS_MM_MWMN     B
+		WHERE A.NA_BZPLC    = #{ss_na_bzplc}
+    	  AND A.AUC_DT      = #{auc_dt}
+	  	  AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	  	  AND A.NA_BZPLC    = B.NA_BZPLC
+	 	 AND A.TRMN_AMNNO  = B.TRMN_AMNNO
+	  </select>
+</mapper>
