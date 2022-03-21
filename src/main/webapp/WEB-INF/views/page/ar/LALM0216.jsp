@@ -1788,10 +1788,8 @@ var na_bzplc = App_na_bzplc;
         							 {name:"RE_PRODUCT_14",             index:"RE_PRODUCT_14",             width:55, align:'center'  ,hidden:true},
         							 {name:"RE_PRODUCT_14_1",           index:"RE_PRODUCT_14_1",           width:55, align:'center'  ,hidden:true},
         							 
-<<<<<<< HEAD
-=======
 								     /* s: 리포트 데이터 백지 방지용 컬럼  */
->>>>>>> branch 'master' of https://github.com/yuchansong410/nhlvaca.git
+
         							 {name:"re_product_1",              index:"re_product_1",              width:55, align:'center'  ,hidden:true},
         							 {name:"re_product_1_1",            index:"re_product_1_1",            width:55, align:'center'  ,hidden:true},
         							 {name:"re_product_2",              index:"re_product_2",              width:55, align:'center'  ,hidden:true},
