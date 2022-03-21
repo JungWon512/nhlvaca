@@ -1,12 +1,10 @@
 package com.auc.main.service.Impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,11 +18,13 @@ public class JwtUserDetailsService implements UserDetailsService{
 	
 	@Autowired
 	MainMapper mainMapper;
+
 	@Autowired
 	PasswordEncoder passwordEncoder;
-	@Value("${db-profile}")
-	private String dbProfile;
-	   
+
+	@Value("${spring.profiles.service-name:nhlva}")
+	private String serviceName;
+
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
@@ -44,7 +44,7 @@ public class JwtUserDetailsService implements UserDetailsService{
 	    }
     }			
 	  
-	public Map<String, String> signIn(Map<String, Object> signMap) throws Exception{						
+	public Map<String, String> signIn(Map<String, Object> signMap) throws Exception{
 	    Map<String, String> selMap = null;						
 	    selMap = mainMapper.signIn(signMap);	
 	    if(selMap == null)selMap = new HashMap<String, String>(); 
@@ -70,8 +70,9 @@ public class JwtUserDetailsService implements UserDetailsService{
 	}
 
 	public int selChkPw(String usrid, String user_pw) {
+		System.out.println("serviceName : " + serviceName);
 		int chkPw = 0;
-		if ("tibero".equals(dbProfile)) {
+		if ("tibero".equals(serviceName)) {
 			Map<String, Object> pwMap = mainMapper.selChkPwTibero(usrid, user_pw);
 			if (passwordEncoder.matches(user_pw, pwMap.getOrDefault("PW", "").toString())) return 1;
 		}
