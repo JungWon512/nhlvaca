@@ -612,7 +612,7 @@
     	    if($("#chk_continue1").is(":checked")) {
     	    	fn_ChkContinue2();
     		}
-           
+    	    fn_ClearReProduct();           
         });
     	
     	/******************************
@@ -2991,10 +2991,12 @@
  		}
  		$("#selfee_chk_yn_fee").val(result[0]["SELFEE_CHK_YN_FEE"]);
  		
- 		$("#ppgcow_fee_dsc").val(result[0]["PPGCOW_FEE_DSC"]); 		
+ 		$("#ppgcow_fee_dsc").val(result[0]["PPGCOW_FEE_DSC"]);
  		if(fn_isDate(result[0]["AFISM_MOD_DT"])) {
  			$("#afism_mod_dt").val(fn_toDate(result[0]["AFISM_MOD_DT"]));
- 		}
+ 		}else{
+ 			$("#afism_mod_dt").val('');
+ 		} 		
  		if(result[0]["AFISM_MOD_CTFW_SMT_YN"] == "1") {
  			fn_contrChBox(true, "afism_mod_ctfw_smt_yn", "");
  		} else {
@@ -3288,14 +3290,14 @@
  	// result   : N/A
  	//**************************************
     function fn_ClearReProduct() {
-    	$("#re_product_1").val("0");
-		$("#re_product_2").val("0");
-		$("#re_product_3").val("0");
-		$("#re_product_4").val("0");
-		$("#re_product_11").val("0");
-		$("#re_product_12").val("0");
-		$("#re_product_13").val("0");
-		$("#re_product_14").val("0");
+    	if($("#re_product_1").val() == '') $("#re_product_1").val("0");
+		if($("#re_product_2").val() == '') $("#re_product_2").val("0");
+		if($("#re_product_3").val() == '') $("#re_product_3").val("0");
+		if($("#re_product_4").val() == '') $("#re_product_4").val("0");
+		if($("#re_product_11").val() == '') $("#re_product_11").val("0");
+		if($("#re_product_12").val() == '') $("#re_product_12").val("0");
+		if($("#re_product_13").val() == '') $("#re_product_13").val("0");
+		if($("#re_product_14").val() == '') $("#re_product_14").val("0");
     }
     
   	//**************************************

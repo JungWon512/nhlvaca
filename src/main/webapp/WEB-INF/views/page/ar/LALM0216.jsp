@@ -1737,12 +1737,21 @@ var na_bzplc = App_na_bzplc;
         }
         
         var searchResultColNames = ["일수(월령)","H사업장코드","H브랜드","H낙찰가격","H경매일자","H낙찰자","H낙찰가격","H인공수정일","H송아지축산개체관리번호","H송아지개체성별코드","H송아지출하중량","H송아지생년월일","H송아지KPN번호","H송아지월령","H구제역예방접종일","H임신개월수","H브루셀라검사일","H낙찰가"
+<<<<<<< HEAD
         						  
         						   ,"H유전능력 냉도체중","H유전능력 냉도체중 등급","H유전능력 배최장근단면적","H유전능력 배최장근단면적 등급","H등지방두께","H등지방두께 등급","H유전능력 근내지방도","H유전능력 근내지방도 등급"
         						   ,"H유전능력 냉도체중-모개체","H유전능력 냉도체중등급-모개체","H유전능력 배최장근단면적-모개체","H유전능력 배최장근단면적 등급-모개체","H유전능력 등지방두께-모개체","H유전능력 등지방두께 등급-모개체","H유전능력 근내지방도-모개체","H유전능력 근내지방도 등급-모개체"
         						   
         						   ,"H유전능력 냉도체중","H유전능력 냉도체중 등급","H유전능력 배최장근단면적","H유전능력 배최장근단면적 등급","H등지방두께","H등지방두께 등급","H유전능력 근내지방도","H유전능력 근내지방도 등급"
         						   ,"H유전능력 냉도체중-모개체","H유전능력 냉도체중등급-모개체","H유전능력 배최장근단면적-모개체","H유전능력 배최장근단면적 등급-모개체","H유전능력 등지방두께-모개체","H유전능력 등지방두께 등급-모개체","H유전능력 근내지방도-모개체","H유전능력 근내지방도 등급-모개체"
+=======
+
+								   ,"H유전능력 냉도체중","H유전능력 냉도체중 등급","H유전능력 배최장근단면적","H유전능력 배최장근단면적 등급","H등지방두께","H등지방두께 등급","H유전능력 근내지방도","H유전능력 근내지방도 등급"
+								   ,"H유전능력 냉도체중-모개체","H유전능력 냉도체중등급-모개체","H유전능력 배최장근단면적-모개체","H유전능력 배최장근단면적 등급-모개체","H유전능력 등지방두께-모개체","H유전능력 등지방두께 등급-모개체","H유전능력 근내지방도-모개체","H유전능력 근내지방도 등급-모개체"
+								   
+								   ,"H유전능력 냉도체중","H유전능력 냉도체중 등급","H유전능력 배최장근단면적","H유전능력 배최장근단면적 등급","H등지방두께","H등지방두께 등급","H유전능력 근내지방도","H유전능력 근내지방도 등급"
+								   ,"H유전능력 냉도체중-모개체","H유전능력 냉도체중등급-모개체","H유전능력 배최장근단면적-모개체","H유전능력 배최장근단면적 등급-모개체","H유전능력 등지방두께-모개체","H유전능력 등지방두께 등급-모개체","H유전능력 근내지방도-모개체","H유전능력 근내지방도 등급-모개체"
+>>>>>>> branch 'master' of https://github.com/yuchansong410/nhlvaca.git
         							
          		 				   ,"경매<br>번호", "경매대상", "성명", "귀표번호"
                                    , "생년월일", "산차", "어미구분", "계대", "제각여부", "KPN번호"
@@ -1788,6 +1797,10 @@ var na_bzplc = App_na_bzplc;
         							 {name:"RE_PRODUCT_14",             index:"RE_PRODUCT_14",             width:55, align:'center'  ,hidden:true},
         							 {name:"RE_PRODUCT_14_1",           index:"RE_PRODUCT_14_1",           width:55, align:'center'  ,hidden:true},
         							 
+<<<<<<< HEAD
+=======
+								     /* s: 리포트 데이터 백지 방지용 컬럼  */
+>>>>>>> branch 'master' of https://github.com/yuchansong410/nhlvaca.git
         							 {name:"re_product_1",              index:"re_product_1",              width:55, align:'center'  ,hidden:true},
         							 {name:"re_product_1_1",            index:"re_product_1_1",            width:55, align:'center'  ,hidden:true},
         							 {name:"re_product_2",              index:"re_product_2",              width:55, align:'center'  ,hidden:true},
@@ -1803,7 +1816,8 @@ var na_bzplc = App_na_bzplc;
         							 {name:"re_product_13",             index:"re_product_13",             width:55, align:'center'  ,hidden:true},
         							 {name:"re_product_13_1",           index:"re_product_13-1",           width:55, align:'center'  ,hidden:true},
         							 {name:"re_product_14",             index:"re_product_14",             width:55, align:'center'  ,hidden:true},
-        							 {name:"re_product_14_1",           index:"re_product_14_1",           width:55, align:'center'  ,hidden:true},
+        							 {name:"re_product_14_1",           index:"re_product_14_1",           width:55, align:'center'  ,hidden:true},        							 
+        							 /* e: 리포트 데이터 백지 방지용 컬럼  */
         							 
         							 {name:"AUC_PRG_SQ",                index:"AUC_PRG_SQ",               width:50, align:'center'  },
                                      {name:"AUC_OBJ_DSC",               index:"AUC_OBJ_DSC",              width:60, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
