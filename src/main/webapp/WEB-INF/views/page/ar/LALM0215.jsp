@@ -576,7 +576,7 @@
     		if($("#auc_obj_dsc").val() == "3") {
    		        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
    		      		// ★익산: 8808990227283
-   		        	if(App_na_bzplc = "8808990227283") {
+   		        	if(App_na_bzplc == "8808990227283") {
    		        		fn_contrChBox(false, "prny_jug_yn", "");
    		            } else {
    		            	fn_contrChBox(true, "prny_jug_yn", "");
@@ -586,7 +586,7 @@
    		        }
 
    		  		// ★거창: 8808990659701
-   		        if(App_na_bzplc = "8808990659701") {
+   		        if(App_na_bzplc == "8808990659701") {
    		            if($("#ppgcow_fee_dsc").val() == "2" || $("#ppgcow_fee_dsc").val() == "4") {
    		                $("#afism_mod_dt").val("");
    		             	$("#prny_mtcn").val("");
@@ -602,7 +602,7 @@
     		
     		// 번식우 선택시 임신감정여부 체크
     		// ★밀양: 8808990656663
-    	    if(App_na_bzplc = '8808990656663') {
+    	    if(App_na_bzplc == '8808990656663') {
     	    	fn_contrChBox(true, "prny_jug_yn", "");
 //     	    	$("#prny_jug_yn").val("1");
     	    }
@@ -4378,7 +4378,7 @@
             if(resultsTmpIndv.status == RETURN_SUCCESS) {
             	resultTmpIndv = setDecrypt(resultsTmpIndv);
             	
-            	if(resultTmpIndv.length = 1) {
+            	if(resultTmpIndv.length == 1) {
             		fn_CallIndvInfSrchPopup(true, P_sra_indv_amnno);
             	}
             } else {
@@ -5178,7 +5178,7 @@
 	                        		<th scope="row"><span>유전능력(EPD)</span></th>
 	                        		<th scope="row"><span>냉도체중</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_1" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_1" style="width:100px">
 	                            		<select id="re_product_1_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5189,7 +5189,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>배최장근단면적</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_2" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_2" style="width:100px">
 	                            		<select id="re_product_2_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5200,7 +5200,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>등지방두께</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_3" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_3" style="width:100px">
 	                            		<select id="re_product_3_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5211,7 +5211,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>근내지방도</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_4" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_4" style="width:100px">
 	                            		<select id="re_product_4_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5236,7 +5236,7 @@
 	                        		<th scope="row"><span>유전능력(모개체)</span></th>
 	                        		<th scope="row"><span>냉도체중</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_11" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_11" style="width:100px">
 	                            		<select id="re_product_11_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5247,7 +5247,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>배최장근단면적</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_12" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_12" style="width:100px">
 	                            		<select id="re_product_12_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5258,7 +5258,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>등지방두께</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_13" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_13" style="width:100px">
 	                            		<select id="re_product_13_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5269,7 +5269,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>근내지방도</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_14" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_14" style="width:100px">
 	                            		<select id="re_product_14_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>

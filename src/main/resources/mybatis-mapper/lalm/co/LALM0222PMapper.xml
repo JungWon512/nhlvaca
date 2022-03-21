@@ -211,8 +211,8 @@
     ]]>
     </update>
     
+    <!-- 22-03-17 : 한우 종합에서 조회한 데이터에 휴대전화 번호가 없는 경우 저장하지 않도록 수정 -->
     <update id="LALM0222P_updIsMmFhs">
-    <![CDATA[
            UPDATE TB_LA_IS_MM_FHS SET
                       FARM_ID_NO  = #{farm_id_no}                            /* 농가식별번호                        */
                     , NA_TRPL_C   = #{na_trpl_c}                             /* 출하경제통합거래처코드              */
@@ -221,7 +221,9 @@
                     , DONGUP      = #{sra_farm_dongup}                       /* 동이상주소                          */
                     , DONGBW      = #{sra_farm_dongbw}                       /* 동이하주소                          */
                     , OHSE_TELNO  = #{telno}                                 /* 자택전화번호                        */
+                <if test='mpno != "" and mpno != null'>
                     , CUS_MPNO    = #{mpno}                                  /* 고객휴대전화번호                    */
+                </if>
                     , MACO_YN     = #{maco_yn}                               /* 출하자조합원여부                    */
                     , RMK_CNTN    = #{rmk_cntn}                              /* 비고내용                            */
                     , JRDWO_DSC   = #{jrdwo_dsc}                             /* 관내외구분                          */
@@ -232,7 +234,6 @@
                 WHERE NA_BZPLC    = #{ss_na_bzplc}
                   AND FHS_ID_NO   = #{fhs_id_no}
                   AND FARM_AMNNO  = #{farm_amnno}
-    ]]>
     </update>
 </mapper>
 
