@@ -89,7 +89,7 @@
                      WHEN LENGTH(E.SRA_MWMNNM) = 3 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*'  || SUBSTR(E.SRA_MWMNNM,3,1) 
                      WHEN LENGTH(E.SRA_MWMNNM) = 4 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '**' || SUBSTR(E.SRA_MWMNNM,4,1)  
                      WHEN LENGTH(E.SRA_MWMNNM) >= 5 THEN SUBSTR(E.SRA_MWMNNM,1,2) || '**' || SUBSTR(E.SRA_MWMNNM,5,1)  END AS SRA_MWMNNM  /* 축산중도매인명                        */
-	          , CASE WHEN #{ss_security} = '1' THEN F.BRKR_NAME
+	          , CASE WHEN #{ss_security} = '1' OR LENGTH(F.BRKR_NAME) = 1 THEN F.BRKR_NAME
                      WHEN LENGTH(F.BRKR_NAME) = 2 THEN SUBSTR(F.BRKR_NAME,1,1) || '*' 
                      WHEN LENGTH(F.BRKR_NAME) = 3 THEN SUBSTR(F.BRKR_NAME,1,1) || '*'  || SUBSTR(F.BRKR_NAME,3,1) 
                      WHEN LENGTH(F.BRKR_NAME) = 4 THEN SUBSTR(F.BRKR_NAME,1,1) || '**' || SUBSTR(F.BRKR_NAME,4,1)  

@@ -2454,7 +2454,7 @@
 	<![CDATA[
 		SELECT
 	          B.LVST_MKT_TRPL_AMNNO      AS "LVST_MKT_TRPL_AMNNO"
-	        , CASE WHEN #{ss_security} = '1' THEN brkr_name
+	        , CASE WHEN #{ss_security} = '1' OR LENGTH(brkr_name) = 1 THEN brkr_name
               WHEN LENGTH(brkr_name) = 2 THEN SUBSTR(brkr_name,1,1) || '*' 
               WHEN LENGTH(brkr_name) = 3 THEN SUBSTR(brkr_name,1,1) || '*'  || SUBSTR(brkr_name,3,1) 
               WHEN LENGTH(brkr_name) = 4 THEN SUBSTR(brkr_name,1,1) || '**' || SUBSTR(brkr_name,4,1)  
