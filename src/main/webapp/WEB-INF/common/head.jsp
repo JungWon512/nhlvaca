@@ -48,6 +48,19 @@ $(document).ready(function() {
         
     });
 
+    //NUMBER타입 음수 INPUT변수에 숫자만 입력 콤마추가
+    $(document).on("input",".minusnumber", function(){
+    	$(this).val($(this).val().replace(/[^-?0-9.]/g,'').replace(/(\..*)\./g,'$1'));
+    }).on("focus",".minusnumber",function(){
+    	if($(this).val() == 0){
+    		$(this).val(null) ;
+    	}else {
+    		$(this).val($(this).val().replace(/[^-?0-9.]/g,'').replace(/(\..*)\./g,'$1'));
+    	}
+    }).on("focusout",".minusnumber",function(){
+    	$(this).val($(this).val().replace(/(-?\d)(?=(?:\d{3})+(?!\d))/g, '$1,'));
+    });
+
     //NUMBER타입 INPUT변수에 숫자만 입력 콤마추가
     $(document).on("input",".number", function(){
     	$(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1'));

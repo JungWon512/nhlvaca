@@ -586,7 +586,7 @@
    		        }
 
    		  		// ★거창: 8808990659701
-   		        if(App_na_bzplc = "8808990659701") {
+   		        if(App_na_bzplc == "8808990659701") {
    		            if($("#ppgcow_fee_dsc").val() == "2" || $("#ppgcow_fee_dsc").val() == "4") {
    		                $("#afism_mod_dt").val("");
    		             	$("#prny_mtcn").val("");
@@ -602,7 +602,7 @@
     		
     		// 번식우 선택시 임신감정여부 체크
     		// ★밀양: 8808990656663
-    	    if(App_na_bzplc = '8808990656663') {
+    	    if(App_na_bzplc == '8808990656663') {
     	    	fn_contrChBox(true, "prny_jug_yn", "");
 //     	    	$("#prny_jug_yn").val("1");
     	    }
@@ -612,7 +612,7 @@
     	    if($("#chk_continue1").is(":checked")) {
     	    	fn_ChkContinue2();
     		}
-           
+    	    fn_ClearReProduct();           
         });
     	
     	/******************************
@@ -2991,10 +2991,12 @@
  		}
  		$("#selfee_chk_yn_fee").val(result[0]["SELFEE_CHK_YN_FEE"]);
  		
- 		$("#ppgcow_fee_dsc").val(result[0]["PPGCOW_FEE_DSC"]); 		
+ 		$("#ppgcow_fee_dsc").val(result[0]["PPGCOW_FEE_DSC"]);
  		if(fn_isDate(result[0]["AFISM_MOD_DT"])) {
  			$("#afism_mod_dt").val(fn_toDate(result[0]["AFISM_MOD_DT"]));
- 		}
+ 		}else{
+ 			$("#afism_mod_dt").val('');
+ 		} 		
  		if(result[0]["AFISM_MOD_CTFW_SMT_YN"] == "1") {
  			fn_contrChBox(true, "afism_mod_ctfw_smt_yn", "");
  		} else {
@@ -3288,14 +3290,14 @@
  	// result   : N/A
  	//**************************************
     function fn_ClearReProduct() {
-    	$("#re_product_1").val("0");
-		$("#re_product_2").val("0");
-		$("#re_product_3").val("0");
-		$("#re_product_4").val("0");
-		$("#re_product_11").val("0");
-		$("#re_product_12").val("0");
-		$("#re_product_13").val("0");
-		$("#re_product_14").val("0");
+    	if($("#re_product_1").val() == '') $("#re_product_1").val("0");
+		if($("#re_product_2").val() == '') $("#re_product_2").val("0");
+		if($("#re_product_3").val() == '') $("#re_product_3").val("0");
+		if($("#re_product_4").val() == '') $("#re_product_4").val("0");
+		if($("#re_product_11").val() == '') $("#re_product_11").val("0");
+		if($("#re_product_12").val() == '') $("#re_product_12").val("0");
+		if($("#re_product_13").val() == '') $("#re_product_13").val("0");
+		if($("#re_product_14").val() == '') $("#re_product_14").val("0");
     }
     
   	//**************************************
@@ -5178,7 +5180,7 @@
 	                        		<th scope="row"><span>유전능력(EPD)</span></th>
 	                        		<th scope="row"><span>냉도체중</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_1" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_1" style="width:100px">
 	                            		<select id="re_product_1_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5189,7 +5191,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>배최장근단면적</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_2" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_2" style="width:100px">
 	                            		<select id="re_product_2_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5200,7 +5202,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>등지방두께</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_3" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_3" style="width:100px">
 	                            		<select id="re_product_3_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5211,7 +5213,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>근내지방도</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_4" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_4" style="width:100px">
 	                            		<select id="re_product_4_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5236,7 +5238,7 @@
 	                        		<th scope="row"><span>유전능력(모개체)</span></th>
 	                        		<th scope="row"><span>냉도체중</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_11" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_11" style="width:100px">
 	                            		<select id="re_product_11_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5247,7 +5249,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>배최장근단면적</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_12" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_12" style="width:100px">
 	                            		<select id="re_product_12_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5258,7 +5260,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>등지방두께</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_13" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_13" style="width:100px">
 	                            		<select id="re_product_13_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
@@ -5269,7 +5271,7 @@
 	                            	</td>
 	                        		<th scope="row"><span>근내지방도</span></th>
 	                        		<td colspan=2>
-	                            		<input type="text" class="number" id="re_product_14" style="width:100px">
+	                            		<input type="text" class="minusnumber" id="re_product_14" style="width:100px">
 	                            		<select id="re_product_14_1" style="width:50px">
 	                            			<option value="" selected></option>
 	                                    	<option value="A">A</option>
