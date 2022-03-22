@@ -148,7 +148,7 @@
        TitleData.title = "";
        
         
-       if(na_bzplc == '8808990643625'){    // 영주:8808990687094  테스트: 8808990643625
+       if(na_bzplc == '8808990687094'){    // 영주:8808990687094  테스트: 8808990643625
     	   ReportPopup('LALM0318R0',TitleData, 'grd_MhSogCow', 'V');
     	
        }else{

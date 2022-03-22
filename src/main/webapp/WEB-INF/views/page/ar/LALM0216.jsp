@@ -76,6 +76,11 @@ var na_bzplc = App_na_bzplc;
          ******************************/   
         fn_setClearFromFrm("frm_Search","#grd_MhSogCow1, #grd_MhSogCow2, #grd_MhSogCow3, #grd_MhSogCow4");
         
+        $("#st_auc_no").on('keyup',function(e){
+        	if(e.keyCode == 13){
+        		$('#ed_auc_no').focus();
+        	}
+        });
  		
  		$("#tab_1").click(function(){
             $(".ftsnm_td").show();             
