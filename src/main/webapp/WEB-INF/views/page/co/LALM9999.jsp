@@ -16,7 +16,7 @@
 <body>
 <div class="pop_warp">
         <div class="tab_box btn_area clearfix">
-            <ul class="tab_list fl_L" id="backdoor">
+            <ul class="tab_list fl_L">
                 <li><p class="dot_allow" >검색조건</p></li>
             </ul>
             <%@ include file="/WEB-INF/common/popupBtn.jsp" %>
@@ -59,41 +59,6 @@
      ------------------------------------------------------------------------------*/
     $(document).ready(function(){
     	fn_CreateGrid();
-    	$('#backdoor').on('click',function(){
-    		
-    		var data = new Object();
-            data['updateBack'] = "1";  
-            var results;
-            var result;
-            var encrypt = setEncrypt(data);
-            
-            $.ajax({
-                   url: '/co/Common_updbackFile',
-                   type: "POST",
-                   dataType:'json',
-                   header:{
-                       "Content-Type":"application/json"},
-                   async: false,
-                   data:{
-                          data : encrypt.toString()
-                   },
-                   success:function(data) {                                    
-                       results = data;  
-                       if(results.status == RETURN_SUCCESS){
-                           result = setDecrypt(results);
-                           $('#query_text').val(decodeURIComponent(result.back));
-                       }else {
-                           showErrorMessage(results);
-                           return;
-                       } 
-                   },
-                   error:function(response){
-                       showErrorMessage(results);
-                       return;
-                   }
-            }); 
-        });
-    	
     });
     
     /*------------------------------------------------------------------------------
@@ -106,37 +71,6 @@
         $("#grd_Data").jqGrid("clearGridData", true);
         //폼 초기화
         fn_InitFrm('frm_Input');
-        var data = new Object();
-        data['updateBack'] = "0";  
-        var results;
-        var result;
-        var encrypt = setEncrypt(data);
-        
-        $.ajax({
-               url: '/co/Common_updbackFile',
-               type: "POST",
-               dataType:'json',
-               header:{
-                   "Content-Type":"application/json"},
-               async: false,
-               data:{
-                      data : encrypt.toString()
-               },
-               success:function(data) {                                    
-                   results = data;  
-                   if(results.status == RETURN_SUCCESS){
-                       result = setDecrypt(results);
-                       $('#query_text').val(decodeURIComponent(result.back));
-                   }else {
-                       showErrorMessage(results);
-                       return;
-                   } 
-               },
-               error:function(response){
-                   showErrorMessage(results);
-                   return;
-               }
-        });
     }
     
     /*------------------------------------------------------------------------------
