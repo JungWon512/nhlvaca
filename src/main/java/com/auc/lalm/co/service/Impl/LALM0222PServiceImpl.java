@@ -49,7 +49,7 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 			tmpTelno = Demap.get("sra_farm_amn_atel") + "-" + Demap.get("sra_farm_amn_htel") + "-" + Demap.get("sra_farm_amn_stel");
 		}
 		// TODO :: 축경통에 농가 휴대전화 번호가 없는 경우 농가 관리에서 휴대전화를 입력해도 개체정보 조회시(LALM0222P) 축경통게 등록된 정보로 덮어 씌우기 때문에 덮어 씌우지 않도록 수정필요
-		if(!Demap.get("sra_fhs_rep_mpsvno").equals("") || !Demap.get("sra_fhs_rep_mphno").equals("") || !Demap.get("sra_fhs_rep_mpsqno").equals("")) {
+		if(!Demap.get("ss_na_bzplc").equals("8808990687094") || !Demap.get("sra_fhs_rep_mpsvno").equals("") || !Demap.get("sra_fhs_rep_mphno").equals("") || !Demap.get("sra_fhs_rep_mpsqno").equals("")) {
 			tmpMpno = Demap.get("sra_fhs_rep_mpsvno") + "-" + Demap.get("sra_fhs_rep_mphno") + "-" + Demap.get("sra_fhs_rep_mpsqno");
 		}
 		

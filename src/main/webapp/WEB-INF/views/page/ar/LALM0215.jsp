@@ -474,7 +474,9 @@
                     } else {
                     	fn_CallFtsnmPopup(true);
                     }
-    			} else if(!fn_isNull($("#indv_sex_c").val()) || !fn_isNull($("#birth").val())) {
+    			}else if(App_na_bzplc == '8808990687094'){
+    				$("#ftsnm").focus();
+       			} else if(!fn_isNull($("#indv_sex_c").val()) || !fn_isNull($("#birth").val())) {
     				$("#vacn_dt").focus();
     			}
             }
@@ -2479,7 +2481,11 @@
         		if(!fn_isNull($("#mcow_sra_indv_amnno").val())){
                 	fn_CallGeneBredrInfSrch($("#mcow_sra_indv_amnno").val());
                 }
-        		$("#vacn_dt").focus();
+                if(App_na_bzplc == '8808990687094'){
+    				$("#ftsnm").focus();
+       			}else {
+	        		$("#vacn_dt").focus();
+       			}
         	}
         });
  	}
@@ -4331,7 +4337,11 @@
                 $("#sra_farm_acno").val(result.SRA_FARM_ACNO);
                 
                 if(!fn_isNull($("#fhs_id_no").val()) && !fn_isNull($("#indv_sex_c").val()) && !fn_isNull($("#birth").val())) {
-            		$("#vacn_dt").focus();
+	                if(App_na_bzplc == '8808990687094'){
+	    				$("#ftsnm").focus();
+	       			}else {
+		        		$("#vacn_dt").focus();
+	       			}
             	} else if(!fn_isNull($("#fhs_id_no").val()) && fn_isNull($("#indv_sex_c").val()) && fn_isNull($("#birth").val())) {
             		$("#indv_sex_c").val("0");
             		$("#indv_sex_c").focus();
@@ -4353,7 +4363,11 @@
                  $("#sra_farm_acno").val("");
                  
                  if(!fn_isNull($("#fhs_id_no").val()) && !fn_isNull($("#indv_sex_c").val()) && !fn_isNull($("#birth").val())) {
-             		$("#vacn_dt").focus();
+	                if(App_na_bzplc == '8808990687094'){
+	    				$("#ftsnm").focus();
+	       			}else {
+		        		$("#vacn_dt").focus();
+	       			}
              	 } else if(!fn_isNull($("#fhs_id_no").val()) && fn_isNull($("#indv_sex_c").val()) && fn_isNull($("#birth").val())) {
              		$("#indv_sex_c").val("0");
              		$("#indv_sex_c").focus();
@@ -4514,7 +4528,9 @@
                 	// SetFocus ★제주: 8808990656618
                 	if(App_na_bzplc == "8808990656618") {
                         $("#lows_sbid_lmt_am_ex").focus();
-                    } else {
+                    }else if(App_na_bzplc == '8808990687094'){
+    					$("#ftsnm").focus();
+       				} else {
                     	$("#vacn_dt").focus();
                     }
                 }
@@ -4554,9 +4570,11 @@
             	// SetFocus ★제주: 8808990656618
             	if(App_na_bzplc == "8808990656618") {
                     $("#lows_sbid_lmt_am_ex").focus();
-                } else {
-                	$("#vacn_dt").focus();
-                }
+                }else if(App_na_bzplc == '8808990687094'){
+    				$("#ftsnm").focus();
+       			}else {
+	        		$("#vacn_dt").focus();
+       			}
             } else {
             	$("#ftsnm").focus();
             }

@@ -83,6 +83,12 @@
         }else {
             fn_Init();
         }
+        $("#ftsnm").keydown(function(e) {
+             if(e.keyCode == 13) {
+	            fn_Search();
+             	return;
+             }
+        });
                
         
     });    

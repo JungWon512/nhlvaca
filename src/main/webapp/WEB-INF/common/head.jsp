@@ -13,12 +13,20 @@ $(document).ready(function() {
     
     // F5, ctrl + F5, ctrl + r 새로고침 방지
     $(document).keydown(function (e) {
+    	var code = e.keyCode || e.which;
         if (e.which === 116) {
             if (typeof event == "object") {
                 event.keyCode = 0;
             }
             return false;
         } else if (e.which === 82 && e.ctrlKey) {
+            return false;
+        }
+        if (code === 116) {
+            if($('#btn_Save')[0]) $('#btn_Save').click();
+            return false;
+        } else if (code == 115) {
+            if($('#btn_Search')[0]) $('#btn_Search').click();
             return false;
         }
     });
