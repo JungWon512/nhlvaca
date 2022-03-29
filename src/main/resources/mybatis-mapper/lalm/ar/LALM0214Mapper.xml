@@ -676,7 +676,7 @@
              , PPGCOW_FEE_DSC      = #{ppgcow_fee_dsc}              /* 임신구분                     */
              , LSCHG_DTM           = SYSDATE
              , LS_CMENO            = #{ss_userid}
-             , LVST_MKT_TRPL_AMNNO =  CASE WHEN #{lvst_mkt_trpl_amnno} = '' THEN NULL ELSE #{lvst_mkt_trpl_amnno} END /* 가축시장거래처관리번호     */
+             , LVST_MKT_TRPL_AMNNO =  CASE WHEN REPLACE(#{lvst_mkt_trpl_amnno}, ' ', '') = '' THEN '0' ELSE REPLACE(#{lvst_mkt_trpl_amnno}, ' ', '') END /* 가축시장거래처관리번호     */
          WHERE NA_BZPLC            = #{ss_na_bzplc}
            AND AUC_OBJ_DSC         = #{auc_obj_dsc}
            AND AUC_DT              = #{auc_dt}

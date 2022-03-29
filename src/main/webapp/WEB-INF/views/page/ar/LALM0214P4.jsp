@@ -439,7 +439,7 @@
                                      {name:"PRNY_YN",            index:"PRNY_YN",            width:50,  align:'center', edittype:"checkbox", formatter:"checkbox", editoptions:{value:"1:0"}, formatoptions:{disabled:false}, sortable: false},
                                      {name:"NCSS_JUG_YN",        index:"NCSS_JUG_YN",        width:60,  align:'center', edittype:"checkbox", formatter:"checkbox", editoptions:{value:"1:0"}, formatoptions:{disabled:false}, sortable: false},
                                      {name:"NCSS_YN",            index:"NCSS_YN",            width:50,  align:'center', edittype:"checkbox", formatter:"checkbox", editoptions:{value:"1:0"}, formatoptions:{disabled:false}, sortable: false},
-                                     {name:"RMK_CNTN",           index:"RMK_CNTN",           width:160, align:'left',   },
+                                     {name:"RMK_CNTN",           index:"RMK_CNTN",           width:160, align:'left', editable:true  },
                                      {name:"LVST_MKT_TRPL_AMNNO",index:"LVST_MKT_TRPL_AMNNO",width:100, align:'center', editable:true, edittype:"select", formatter:"select",
                                     	   editoptions:{
                                     		   value:v_vetCodeString,
@@ -591,20 +591,62 @@
      * 4. 설 명       : 수정시 상태값과 행의 색상을 변경하는 함수
      ------------------------------------------------------------------------------*/
     function fn_GridPrnyMtcnChange(v_selrow, v_prny_mtcn){
-        if (v_prny_mtcn > 0){
+   		console.log(arguments);
+   		// 어미소 정규식 패턴
+		var mcowPattern = /임신[0-9]{1,2}개월/gi;
+		
+		var ppgcowFeeDsc = $("#grd_CowBun").jqGrid('getCell', v_selrow, 'PPGCOW_FEE_DSC');
+		
+		var prnyMtcn = (v_prny_mtcn == "" || v_prny_mtcn == undefined) ? 0 : parseInt(v_prny_mtcn);
+		var mcowText = "";
+		if ((ppgcowFeeDsc == "1" || ppgcowFeeDsc == "3") && prnyMtcn > 0) {
+			mcowText = "임신 " + prnyMtcn + "개월"
+		}
+		
+		var rmkCntn = $("#grd_CowBun").jqGrid('getCell', v_selrow, 'RMK_CNTN');
+		var arrRmkCntn = $("#grd_CowBun").jqGrid('getCell', v_selrow, 'RMK_CNTN').split(",");
+		var newArrRmkCntn = [];
+		if (rmkCntn.replace(/ /g, "").search(mcowPattern) == -1) {
+			newArrRmkCntn = arrRmkCntn;
+			if (mcowText != "") newArrRmkCntn.push(mcowText);
+		}
+		else {
+			for (var i in arrRmkCntn) {
+				if (arrRmkCntn[i].replace(/ /g, "").search(mcowPattern) == -1) {
+					newArrRmkCntn.push(arrRmkCntn[i]);
+					continue;
+				}
+				if (arrRmkCntn[i].replace(/ /g, "").search(mcowPattern) > -1) {
+					newArrRmkCntn.push(arrRmkCntn[i].replace(/ /g, "").replace(mcowPattern, mcowText));
+					continue;
+				}
+			}
+			if (mcowText != "") newArrRmkCntn.push(mcowText);
+		}
+
+		const uniqueArr = newArrRmkCntn.filter((element, index) => {
+			return (newArrRmkCntn.indexOf(element) === index && element != "")
+		});
+		
+		console.log("ppgcowFeeDsc > ", ppgcowFeeDsc);
+		console.log("prnyMtcn > ", prnyMtcn);
+		console.log("rmkCntn > ", rmkCntn);
+		console.log(uniqueArr);
+		
+		$("#grd_CowBun").jqGrid('setCell', v_selrow, 'RMK_CNTN', uniqueArr.join(","));
+    	 
+        if (prnyMtcn > 0){
             $("#grd_CowBun").jqGrid('setCell', v_selrow, 'PRNY_JUG_YN', '1');
             $("#grd_CowBun").jqGrid('setCell', v_selrow, 'PRNY_YN', '1');
-              
-
-            var v_prny_mtcn =  '<임신' + v_prny_mtcn + '개월>';
-            if ($("#grd_CowBun").jqGrid('getCell', v_selrow, 'RMK_CNTN') == ''){
-                $("#grd_CowBun").jqGrid('setCell', v_selrow, 'RMK_CNTN', v_prny_mtcn);
-            }else{
-                $("#grd_CowBun").jqGrid('setCell', v_selrow, 'RMK_CNTN', $("#grd_CowBun").jqGrid('getCell', v_selrow, 'EX_RMK_CNTN') + v_prny_mtcn);
-            }
-
-        }else if (v_prny_mtcn <= 0 || v_prny_mtcn == '' ){
-            $("#grd_CowBun").jqGrid('setCell', v_selrow, 'RMK_CNTN', $("#grd_CowBun").jqGrid('getCell', v_selrow, 'EX_RMK_CNTN'));
+//             var v_prny_mtcn = '임신' + v_prny_mtcn + '개월';
+//             if ($("#grd_CowBun").jqGrid('getCell', v_selrow, 'RMK_CNTN') == ''){
+//                 $("#grd_CowBun").jqGrid('setCell', v_selrow, 'RMK_CNTN', v_prny_mtcn);
+//             }else{
+//                 $("#grd_CowBun").jqGrid('setCell', v_selrow, 'RMK_CNTN', $("#grd_CowBun").jqGrid('getCell', v_selrow, 'EX_RMK_CNTN') + v_prny_mtcn);
+//             }
+        }
+        else {
+//             $("#grd_CowBun").jqGrid('setCell', v_selrow, 'RMK_CNTN', $("#grd_CowBun").jqGrid('getCell', v_selrow, 'EX_RMK_CNTN'));
             $("#grd_CowBun").jqGrid('setCell', v_selrow, 'PRNY_YN', '0');
         }        
     }
