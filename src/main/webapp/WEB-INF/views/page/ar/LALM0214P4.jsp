@@ -591,7 +591,6 @@
      * 4. 설 명       : 수정시 상태값과 행의 색상을 변경하는 함수
      ------------------------------------------------------------------------------*/
     function fn_GridPrnyMtcnChange(v_selrow, v_prny_mtcn){
-   		console.log(arguments);
    		// 어미소 정규식 패턴
 		var mcowPattern = /임신[0-9]{1,2}개월/gi;
 		
@@ -627,11 +626,6 @@
 		const uniqueArr = newArrRmkCntn.filter((element, index) => {
 			return (newArrRmkCntn.indexOf(element) === index && element != "")
 		});
-		
-		console.log("ppgcowFeeDsc > ", ppgcowFeeDsc);
-		console.log("prnyMtcn > ", prnyMtcn);
-		console.log("rmkCntn > ", rmkCntn);
-		console.log(uniqueArr);
 		
 		$("#grd_CowBun").jqGrid('setCell', v_selrow, 'RMK_CNTN', uniqueArr.join(","));
     	 
