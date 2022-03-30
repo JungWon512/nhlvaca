@@ -466,6 +466,7 @@
             shrinkToFit: false, 
             rownumbers:true,
             rownumWidth:40,
+            sortable: true,
             cellsubmit:  "clientArray",
             gridComplete:function(){
             	$("#grd_CowBun").undelegate("input[type=checkbox]","change");
