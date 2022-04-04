@@ -260,7 +260,7 @@
             var searchResultColNames = ["", "경매번호", "거치대번호", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량", "응찰하한가"];        
             var searchResultColModel = [                         
                                          {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},
-                                         {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center'},
+                                         {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", align: "right", sorttype: "number"},
                                          {name:"MODL_NO",               index:"MODL_NO",                width:50,  align:'center'},
                                          {name:"AUC_OBJ_DSC",           index:"AUC_OBJ_DSC",            width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},                                     
                                          {name:"SRA_INDV_AMNNO1",       index:"SRA_INDV_AMNNO1",        width:80,  align:'center'},
@@ -282,7 +282,7 @@
                 var searchResultColNames = ["", "경매번호", "거치대번호(*)", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고", "중량", "응찰하한가"];        
                 var searchResultColModel = [                         
                                              {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},
-                                             {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center'},
+                                             {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", align: "right", sorttype: "number"},
                                              {name:"MODL_NO",               index:"MODL_NO",                width:50,  align:'center', editable:true},
                                              {name:"AUC_OBJ_DSC",           index:"AUC_OBJ_DSC",            width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},                                     
                                              {name:"SRA_INDV_AMNNO1",       index:"SRA_INDV_AMNNO1",        width:80,  align:'center'},
@@ -305,7 +305,7 @@
             var searchResultColNames = ["", "경매번호", "거치대번호", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량(*)", "응찰하한가(*)"];        
             var searchResultColModel = [                         
                                          {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},                       
-                                         {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center'},
+                                         {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", align: "right", sorttype: "number"},
                                          {name:"MODL_NO",               index:"MODL_NO",                width:50,  align:'center'},
                                          {name:"AUC_OBJ_DSC",           index:"AUC_OBJ_DSC",            width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},                                     
                                          {name:"SRA_INDV_AMNNO1",       index:"SRA_INDV_AMNNO1",        width:80,  align:'center'},

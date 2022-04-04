@@ -177,7 +177,7 @@
         	                        "경매일자", "원장일련번호", "농가식별번호", "농장관리번호", "최초최저낙찰한도금액", "판매상태구분코드", "송아지응찰단위금액", "비육우응찰단위금액", "번식우응찰단위금액", "원표번호"];        
         var searchResultColModel = [						 
 						            {name:"_STATUS_",             index:"_STATUS_",             width:5,  align:'center'},
-						            {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:30, align:'center'},
+						            {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:30, align:'center',formatter: "integer", align: "right", sorttype: "number"},
 						            {name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:30, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
 						            {name:"FTSNM",                index:"FTSNM",                width:30, align:'center'},
 						            {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:50, align:'center'},
