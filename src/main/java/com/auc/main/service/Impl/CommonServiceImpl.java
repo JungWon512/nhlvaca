@@ -139,7 +139,7 @@ public class CommonServiceImpl implements CommonService{
 									}
 									// 12개월이상수수료 / 친자검사여부판매수수료 2017.06.20
 									if("011".equals(MhFee.get("na_fee_c"))) {
-										if("1".equals(MhSogCow.get("mt12_ovr_yn"))) {
+										if("1".equals(MhSogCow.get("mt12_ovr_yn"))) { 
 											sra_tr_fee = sra_tr_fee + mt12OvrFee; // 판매수수료 + 12개월이상 수수료 (5000원)
 										}else if("1".equals(MhSogCow.get("dna_yn_chk"))) {
 											sra_tr_fee = sra_tr_fee + ((BigDecimal)emvlist.get(0).get("SELFEE_CHK_DNA_YN_FEE")).longValue(); // 판매수수료 + 친자검사여부 판매수수료(5000원)
@@ -206,7 +206,7 @@ public class CommonServiceImpl implements CommonService{
 								}else if("011".equals(MhFee.get("na_fee_c")) && "1".equals(MhSogCow.get("selfee_chk_yn"))) {
 									sra_tr_fee =  selfeeChkYnFee;  // 판매수수료 수기등록
 								}
-							}							
+							}
 						}
 					}
 				}else {
@@ -241,7 +241,7 @@ public class CommonServiceImpl implements CommonService{
 								if(MhSogCow.get("na_bzplc").equals("8808990657189") || MhSogCow.get("na_bzplc").equals("8808990656533") // 고창부안: 8808990657189 , 장흥    : 8808990656533
 								 ||MhSogCow.get("na_bzplc").equals("8808990656267") || MhSogCow.get("na_bzplc").equals("8808990661315") // 보성    : 8808990656267 , 화순    : 8808990661315
 								 ||MhSogCow.get("na_bzplc").equals("8808990656717") || MhSogCow.get("na_bzplc").equals("8808990658896") // 곡성    : 8808990656717 , 순천광양: 8808990658896
-								 ||MhSogCow.get("na_bzplc").equals("8808990643625") || MhSogCow.get("na_bzplc").equals("8808990817675"))// 영광    : 8808990811710 , 장성    : 8808990817675 
+								 ||MhSogCow.get("na_bzplc").equals("8808990811710") || MhSogCow.get("na_bzplc").equals("8808990817675"))// 영광    : 8808990811710 , 장성    : 8808990817675 
 								{ 
 									if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "1".equals(MhSogCow.get("prny_yn"))) {// 임신감정료 / 진행상태:낙찰 / 임신여부:여
 										v_upr = 0;
