@@ -61,10 +61,6 @@ public class CommonController {
 	@Value("${log.file.path}")
     private String logFilePath;
 	
-
-	@Value("${back.file.path}")
-    private String backFilePath;
-	
 	@SuppressWarnings("unchecked")
 	@ResponseBody
 	@RequestMapping(value="/excelDownload", method=RequestMethod.POST)
