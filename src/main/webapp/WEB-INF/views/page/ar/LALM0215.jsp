@@ -49,6 +49,7 @@
     var mv_vhc_shrt_c          = "";
     var mv_vhc_drv_caffnm      = "";
     var mv_Today               = "";
+    var mv_sgno_prc_dsc			= "";
     var setRowStatus           = "";
  	// init시 저장 후 init인지 아닌지 체크
     var mv_InitBoolean         = true;
@@ -660,20 +661,20 @@
              		// Kg별
              		if(parent.envList[0]["NBFCT_AUC_UPR_DSC"] == "1") {
              			
-             			var v_sra_sbid_am = parseInt($("#sra_sbid_upr").val()) * parseInt($("#cow_sog_wt").val()) * parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]);
-             			
+             			var v_sra_sbid_am = parseInt(fn_delComma($("#sra_sbid_upr").val())) * parseInt(fn_delComma($("#cow_sog_wt").val())) * parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]);
+
              			// 절사
-             			if(parent.envList[0]["MV_SQNO_PRC_DSC"] == "1") {
+             			if(mv_sgno_prc_dsc == "1") {
              				v_sra_sbid_am = Math.floor(parseInt(v_sra_sbid_am) / parseInt(mv_cut_am)) * parseInt(mv_cut_am);
              			// 절상
-             			} else if(parent.envList[0]["MV_SQNO_PRC_DSC"] == "1") {
+             			} else if(mv_sgno_prc_dsc == "2") {
              				v_sra_sbid_am = Math.ceil(parseInt(v_sra_sbid_am) / parseInt(mv_cut_am)) * parseInt(mv_cut_am);
              			// 사사오입
              			} else {
              				v_sra_sbid_am = Math.round(parseInt(v_sra_sbid_am) / parseInt(mv_cut_am)) * parseInt(mv_cut_am);
              			}
-             			
-             			$("#sra_sbid_am").val(fn_toComma(v_sra_sbid_am));
+             			if(isNaN(parseInt(v_sra_sbid_am))) $("#sra_sbid_am").val(0);
+             			else $("#sra_sbid_am").val(fn_toComma(v_sra_sbid_am));
              		}
              	}
 			}
@@ -951,20 +952,21 @@
             		// Kg별
             		if(parent.envList[0]["NBFCT_AUC_UPR_DSC"] == "1") {
             			
-            			var v_sra_sbid_am = parseInt($("#sra_sbid_upr").val()) * parseInt($("#cow_sog_wt").val()) * parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]);
+            			var v_sra_sbid_am = parseInt(fn_delComma($("#sra_sbid_upr").val())) * parseInt(fn_delComma($("#cow_sog_wt").val())) * parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]);
             			
             			// 절사
-            			if(parent.envList[0]["MV_SQNO_PRC_DSC"] == "1") {
+            			if(mv_sgno_prc_dsc == "1") {
             				v_sra_sbid_am = Math.floor(parseInt(v_sra_sbid_am) / parseInt(mv_cut_am)) * parseInt(mv_cut_am);
             			// 절상
-            			} else if(parent.envList[0]["MV_SQNO_PRC_DSC"] == "1") {
+            			} else if(mv_sgno_prc_dsc == "2") {
             				v_sra_sbid_am = Math.ceil(parseInt(v_sra_sbid_am) / parseInt(mv_cut_am)) * parseInt(mv_cut_am);
             			// 사사오입
             			} else {
             				v_sra_sbid_am = Math.round(parseInt(v_sra_sbid_am) / parseInt(mv_cut_am)) * parseInt(mv_cut_am);
             			}
             			
-            			$("#sra_sbid_am").val(fn_toComma(v_sra_sbid_am));
+             			if(isNaN(parseInt(v_sra_sbid_am))) $("#sra_sbid_am").val(0);
+             			else $("#sra_sbid_am").val(fn_toComma(v_sra_sbid_am));
             		// 두별
             		} else {
             			$("#sra_sbid_am").val(fn_toComma(parseInt($("#sra_sbid_upr").val()) * parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"])));
@@ -3226,6 +3228,7 @@
          if(results.status == RETURN_SUCCESS) {
          	result = setDecrypt(results);
          	$("#ddl_qcn").val(result[0]["QCN"]);
+         	mv_sgno_prc_dsc = result[0]["SGNO_PRC_DSC"];
          	fn_CreateAucQcnGrid(result);
          } else {
         	$("#ddl_qcn").val("");
