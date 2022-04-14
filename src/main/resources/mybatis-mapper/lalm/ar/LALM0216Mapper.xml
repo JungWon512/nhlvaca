@@ -718,7 +718,8 @@
                 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) + 1 END
            END  AS MTCN      /* 월령  */  
          , TRUNC(TO_DATE(A.AUC_DT,'YYYYMMDD') - TO_DATE(D.BIRTH,'YYYYMMDD')) AS MTCN1      /* 총일수  */   
-         , round(mod(mod(months_between(A.AUC_DT, D.BIRTH)/12 ,1)*12,1)*(365/12),0) AS MTCN4      /* 일수  */              
+         , round(mod(mod(months_between(A.AUC_DT, D.BIRTH)/12 ,1)*12,1)*(365/12),0) AS MTCN4      /* 일수  */       
+         , TRUNC(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)) +1 AS CALF_MTCN /* 송아지월령 */        
     from TB_LA_IS_MH_SOG_COW     a
     left outer join TB_LA_IS_MM_VHC c
          on  a.na_bzplc            = c.na_bzplc
