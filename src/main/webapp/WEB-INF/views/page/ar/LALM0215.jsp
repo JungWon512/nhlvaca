@@ -556,7 +556,15 @@
 	    		$("#emp_sra_indv_amnno").val("410" + $("#sra_indv_amnno").val());
 	    		
 	    		if(!fn_isNull($("#lows_sbid_lmt_am").val())) {
-	    			$("#lows_sbid_lmt_am_ex").val(parseInt(fn_delComma($("#lows_sbid_lmt_am").val())) / parseInt(parent.envList[0]["CALF_AUC_ATDR_UNT_AM"]));
+	    			if ($("#auc_obj_dsc").val() == "1") {
+	    				$("#lows_sbid_lmt_am_ex").val(parseInt(fn_delComma($("#lows_sbid_lmt_am").val())) / parseInt(parent.envList[0]["CALF_AUC_ATDR_UNT_AM"]));
+	    			}
+	    			else if ($("#auc_obj_dsc").val() == "2") {
+	    				$("#lows_sbid_lmt_am_ex").val(parseInt(fn_delComma($("#lows_sbid_lmt_am").val())) / parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]));
+	    			}
+	    			else if ($("#auc_obj_dsc").val() == "3") {
+	    				$("#lows_sbid_lmt_am_ex").val(parseInt(fn_delComma($("#lows_sbid_lmt_am").val())) / parseInt(parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"]));
+	    			}
 	    		}
 	    		
 	    		$("#btn_Save").attr("disabled", false);
@@ -1078,7 +1086,6 @@
     	
     	 if(mv_InitBoolean) {
     		 fn_Reset();
-    		 
     	 } else {
     		 MessagePopup('YESNO',"초기화 하시겠습니까?",function(res){
    	 			if(res){
@@ -1205,16 +1212,16 @@
 		var v_sra_sbid_upr = 0;
 		//송아지
 		if($("#auc_obj_dsc").val() == "1") {
-			v_sra_sbid_upr = parseInt($("#sra_sbid_upr").val()) * parseInt(parent.envList[0]["CALF_AUC_ATDR_UNT_AM"]);
+			v_sra_sbid_upr = parseInt(fn_delComma($("#sra_sbid_upr").val())) * parseInt(parent.envList[0]["CALF_AUC_ATDR_UNT_AM"]);
 		// 비육우
 		} else if($("#auc_obj_dsc").val() == "2") {
-			v_sra_sbid_upr = parseInt($("#sra_sbid_upr").val()) * parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]);
+			v_sra_sbid_upr = parseInt(fn_delComma($("#sra_sbid_upr").val())) * parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]);
 		// 번식우
 		} else {
-			v_sra_sbid_upr = parseInt($("#sra_sbid_upr").val()) * parseInt(parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"]);
+			v_sra_sbid_upr = parseInt(fn_delComma($("#sra_sbid_upr").val())) * parseInt(parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"]);
 		}
 		
-		if(parseInt(v_sra_sbid_upr) > parseInt($("#base_lmt_am").val())) {
+		if(parseInt(v_sra_sbid_upr) > parseInt(fn_delComma($("#base_lmt_am").val()))) {
 			MessagePopup('OK','낙찰단가가 최고 응찰 한도금액을 초과 하였습니다.(최고응찰한도금액:'+$("#base_lmt_am").val()+'원');
 			$("#sra_sbid_upr").focus();
 			return;
@@ -1224,19 +1231,19 @@
 		if(!maxLengthCheck("sra_pd_rgnnm", "생산지역", 50)){
 			return;
 		}
-		
+
 		// 낙찰인경우 낙찰자, 낙찰금액 필수
 		if($("#sel_sts_dsc").val() == "22") {
 			if(fn_isNull($("#trmn_amnno").val())) {
 				MessagePopup('OK','중도매인을 입력하세요.');
 				return;
 			}
-			
+
 			if(fn_isNull($("#sra_mwmnnm").val())) {
 				MessagePopup('OK','중도매인을 입력하세요.');
 				return;
 			}
-			if($("#sra_sbid_upr").val() == "0") {
+			if($("#sra_sbid_upr").val() == "0" || $("#sra_sbid_upr").val() == "") {
 				MessagePopup('OK','낙찰단가를 입력하세요.');
 				return;
 			}
@@ -1247,16 +1254,18 @@
 					return;
 				}
 			}
-			
-			if(parseInt($("#sra_sbid_upr").val()) < parseInt($("#lows_sbid_lmt_am_ex").val())) {
+
+			if(parseInt(fn_delComma($("#sra_sbid_upr").val())) < parseInt(fn_delComma($("#lows_sbid_lmt_am_ex").val()))) {
 				MessagePopup('OK','낙찰단가가 응찰하한가 보다 작습니다.');
 				return;
 			}
+
 			if($("#lows_sbid_lmt_am_ex").val() == "0") {
 				MessagePopup('OK','응찰하한가가 없습니다.');
 				return;
 			}
-		} else {
+		}
+		else {
 			if(!fn_isNull($("#trmn_amnno").val())) {
 				MessagePopup('OK','낙찰이 아닌경우 중도매인을 입력할수 없습니다.');
 				$("#trmn_amnno").val("");
@@ -2517,8 +2526,13 @@
 		$("#chk_continue").show();
 		
 		fn_InitSet();
-		
-		$("#sra_indv_amnno").focus();
+		console.log($("#chack_on").is(":checked"));
+		if ($("#chack_on").is(":checked")) {
+			$("#auc_prg_sq").focus();
+		}
+		else {
+			$("#sra_indv_amnno").focus();
+		}
  	}
     
  	//**************************************
@@ -4737,7 +4751,7 @@
 		                                <td>
 		                                    <input type="text" id="auc_prg_sq" style="width:100px">
 		                                    <input type="hidden" id="hd_auc_prg_sq" style="width:100px">
-		                                    <input type="checkbox" id="chack_on" name="chack_on" value="0">                                                        
+		                                    <input type="checkbox" id="chack_on" name="chack_on" class="no_chg" value="0" />                                                        
 		                                </td>
 		                                <td>
 		                                	<button class="tb_btn" id="pb_auc_prg_sq" value="경매번호조회">경매번호조회</button>
@@ -4835,8 +4849,8 @@
 		                            	</td>
 		                            	<th scope="row"><span>자가운송여부</span></th>
 		                            	<td colspan=3>
-		                            		<input type="checkbox" id="trpcs_py_yn" name="trpcs_py_yn" value="0">
-                                    		<label id="trpcs_py_yn_text" for="trpcs_py_yn"> 부</label>
+		                            		<input type="checkbox" id="trpcs_py_yn" class="checked" name="trpcs_py_yn" value="1" checked="checked" />
+                                    		<label id="trpcs_py_yn_text" for="trpcs_py_yn"> 여</label>
 		                            	</td>
 		                            	<th scope="row"><span>거치대번호</span></th>
 		                                <td colspan=2>

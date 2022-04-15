@@ -501,16 +501,22 @@ function ReportPopup(p_reportName,p_titleObj, p_grd, p_type){
 // result   : N/A
 //**************************************
 function fn_InitFrm(p_FrmId){
-     
     var initFrm   = $("#" + p_FrmId).find("input,select,textarea,checkbox");              
     var initItem  = "";
     var itemNames = "";
     
-    for(var i=0; i<initFrm.length; i++){            
+    for(var i=0; i<initFrm.length; i++){
         initItem = $(initFrm[i]).prop('tagName');                               
         if(initItem == "INPUT" || initItem == "TEXTAREA"){
             if($(initFrm[i]).attr("type") == "checkbox"){
-                $(initFrm[i]).prop("checked", false);
+            	if ($(initFrm[i]).hasClass("checked")) {
+	                $(initFrm[i]).prop("checked", true);
+            	}
+            	else {
+            		if (!$(initFrm[i]).hasClass("no_chg")) {
+		                $(initFrm[i]).prop("checked", false);
+            		}
+            	}
             }else if($(initFrm[i]).attr("type") == "radio"){
                 itemNames = "";
                 itemNames = $(initFrm[i]).attr("name");
@@ -784,8 +790,12 @@ function fn_toComma(num){
 //* result     : 123123123
 //***************************************
 function fn_delComma(num){
-	
-	return num.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
+	if (num != undefined) {
+		return num.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
+	}
+	else {
+		return "";
+	}
 }
 
 //***************************************

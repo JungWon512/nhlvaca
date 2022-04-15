@@ -192,11 +192,14 @@ var isFrmOrgData = null;
                 result = setDecrypt(results);
             }
             
-            if(result == null){
-            	;
-            //농가가 있으면
-            }else{
+            if(result != null){
             	$("#sra_fhs_id_no").val(result[0].FHS_ID_NO);
+            }
+            else {
+               	if ($("#sra_fhs_id_no").val().charAt(0) != "T" && $("#sra_fhs_id_no").val().charAt(0) != "N") {
+               		MessagePopup('OK','농가 식별 번호를 확인하세요<br/>(T 또는 N으로 시작해야합니다.)');
+                    return;
+               	}
             }
             
             MessagePopup('YESNO',"저장하시겠습니까?",function(res){                           

@@ -523,12 +523,11 @@
             , A.AUC_DT
 	        , A.LVST_AUC_PTC_MN_NO
 	        , COUNT(A.SRA_INDV_AMNNO)  AS SRA_AUC_SBID_HDCN   /* 축산경매낙찰두수    */
-	        , SUM(A.SRA_SBID_AM)       AS SRA_SBID_AM         /* 축산낙찰금액        */
-	        , SUM(C.SRA_SEL_FEE)       AS SRA_SEL_FEE		    /* 축산판매수수료      */
-	        , SUM(C.SRA_SHNM)          AS SRA_SHNM            /* 축산자조금          */
-	        , SUM(C.SRA_ETC_CST)       AS SRA_ETC_CST         /* 축산기타비용        */
-	        , SUM(C.SRA_SEL_FEE) + SUM(C.SRA_SHNM)
-	                             + SUM(C.SRA_ETC_CST)       AS TOT_FEE
+	        , SUM(NVL(A.SRA_SBID_AM, 0))       AS SRA_SBID_AM         /* 축산낙찰금액        */
+	        , SUM(NVL(C.SRA_SEL_FEE, 0))       AS SRA_SEL_FEE		    /* 축산판매수수료      */
+	        , SUM(NVL(C.SRA_SHNM, 0))          AS SRA_SHNM            /* 축산자조금          */
+	        , SUM(NVL(C.SRA_ETC_CST, 0))       AS SRA_ETC_CST         /* 축산기타비용        */
+	        , SUM(NVL(C.SRA_SEL_FEE, 0)) + SUM(NVL(C.SRA_SHNM, 0)) + SUM(NVL(C.SRA_ETC_CST, 0))       AS TOT_FEE
 	        , E.AUC_ENTR_GRN_AM
 	        , NVL(D.CSH_RV_AM, 0)   AS CSH_RV_AM           /* 현금입금금액        */
 	        , NVL(D.CK_RV_AM,  0)   AS CK_RV_AM            /* 수표입금금액        */
@@ -554,8 +553,8 @@
 	                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),8,4)                                             
 	                                              END  AS CUS_MPNO /* 고객휴대폰          */
 	
-	        , (SUM(C.SRA_SEL_FEE) + SUM(C.SRA_SHNM) + SUM(C.SRA_ETC_CST)) + SUM(A.SRA_SBID_AM) AS TOT_AM
-	        , ((SUM(C.SRA_SEL_FEE) + SUM(C.SRA_SHNM) + SUM(C.SRA_ETC_CST)) + SUM(A.SRA_SBID_AM)) - NVL(D.SRA_RV_AM, 0) AS NPAY_AM
+	        , (SUM(NVL(C.SRA_SEL_FEE, 0)) + SUM(NVL(C.SRA_SHNM, 0)) + SUM(NVL(C.SRA_ETC_CST, 0)) + SUM(NVL(A.SRA_SBID_AM, 0))) AS TOT_AM
+	        , ((SUM(NVL(C.SRA_SEL_FEE, 0)) + SUM(NVL(C.SRA_SHNM, 0)) + SUM(NVL(C.SRA_ETC_CST, 0))) + SUM(NVL(A.SRA_SBID_AM, 0))) - NVL(D.SRA_RV_AM, 0) AS NPAY_AM
 	
 	    FROM TB_LA_IS_MH_SOG_COW  A
 	
@@ -723,7 +722,8 @@
                 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 END AS MTCN      /* 월령 의령=8808990656199  원주=8808990656434 */
                 
 	        , CASE WHEN A.SEL_STS_DSC = '22' THEN A.SRA_SBID_UPR ELSE 0 END AS SRA_SBID_UPR
-	        , CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN
+	        , CASE WHEN #{ss_security} = '1' THEN NVL(C.SRA_FARM_ACNO, C.NEW_SRA_FARM_ACNO)
+	               WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN
 	                    CASE WHEN (C.SRA_FARM_ACNO = '' OR C.SRA_FARM_ACNO IS NULL) THEN
 	                         CASE WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 12 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,8) || '****'
 	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 13 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,9) || '****'
@@ -2113,7 +2113,7 @@
                      FROM TB_LA_IS_MM_INDV
 			]]>
 		    	<if test='indv_sex_c != null and indv_sex_c != ""'>
-		     			   AND INDV_SEX_C = #{indv_sex_c}
+		     		 WHERE INDV_SEX_C = #{indv_sex_c}
 		    	</if>
 			<![CDATA[
                     ) BB
