@@ -1448,7 +1448,8 @@ var na_bzplc = App_na_bzplc;
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["비고","임신개월수","수정kpn번호","운송비지급여부","큰소구분","축산낙찰금액","참가번호","낙찰자명","운송기사명","경매<br>번호", "경매대상", "주소", "성명"
+        var searchResultColNames = ["비고","임신개월수","수정kpn번호","운송비지급여부","큰소구분","축산낙찰금액","참가번호","낙찰자명","운송기사명","응찰하한가","하한가 단위 "
+        						  ,"경매<br>번호", "경매대상", "주소", "성명"
                                   , "전화번호", "귀표번호", "생년월일", "산차", "어미구분", "계대"
                                   , "제각여부", "KPN번호","성별","중량","응찰하한가","월령","친자검사여부"
                                   ,"친자검사결과","송아지구분","난소적출여부","송아지축산개체관리번호","송아지개체성별코드","송아지출하중량","송아지생년월일","등록구분코드"];        
@@ -1463,6 +1464,9 @@ var na_bzplc = App_na_bzplc;
                                      {name:"LVST_AUC_PTC_MN_NO",        index:"LVST_AUC_PTC_MN_NO",       width:55, align:'center'  ,hidden:true},
                                      {name:"SRA_MWMNNM",       	        index:"SRA_MWMNNM",               width:55, align:'center'  ,hidden:true},
                                      {name:"VHC_DRV_CAFFNM",            index:"VHC_DRV_CAFFNM",           width:55, align:'center'  ,hidden:true},
+                                     {name:"LOWS_SBID_LMT_AM",          index:"LOWS_SBID_LMT_AM",         width:55, align:'center'  ,hidden:true},
+                                     {name:"LOWS_SBID_LMT_UNIT",          index:"LOWS_SBID_LMT_UNIT",         width:55, align:'center'  ,hidden:true},
+                                     
                                      {name:"AUC_PRG_SQ",                index:"AUC_PRG_SQ",               width:50, align:'center' },
                                      {name:"AUC_OBJ_DSC",               index:"AUC_OBJ_DSC",              width:40, align:'center'  , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
                                      {name:"DONG",                      index:"DONG",                     width:300, align:'left'},
@@ -1477,7 +1481,7 @@ var na_bzplc = App_na_bzplc;
                                      {name:"KPN_NO",                    index:"KPN_NO",                   width:70, align:'center' },
                                      {name:"INDV_SEX_C",                index:"INDV_SEX_C",               width:60, align:'center'  , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
                                      {name:"COW_SOG_WT",                index:"COW_SOG_WT",               width:70,  align:'right' , formatter:'interger', formatoptions:{decimalPlaces:2,thousandsSeparator:','}},
-                                     {name:"LOWS_SBID_LMT_AM",          index:"LOWS_SBID_LMT_AM",         width:85,align:'right'  ,  formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"LOWS_SBID_LMT_UPR",         index:"LOWS_SBID_LMT_UPR",        width:85,align:'right'  ,  formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"MTCN",                      index:"MTCN",                     width:40, align:'right'   , formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"DNA_YN_CHK",                index:"DNA_YN_CHK",               width:80, align:'center'  , edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}}, 
                                      {name:"DNA_YN",                    index:"DNA_YN",                   width:60, align:'center'  , edittype:"select", formatter : "select", editoptions:{value:GRID_DNA_YN_DATA}},
