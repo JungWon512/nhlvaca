@@ -1319,9 +1319,6 @@ var mCnt = 0;
 				
 			} else{
 				ReportPopup('LALM0412R0_1_2',p_param, p_grid, 'T');//원본
-				
-				
-				
 			}
 
 		// 2형식
@@ -1360,9 +1357,9 @@ var mCnt = 0;
     			} else if (na_bzplc == '8808990657202') {
     				ReportPopup('LALM0412R0_5_5',p_param, p_grid, 'V');
     				
-    			} else {
-    			
-    				
+    			} else if(na_bzplc == '8808990661315') {
+					ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'T');//원본	
+				} else {	
     				ReportPopup('LALM0412R0_5_3',p_param, p_grid, 'V');
     				
 
