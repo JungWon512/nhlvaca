@@ -148,8 +148,8 @@
 	    SELECT
 	          NBFCT_AUC_UPR_DSC           /* 비육우단가기준              */
 	        , PHN_AUC_YN                  /* 음성경매여부                */
-	        , TD_RC_CST                   /* 당일접수비용                */
-	        , MT12_OVR_FEE                /* 12개월이상수수료            */
+	        , NVL(TD_RC_CST, 0) AS TD_RC_CST          /* 당일접수비용                */
+	        , NVL(MT12_OVR_FEE, 0) AS MT12_OVR_FEE    /* 12개월이상수수료            */
 	        , KPN_CIP                     /* KPN자리수                   */
 	        , EBBO_IP_ADDR1               /* 멀티A                       */
 	        , EBBO_PORT_NO1               /* 멀티A포트                   */
@@ -182,10 +182,10 @@
 	        , PDP_SBID_LMT_AM             /* PDP자릿수-응찰하한가        */
 	        , PDP_SBID_UPR                /* PDP자릿수-낙찰가            */
 	        , PDP_MWMNNM                  /* PDP자릿수-낙찰자            */
-	        , SRA_FED_SPY_YN_FEE          /* 사료미사용추가수수료        */
-	        , BRKR_NAME_HOST              /* 수의사병원명                */
-	        , FEE_CHK_DNA_YN_FEE          /* 친자확인출하수수료          */
-	        , SELFEE_CHK_DNA_YN_FEE       /* 친자확인판매수수료          */
+	        , NVL(SRA_FED_SPY_YN_FEE, 0) AS SRA_FED_SPY_YN_FEE          /* 사료미사용추가수수료        */
+	        , BRKR_NAME_HOST                                            /* 수의사병원명                */
+	        , NVL(FEE_CHK_DNA_YN_FEE, 0) AS FEE_CHK_DNA_YN_FEE          /* 친자확인출하수수료          */
+	        , NVL(SELFEE_CHK_DNA_YN_FEE, 0) AS SELFEE_CHK_DNA_YN_FEE    /* 친자확인판매수수료          */
 	    FROM TB_LA_IS_MM_ENV_EST
 	   WHERE NA_BZPLC = #{ss_na_bzplc}
     </select>

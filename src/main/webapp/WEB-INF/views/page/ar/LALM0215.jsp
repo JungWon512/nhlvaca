@@ -1348,6 +1348,9 @@
 										
 										// 조합사료미사용수수료 : 출하수수료 = 출하수수료 + 사료미사용수수료
 										if(tmpResult[i]["NA_FEE_C"] == '010' && $("#sra_fed_spy_yn").val() == '0') {
+											if (isNaN(parseInt(parent.envList[0]["SRA_FED_SPY_YN_FEE"]))) {
+												parent.envList[0]["SRA_FED_SPY_YN_FEE"] = '0';
+											}
 											// 출하수수료 + 사료미사용수수료
 											tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["SRA_FED_SPY_YN_FEE"]); 
 											
