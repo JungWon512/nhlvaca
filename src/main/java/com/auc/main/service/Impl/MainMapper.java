@@ -51,4 +51,10 @@ public interface MainMapper {
 	
 	Map<String, Object> selChkPwTibero(String usrid, String user_pw);
 
+	List<Map<String, Object>> signInList(Map<String, Object> map);
+
+	int selChkPw(String usrid, String user_pw, String na_bzplc);
+
+	Map<String, Object> selChkPwTibero(String usrid, String user_pw, String na_bzplc);
+
 }

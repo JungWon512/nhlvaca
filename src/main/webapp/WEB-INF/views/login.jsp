@@ -94,12 +94,14 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
 	}
 
     //인증토큰 요청
-    function loginToken(frmStr, sendUrl, methodType){
+    function loginToken(frmStr, sendUrl, methodType, naBzplc){
     	
     	var rsa = new RSAKey();    	
     	rsa.setPublic($("#RSAModulus").val(), $("#RSAExponent").val());
     	var user_id = rsa.encrypt($("#user_id").val());
     	var user_pw = rsa.encrypt($("#user_pw").val());
+    	var na_bzplc = "";
+    	if(naBzplc) na_bzplc = rsa.encrypt(naBzplc);
         var result;          
         $.ajax({
             url: sendUrl,
@@ -111,6 +113,7 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
             data:{
                    user_id : user_id,
                    user_pw : user_pw,
+                   na_bzplc : na_bzplc,
                    RSAKey  : $("#RSAKey").val(),
                    rsa_mod : $("#RSAModulus").val(),
                    rsa_exp : $("#RSAExponent").val()
@@ -159,6 +162,37 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
     	
     	return result;
     }
+
+    //인증토큰 요청
+    function preLoginProc(sendUrl, methodType){
+    	
+    	var user_id = $("#user_id").val();
+    	var user_pw = $("#user_pw").val();
+    	
+        var result;          
+        $.ajax({
+            url: sendUrl,
+            type: methodType,
+            dataType:'json',
+            header:{
+                "Content-Type":"application/json"},
+            async: false,
+            data:{
+                   user_id : user_id,
+                   user_pw : user_pw
+            },
+            success:function(data) {
+            	result = data;
+            	
+            },
+            error:function(request){
+            	var errMsg = JSON.parse(request.responseText);
+            	MessagePopup("OK",errMsg.message);
+            }
+        });
+        
+        return result;
+    }
     
     //로그인 요청
     function getLogin(sendFrm){    	
@@ -173,11 +207,51 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
             $("#err_pw").show();
             return;
         }        
+        
+        preResults = preLoginProc("/preLoginProc", "POST");       
+        if(preResults != null){
+            var preResult = setDecrypt(preResults);
+            console.log(preResult);
+            if(preResult && preResult.length > 1){
+	    		var comboList = new Array();
+	    		preResult.forEach(obj => {
+	    			var tmp = new Object();
+	    			tmp.NA_BZPLC  = obj.NA_BZPLC;
+	    			tmp.NA_BZPLNM = obj.NA_BZPLNM;
+	    			comboList.push(tmp);
+	    		});
+	    	    var chg_na_bzplc = '<select id="chg_na_bzplc_select" onchange="$(\'#sel_na_bzplc\').val(this.value);">';
+	
+	    	    $.each(comboList, function(i){
+	    	        var v_simp_nm = ('['+comboList[i].NA_BZPLC + '] ' + comboList[i].NA_BZPLNM);
+	    	        chg_na_bzplc = chg_na_bzplc + '<option value="' + comboList[i].NA_BZPLC + (comboList[i].NA_BZPLC == App_na_bzplc? '" selected':'"') + '>' + v_simp_nm + '</option>';
+	    	    });
+	    	    chg_na_bzplc = chg_na_bzplc + '</select>';
+	            chg_na_bzplc = chg_na_bzplc + '<br>';
+	            chg_na_bzplc = chg_na_bzplc + '<div class="fl_C">';
+	            chg_na_bzplc = chg_na_bzplc + '<input type="button" class="tb_btn" id="btn_log"   value="로그보기">';
+	            chg_na_bzplc = chg_na_bzplc + '<input type="button" class="tb_btn" id="btn_query" value="쿼리분석">';
+	            chg_na_bzplc = chg_na_bzplc + '<div>';
+	    		MessagePopup('YESNO',chg_na_bzplc,function(res){
+	    			if(res){
+				        fnLogin(sendFrm,$('#sel_na_bzplc').val());        
+	    			}
+	    		});
+            	$('#sel_na_bzplc').val(preResult[0].NA_BZPLC);
+            	return;
+            }else if(!preResult || preResult.length < 1){
+            	return;
+            }
+        }
+        
+        fnLogin(sendFrm);        
+    }
+  function fnLogin(sendFrm,na_bzplc){
 
         //인증토큰 요청
         results = getRsaKey();
                 
-        results = loginToken(sendFrm, "/signIn", "POST");       
+        results = loginToken(sendFrm, "/signIn", "POST",na_bzplc);       
         if(results != null){  
         	if(results.token       == null || results.token  == '' || 
                     results.key    == null || results.key    == '' ||
@@ -229,9 +303,9 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
             	window.location.href = "/index";
             }
        	    
-        }        
-    }
-    
+        }
+  }
+  
   //모달레이어팝업
   function MessagePopup(type,msg,callback){
 	  var title = '';
@@ -434,6 +508,7 @@ function offBeforeunload(){
 <body>
 	<!-- login -->
 	<div class="login_wrap">	
+		<input type="hidden" id="sel_na_bzplc" value=""/>
 		<div class="login_box">
 			<div class="inner">
 				<form id="frm_login">

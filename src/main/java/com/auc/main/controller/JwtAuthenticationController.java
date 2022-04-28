@@ -79,6 +79,14 @@ public class JwtAuthenticationController {
     private String key;
 	@Value("${cript.iv}")
     private String iv;
+	
+@RequestMapping(value="/preLoginProc", method=RequestMethod.POST)
+public Map<String, Object> preLoginProc(ResolverMap rMap, HttpServletRequest req, HttpServletResponse resp) throws Exception{
+	
+	Map<String, Object> map = rMap.getMap();
+	Map<String, Object> reMap        = commonFunc.createResultSetListDataPreLogin(userDetailsService.signInList(map));		
+	return reMap;
+}
 		
 	@RequestMapping(value="/signIn", method=RequestMethod.POST)
 	public ResponseEntity<?> signIn(ResolverMap rMap, HttpServletRequest req, HttpServletResponse resp) throws Exception{
@@ -88,6 +96,7 @@ public class JwtAuthenticationController {
 		PrivateKey privateKey = rsaCriptoConfig.StringToPrivateKey(map.get("RSAKey").toString());				
 		map.put("user_id", rsaCriptoConfig.decryptRsa(privateKey, (String)map.get("user_id")));
 		map.put("user_pw", rsaCriptoConfig.decryptRsa(privateKey, (String)map.get("user_pw")));
+		map.put("na_bzplc", rsaCriptoConfig.decryptRsa(privateKey, (String)map.get("na_bzplc")));
 		
 		int result = 0;    	    	    	
     	Map<String, String> loginMap = userDetailsService.signIn(map);
@@ -105,7 +114,7 @@ public class JwtAuthenticationController {
 		
     	//패스워드 일치 확인
     	int chkPw = 0;
-    	chkPw = userDetailsService.selChkPw((String)loginMap.get("USRID"), (String)map.get("user_pw"));
+    	chkPw = userDetailsService.selChkPw((String)loginMap.get("USRID"), (String)map.get("user_pw"), (String)map.get("na_bzplc"));
 
 	
     	if(chkPw > 0) {

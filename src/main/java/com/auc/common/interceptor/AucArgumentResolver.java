@@ -56,7 +56,7 @@ public class AucArgumentResolver implements HandlerMethodArgumentResolver{
 		
 		Iterator<String> iter = webRequest.getParameterNames();		
 		
-		if(!uri.equals("/signIn")) {
+		if(!uri.equals("/signIn") && !uri.equals("/preLoginProc")) {
 			while(iter.hasNext()) {
 				String paraName = iter.next();
 				String paraValue = criptoConfig.decrypt(webRequest.getParameter(paraName));
