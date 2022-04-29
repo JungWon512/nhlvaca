@@ -229,8 +229,6 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
 	    	    chg_na_bzplc = chg_na_bzplc + '</select>';
 	            chg_na_bzplc = chg_na_bzplc + '<br>';
 	            chg_na_bzplc = chg_na_bzplc + '<div class="fl_C">';
-	            chg_na_bzplc = chg_na_bzplc + '<input type="button" class="tb_btn" id="btn_log"   value="로그보기">';
-	            chg_na_bzplc = chg_na_bzplc + '<input type="button" class="tb_btn" id="btn_query" value="쿼리분석">';
 	            chg_na_bzplc = chg_na_bzplc + '<div>';
 	    		MessagePopup('YESNO',chg_na_bzplc,function(res){
 	    			if(res){
