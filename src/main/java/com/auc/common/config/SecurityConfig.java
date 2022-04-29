@@ -73,7 +73,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/").permitAll()
             .antMatchers("/favicon.ico").permitAll()
-            .antMatchers("/preLoginProc").permitAll()
             .antMatchers("/signIn").permitAll()
             .antMatchers("/login").permitAll()
             .antMatchers("/index").permitAll()

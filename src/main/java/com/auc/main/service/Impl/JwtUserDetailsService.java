@@ -1,8 +1,6 @@
 package com.auc.main.service.Impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,26 +78,6 @@ public class JwtUserDetailsService implements UserDetailsService{
 		}
 		else {
 			chkPw = mainMapper.selChkPw(usrid, user_pw);
-		}
-		return chkPw;
-	}
-
-	public List<Map<String, Object>> signInList(Map<String, Object> map) {
-		List<Map<String, Object>> selMap = null;						
-	    selMap = mainMapper.signInList(map);	
-	    if(selMap == null)selMap = new ArrayList<Map<String, Object>>(); 
-	    return selMap;	
-    }
-
-	public int selChkPw(String usrid, String user_pw,String na_bzplc) {
-		System.out.println("serviceName : " + serviceName);
-		int chkPw = 0;
-		if ("tibero".equals(serviceName)) {
-			Map<String, Object> pwMap = mainMapper.selChkPwTibero(usrid, user_pw, na_bzplc);
-			if (passwordEncoder.matches(user_pw, pwMap.getOrDefault("PW", "").toString())) return 1;
-		}
-		else {
-			chkPw = mainMapper.selChkPw(usrid, user_pw,na_bzplc);
 		}
 		return chkPw;
 	}

@@ -67,32 +67,6 @@ public class CommonFunc {
 	}
 	
 	
-	public Map<String, Object> createResultSetListDataPreLogin(List<Map<String, Object>> list) throws Exception{
-		
-		//데이터 암호화해서 result 추가, 상태코드 추가, 조회 count 추가
-		Map<String, Object> reMap = new HashMap<String, Object>();		
-
-		//JSON으로 변경
-		JSONArray jsonArray = convertListMapToJson(list);
-		
-		String encript = criptoConfig.encript(jsonArray.toString());	
-		
-		//조회 결과가 0건일 경우 201 리턴
-		if(list.size() < 1) {
-			reMap.put("status", 201);
-			reMap.put("code", "C001");
-			reMap.put("message", "조회된 내역이 없습니다.");
-		}else {
-			reMap.put("status", 200);
-			reMap.put("code", "C000");
-			reMap.put("message", "");
-		}
-		reMap.put("data", encript);
-		
-		return reMap;	
-	}
-	
-	
 	public Map<String, Object> createResultSetListData(List<Map<String, Object>> list) throws Exception{
 		
 		//토큰 사용자 정보 받아오기

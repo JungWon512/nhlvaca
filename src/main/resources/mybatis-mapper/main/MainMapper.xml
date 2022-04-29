@@ -240,31 +240,6 @@
 		 WHERE A.NA_BZPLC = B.NA_BZPLC(+)		 
            AND A.USRID    = C.USRID(+)
 		   AND A.USRID    = #{user_id}
-		   <if test="na_bzplc != null and na_bzplc != ''">
-			   AND A.NA_BZPLC    = #{na_bzplc}
-		   </if>
-    </select>
-    
-    <select id="signInList" parameterType="hashMap" resultType="hashMap">
-    	SELECT A.NA_BZPLC
-		     , B.NA_BZPLNM
-		     , A.usrid          /* 사용자아이디          */
-		     , A.usrnm          /* 사용자명              */
-		     , A.mpno           /* 사용자휴대번호        */
-		     , A.eno            /* 사용자개인번호        */
-		     , A.strg_dt        /* 사용권한              */
-		     , A.pwerr_nt       /* 패스워드틀린횟수      */
-		     , A.fsrg_dtm       /* 최초등록일시          */
-		     , A.fsrgmn_eno     /* 최초등록자개인번호    */
-		     , A.lschg_dtm      /* 최종변경일시          */
-		     , A.ls_cmeno       /* 최종변경자개인번호    */
-             , NVL(C.GRP_C, '002') AS GRP_C /*권한코드 권한코드 없을시 일반사용자(002)*/
-		  FROM TB_LA_IS_MM_USR A,
-		       TB_LA_IS_MM_WMC B,
-               TB_LA_IS_MM_GRP_USR C
-		 WHERE A.NA_BZPLC = B.NA_BZPLC(+)		 
-           AND A.USRID    = C.USRID(+)
-		   AND A.USRID    = #{user_id}
     </select>
     
     <update id="updPwerr_nt">
@@ -293,18 +268,12 @@
           FROM TB_LA_IS_MM_USR
          WHERE PW    = Damo.ENC_B64('KEY1', #{user_pw})
            AND USRID = #{usrid}
-		   <if test="na_bzplc != null and na_bzplc != ''">
-			   AND NA_BZPLC    = #{na_bzplc}
-		   </if>
     </select>
     
     <select id="selChkPwTibero" resultType="hashMap">
         SELECT PW
           FROM TB_LA_IS_MM_USR
          WHERE USRID = #{usrid}
-		   <if test="na_bzplc != null and na_bzplc != ''">
-			   AND NA_BZPLC    = #{na_bzplc}
-		   </if>
     </select>
     
     
