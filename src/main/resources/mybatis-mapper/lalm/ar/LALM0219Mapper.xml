@@ -79,6 +79,9 @@
 	    WHERE A.NA_BZPLC               =  #{ss_na_bzplc}
 	      AND A.AUC_OBJ_DSC            =  CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
 	      AND A.AUC_DT                 =  #{auc_dt}
+	      <if test="sra_indv_amnno != null and sra_indv_amnno != ''">
+	      	AND A.SRA_INDV_AMNNO LIKE '%' ||  #{sra_indv_amnno} || '%'
+	      </if>
 	      AND (to_number(#{st_auc_no})   =  0 OR A.AUC_PRG_SQ   >=  to_number(#{st_auc_no}))       /* 경매진행순서                */
 	      AND (to_number(#{ed_auc_no})   =  0 OR A.AUC_PRG_SQ   <![CDATA[<]]>=  to_number(#{ed_auc_no}))       /* 경매진행순서                */
 	      AND A.LED_SQNO               =  1

@@ -777,6 +777,12 @@ window.addEventListener("contextmenu",function(event){
                                     	<option value="19">'접수일자 + 수/암 + 생년월일↑</option>
                                     </select>
                                 </td> 
+                                <th scope="row">귀표번호</th>
+                                <td>
+                                    <input type="text" id="sra_indv_amnno" style="text-align:right;">
+                                </td>                                                     
+                            </tr>
+                            <tr>
                                 <th scope="row">경매번호</th>
                                 <td>                                       
                                     <div class="cellBox">
