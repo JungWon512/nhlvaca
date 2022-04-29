@@ -1745,7 +1745,7 @@ var na_bzplc = App_na_bzplc;
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["일수(월령)","H사업장코드","H브랜드","H낙찰가격","H경매일자","H낙찰자","H낙찰가격","H인공수정일","H송아지축산개체관리번호","H송아지개체성별코드","H송아지출하중량","H송아지생년월일","H송아지KPN번호","H송아지월령","H구제역예방접종일","H임신개월수","H브루셀라검사일","H낙찰가"
+        var searchResultColNames = ["일수(월령)","H사업장코드","H브랜드","H낙찰가격","H경매일자","H낙찰자","H낙찰가격","H인공수정일","H송아지축산개체관리번호","H송아지개체성별코드","H송아지출하중량","H송아지생년월일","H송아지KPN번호","H송아지월령","H구제역예방접종일","H임신개월수","H브루셀라검사일","H낙찰가","H하한가","H단가단위"
 
 								   ,"H유전능력 냉도체중","H유전능력 냉도체중 등급","H유전능력 배최장근단면적","H유전능력 배최장근단면적 등급","H등지방두께","H등지방두께 등급","H유전능력 근내지방도","H유전능력 근내지방도 등급"
 								   ,"H유전능력 냉도체중-모개체","H유전능력 냉도체중등급-모개체","H유전능력 배최장근단면적-모개체","H유전능력 배최장근단면적 등급-모개체","H유전능력 등지방두께-모개체","H유전능력 등지방두께 등급-모개체","H유전능력 근내지방도-모개체","H유전능력 근내지방도 등급-모개체"
@@ -1779,6 +1779,8 @@ var na_bzplc = App_na_bzplc;
         							 {name:"PRNY_MTCN",                 index:"PRNY_MTCN",                width:55, align:'center'  ,hidden:true},
         							 {name:"BRCL_ISP_DT",               index:"BRCL_ISP_DT",              width:55, align:'center'  ,hidden:true},
         							 {name:"SRA_INDV_AM",               index:"SRA_INDV_AM",              width:55, align:'center'  ,hidden:true},
+        							 {name:"LOWS_SBID_LMT_UPR",         index:"LOWS_SBID_LMT_UPR",		  width:55, align:'center'  ,hidden:true},
+        							 {name:"LOWS_SBID_LMT_UNIT",        index:"LOWS_SBID_LMT_UNIT", 	  width:55, align:'center'  ,hidden:true},
                                      
         							 {name:"RE_PRODUCT_1",              index:"RE_PRODUCT_1",              width:55, align:'center'  ,hidden:true},
         							 {name:"RE_PRODUCT_1_1",            index:"RE_PRODUCT_1_1",            width:55, align:'center'  ,hidden:true},
