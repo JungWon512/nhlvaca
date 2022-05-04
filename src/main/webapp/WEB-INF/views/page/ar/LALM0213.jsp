@@ -509,7 +509,7 @@
         var searchResultColModel = [						 
         							 {name:"AUC_DT",       			index:"AUC_DT",       		width:50,  align:'center', formatter:'gridDateFormat'},
                                      {name:"AUC_OBJ_DSC",			index:"AUC_OBJ_DSC",		width:50,  align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},                                     
-                                     {name:"LVST_AUC_PTC_MN_NO",	index:"LVST_AUC_PTC_MN_NO",	width:50,  align:'center'},
+                                     {name:"LVST_AUC_PTC_MN_NO",	index:"LVST_AUC_PTC_MN_NO",	width:50,  align:'center', sorttype: "number"},
                                      {name:"TRMN_AMNNO",        	index:"TRMN_AMNNO",        	width:50,  align:'center'},
                                      {name:"SRA_MWMNNM",        	index:"SRA_MWMNNM",        	width:50,  align:'center', hidden:true},
                                      {name:"HD_SRA_MWMNNM",        	index:"HD_SRA_MWMNNM",     	width:50,  align:'center'},
@@ -533,7 +533,7 @@
         $("#mainGrid").jqGrid({
             datatype:    "local",
             data:        data,
-            height:      220,
+            height:      365,
             rowNum:      rowNoValue,
             resizeing:   true,
             autowidth:   true,
