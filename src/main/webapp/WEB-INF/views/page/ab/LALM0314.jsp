@@ -329,7 +329,7 @@
         }
         
         /*                                1        2       3         4         5      6      7      8      9           10        11     12         13        14             15       16       17  */
-        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "PKN", "계대", "산차", "어미소귀표번호", "어미구분", "중량", "응찰하한가", "응찰금액", "예정가 차이금액", "낙찰자", "참가번호"];        
+        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "KPN", "중량", "응찰하한가", "응찰금액", "예정가 차이금액", "낙찰자", "참가번호", "계대", "산차", "어미소귀표번호", "어미구분"];        
         var searchResultColModel = [						 
 						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center', sorttype: "number"},
 						        	{name:"AUC_OBJ_DSC",                     index:"AUC_OBJ_DSC",                     width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
@@ -338,16 +338,16 @@
 						        	{name:"BIRTH",                           index:"BIRTH",                           width:100, align:'center', formatter:'gridDateFormat'},
 						        	{name:"INDV_SEX_C",                      index:"INDV_SEX_C",                      width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
 						        	{name:"KPN_NO",                          index:"KPN_NO",                          width:100, align:'center'},
-						        	{name:"SRA_INDV_PASG_QCN",               index:"SRA_INDV_PASG_QCN",               width:100, align:'center'},
-						        	{name:"MATIME",                          index:"MATIME",                          width:100, align:'center'},
-						        	{name:"MCOW_SRA_INDV_AMNNO",             index:"MCOW_SRA_INDV_AMNNO",             width:150, align:'center'},
-						        	{name:"MCOW_DSC",                        index:"MCOW_DSC",                        width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
 						        	{name:"COW_SOG_WT",                      index:"COW_SOG_WT",                      width:100, align:'center'},
 						        	{name:"LOWS_SBID_LMT_AM",                index:"LOWS_SBID_LMT_AM",                width:100, align:'right' , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
 						        	{name:"ATDR_AM",                         index:"ATDR_AM",                         width:100, align:'right' , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
 						        	{name:"DIF_AM",							 index:"DIF_AM",						  width:100, align:'right' , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
 						        	{name:"SRA_MWMNNM",                      index:"SRA_MWMNNM",                      width:100, align:'center'},
-						        	{name:"LVST_AUC_PTC_MN_NO",				 index:"LVST_AUC_PTC_MN_NO",			  width:100, align:'center'}
+						        	{name:"LVST_AUC_PTC_MN_NO",				 index:"LVST_AUC_PTC_MN_NO",			  width:100, align:'center', sorttype: "number"},
+						        	{name:"SRA_INDV_PASG_QCN",               index:"SRA_INDV_PASG_QCN",               width:100, align:'center'},
+						        	{name:"MATIME",                          index:"MATIME",                          width:100, align:'center'},
+						        	{name:"MCOW_SRA_INDV_AMNNO",             index:"MCOW_SRA_INDV_AMNNO",             width:150, align:'center'},
+						        	{name:"MCOW_DSC",                        index:"MCOW_DSC",                        width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}}
                                     ];
         
         $("#grd_MhSogCow1").jqGrid("GridUnload");
@@ -381,23 +381,23 @@
         }
         
         /*                                1        2       3         4         5      6      7      8      9           10        11     12         13  */
-        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "PKN", "계대", "산차", "어미소귀표번호", "어미구분", "중량", "응찰하안가","H축산낙찰금액","H낙찰자명"];        
+        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "KPN", "중량", "응찰하한가", "계대", "산차", "어미소귀표번호", "어미구분","H축산낙찰금액","H낙찰자명"];        
         var searchResultColModel = [						 
-						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center'},
+						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center', sorttype: "number"},
 						        	{name:"AUC_OBJ_DSC",                     index:"AUC_OBJ_DSC",                     width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
 						        	{name:"FTSNM",                           index:"FTSNM",                           width:100, align:'center'},
 						        	{name:"SRA_INDV_AMNNO",                  index:"SRA_INDV_AMNNO",                  width:100, align:'center'},
 						        	{name:"BIRTH",                           index:"BIRTH",                           width:100, align:'center', formatter:'gridDateFormat'},
 						        	{name:"INDV_SEX_C",                      index:"INDV_SEX_C",                      width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
 						        	{name:"KPN_NO",                          index:"KPN_NO",                          width:100, align:'center'},
+						        	{name:"COW_SOG_WT",                      index:"COW_SOG_WT",                      width:100, align:'center', sorttype: "number"},
+						        	{name:"LOWS_SBID_LMT_AM",                index:"LOWS_SBID_LMT_AM",                width:100, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
 						        	{name:"SRA_INDV_PASG_QCN",               index:"SRA_INDV_PASG_QCN",               width:100, align:'center'},
 						        	{name:"MATIME",                          index:"MATIME",                          width:100, align:'center'},
 						        	{name:"MCOW_SRA_INDV_AMNNO",             index:"MCOW_SRA_INDV_AMNNO",             width:150, align:'center'},
 						        	{name:"MCOW_DSC",                        index:"MCOW_DSC",                        width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
-						        	{name:"COW_SOG_WT",                      index:"COW_SOG_WT",                      width:100, align:'center'},
-						        	{name:"LOWS_SBID_LMT_AM",                index:"LOWS_SBID_LMT_AM",                width:100, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
 						        	{name:"SRA_SBID_AM",                     index:"SRA_SBID_AM",                     width:100, align:'right', hidden:true},
-						        	{name:"SRA_MWMNNM",                      index:"SRA_MWMNNM",                      width:100, align:'right', hidden:true},
+						        	{name:"SRA_MWMNNM",                      index:"SRA_MWMNNM",                      width:100, align:'right', hidden:true}
                                     ];
         
         $("#grd_MhSogCow2").jqGrid("GridUnload");
@@ -430,23 +430,23 @@
         }
       
         /*                                1        2       3         4         5      6      7      8      9     10         11        12           13        14        15*/
-        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "PKN", "계대", "산차", "중량", "응찰하안가", "원표번호", "최고가입찰금액", "경매일자", "응찰자수"];        
+        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "중량", "최고가입찰금액", "응찰자수", "KPN", "계대", "산차", "응찰하한가", "원표번호", "경매일자"];        
         var searchResultColModel = [						 
-						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center'},
+						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center', sorttype: "number"},
 						        	{name:"AUC_OBJ_DSC",                     index:"AUC_OBJ_DSC",                     width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
 						        	{name:"FTSNM",                           index:"FTSNM",                           width:100, align:'center'},
 						        	{name:"SRA_INDV_AMNNO",                  index:"SRA_INDV_AMNNO",                  width:100, align:'center'},
 						        	{name:"BIRTH",                           index:"BIRTH",                           width:100, align:'center', formatter:'gridDateFormat'},
 						        	{name:"INDV_SEX_C",                      index:"INDV_SEX_C",                      width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
+						        	{name:"COW_SOG_WT",                      index:"COW_SOG_WT",                      width:100, align:'center', sorttype: "number"},
+						        	{name:"LOWS_SBID_LMT_AM",                index:"LOWS_SBID_LMT_AM",                width:100, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+						        	{name:"ATDR_CNT",                        index:"ATDR_CNT",                        width:100, align:'center', sorttype: "number"},
 						        	{name:"KPN_NO",                          index:"KPN_NO",                          width:100, align:'center'},
 						        	{name:"SRA_INDV_PASG_QCN",               index:"SRA_INDV_PASG_QCN",               width:100, align:'center'},
 						        	{name:"MATIME",                          index:"MATIME",                          width:100, align:'center'},
-						        	{name:"COW_SOG_WT",                      index:"COW_SOG_WT",                      width:100, align:'center'},
-						        	{name:"LOWS_SBID_LMT_AM",                index:"LOWS_SBID_LMT_AM",                width:100, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
 						        	{name:"OSLP_NO",     					 index:"OSLP_NO",      					  width:100, align:'center', hidden:true},
 						        	{name:"ATDR_AM",     					 index:"ATDR_AM",      					  width:100, align:'center', hidden:true},
-						        	{name:"AUC_DT",     					 index:"AUC_DT",      					  width:100, align:'center', hidden:true},
-						        	{name:"ATDR_CNT",                        index:"ATDR_CNT",                        width:100, align:'center'}
+						        	{name:"AUC_DT",     					 index:"AUC_DT",      					  width:100, align:'center', hidden:true}
                                     ];
         
         $("#grd_MhSogCow3").jqGrid("GridUnload");
@@ -493,8 +493,8 @@
         var searchResultColModel = [						 
 						        	{name:"TRMN_AMNNO",               index:"TRMN_AMNNO",               width:100, align:'center'},
 						        	{name:"SRA_MWMNNM",               index:"SRA_MWMNNM",               width:100, align:'center'},
-						        	{name:"LVST_AUC_PTC_MN_NO",       index:"LVST_AUC_PTC_MN_NO",       width:100, align:'center'},
-						        	{name:"ATDR_AM",                  index:"ATDR_AM",                  width:100, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+						        	{name:"LVST_AUC_PTC_MN_NO",       index:"LVST_AUC_PTC_MN_NO",       width:100, align:'center', sorttype: "number"},
+						        	{name:"ATDR_AM",                  index:"ATDR_AM",                  width:100, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
 						        	{name:"ATDR_DTM",                 index:"ATDR_DTM",                 width:100, align:'center'}
                                     ];
         
@@ -528,26 +528,26 @@
         
         */
         /*                                1        2       3         4         5      6      7      8      9           10        11     12         13        14        15             16      17        18  */
-        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "PKN", "계대", "산차", "어미소귀표번호", "어미구분", "중량", "응찰하안가", "응찰금액", "낙찰금액", "예정가 차이금액", "낙찰자", "참가번호"];        
+        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "KPN", "중량", "응찰하한가", "응찰금액", "낙찰금액", "예정가 차이금액", "낙찰자", "참가번호", "계대", "산차", "어미소귀표번호", "어미구분"];        
         var searchResultColModel = [						 
-						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center'},
+						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center', sorttype: "number"},
 						        	{name:"AUC_OBJ_DSC",                     index:"AUC_OBJ_DSC",                     width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
 						        	{name:"FTSNM",                           index:"FTSNM",                           width:100, align:'center'},
 						        	{name:"SRA_INDV_AMNNO",                  index:"SRA_INDV_AMNNO",                  width:150, align:'center'},
 						        	{name:"BIRTH",                           index:"BIRTH",                           width:100, align:'center', formatter:'gridDateFormat'},
 						        	{name:"INDV_SEX_C",                      index:"INDV_SEX_C",                      width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
 						        	{name:"KPN_NO",                          index:"KPN_NO",                          width:100, align:'center'},
+						        	{name:"COW_SOG_WT",                      index:"COW_SOG_WT",                      width:100, align:'center', sorttype: "number"},
+						        	{name:"LOWS_SBID_LMT_AM",                index:"LOWS_SBID_LMT_AM",                width:100, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+						        	{name:"ATDR_AM",                         index:"ATDR_AM",                         width:100, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+						        	{name:"SRA_SBID_AM",                     index:"SRA_SBID_AM",                     width:100, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+						        	{name:"DIF_AM",							 index:"DIF_AM",						  width:100, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+						        	{name:"SRA_MWMNNM",                      index:"SRA_MWMNNM",                      width:100, align:'center'},
+						        	{name:"LVST_AUC_PTC_MN_NO",				 index:"LVST_AUC_PTC_MN_NO",			  width:100, align:'center', sorttype: "number"},
 						        	{name:"SRA_INDV_PASG_QCN",               index:"SRA_INDV_PASG_QCN",               width:100, align:'center'},
 						        	{name:"MATIME",                          index:"MATIME",                          width:100, align:'center'},
 						        	{name:"MCOW_SRA_INDV_AMNNO",             index:"MCOW_SRA_INDV_AMNNO",             width:150, align:'center'},
-						        	{name:"MCOW_DSC",                        index:"MCOW_DSC",                        width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
-						        	{name:"COW_SOG_WT",                      index:"COW_SOG_WT",                      width:100, align:'center'},
-						        	{name:"LOWS_SBID_LMT_AM",                index:"LOWS_SBID_LMT_AM",                width:100, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-						        	{name:"ATDR_AM",                         index:"ATDR_AM",                         width:100, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-						        	{name:"SRA_SBID_AM",                     index:"SRA_SBID_AM",                     width:100, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-						        	{name:"DIF_AM",							 index:"DIF_AM",						  width:100, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-						        	{name:"SRA_MWMNNM",                      index:"SRA_MWMNNM",                      width:100, align:'center'},
-						        	{name:"LVST_AUC_PTC_MN_NO",				 index:"LVST_AUC_PTC_MN_NO",			  width:100, align:'center'}
+						        	{name:"MCOW_DSC",                        index:"MCOW_DSC",                        width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}}
                                     ];
         
         $("#grd_MhSogCow5").jqGrid("GridUnload");
