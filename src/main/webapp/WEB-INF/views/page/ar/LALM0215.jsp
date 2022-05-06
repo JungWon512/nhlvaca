@@ -730,14 +730,16 @@
          ******************************/
         $("#sra_fed_spy_yn").change(function() {
     		if($("#sra_fed_spy_yn").is(":checked")) {
+    			fn_contrChBox(true, "sra_fed_spy_yn", "");
     			$("#sra_fed_spy_yn_text").text("여");
     			$("#sra_fed_spy_yn_fee").val(parent.envList[0]["SRA_FED_SPY_YN_FEE"]);
     			$("#sra_fed_spy_yn_fee").attr("disabled", false);
     		} else {
+    			fn_contrChBox(false, "sra_fed_spy_yn", "");
     			$("#sra_fed_spy_yn_text").text("부");
     			$("#sra_fed_spy_yn_fee").val("0");
     			$("#sra_fed_spy_yn_fee").attr("disabled", true);
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -745,10 +747,12 @@
          ******************************/
         $("#brcl_isp_ctfw_smt_yn").change(function() {
     		if($("#brcl_isp_ctfw_smt_yn").is(":checked")) {
+    			fn_contrChBox(true, "brcl_isp_ctfw_smt_yn", "");
     			$("#brcl_isp_ctfw_smt_yn_text").text("여");
     		} else {
+    			fn_contrChBox(false, "brcl_isp_ctfw_smt_yn", "");
     			$("#brcl_isp_ctfw_smt_yn_text").text("부");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -761,7 +765,7 @@
     		} else {
     			fn_contrChBox(false, "rmhn_yn", "");
     			$("#rmhn_yn_text").text("부");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -769,10 +773,12 @@
          ******************************/
         $("#spay_yn").change(function() {
     		if($("#spay_yn").is(":checked")) {
+    			fn_contrChBox(true, "spay_yn", "");
     			$("#spay_yn_text").text("여");
     		} else {
+    			fn_contrChBox(false, "spay_yn", "");
     			$("#spay_yn_text").text("부");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -780,11 +786,13 @@
          ******************************/
         $("#dna_yn_chk").change(function() {
     		if($("#dna_yn_chk").is(":checked")) {
+    			fn_contrChBox(true, "dna_yn_chk", "");
     			$("#dna_yn_chk_text").text("여");
     		} else {
+    			fn_contrChBox(false, "dna_yn_chk", "");
     			$("#dna_yn_chk_text").text("부");
     			$("#rmk_cntn").val("");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -792,29 +800,33 @@
          ******************************/
         $("#fee_chk_yn").change(function() {
     		if($("#fee_chk_yn").is(":checked")) {
+    			fn_contrChBox(true, "fee_chk_yn", "");
     			$("#fee_chk_yn_fee").attr("disabled", false);
     			$("#fee_chk_yn_text").text("여");
     			$("#fee_chk_yn_fee").val("0");
     		} else {
+    			fn_contrChBox(false, "fee_chk_yn", "");
     			$("#fee_chk_yn_fee").attr("disabled", true);
     			$("#fee_chk_yn_text").text("부");
     			$("#fee_chk_yn_fee").val("0");
-    		}    		
+    		}
     	});
      	
      	/******************************
          * 판매수수료 수기등록 checkbox 이벤트
          ******************************/
         $("#selfee_chk_yn").change(function() {
-    		if($("#selfee_chk_yn").is(":checked")) {
+    		if($(this).is(":checked")) {
+    			fn_contrChBox(true, "selfee_chk_yn", "");
     			$("#selfee_chk_yn_fee").attr("disabled", false);
     			$("#selfee_chk_yn_text").text("여");
     			$("#selfee_chk_yn_fee").val("0");
     		} else {
-    			$("#selfee_chk_yn_fee").attr("disabled", false);
+    			fn_contrChBox(false, "selfee_chk_yn", "");
+    			$("#selfee_chk_yn_fee").attr("disabled", true);
     			$("#selfee_chk_yn_text").text("부");
     			$("#selfee_chk_yn_fee").val("0");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -822,10 +834,12 @@
          ******************************/
         $("#afism_mod_ctfw_smt_yn").change(function() {
     		if($("#afism_mod_ctfw_smt_yn").is(":checked")) {
+    			fn_contrChBox(true, "afism_mod_ctfw_smt_yn", "");
     			$("#afism_mod_ctfw_smt_yn_text").text("여");
     		} else {
+    			fn_contrChBox(false, "afism_mod_ctfw_smt_yn", "");
     			$("#afism_mod_ctfw_smt_yn_text").text("부");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -838,7 +852,7 @@
     		} else {
     			fn_contrChBox(false, "prny_jug_yn", "");
     			$("#prny_jug_yn_text").text("부");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -851,7 +865,7 @@
     		} else {
     			fn_contrChBox(false, "prny_yn", "");
     			$("#prny_yn_text").text("부");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -864,7 +878,7 @@
     		} else {
     			fn_contrChBox(false, "ncss_jug_yn", "");
     			$("#ncss_jug_yn_text").text("부");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -877,7 +891,7 @@
     		} else {
     			fn_contrChBox(false, "ncss_yn", "");
     			$("#ncss_yn_text").text("부");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -885,8 +899,10 @@
          ******************************/
         $("#mt12_ovr_yn").change(function() {
     		if($("#mt12_ovr_yn").is(":checked")) {
+    			fn_contrChBox(true, "mt12_ovr_yn", "");
     			$("#mt12_ovr_yn_text").text("여");
     		} else {
+    			fn_contrChBox(false, "mt12_ovr_yn", "");
     			$("#mt12_ovr_yn_text").text("부");
     		}
     		
@@ -906,10 +922,12 @@
          ******************************/
         $("#epd_yn").change(function() {
     		if($("#epd_yn").is(":checked")) {
+    			fn_contrChBox(true, "epd_yn", "");
     			$("#epd_yn_text").text("여");
     		} else {
+    			fn_contrChBox(false, "epd_yn", "");
     			$("#epd_yn_text").text("부");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -928,10 +946,12 @@
          ******************************/
         $("#fed_spy_yn").change(function() {
     		if($("#fed_spy_yn").is(":checked")) {
+    			fn_contrChBox(true, "fed_spy_yn", "");
     			$("#fed_spy_yn_text").text("여");
     		} else {
+    			fn_contrChBox(false, "fed_spy_yn", "");
     			$("#fed_spy_yn_text").text("부");
-    		}    		
+    		}
     	});
      	
      	/******************************
@@ -1728,6 +1748,8 @@
 					if(fn_isNull($("#brcl_isp_rzt_c").val())) {
 			 			$("#brcl_isp_rzt_c").val("0");
 			 		}
+					
+					console.log("계산결과 > ", tmpResult);
 					
 					if(setRowStatus == "insert") {
 						$("#fir_lows_sbid_lmt_am").val($("#lows_sbid_lmt_am").val());
