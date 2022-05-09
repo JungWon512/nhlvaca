@@ -122,7 +122,7 @@ SELECT    NM                /* 농가명                     */
 	        , SUM(A.SRA_SBID_UPR)                      AS TOT_UPR_AM
 	        , SUM(A.SRA_SBID_AM)                       AS TOT_SRA_AM
 	        , ''                                       AS SRA_FARM_ACNO
-	        , SUM(C.SRA_SEL_FEE) + SUM(C.SRA_ETC_CST)  AS SRA_SEL_FEE        /* 축산판매수수료                */
+	        , NVL(SUM(C.SRA_SEL_FEE), 0) + NVL(SUM(C.SRA_SHNM), 0) + NVL(SUM(C.SRA_ETC_CST), 0) AS SRA_SEL_FEE /* 축산판매수수료 */
 	    FROM TB_LA_IS_MH_SOG_COW A
 	         LEFT OUTER JOIN (SELECT
 	                                NA_BZPLC
