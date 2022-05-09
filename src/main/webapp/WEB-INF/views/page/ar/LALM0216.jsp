@@ -731,9 +731,11 @@ var na_bzplc = App_na_bzplc;
             			 
             		 // ★고령성주: 8808990659695 테스트: 8808990643625
             		 } else if(na_bzplc == '8808990659695') {
-            			 ReportPopup('LALM0216R3_99',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
-            			 
-            		 } else {
+            			 ReportPopup('LALM0216R3_99',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
+            		 // ★순정축협(순창): 8808990656960
+             		 }  else if(na_bzplc == '8808990656960') {
+             			ReportPopup('LALM0216R3_8_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             		 } else {
             			 ReportPopup('LALM0216R3_7',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
@@ -918,7 +920,9 @@ var na_bzplc = App_na_bzplc;
              		 // ★목무신: 8808990656915
               		 } else if(na_bzplc == '8808990656915') {
              			 ReportPopup('LALM0216R3_96',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
-             			 
+             		// ★순정축협(순창): 8808990656960
+             		 }  else if(na_bzplc == '8808990656960') {
+             			ReportPopup('LALM0216R3_8_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그             			
              		 } else {
               			 ReportPopup('LALM0216R3_8',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
@@ -1161,8 +1165,10 @@ var na_bzplc = App_na_bzplc;
              		 // ★고성축협: 8808990656458
              		 } else if(na_bzplc == '8808990656458') {
              			ReportPopup('LALM0216R3_107',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
-             			
-             		 } else {
+             		 // ★순정축협(순창): 8808990656960
+             		 }  else if(na_bzplc == '8808990656960') {
+             			ReportPopup('LALM0216R3_8_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             		 }else  {
              			ReportPopup('LALM0216R3_8',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
