@@ -200,9 +200,9 @@
              	TitleData.unit="";
              	TitleData.srch_condition=  '[경매일자 : ' + $('#auc_dt').val() + ']'
                 +  '/ [경매대상 + ' + $( "#auc_obj_dsc option:selected").text()  + ']';
-         		if (na_bzplc == '8808990656717') {   //곡성:8808990656717 , 테스트 8808990643625
+         		//if (na_bzplc == '8808990656717') {   //곡성:8808990656717 , 테스트 8808990643625
     		      	ReportPopup('LALM0314R0' ,TitleData, 'grd_MhSogCow2', 'V'); 
-         	 	}
+         	 	//}
          	}
          	if($("#pb_tab4").hasClass("on")){
          		TitleData.title = $("#simp_cnm").val()+ " 일괄경매시작/마감(동가대상)";
