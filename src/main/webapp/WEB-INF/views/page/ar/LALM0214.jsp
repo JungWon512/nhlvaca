@@ -472,7 +472,11 @@
     //그리드 생성1
     function fn_CreateGrid(data){
         
-        var rowNoValue = 0;     
+    	var scrollPositionT	= $("#grd_MhSogCow_2").closest(".ui-jqgrid-bdiv").scrollTop();
+    	var scrollPositionL	= $("#grd_MhSogCow_2").closest(".ui-jqgrid-bdiv").scrollLeft();
+    	var selectId		= $("#grd_MhSogCow_1").jqGrid("getGridParam", "selrow");
+    	
+        var rowNoValue = 0;
         if(data != null){
             rowNoValue = data.length;
         }
@@ -611,7 +615,7 @@
 
             },
             colNames: searchResultColNames,
-            colModel: searchResultColModel,            
+            colModel: searchResultColModel
         });
         
         ///////////////////////////////////////////////////////////////////////
@@ -665,8 +669,21 @@
                 fn_OpenMenu('LALM0215',data);
 
             },
+            gridComplete : function() {
+            	$(".jqgrow", $("#grd_MhSogCow_1")).bind("mouseover", function(){
+            		var rowId = $(this).attr("id");
+            		$(".jqgrow#" + rowId, $("#grd_MhSogCow_2")).addClass("ui-state-hover");
+            	})
+            	.bind("mouseout", function(){
+            		var rowId = $(this).attr("id");
+            		$(".jqgrow#" + rowId, $("#grd_MhSogCow_2")).removeClass("ui-state-hover");
+            	});
+            	if (selectId != null) {
+            		$("#grd_MhSogCow_1").jqGrid('setSelection',selectId,false);
+            	}
+            },
             colNames: searchResultColNames,
-            colModel: searchResultColModel,            
+            colModel: searchResultColModel
         });
         
 
@@ -729,10 +746,24 @@
                 data["oslp_no"] = sel_data.OSLP_NO;  
                 
                 fn_OpenMenu('LALM0215',data);
-
+            },
+            gridComplete : function() {
+            	$(".jqgrow", $("#grd_MhSogCow_2")).bind("mouseover", function(){
+            		var rowId = $(this).attr("id");
+            		$(".jqgrow#" + rowId, $("#grd_MhSogCow_1")).addClass("ui-state-hover");
+            	})
+            	.bind("mouseout", function(){
+            		var rowId = $(this).attr("id");
+            		$(".jqgrow#" + rowId, $("#grd_MhSogCow_1")).removeClass("ui-state-hover");
+            	});
+            	$("#grd_MhSogCow_2").closest(".ui-jqgrid-bdiv").scrollTop(scrollPositionT);
+            	$("#grd_MhSogCow_2").closest(".ui-jqgrid-bdiv").scrollLeft(scrollPositionL);
+            	if (selectId != null) {
+            		$("#grd_MhSogCow_2").jqGrid('setSelection',selectId,false);
+            	}
             },
             colNames: searchResultColNames,
-            colModel: searchResultColModel,            
+            colModel: searchResultColModel
         });
         
 
