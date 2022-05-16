@@ -381,8 +381,9 @@
         }
         
         /*                                1        2       3         4         5      6      7      8      9           10        11     12         13  */
-        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "KPN", "중량", "응찰하한가", "계대", "산차", "어미소귀표번호", "어미구분","H축산낙찰금액","H낙찰자명"];        
-        var searchResultColModel = [						 
+        var searchResultColNames = ["최저가(낙찰단위)","경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "KPN", "중량", "응찰하한가", "계대", "산차", "어미소귀표번호", "어미구분","H축산낙찰금액","H낙찰자명"];        
+        var searchResultColModel = [
+						        	{name:"LOWS_SBID_LMT_UPR",               index:"LOWS_SBID_LMT_UPR",               width:100, align:'center', hidden:true},
 						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center', sorttype: "number"},
 						        	{name:"AUC_OBJ_DSC",                     index:"AUC_OBJ_DSC",                     width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
 						        	{name:"FTSNM",                           index:"FTSNM",                           width:100, align:'center'},
