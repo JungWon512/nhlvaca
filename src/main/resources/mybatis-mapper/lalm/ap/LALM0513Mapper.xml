@@ -1249,7 +1249,7 @@
 	        , FLOOR(A.MIN_SRA_SBID_AM)  AS MIN_SRA_SBID_AM
 	        , FLOOR(A.AVG_SRA_SBID_AM)  AS AVG_SRA_SBID_AM
 	        , A.TOT_SU           AS TOT_SU
-	        , A.COW_SOG_WT       AS COW_SOG_WT
+	        , NVL(A.COW_SOG_WT,0)       AS COW_SOG_WT
 	        , B.FTSNM            AS AM_MAX_SRA_MWMNNM     
 	        , C.FTSNM            AS AM_LOWS_SRA_MWMNNM    
 	        , D.FTSNM            AS SU_MAX_SRA_MWMNNM     
