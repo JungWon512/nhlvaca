@@ -1210,8 +1210,8 @@
 	          B.RG_DSC                         AS RG_DSC                             /* 등록구분                       */
 	        , B.INDV_SEX_C			                                                 /* 성별                           */
 	        , COUNT(A.SRA_INDV_AMNNO)          AS TOT_HDCN                           /* 두수                           */
-	        , SUM(A.COW_SOG_WT)                AS TOT_WT                             /* 우출하 총 중량                 */
-	        , FLOOR(AVG(A.COW_SOG_WT))         AS AVG_WT                             /* 우출하 평균 중량               */
+	        , SUM(NVL(A.COW_SOG_WT,0))                AS TOT_WT                             /* 우출하 총 중량                 */
+	        , FLOOR(AVG(NVL(A.COW_SOG_WT,0)))         AS AVG_WT                             /* 우출하 평균 중량               */
 	        , SUM(A.LOWS_SBID_LMT_AM)          AS LOWS_SBID_LMT_AM                   /* 응찰하한가 총계                */
 	        , FLOOR(AVG(A.LOWS_SBID_LMT_AM))   AS AVG_PR                             /* 응찰하한가 평균                */
 	
