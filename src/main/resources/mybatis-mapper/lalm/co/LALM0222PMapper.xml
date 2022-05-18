@@ -217,13 +217,37 @@
                       FARM_ID_NO  = #{farm_id_no}                            /* 농가식별번호                        */
                     , NA_TRPL_C   = #{na_trpl_c}                             /* 출하경제통합거래처코드              */
                     , FTSNM       = #{sra_fhsnm}                             /* 농가명                              */
-                    , ZIP         = replace(#{zip},'-','')                   /* 우편번호                            */
-                    , DONGUP      = #{sra_farm_dongup}                       /* 동이상주소                          */
-                    , DONGBW      = #{sra_farm_dongbw}                       /* 동이하주소                          */
-                    , OHSE_TELNO  = #{telno}                                 /* 자택전화번호                        */
-                <if test='mpno != "" and mpno != null'>
-                    , CUS_MPNO    = #{mpno}                                  /* 고객휴대전화번호                    */
-                </if>
+	                <choose>
+	                	<when test="buffer_1 != null and buffer_1 != ''">
+			                <if test='!buffer_1.contains("A")'>
+			                    , ZIP         = replace(#{zip},'-','')                   /* 우편번호                            */
+			                    , DONGUP      = #{sra_farm_dongup}                       /* 동이상주소                          */
+			                    , DONGBW      = #{sra_farm_dongbw}                       /* 동이하주소                          */
+							</if>
+							<if test='!buffer_1.contains("T")'>
+			                    , OHSE_TELNO  = #{telno}                                 /* 자택전화번호                        */
+			                </if>
+			                <if test='buffer_1.contains("H")'>
+				                <if test='mpno != "" and mpno != null'>
+				                    , CUS_MPNO    = #{mpno}                                  /* 고객휴대전화번호                    */
+				                </if>
+			                </if>
+			                <if test='!buffer_1.contains("AC")'>
+			                	, NEW_SRA_FARM_ACNO		= #{sra_farm_acno}
+			                </if>
+	                	</when>
+	                	<otherwise>
+		                    , ZIP         = replace(#{zip},'-','')                   /* 우편번호                            */
+		                    , DONGUP      = #{sra_farm_dongup}                       /* 동이상주소                          */
+		                    , DONGBW      = #{sra_farm_dongbw}          
+		                    , OHSE_TELNO  = #{telno}              
+		                    , CUS_MPNO    = #{mpno}                
+			                <if test='mpno != "" and mpno != null'>
+			                    , CUS_MPNO    = #{mpno}                                  /* 고객휴대전화번호                    */
+			                </if>
+		                	, NEW_SRA_FARM_ACNO		= #{sra_farm_acno}
+	                	</otherwise>
+	                </choose>
                     , MACO_YN     = #{maco_yn}                               /* 출하자조합원여부                    */
                     , RMK_CNTN    = #{rmk_cntn}                              /* 비고내용                            */
                     , JRDWO_DSC   = #{jrdwo_dsc}                             /* 관내외구분                          */
@@ -235,6 +259,38 @@
                   AND FHS_ID_NO   = #{fhs_id_no}
                   AND FARM_AMNNO  = #{farm_amnno}
     </update>
+
+    <select id="LALM0222P_selBmBzloc" resultType="hashMap">
+	    SELECT
+			NA_BZPLCNO
+			, NA_BZPLCLOC
+			, CLNTNM
+			, NA_BZPLC
+			, AREAORD
+			, AREANM
+			, AUC_DSC
+			, LAT
+			, LNG
+			, AUC_YN
+			, DEL_YN
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, RMK_CNTN
+			, TEL_NO
+			, KKO_SVC_ID
+			, KKO_SVC_KEY
+			, KKO_SVC_CNT
+			, NET_HOST
+			, NET_PORT
+			, WEB_PORT
+			, SMS_AUTH_YN
+			, SMS_BUFFER_1
+			, SMS_BUFFER_2	    
+	       FROM TB_LA_IS_BM_BZLOC A
+	       WHERE A.NA_BZPLC       = #{ss_na_bzplc}
+    </select>
 </mapper>
 
 

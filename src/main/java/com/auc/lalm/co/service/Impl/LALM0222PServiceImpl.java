@@ -73,11 +73,15 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 			reMap.put("JRDWO_DSC", "2");
 			reMap.put("SRA_FARM_ACNO", "");
 			
-		} else if(!Demap.get("ss_na_bzplc").equals("8808990687094")){ //20220329 jjw 영주축협 농가 update 제외 
-			
+		}else {
+		// else if(!Demap.get("ss_na_bzplc").equals("8808990687094") && !Demap.get("ss_na_bzplc").equals("8808990656953")){ //20220329 jjw 영주축협 농가 update 제외
+		
+			Map<String, Object> bzLoc = lalm0222PMapper.LALM0222P_selBmBzloc(Demap);
 			if(fhsList.get(0).get("JRDWO_DSC") == null || fhsList.get(0).get("JRDWO_DSC").equals("")) {
 				throw new CusException(ErrorCode.CUSTOM_ERROR,"농가의 관내 구분이 없습니다.<br>농가관리에서 관내구분을 설정해 주세요.");
 			}
+			if(bzLoc.get("SMS_BUFFER_1") != null) Demap.put("buffer_1", bzLoc.get("SMS_BUFFER_1"));
+			else Demap.put("buffer_1", "");
 			
 			Demap.put("maco_yn", fhsList.get(0).get("MACO_YN"));
 			Demap.put("jrdwo_dsc", fhsList.get(0).get("JRDWO_DSC"));
@@ -88,8 +92,6 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 			reMap.put("SRA_FARM_ACNO", fhsList.get(0).get("SRA_FARM_ACNO"));
 			
 			updateNum = lalm0222PMapper.LALM0222P_updIsMmFhs(Demap);			
-		}else {
-			updateNum = 1;
 		}
 		
 		if(insertNum > 0) {

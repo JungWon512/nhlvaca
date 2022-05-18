@@ -29,7 +29,7 @@ public class LALM0912ServiceImpl implements LALM0912Service{
 		int insertNum = 0;
 		insertNum = insertNum + lalm0912Mapper.LALM0912_insWmc(map);
 		insertNum = insertNum + lalm0912Mapper.LALM0912_insEnvEst(map);
-		insertNum = insertNum + lalm0912Mapper.LALM0912_insBzloc(map);
+		insertNum = insertNum + lalm0912Mapper.LALM0912_updBzloc(map);
 		reMap.put("insertNum", insertNum);		
 		return reMap;
 	}

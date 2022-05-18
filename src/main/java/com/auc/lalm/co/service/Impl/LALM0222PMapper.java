@@ -20,4 +20,6 @@ public interface LALM0222PMapper {
 	
 	int LALM0222P_updIsMmFhs(Map<String, Object> map) throws Exception;
 
+	Map<String, Object> LALM0222P_selBmBzloc(Map<String, Object> demap);
+
 }

@@ -79,6 +79,7 @@
 	         , C.KKO_SVC_ID                   /* 카카오서비스아이디          */
 	         , C.KKO_SVC_KEY                  /* 카카오서비스키              */
 	         , C.SMS_AUTH_YN                  /* SMS인증사용여부 */
+	         , C.SMS_BUFFER_1
 	      FROM TB_LA_IS_MM_WMC A
 	         , TB_LA_IS_MM_ENV_EST B
              , TB_LA_IS_BM_BZLOC   C
@@ -254,7 +255,8 @@
              , TEL_NO                       /* 전화번호                    */
              , KKO_SVC_ID                   /* 카카오서비스아이디          */
              , KKO_SVC_KEY                  /* 카카오서비스키              */     
-             , SMS_AUTH_YN                  /* SMS인증사용여부 */
+             , SMS_AUTH_YN                  /* SMS인증사용여부 */     
+             , SMS_BUFFER_1                  /* SMS BUFFER 1 */
              , FSRG_DTM                     /* 최초등록일시                */
              , FSRGMN_ENO                   /* 최초등록자개인번호          */
              , LSCHG_DTM                    /* 최종변경일사                */
@@ -275,7 +277,8 @@
              , #{tel_no}                         /* 전화번호                    */
              , #{kko_svc_id}                     /* 카카오서비스아이디          */
              , #{kko_svc_key}                    /* 카카오서비스키              */
-             , #{sms_auth_yn}
+             , #{sms_auth_yn}    
+             , #{sms_buffer_1}                  
              , SYSDATE                           /* 최초등록일시                */
              , #{ss_userid}                      /* 최초등록자개인번호          */
              , SYSDATE                           /* 최종변경일시                */
@@ -485,6 +488,7 @@
              , A.KKO_SVC_ID                 = #{kko_svc_id}    /* 카카오서비스아이디          */
              , A.KKO_SVC_KEY                = #{kko_svc_key}   /* 카카오서비스키              */     
              , A.SMS_AUTH_YN                = #{sms_auth_yn}   /* SMS인증사용여부 */
+           	 , A.SMS_BUFFER_1 				= #{sms_buffer_1}
              , A.LSCHG_DTM                  = SYSDATE          /* 최종변경일사                */
              , A.LS_CMENO                   = #{ss_userid}     /* 최종변경자개인번호          */
          WHEN NOT MATCHED THEN
@@ -505,6 +509,7 @@
              , KKO_SVC_ID                   /* 카카오서비스아이디          */
              , KKO_SVC_KEY                  /* 카카오서비스키              */     
              , SMS_AUTH_YN                  /* SMS인증사용여부 */
+             , SMS_BUFFER_1					/* SMS BUFFER 1 */
              , FSRG_DTM                     /* 최초등록일시                */
              , FSRGMN_ENO                   /* 최초등록자개인번호          */
              , LSCHG_DTM                    /* 최종변경일사                */
@@ -525,12 +530,13 @@
              , #{tel_no}                         /* 전화번호                    */
              , #{kko_svc_id}                     /* 카카오서비스아이디          */
              , #{kko_svc_key}                    /* 카카오서비스키              */
-             , #{sms_auth_yn}
+             , #{sms_auth_yn}	
+           	, #{sms_buffer_1}
              , SYSDATE                           /* 최초등록일시                */
              , #{ss_userid}                      /* 최초등록자개인번호          */
              , SYSDATE                           /* 최종변경일시                */
              , #{ss_userid}                      /* 최종변경자개인번호          */
-        )  
+        )
     ]]>
     </update>
     

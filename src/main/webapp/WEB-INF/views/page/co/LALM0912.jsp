@@ -121,6 +121,23 @@
         }else{      
             result = setDecrypt(results);
             fn_setFrmByObject("frm_MmWmc", result);
+            var smsBuffer1 = result.SMS_BUFFER_1.split(',');
+            result.SMS_BUFFER_1.split(',').forEach((o,i)=>{
+            	switch(o){
+				case "A" :
+					$('#buffer_1').prop('checked',true);
+				break;
+				case "T" :
+					$('#buffer_2').prop('checked',true);
+				break;
+				case "H" :
+					$('#buffer_3').prop('checked',true);
+				break;
+				case "AC" :
+					$('#buffer_4').prop('checked',true);
+				break;
+            	}
+            });            
             $('#na_bzplc').attr("disabled",true);
             if(result.SEAL_IMG_FLNM != ""){
             	$("#pb_SealImgView").show();
@@ -152,7 +169,16 @@
             $('#trpl_shrt_c').focus();
             return;
         }
-        
+		var buffer_1 = '';
+		var index=0;
+		$('.sms_buffer_1').each((i,o)=>{
+        	if($(o).is(':checked')){
+        		if(index > 0) buffer_1 +=','; 
+        		buffer_1 += $(o).val();
+        		index++;
+        	}
+        });
+        $('#sms_buffer_1').val(buffer_1);
         
         if(g_newFlg == true){
              MessagePopup('YESNO',"신규등록 하시겠습니까?",function(res){
@@ -731,6 +757,20 @@
                                 <th scope="row">카카오서비스Key</th>
                                 <td >
                                     <input type="text" id="kko_svc_key" maxlength="200">
+                                </td>
+                            </tr>               
+                            <tr>
+                                <th scope="row">출하주 정보 수정 제외항목</th>
+                                <td colspan = '3'>
+                                    <input type="hidden" id="sms_buffer_1" value=""/>
+                                    <input type="checkbox" id="buffer_1" class="sms_buffer_1" value="A"/>
+                                    <label for="buffer_1">주소</label>
+                                    <input type="checkbox" id="buffer_2" class="sms_buffer_1" value="T"/>
+                                    <label for="buffer_2">자택전화번호</label>
+                                    <input type="checkbox" id="buffer_3" class="sms_buffer_1" value="H"/>
+                                    <label for="buffer_3">휴대전화번호</label>
+                                    <input type="checkbox" id="buffer_4" class="sms_buffer_1" value="AC"/>
+                                    <label for="buffer_4">계좌번호</label>
                                 </td>
                             </tr>   
                         </tbody>
