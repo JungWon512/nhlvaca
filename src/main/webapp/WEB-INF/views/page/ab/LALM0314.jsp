@@ -242,7 +242,7 @@
                                      {name:"ED_AUC_NO",     index:"ED_AUC_NO",      width:100, align:'center'},
                                      {name:"AUC_DT",     	index:"AUC_DT",      	width:100, align:'center', hidden:true},
                                      {name:"SEL_STS_DSC",	index:"SEL_STS_DSC",	width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_SEL_DSC_DATA}},
-                                     {name:"DDL_QCN",       index:"DDL_QCN",       	width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_DDL_QCN_DATA}},
+                                     {name:"DDL_QCN",       index:"DDL_QCN",       	width:100, align:'center', editable:true,edittype:"select", formatter : "select", editoptions:{value:GRID_DDL_QCN_DATA}},
                                      {name:"CHG_DDL_QCN",   index:"CHG_DDL_QCN",    width:50,  align:'center', sortable: false, formatter :fn_GridChangeQcn}
                                     ];
         
@@ -258,6 +258,8 @@
             shrinkToFit: false, 
             rownumbers:  true,
             rownumWidth: 30,
+            cellEdit:    true,
+            cellsubmit:  "clientArray",
             onSelectRow: function(rowid, status, e){
             	$("#grd_MhSogCow1").jqGrid("clearGridData", true);
             	$("#grd_MhSogCow2").jqGrid("clearGridData", true);
