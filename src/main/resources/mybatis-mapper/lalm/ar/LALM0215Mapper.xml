@@ -456,6 +456,105 @@
 	]]>
     </select>
     
+    <select id="LALM0215_selSogCow" resultType="hashMap">
+    <![CDATA[
+        SELECT
+        	NA_BZPLC
+			, AUC_OBJ_DSC
+			, AUC_DT
+			, OSLP_NO
+			, LED_SQNO
+			, FHS_ID_NO
+			, FARM_AMNNO
+			, SOG_NA_TRPL_C
+			, VHC_SHRT_C
+			, RC_DT
+			, TRMN_AMNNO
+			, LVST_AUC_PTC_MN_NO
+			, SRA_INDV_AMNNO
+			, SRA_SRS_DSC
+			, COW_SOG_WT
+			, FIR_LOWS_SBID_LMT_AM
+			, LOWS_SBID_LMT_AM
+			, SRA_SBID_AM
+			, SRA_SBID_UPR
+			, SEL_STS_DSC
+			, BRCL_ISP_CTFW_SMT_YN
+			, BRCL_ISP_DT
+			, LWPR_CHG_NT
+			, VACN_DT
+			, LVST_MKT_TRPL_AMNNO
+			, MT12_OVR_YN
+			, PPGCOW_FEE_DSC
+			, PRNY_JUG_YN
+			, PRNY_YN
+			, NCSS_JUG_YN
+			, NCSS_YN
+			, TRPCS_PY_YN
+			, SRA_TRPCS
+			, SRA_PYIVA
+			, SRA_FED_SPY_AM
+			, TD_RC_CST
+			, MT12_OVR_FEE
+			, AFISM_MOD_DT
+			, PRNY_MTCN
+			, AFISM_MOD_CTFW_SMT_YN
+			, RMHN_YN
+			, SRA_PDMNM
+			, SRA_PD_RGNNM
+			, RMK_CNTN
+			, AUC_PRG_SQ
+			, TMS_YN
+			, DEL_YN
+			, AUC_YN
+			, MOD_KPN_NO
+			, DDL_QCN
+			, SOGMN_C
+			, FEE_CHK_YN
+			, SELFEE_CHK_YN
+			, FEE_CHK_YN_FEE
+			, SELFEE_CHK_YN_FEE
+			, BLOOD_AM
+			, DNA_YN
+			, BRANDNM
+			, PDA_ID
+			, DNA_YN_CHK
+			, BOVINE_DT
+			, RE_PRODUCT_1
+			, RE_PRODUCT_1_1
+			, RE_PRODUCT_2
+			, RE_PRODUCT_2_1
+			, RE_PRODUCT_3
+			, RE_PRODUCT_3_1
+			, RE_PRODUCT_4
+			, RE_PRODUCT_4_1
+			, EPD_YN
+			, RE_PRODUCT_11
+			, RE_PRODUCT_11_1
+			, RE_PRODUCT_12
+			, RE_PRODUCT_12_1
+			, RE_PRODUCT_13
+			, RE_PRODUCT_13_1
+			, RE_PRODUCT_14
+			, RE_PRODUCT_14_1
+			, SPAY_YN
+			, CASE_COW
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, AMNNO
+			, MODL_NO
+			, FED_SPY_YN
+			, BRCL_ISP_RZT_C 
+        FROM TB_LA_IS_MH_SOG_COW
+    		WHERE  NA_BZPLC        = #{ss_na_bzplc}				/* 경제통합사업장코드			*/        
+    	      AND  AUC_OBJ_DSC     = #{auc_obj_dsc}			/* 경매대상구분코드			*/
+    	      AND  AUC_DT          = #{auc_dt}					/* 경매일자				*/
+    	      AND  OSLP_NO         = #{oslp_no}					/* 원표번호				*/ 
+    ]]>
+    </select>
+    
     <delete id="LALM0215_delSogCow">
     <![CDATA[
         DELETE FROM TB_LA_IS_MH_SOG_COW
@@ -574,6 +673,7 @@
 		 , FED_SPY_YN                             	/* 전이용사료여부              */
 		 , AMNNO                                   /* 정산자거래인번호                     */
 		 , MODL_NO                                 /* 거치대 번호 */
+		 , AUC_YN
     )values(
            #{ss_na_bzplc}                        	/* 경제통합사업장코드         */
          , #{auc_obj_dsc}             				/* 경매대상구분코드           */
@@ -708,6 +808,7 @@
 			</otherwise>
 		 </choose>
 		 , #{modl_no}                             /* 거치대 번호 */
+		 , #{auc_yn}
     )
     </insert>
     

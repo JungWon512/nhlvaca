@@ -406,12 +406,17 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		if(!beforeAucPrgSq.equals(afterAucPrgSq)) {
 			map.put("modl_no", map.get("auc_prg_sq"));
 		}
+
+		Map<String, Object> cowInfo = lalm0215Mapper.LALM0215_selSogCow(map);
 		
 		deleteNum = deleteNum + lalm0215Mapper.LALM0215_delSogCow(map);
 		
 		deleteNum = deleteNum + lalm0215Mapper.LALM0215_delFeeImps(map);
 		
 		deleteNum = deleteNum + lalm0215Mapper.LALM0215_delMhCalf(map);
+		if(cowInfo != null) {
+			map.put("auc_yn", cowInfo.get("AUC_YN"));			
+		}		
 		
 		insertNum = insertNum + lalm0215Mapper.LALM0215_insSogCow(map);
 		
