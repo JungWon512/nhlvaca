@@ -277,8 +277,6 @@
         		rowData["nbfct_auc_atdr_unt_am"]  = parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"];
         		rowData["ppgcow_auc_atdr_unt_am"] = parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"];
         		rowData["nbfct_auc_upr_dsc"]      = parent.envList[0]["NBFCT_AUC_UPR_DSC"];
-        		var selDdlQcn = $('#'+rowid+'_DDL_QCN option:selected').val();
-        		if(selDdlQcn)rowData["DDL_QCN"]=selDdlQcn;
         		fn_SearchSogCow1(rowData);
          		fn_SearchSogCow2(rowData);
          		fn_SearchSogCow3(rowData);
