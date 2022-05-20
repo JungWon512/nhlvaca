@@ -260,7 +260,8 @@
             rownumWidth: 30,
             cellEdit:    true,
             cellsubmit:  "clientArray",
-            onSelectRow: function(rowid, status, e){
+            onCellSelect:function(rowid,iCol,cellcontent,e){
+            	if(iCol == 7) return;
             	$("#grd_MhSogCow1").jqGrid("clearGridData", true);
             	$("#grd_MhSogCow2").jqGrid("clearGridData", true);
             	$("#grd_MhSogCow3").jqGrid("clearGridData", true);
@@ -276,13 +277,59 @@
         		rowData["nbfct_auc_atdr_unt_am"]  = parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"];
         		rowData["ppgcow_auc_atdr_unt_am"] = parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"];
         		rowData["nbfct_auc_upr_dsc"]      = parent.envList[0]["NBFCT_AUC_UPR_DSC"];
-        		
+        		var selDdlQcn = $('#'+rowid+'_DDL_QCN option:selected').val();
+        		if(selDdlQcn)rowData["DDL_QCN"]=selDdlQcn;
         		fn_SearchSogCow1(rowData);
          		fn_SearchSogCow2(rowData);
          		fn_SearchSogCow3(rowData);
          		fn_SearchSogCow5(rowData);
-         		
             },
+            afterSaveCell : function(rowid,cellname,value,iRow,iCol){
+            	$("#grd_MhSogCow1").jqGrid("clearGridData", true);
+            	$("#grd_MhSogCow2").jqGrid("clearGridData", true);
+            	$("#grd_MhSogCow3").jqGrid("clearGridData", true);
+            	$("#grd_MhSogCow4").jqGrid("clearGridData", true);
+            	$("#grd_MhSogCow5").jqGrid("clearGridData", true);
+            	
+            	rowData = new Object;
+        		rowData = $('#grd_MhAucStn').jqGrid('getRowData', rowid);
+        		
+        		rowData["mv_cut_am"]              = mv_cut_am;
+        		rowData["mv_sqno_prc_dsc"]        = mv_sqno_prc_dsc;
+        		rowData["calf_auc_atdr_unt_am"]   = parent.envList[0]["CALF_AUC_ATDR_UNT_AM"];
+        		rowData["nbfct_auc_atdr_unt_am"]  = parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"];
+        		rowData["ppgcow_auc_atdr_unt_am"] = parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"];
+        		rowData["nbfct_auc_upr_dsc"]      = parent.envList[0]["NBFCT_AUC_UPR_DSC"];
+        		var selDdlQcn = $('#'+rowid+'_DDL_QCN option:selected').val();
+        		if(selDdlQcn)rowData["DDL_QCN"]=value;
+        		fn_SearchSogCow1(rowData);
+         		fn_SearchSogCow2(rowData);
+         		fn_SearchSogCow3(rowData);
+         		fn_SearchSogCow5(rowData);
+            },
+            //onSelectRow: function(rowid, status, e){
+            //	$("#grd_MhSogCow1").jqGrid("clearGridData", true);
+            //	$("#grd_MhSogCow2").jqGrid("clearGridData", true);
+            //	$("#grd_MhSogCow3").jqGrid("clearGridData", true);
+            //	$("#grd_MhSogCow4").jqGrid("clearGridData", true);
+            //	$("#grd_MhSogCow5").jqGrid("clearGridData", true);
+            //	
+            //	rowData = new Object;
+        	//	rowData = $('#grd_MhAucStn').jqGrid('getRowData', rowid);
+        	//	
+        	//	rowData["mv_cut_am"]              = mv_cut_am;
+        	//	rowData["mv_sqno_prc_dsc"]        = mv_sqno_prc_dsc;
+        	//	rowData["calf_auc_atdr_unt_am"]   = parent.envList[0]["CALF_AUC_ATDR_UNT_AM"];
+        	//	rowData["nbfct_auc_atdr_unt_am"]  = parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"];
+        	//	rowData["ppgcow_auc_atdr_unt_am"] = parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"];
+        	//	rowData["nbfct_auc_upr_dsc"]      = parent.envList[0]["NBFCT_AUC_UPR_DSC"];
+        	//	
+        	//	fn_SearchSogCow1(rowData);
+         	//	fn_SearchSogCow2(rowData);
+         	//	fn_SearchSogCow3(rowData);
+         	//	fn_SearchSogCow5(rowData);
+         	//	
+            //},
             gridComplete: function(rowid, status, e){
             	
             	var getData = $("#grd_MhAucStn").jqGrid('getRowData');
