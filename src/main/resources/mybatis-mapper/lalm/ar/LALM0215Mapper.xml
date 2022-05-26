@@ -808,7 +808,14 @@
 			</otherwise>
 		 </choose>
 		 , #{modl_no}                             /* 거치대 번호 */
-		 , #{auc_yn}
+		<choose>
+			<when test="auc_yn != null and auc_yn != ''">
+				, #{auc_yn}
+			</when>
+			<otherwise>
+				, '0'
+			</otherwise>
+		</choose>
     )
     </insert>
     
