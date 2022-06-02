@@ -227,7 +227,7 @@
 							<if test='!buffer_1.contains("T")'>
 			                    , OHSE_TELNO  = #{telno}                                 /* 자택전화번호                        */
 			                </if>
-			                <if test='buffer_1.contains("H")'>
+			                <if test='!buffer_1.contains("H")'>
 				                <if test='mpno != "" and mpno != null'>
 				                    , CUS_MPNO    = #{mpno}                                  /* 고객휴대전화번호                    */
 				                </if>
