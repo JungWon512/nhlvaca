@@ -1473,7 +1473,7 @@ var na_bzplc = App_na_bzplc;
                                      {name:"SRA_MWMNNM",       	        index:"SRA_MWMNNM",               width:55, align:'center'  ,hidden:true},
                                      {name:"VHC_DRV_CAFFNM",            index:"VHC_DRV_CAFFNM",           width:55, align:'center'  ,hidden:true},
                                      {name:"LOWS_SBID_LMT_AM",          index:"LOWS_SBID_LMT_AM",         width:55, align:'center'  ,hidden:true},
-                                     {name:"LOWS_SBID_LMT_UNIT",          index:"LOWS_SBID_LMT_UNIT",         width:55, align:'center'  ,hidden:true},
+                                     {name:"LOWS_SBID_LMT_UNIT",        index:"LOWS_SBID_LMT_UNIT",         width:55, align:'center'  ,hidden:true},
                                      
                                      {name:"AUC_PRG_SQ",                index:"AUC_PRG_SQ",               width:50, align:'center' },
                                      {name:"AUC_OBJ_DSC",               index:"AUC_OBJ_DSC",              width:40, align:'center'  , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
@@ -1839,7 +1839,7 @@ var na_bzplc = App_na_bzplc;
                                      {name:"KPN_NO",                    index:"KPN_NO",                   width:60, align:'center'  },
                                      {name:"INDV_SEX_C",                index:"INDV_SEX_C",               width:40, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
                                      {name:"COW_SOG_WT",                index:"COW_SOG_WT",               width:70, align:'right'    , formatter:'interger', formatoptions:{decimalPlaces:2,thousandsSeparator:','}},
-                                     {name:"LOWS_SBID_LMT_AM",          index:"LOWS_SBID_LMT_UPR",         width:90, align:'right'    , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"LOWS_SBID_LMT_AM",          index:"LOWS_SBID_LMT_AM",         width:90, align:'right'    , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"DONG",                      index:"DONG",                     width:250, align:'left' },
                                      {name:"OHSE_TELNO",                index:"OHSE_TELNO",               width:80, align:'center' },
                                      {name:"CUS_MPNO",                  index:"CUS_MPNO",                 width:85, align:'center' },
