@@ -656,195 +656,197 @@ var na_bzplc = App_na_bzplc;
         		 }
         		 TitleData.am_dsc = parent.envList[0]["NBFCT_AUC_ATDR_UNT_AMC"];
         	 }
+            
+            var grid4 = fnSetGridData('grd_MhSogCow4');
              
              // 번식우
              if($("#auc_obj_dsc").val() == "3") {
             	 if($("#prto_tpc_1").is(":checked")) { //가로
             		 // ★의성: 8808990656649 테스트: 8808990643625
             		 if(na_bzplc == '8808990656649') {
-            			 ReportPopup('LALM0216R3_1_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_1_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 } else {
-            			 ReportPopup('LALM0216R3_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }
             	 
             	 } else if($("#prto_tpc_2").is(":checked")) { //세로
-            		 ReportPopup('LALM0216R3_3',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             	 
             	 } else if($("#prto_tpc_3").is(":checked")) { //가로2형식
             		 // ★동해삼척태백: 8808990652825 테스트: 8808990643625
             		 if(na_bzplc == '8808990652825') {
-            			 ReportPopup('LALM0216R3_51',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_51',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★안동봉화: 8808990689180 영덕울진: 8808990785431
             		 } else if(na_bzplc == '8808990689180' || na_bzplc == '8808990785431') {
-            			 ReportPopup('LALM0216R3_55',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_55',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★영주: 8808990687094
             		 } else if(na_bzplc == '8808990687094') {
-            			 ReportPopup('LALM0216R3_89',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_89',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★전주김제: 8808990656441 전주김제 김제지점: 8808990766485
             		 } else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485') {
-            			 ReportPopup('LALM0216R3_63',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_63',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★진천: 8808990656502
             		 } else if(na_bzplc == '8808990656502') {
-            			 ReportPopup('LALM0216R3_65',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_65',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★함안: 8808990656946 의령 : 8808990656199 테스트: 8808990643625
             		 } else if(na_bzplc == '8808990656946' || na_bzplc == '8808990656199') {
-            			 ReportPopup('LALM0216R3_85',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_85',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             		 // ★포항: 8808990679549
             		 } else if(na_bzplc == '8808990679549') {
-            			 ReportPopup('LALM0216R3_110',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_110',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		
             		 } else {
-            			 ReportPopup('LALM0216R3_5',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
             	 
             	 } else if($("#prto_tpc_4").is(":checked")) { //세로2형식
             		 // ★함평: 8808990656601 영암: 8808990689760 테스트: 8808990643625
             		 if(na_bzplc == '8808990656946' || na_bzplc == '8808990689760') {
-            			 ReportPopup('LALM0216R3_50',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_50',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★거창: 8808990659701
             		 } else if(na_bzplc == '8808990659701') {
-            			 ReportPopup('LALM0216R3_61',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_61',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★함양산청: 8808990656410 산청지점: 8808990674506
             		 } else if(na_bzplc == '8808990656410' || na_bzplc == '8808990674506') {
-            			 ReportPopup('LALM0216R3_78',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_78',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★영광축협: 8808990811710
             		 } else if(na_bzplc == '8808990811710') {
-            			 ReportPopup('LALM0216R3_82',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_82',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★구미칠곡: 8808990657615
             		 } else if(na_bzplc == '8808990657615') {
-            			 ReportPopup('LALM0216R3_91',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_91',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★하동축협: 8808990656656 테스트: 8808990643625
             		 } else if(na_bzplc == '8808990656656') {
-            			 ReportPopup('LALM0216R3_95',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_95',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★고령성주: 8808990659695 테스트: 8808990643625
             		 } else if(na_bzplc == '8808990659695') {
-            			 ReportPopup('LALM0216R3_99',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
+            			 ReportPopup('LALM0216R3_99',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
             		 // ★순정축협(순창): 8808990656960
              		 }  else if(na_bzplc == '8808990656960') {
-             			ReportPopup('LALM0216R3_8_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
              		 } else {
-            			 ReportPopup('LALM0216R3_7',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_7',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
             		 
             	 } else if($("#prto_tpc_5").is(":checked")) {//가로3형식
             		 // ★해남: 8808990656106 의령 : 8808990656199 테스트: 8808990643625
             		 if(na_bzplc == '8808990656106' || na_bzplc == '8808990656199') {
-            			 ReportPopup('LALM0216R3_56',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_56',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
-            			 ReportPopup('LALM0216R3_11',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_11',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
             	 
             	 } else if($("#prto_tpc_6").is(":checked")) { //세로3형식
             		 // ★해남: 8808990656106
             		 if(na_bzplc == '8808990656106' || na_bzplc == '8808990656106') {
-            			 ReportPopup('LALM0216R3_86',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_86',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
-            			 ReportPopup('LALM0216R3_13',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_13',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
             	 
             	 } else if($("#prto_tpc_7").is(":checked")) { //세로3형식
-            		 ReportPopup('LALM0216R3_14',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_14',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_8").is(":checked")) { //세로4형식
-            		 ReportPopup('LALM0216R3_10',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_10',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_9").is(":checked")) { //가로 5형식
-            		 ReportPopup('LALM0216R3_17',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_17',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_10").is(":checked")) { //세로5형식
-            		 ReportPopup('LALM0216R3_16',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_16',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_11").is(":checked")) { //가로6형식
             		 // 음성: 8808990683973
             		 if(na_bzplc == '8808990683973') {
-            			 ReportPopup('LALM0216R3_73',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_73',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // 상주 8808990657639
             		 } else if(na_bzplc == '8808990657639') {
-            			 ReportPopup('LALM0216R3_103',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_103',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }else if(na_bzplc == '8808990660783') { //임실
-            			 ReportPopup('LALM0216R3_114',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_114',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
-            			 ReportPopup('LALM0216R3_18',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_18',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
             	 
             	 } else if($("#prto_tpc_12").is(":checked")) { //세로6형식
-            		 ReportPopup('LALM0216R3_21',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_21',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_13").is(":checked")) { //가로7형식
             		 // ★나주: 8808990659275  테스트: 8808990643625
             		 if(na_bzplc == '8808990659275') {
-            			 ReportPopup('LALM0216R3_83',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_83',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
-            			 ReportPopup('LALM0216R3_22',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_22',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
             		 
             	 } else if($("#prto_tpc_14").is(":checked")) { //세로7형식
             		 // ★합천: 8808990656236
             		 if(na_bzplc == '8808990656236') {
-            			 ReportPopup('LALM0216R3_28_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_28_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
-            			 ReportPopup('LALM0216R3_28',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_28',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
             		 
             	 } else if($("#prto_tpc_15").is(":checked")) {
-            		 ReportPopup('LALM0216R3_27',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_27',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_17").is(":checked")) {
-            		 ReportPopup('LALM0216R3_29',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_29',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_19").is(":checked")) {
-            		 ReportPopup('LALM0216R3_32',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_32',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_21").is(":checked")) {
-            		 ReportPopup('LALM0216R3_35',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_35',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_22").is(":checked")) {
             		 // ★합천: 8808990656236 
             		 if(na_bzplc == '8808990656236') {
-            			 ReportPopup('LALM0216R3_76',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_76',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
-            			 ReportPopup('LALM0216R3_37',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_37',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
            		 
             	 } else if($("#prto_tpc_23").is(":checked")) {
             		 // ★익산: 8808990227283 테스트:8808990643625
             		 if(na_bzplc == '8808990227283') {
-            			 ReportPopup('LALM0216R3_69',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_69',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★평택: 8808990795874
             		 } else if(na_bzplc == '8808990795874') {
-            			 ReportPopup('LALM0216R3_105',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_105',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
-            			 ReportPopup('LALM0216R3_39',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_39',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
             		 
@@ -853,19 +855,19 @@ var na_bzplc = App_na_bzplc;
              // 비육우
              } else if($("#auc_obj_dsc").val() == "2") {
             	 if($("#prto_tpc_1").is(":checked")) {
-            		 ReportPopup('LALM0216R3_2',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             	 
             	 } else if($("#prto_tpc_2").is(":checked")) {
             		// ★의령: 8808990656199 테스트: 8808990643625
             		 if(na_bzplc == '8808990656199') {
-            			 ReportPopup('LALM0216R3_68',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_68',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★하동축협: 8808990656656
             		 } else if(na_bzplc == '8808990656656') {
-            			 ReportPopup('LALM0216R3_97',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_97',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
-            			 ReportPopup('LALM0216R3_4',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_4',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			              
             			 
             		 }
@@ -873,145 +875,145 @@ var na_bzplc = App_na_bzplc;
             	 } else if($("#prto_tpc_3").is(":checked")) {
              		 // ★임실: 8808990660783 테스트: 8808990643625
              		 if(na_bzplc == '8808990660783') {
-             			 ReportPopup('LALM0216R3_42',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_42',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★안동봉화: 8808990689180 영덕울진: 8808990785431
              		 } else if(na_bzplc == '8808990689180' || na_bzplc == '8808990785431') {
-             			 ReportPopup('LALM0216R3_54',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_54',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★영주: 8808990687094
              		 } else if(na_bzplc == '8808990687094') {
-            			 ReportPopup('LALM0216R3_88',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_88',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★음성: 8808990683973
              		 } else if(na_bzplc == '8808990683973') {
-            			 ReportPopup('LALM0216R3_72',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_72',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★예천축협 : 8808990656557
              		 } else if(na_bzplc == '8808990656557') {
-            			 ReportPopup('LALM0216R3_98',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_98',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             		 // ★포항축협 : 8808990679549
              		 } else if(na_bzplc == '8808990679549') {
-            			 ReportPopup('LALM0216R3_109',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_109',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		
             	 	 // ★양평축협 : 8808990643625
              		 } else if(na_bzplc == '8808990643625') {
-            			 ReportPopup('LALM0216R3_112',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_112',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             		 } else {
-             			 ReportPopup('LALM0216R3_6',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 }
             	 
             	 } else if($("#prto_tpc_4").is(":checked")) {
             		 // ★함평: 8808990656601 영암: 8808990689760
               		 if(na_bzplc == '8808990656601' || na_bzplc == '8808990689760') {
-              			 ReportPopup('LALM0216R3_49',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+              			 ReportPopup('LALM0216R3_49',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
               		 // ★영광축협: 8808990811710 테스트: 8808990643625
               		 } else if(na_bzplc == '8808990811710') {
-              			 ReportPopup('LALM0216R3_81',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+              			 ReportPopup('LALM0216R3_81',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
               		 // ★하동축협: 8808990656656
               		 } else if(na_bzplc == '8808990656656') {
-             			 ReportPopup('LALM0216R3_94',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_94',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★목무신: 8808990656915
               		 } else if(na_bzplc == '8808990656915') {
-             			 ReportPopup('LALM0216R3_96',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_96',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		// ★순정축협(순창): 8808990656960
              		 }  else if(na_bzplc == '8808990656960') {
-             			ReportPopup('LALM0216R3_8_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
              		 } else {
-              			 ReportPopup('LALM0216R3_8',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+              			 ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
               		 }
             		 
             	 } else if($("#prto_tpc_5").is(":checked")) {
             		// ★해남: 8808990656106
               		 if(na_bzplc == '8808990656106') {
-              			 ReportPopup('LALM0216R3_57',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+              			 ReportPopup('LALM0216R3_57',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 } else {
-              			 ReportPopup('LALM0216R3_12',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+              			 ReportPopup('LALM0216R3_12',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
               		 }
             	 
             	 } else if($("#prto_tpc_6").is(":checked")) {
              		 // ★해남: 8808990656106 테스트: 8808990643625
                		 if(na_bzplc == '8808990656106') {
-               			 ReportPopup('LALM0216R3_90',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+               			 ReportPopup('LALM0216R3_90',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
               		 } else {
-               			 ReportPopup('LALM0216R3_13',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+               			 ReportPopup('LALM0216R3_13',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
                			 
                		 }
                	 
             	 } else if($("#prto_tpc_7").is(":checked")) {
-            		 ReportPopup('LALM0216R3_14',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_14',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_8").is(":checked")) {
-            		 ReportPopup('LALM0216R3_9',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_9',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_9").is(":checked")) {
-            		 ReportPopup('LALM0216R3_17',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_17',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_10").is(":checked")) {
             		 // ★부여: 8808990660127
                		 if(na_bzplc == '8808990660127') {
-               			 ReportPopup('LALM0216R3_46',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+               			 ReportPopup('LALM0216R3_46',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
               		 } else {
-               			 ReportPopup('LALM0216R3_15',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+               			 ReportPopup('LALM0216R3_15',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
                			 
                		 }
             		 
             	 } else if($("#prto_tpc_12").is(":checked")) {
-            		 ReportPopup('LALM0216R3_20',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_20',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_13").is(":checked")) {
             		 // ★나주: 8808990659275 테스트: 8808990643625
                		 if(na_bzplc == '8808990659275') {
-               			 ReportPopup('LALM0216R3_83',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+               			 ReportPopup('LALM0216R3_83',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
               		 } else {
-               			 ReportPopup('LALM0216R3_22',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+               			 ReportPopup('LALM0216R3_22',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
                			 
                		 }
             		 
             	 } else if($("#prto_tpc_14").is(":checked")) {
             		 // ★합천: 8808990656236
                		 if(na_bzplc == '8808990656236') {
-               			 ReportPopup('LALM0216R3_28_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+               			 ReportPopup('LALM0216R3_28_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
               		 } else {
-               			 ReportPopup('LALM0216R3_28',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+               			 ReportPopup('LALM0216R3_28',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
                			 
                		 }
             		 
             	 } else if($("#prto_tpc_15").is(":checked")) {
-            		 ReportPopup('LALM0216R3_26',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_26',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_17").is(":checked")) {
-            		 ReportPopup('LALM0216R3_30',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_30',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_19").is(":checked")) {
-            		 ReportPopup('LALM0216R3_33',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_33',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_21").is(":checked")) {
-            		 ReportPopup('LALM0216R3_36',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_36',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_22").is(":checked")) {
-            		 ReportPopup('LALM0216R3_38',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_38',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_23").is(":checked")) {
             		 // ★익산: 8808990227283 테스트: 8808990643625
                		 if(na_bzplc == '8808990227283') {
-               			 ReportPopup('LALM0216R3_70',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+               			 ReportPopup('LALM0216R3_70',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
               		 } else {
-               			 ReportPopup('LALM0216R3_40',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+               			 ReportPopup('LALM0216R3_40',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
                			 
                		 }
             		 
@@ -1022,261 +1024,261 @@ var na_bzplc = App_na_bzplc;
             	 if($("#prto_tpc_1").is(":checked")) {
             		 // ★의성: 8808990656649 테스트: 8808990643625
              		 if(na_bzplc == '8808990656649') {
-             			 ReportPopup('LALM0216R3_2_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_2_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★포항: 8808990679549
              		 } else if(na_bzplc == '8808990679549') {
-             			 ReportPopup('LALM0216R3_45',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_45',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★순정 정읍: 8808990656953
              		 } else if(na_bzplc == '8808990656953') {
-            			 ReportPopup('LALM0216R3_92',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_92',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
-             			 ReportPopup('LALM0216R3_2',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 }
             	 
             	 } else if($("#prto_tpc_2").is(":checked")) {
             		 // ★의령: 8808990656199 테스트: 8808990643625
              		 if(na_bzplc == '8808990656199') {
-             			 ReportPopup('LALM0216R3_68',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_68',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★하동축협: 8808990656656
              		 } else if(na_bzplc == '8808990656656') {
-             			 ReportPopup('LALM0216R3_97',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_97',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
             		 } else {
-             			 ReportPopup('LALM0216R3_4',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_4',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
             	 
             	 } else if($("#prto_tpc_3").is(":checked")) {
             		 // ★임실: 8808990660783 테스트: 8808990643625
              		 if(na_bzplc == '8808990660783') {
-             			 ReportPopup('LALM0216R3_42',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_42',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★김해: 8808990670737
              		 } else if(na_bzplc == '8808990670737') {
-             			 ReportPopup('LALM0216R3_44',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_44',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★동해삼척태백: 8808990652825
              		 } else if(na_bzplc == '8808990652825') {
-            			 ReportPopup('LALM0216R3_52',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_52',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★안동봉화: 8808990689180 영덕울진: 8808990785431
              		 } else if(na_bzplc == '8808990689180' || na_bzplc == '8808990785431') {
-             			 ReportPopup('LALM0216R3_53',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_53',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★영주: 8808990687094
              		 } else if(na_bzplc == '8808990687094') {
-             			 ReportPopup('LALM0216R3_87',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_87',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★전주김제: 8808990656441 전주김제 김제지점: 8808990766485 
              		 } else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485') {
-             			 ReportPopup('LALM0216R3_58',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_58',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★익산: 8808990227283
              		 } else if(na_bzplc == '8808990227283') {
-             			 ReportPopup('LALM0216R3_59',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_59',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★순정 정읍: 8808990656953 양평 : 8808990643625
               		 } else if(na_bzplc == '8808990656953'){
-            			 ReportPopup('LALM0216R3_62',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_62',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★진천: 8808990656502 테스트:8808990643625
              		 } else if(na_bzplc == '8808990656502') {
-             			 ReportPopup('LALM0216R3_64',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_64',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★세종공주: 8808990656588
              		 } else if(na_bzplc == '8808990656588') {
-             			 ReportPopup('LALM0216R3_66',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_66',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★홍천: 8808990674605
              		 } else if(na_bzplc == '8808990674605') {
-             			 ReportPopup('LALM0216R3_67',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_67',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★음성: 8808990683973
              		 } else if(na_bzplc == '8808990683973') {
-             			 ReportPopup('LALM0216R3_71',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_71',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★괴산: 8808990656670
              		 } else if(na_bzplc == '8808990656670') {
-             			 ReportPopup('LALM0216R3_75',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_75',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★함안: 8808990656946 의령 8808990656199 테스트: 8808990643625
              		 } else if(na_bzplc == '8808990656946' || na_bzplc == '8808990656199') {
-             			 ReportPopup('LALM0216R3_84',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_84',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★남원: 8808990227207
              		 } else if(na_bzplc == '8808990227207') {
-             			 ReportPopup('LALM0216R3_93',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_93',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★예천축협 : 8808990656557
              		 } else if(na_bzplc == '8808990656557') {
-             			 ReportPopup('LALM0216R3_98',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_98',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★ 홍성축협 : 8808990657622 (개월령삭제버전)
              		 } else if(na_bzplc == '8808990657622') {
-             			 ReportPopup('LALM0216R3_101',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_101',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★ 담양 : 8808990656540 (브랜드 삭제 후 경매일자 추가)
              		 } else if(na_bzplc == '8808990656540') {
-             			 ReportPopup('LALM0216R3_106',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_106',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 // ★ 포항 : 8808990679549
              		 } else if(na_bzplc == '8808990679549') {
-             			 ReportPopup('LALM0216R3_108',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_108',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 // ★ 양평 : 8808990643625
              		 } else if(na_bzplc == '8808990643625') {
-             			 ReportPopup('LALM0216R3_113',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_113',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
              		 } else {
-             			 ReportPopup('LALM0216R3_6',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 }
             	 
             	 } else if($("#prto_tpc_4").is(":checked")) {
             		 // ★부여: 8808990660127
              		 if(na_bzplc == '8808990660127') {
-             			 ReportPopup('LALM0216R3_43',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_43',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 
              		 // ★함평: 8808990656601 영암: 8808990689760 테스트: 8808990643625
              		 } else if(na_bzplc == '8808990656601' || na_bzplc == '8808990689760') {
-             			ReportPopup('LALM0216R3_48',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_48',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 // ★사천: 8808990656519 테스트: 8808990643625 의령 : 8808990656199
              		 } else if(na_bzplc == '8808990656519' || na_bzplc == '8808990656199') {
-             			ReportPopup('LALM0216R3_74',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_74',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 
              		 // ★함양산청: 8808990656410 산청지점: 8808990674506
              		 } else if(na_bzplc == '8808990656410' || na_bzplc == '8808990674506') {
-             			ReportPopup('LALM0216R3_77',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_77',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 // ★영광축협: 8808990811710
              		 } else if(na_bzplc == '8808990811710') {
-             			ReportPopup('LALM0216R3_80',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_80',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 // ★하동축협: 8808990656656
              		 } else if(na_bzplc == '8808990656656') {
-             			ReportPopup('LALM0216R3_94',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_94',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 // ★진주축협: 8808990657240
              		 } else if(na_bzplc == '8808990657240') {
-             			ReportPopup('LALM0216R3_100',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_100',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 // ★고성축협: 8808990656458
              		 } else if(na_bzplc == '8808990656458') {
-             			ReportPopup('LALM0216R3_107',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_107',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 // ★순정축협(순창): 8808990656960
              		 }  else if(na_bzplc == '8808990656960') {
-             			ReportPopup('LALM0216R3_8_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
              		 }else  {
-             			ReportPopup('LALM0216R3_8',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
 
             	 } else if($("#prto_tpc_5").is(":checked")) {
             		 // ★해남: 8808990656106
              		 if(na_bzplc == '8808990656106') {
-             			 ReportPopup('LALM0216R3_56',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_56',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 
              		 // ★장성 8808990817675
              		 } else if(na_bzplc == '8808990817675') {
-             			ReportPopup('LALM0216R3_104',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_104',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 } else {
-             			ReportPopup('LALM0216R3_11',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_11',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
 
             	 } else if($("#prto_tpc_6").is(":checked")) {
             		 // ★함평: 8808990656601 테스트: 8808990643625
              		 if(na_bzplc == '8808990656601') {
-             			 ReportPopup('LALM0216R3_79',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_79',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 
              		 // ★해남: 8808990656106
              		 } else if(na_bzplc == '8808990656106') {
-             			ReportPopup('LALM0216R3_86',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_86',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 } else {
-             			ReportPopup('LALM0216R3_13',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_13',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
 
             	 } else if($("#prto_tpc_7").is(":checked")) {
-            		 ReportPopup('LALM0216R3_14',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_14',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             	 
             	 } else if($("#prto_tpc_8").is(":checked")) {
-            		 ReportPopup('LALM0216R3_9',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_9',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             	 
             	 } else if($("#prto_tpc_9").is(":checked")) {
-            		 ReportPopup('LALM0216R3_17',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_17',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             	 
             	 } else if($("#prto_tpc_10").is(":checked")) {
-            		 ReportPopup('LALM0216R3_15',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_15',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             	 
             	 } else if($("#prto_tpc_12").is(":checked")) {
             		 // ★거창: 8808990659701 테스트:8808990643625
             		 if(na_bzplc == '8808990659701') {
-             			 ReportPopup('LALM0216R3_60',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_60',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 
              		 // ★창녕 8808990656274
              		 } else if(na_bzplc == '8808990656274') {
-             			ReportPopup('LALM0216R3_102',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_102',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 } else {
-             			ReportPopup('LALM0216R3_19',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_19',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
             	 
             	 } else if($("#prto_tpc_13").is(":checked")) {
             		 // ★나주: 8808990659275
             		 if(na_bzplc == '8808990659275') {
-             			 ReportPopup('LALM0216R3_83',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_83',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 
              		 // ★경주 8808990659008
              		 } else if(na_bzplc == '8808990659008') {
-             			ReportPopup('LALM0216R3_22',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_22',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 } else {
-             			ReportPopup('LALM0216R3_22',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_22',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
             	 
             	 } else if($("#prto_tpc_14").is(":checked")) {
             		 // ★합천: 8808990656236
             		 if(na_bzplc == '8808990656236') {
-            			 ReportPopup('LALM0216R3_28_1',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_28_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 
              		 } else {
-             			ReportPopup('LALM0216R3_28',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_28',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
             	 
             	 } else if($("#prto_tpc_15").is(":checked")) {
-            		 ReportPopup('LALM0216R3_25',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_25',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_17").is(":checked")) {
-            		 ReportPopup('LALM0216R3_31',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_31',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_19").is(":checked")) {
-            		 ReportPopup('LALM0216R3_34',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_34',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_21").is(":checked")) {
-            		 ReportPopup('LALM0216R3_36',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_36',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_22").is(":checked")) {
-            		 ReportPopup('LALM0216R3_38',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_38',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_23").is(":checked")) {
             		 // ★익산: 8808990227283
             		 if(na_bzplc == '8808990227283') {
-             			 ReportPopup('LALM0216R3_70',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_70',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 
              		 // ★평택 8808990795874 번식우
              		 } else if(na_bzplc == '8808990795874') {
-             			ReportPopup('LALM0216R3_105',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_105',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 } else {
-             			ReportPopup('LALM0216R3_40',TitleData, 'grd_MhSogCow4', 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_40',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
             	 }
@@ -1837,7 +1839,7 @@ var na_bzplc = App_na_bzplc;
                                      {name:"KPN_NO",                    index:"KPN_NO",                   width:60, align:'center'  },
                                      {name:"INDV_SEX_C",                index:"INDV_SEX_C",               width:40, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
                                      {name:"COW_SOG_WT",                index:"COW_SOG_WT",               width:70, align:'right'    , formatter:'interger', formatoptions:{decimalPlaces:2,thousandsSeparator:','}},
-                                     {name:"LOWS_SBID_LMT_AM",          index:"LOWS_SBID_LMT_AM",         width:90, align:'right'    , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"LOWS_SBID_LMT_AM",          index:"LOWS_SBID_LMT_UPR",         width:90, align:'right'    , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"DONG",                      index:"DONG",                     width:250, align:'left' },
                                      {name:"OHSE_TELNO",                index:"OHSE_TELNO",               width:80, align:'center' },
                                      {name:"CUS_MPNO",                  index:"CUS_MPNO",                 width:85, align:'center' },
@@ -1946,7 +1948,54 @@ var na_bzplc = App_na_bzplc;
 		
         
     }
+    function fnSetGridData(frmId){
     
+        gridSaveRow(frmId);
+        var colModel    = $('#'+frmId).jqGrid('getGridParam', 'colModel');
+        var gridData    = $('#'+frmId).jqGrid('getGridParam', 'data');                
+        if (gridData.length == 0) {
+           MessagePopup("OK", '조회된 데이터가 없습니다.');
+           return false;
+        }
+		for (var i = 0, len = colModel.length; i < len; i++) {
+		   if (colModel[i].hidden === true) {
+		       continue;
+		   }
+		   
+		   if (colModel[i].formatter == 'select') {
+		       $('#'+frmId).jqGrid('setColProp', colModel[i].name, {
+		           unformat: gridUnfmt
+		       });
+		   }
+		}
+		var tempGrid = $('#'+frmId).getRowData();
+		return tempGrid.map((o,i)=>{			
+			if(o.SRA_INDV_PASG_QCN == '0'){
+				o.SRA_INDV_PASG_QCN = '';
+			}
+			if(o.SRA_INDV_PASG_QCN == '0'){
+				o.SRA_INDV_PASG_QCN = '';
+			}
+			if(o.MATIME == '0'){
+				o.MATIME = '';
+			}
+			if(o.COW_SOG_WT == '0'){
+				o.COW_SOG_WT = '';
+			}
+			if(o.LOWS_SBID_LMT_AM == '0'){
+				o.LOWS_SBID_LMT_AM = '';
+			}else{
+				o.LOWS_SBID_LMT_AM = o.LOWS_SBID_LMT_UPR;
+			}
+			if(o.SRA_SBID_AM == '0'){
+				o.SRA_SBID_AM = '';
+			}
+			if(o.SRA_SBID_UPR == '0'){
+				o.SRA_SBID_UPR = '';
+			}
+			return o;
+		}); 
+    }
     
     </script>
 
