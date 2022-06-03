@@ -1993,6 +1993,10 @@ var na_bzplc = App_na_bzplc;
 			if(o.SRA_SBID_UPR == '0'){
 				o.SRA_SBID_UPR = '';
 			}
+			if(o.DNA_YN_CHK == '부'){
+				o.DNA_YN_CHK = '';
+			}
+			
 			return o;
 		}); 
     }
