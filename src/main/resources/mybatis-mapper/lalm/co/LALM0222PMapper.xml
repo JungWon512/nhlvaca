@@ -234,6 +234,7 @@
 			                </if>
 			                <if test='!buffer_1.contains("AC")'>
 			                	, NEW_SRA_FARM_ACNO		= #{sra_farm_acno}
+			                	, SRA_FARM_ACNO		= #{sra_farm_acno}
 			                </if>
 	                	</when>
 	                	<otherwise>
@@ -246,6 +247,7 @@
 			                    , CUS_MPNO    = #{mpno}                                  /* 고객휴대전화번호                    */
 			                </if>
 		                	, NEW_SRA_FARM_ACNO		= #{sra_farm_acno}
+		                	, SRA_FARM_ACNO			= #{sra_farm_acno}
 	                	</otherwise>
 	                </choose>
                     , MACO_YN     = #{maco_yn}                               /* 출하자조합원여부                    */
