@@ -98,6 +98,8 @@
     <![CDATA[
          UPDATE TB_LA_IS_MH_SOG_COW SET
                     MODL_NO = #{modl_no}
+					, LSCHG_DTM              = SYSDATE
+				    , LS_CMENO               = #{ss_userid}
                 WHERE NA_BZPLC				= #{ss_na_bzplc}
                   AND AUC_DT				= #{auc_dt}
                   AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
@@ -111,6 +113,8 @@
     <![CDATA[
          UPDATE TB_LA_IS_MH_SOG_COW SET
                     RMK_CNTN = #{rmk_cntn}
+					, LSCHG_DTM              = SYSDATE
+				    , LS_CMENO               = #{ss_userid}
                 WHERE NA_BZPLC				= #{ss_na_bzplc}
                   AND AUC_DT				= #{auc_dt}
                   AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
