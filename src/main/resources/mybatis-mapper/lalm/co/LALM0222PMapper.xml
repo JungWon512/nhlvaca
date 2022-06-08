@@ -219,7 +219,7 @@
                     , FTSNM       = #{sra_fhsnm}                             /* 농가명                              */
 	                <choose>
 	                	<when test="buffer_1 != null and buffer_1 != ''">
-			                <if test='!buffer_1.contains("A")'>
+			                <if test='!buffer_1.contains("AD")'>
 			                    , ZIP         = replace(#{zip},'-','')                   /* 우편번호                            */
 			                    , DONGUP      = #{sra_farm_dongup}                       /* 동이상주소                          */
 			                    , DONGBW      = #{sra_farm_dongbw}                       /* 동이하주소                          */
@@ -228,9 +228,7 @@
 			                    , OHSE_TELNO  = #{telno}                                 /* 자택전화번호                        */
 			                </if>
 			                <if test='!buffer_1.contains("H")'>
-				                <if test='mpno != "" and mpno != null'>
-				                    , CUS_MPNO    = #{mpno}                                  /* 고객휴대전화번호                    */
-				                </if>
+			                    , CUS_MPNO    = #{mpno}                                  /* 고객휴대전화번호                    */
 			                </if>
 			                <if test='!buffer_1.contains("AC")'>
 			                	, NEW_SRA_FARM_ACNO		= #{sra_farm_acno}
@@ -243,9 +241,6 @@
 		                    , DONGBW      = #{sra_farm_dongbw}          
 		                    , OHSE_TELNO  = #{telno}              
 		                    , CUS_MPNO    = #{mpno}                
-			                <if test='mpno != "" and mpno != null'>
-			                    , CUS_MPNO    = #{mpno}                                  /* 고객휴대전화번호                    */
-			                </if>
 		                	, NEW_SRA_FARM_ACNO		= #{sra_farm_acno}
 		                	, SRA_FARM_ACNO			= #{sra_farm_acno}
 	                	</otherwise>

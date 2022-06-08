@@ -124,7 +124,7 @@
             var smsBuffer1 = result.SMS_BUFFER_1.split(',');
             result.SMS_BUFFER_1.split(',').forEach((o,i)=>{
             	switch(o){
-				case "A" :
+				case "AD" :
 					$('#buffer_1').prop('checked',true);
 				break;
 				case "T" :
@@ -763,7 +763,7 @@
                                 <th scope="row">출하주 정보 수정 제외항목</th>
                                 <td colspan = '3'>
                                     <input type="hidden" id="sms_buffer_1" value=""/>
-                                    <input type="checkbox" id="buffer_1" class="sms_buffer_1" value="A"/>
+                                    <input type="checkbox" id="buffer_1" class="sms_buffer_1" value="AD"/>
                                     <label for="buffer_1">주소</label>
                                     <input type="checkbox" id="buffer_2" class="sms_buffer_1" value="T"/>
                                     <label for="buffer_2">자택전화번호</label>

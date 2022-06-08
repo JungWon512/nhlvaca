@@ -1989,6 +1989,8 @@ var na_bzplc = App_na_bzplc;
 			}
 			if(o.SRA_SBID_AM == '0'){
 				o.SRA_SBID_AM = '';
+			}else{
+				o.SRA_SBID_AM = o.SRA_SBID_UPR;
 			}
 			if(o.SRA_SBID_UPR == '0'){
 				o.SRA_SBID_UPR = '';
