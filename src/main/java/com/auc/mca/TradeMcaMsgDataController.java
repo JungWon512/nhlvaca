@@ -1,5 +1,6 @@
 package com.auc.mca;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -538,30 +539,55 @@ public class TradeMcaMsgDataController {
 	
 	
 	//공백
-	public String padLeftBlank(String inputString, int length) {
+	public String padLeftBlank(String inputString, int length) throws UnsupportedEncodingException {
 		if(inputString == null) {
 			inputString = "";
 		}
-		if(inputString.length() >= length) {
+		byte[] inputByte=inputString.getBytes("EUC-KR");
+			
+		int byteLen = inputByte.length;
+		if(byteLen == length) {
 			return inputString;
+		}else if(byteLen > length) {
+			StringBuilder stringBuilder = new StringBuilder(length);
+			int nCnt = 0;
+			for(char ch:inputString.toCharArray()){
+				nCnt += String.valueOf(ch).getBytes("EUC-KR").length;
+				if(nCnt > length) break;
+				stringBuilder.append(ch);
+			}
+			return stringBuilder.toString();
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(inputString);
-		while(sb.length() < length - inputString.length()) {
+		while(sb.toString().getBytes("EUC-KR").length < length - byteLen) {
 			sb.append(" ");
 		}
+		sb.append(inputString);
 		return sb.toString();
 	}
 	//공백 제로
-	public String padLeftZero(String inputString, int length) {		
+	public String padLeftZero(String inputString, int length) throws UnsupportedEncodingException {		
 		if(inputString == null) {
 			inputString = "";
 		}		
-		if(inputString.length() >= length) {
+		byte[] inputByte=inputString.getBytes("EUC-KR");
+			
+		int byteLen = inputByte.length;
+		if(byteLen == length) {
 			return inputString;
-		}
+		}else if(byteLen > length) {
+			StringBuilder stringBuilder = new StringBuilder(length);
+			int nCnt = 0;
+			for(char ch:inputString.toCharArray()){
+				nCnt += String.valueOf(ch).getBytes("EUC-KR").length;
+				if(nCnt > length) break;
+				stringBuilder.append(ch);
+			}
+			return stringBuilder.toString();
+		}		
 		StringBuilder sb = new StringBuilder();		
-		while(sb.length() < length - inputString.length()) {
+		//while(sb.length() < length - inputString.length()) {
+		while(sb.toString().getBytes("EUC-KR").length < length - byteLen) {
 			sb.append("0");
 		}
 		sb.append(inputString);
@@ -569,9 +595,8 @@ public class TradeMcaMsgDataController {
 	}
 
 
-
 	public Map<String, Object> tradeMcaMsgTmp(String ctgrm_cd, Map<String, Object> paraMap) throws Exception {
-log.info(" ################# TradeMcaMsgDataController :tradeMcaMsgTmp() START #################");
+		log.info(" ################# TradeMcaMsgDataController :tradeMcaMsgTmp() START #################");
 		
 		Map<String, Object> sb = new HashMap<String, Object>();
 		
