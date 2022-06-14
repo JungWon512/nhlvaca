@@ -559,10 +559,10 @@ public class TradeMcaMsgDataController {
 			return stringBuilder.toString();
 		}
 		StringBuilder sb = new StringBuilder();
-		while(sb.toString().getBytes("EUC-KR").length < length - byteLen) {
+		sb.append(inputString);
+		while(sb.toString().getBytes("EUC-KR").length < length) {
 			sb.append(" ");
 		}
-		sb.append(inputString);
 		return sb.toString();
 	}
 	//공백 제로
