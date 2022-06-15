@@ -421,9 +421,9 @@ $(document).ready(function() {
 function setUserInfo(){
 	//왼쪽메뉴
 	$("#user-panel_name").text(App_userNm);
-	$("#user-panel_bzplnm").text(App_na_bzplnm);
+	$("#user-panel_bzplnm").html(App_na_bzplnm);
     //상단메뉴
-    $("#nav_menu_userInfo").text('[' + App_na_bzplnm + '] ' + App_userNm );
+    $("#nav_menu_userInfo").html('[' + App_na_bzplnm + '] ' + App_userNm );
     $("#nav_menu_userInfo").attr('na_bzplc',App_na_bzplc);
     <% if("127.0.0.1".equals((request.getHeader("X-Forwarded-For") ==  null)?request.getRemoteAddr():request.getHeader("X-Forwarded-For"))) { %>
     $("#nav_systemInfo").text('[로컬]');
@@ -918,7 +918,7 @@ function fn_sendIFrameDataReport(id, data){
     iform.id   = "iframeParam";
     iform.name = "iframeParam";
     iform.target = "report_" + id;
-<% if(InetAddress.getLocalHost().getHostAddress().indexOf("10.220.235.") > -1) { %>
+<% if(InetAddress.getLocalHost().getHostAddress().indexOf("192.168.") > -1 || InetAddress.getLocalHost().getHostAddress().indexOf("10.220.235.") > -1) { %>
     iform.action = "http://localhost:8270/aireport65/aiServer.jsp";
 <% }else { %>
     iform.action = "/AIREPORT/AISERVER";
