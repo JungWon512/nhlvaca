@@ -897,8 +897,8 @@
     		TitleData.su_max_sra_mwmnnm = $("#su_max_sra_mwmnnm").val();
     		
     		TitleData.no_lows_sra_sbid_am = $("#no_lows_sra_sbid_am").val();
-    		TitleData.no_max_sra_sbid_am = $("#no_lows_sra_sbid_am").val();
-    		TitleData.no_avg_sra_sbid_am = $("#no_lows_sra_sbid_am").val();
+    		TitleData.no_max_sra_sbid_am = $("#no_max_sra_sbid_am").val();
+    		TitleData.no_avg_sra_sbid_am = $("#no_avg_sra_sbid_am").val();
     		TitleData.no_lows_sra_mwmnnm = $("#no_lows_sra_mwmnnm").val();
     		TitleData.no_max_sra_mwmnnm = $("#no_max_sra_mwmnnm").val();
     		
