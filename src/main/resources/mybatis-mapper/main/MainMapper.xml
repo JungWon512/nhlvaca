@@ -276,8 +276,21 @@
          WHERE USRID = #{usrid}
     </select>
     
+    <select id="MainSogQcn_selList" resultType="hashMap">		
+		SELECT B.MONTHNM
+			,COUNT(CASE WHEN A.AUC_OBJ_DSC =1 AND SUBSTRING(A.AUC_DT,5,2) = B.MONTH THEN 1 END) SOCOW
+			,COUNT(CASE WHEN A.AUC_OBJ_DSC =2 AND SUBSTRING(A.AUC_DT,5,2) = B.MONTH THEN 1 END) BICOW
+			,COUNT(CASE WHEN A.AUC_OBJ_DSC =3 AND SUBSTRING(A.AUC_DT,5,2) = B.MONTH THEN 1 END) BUCOW
+		FROM (SELECT LEVEL || '월' MONTHNM,LPAD(LEVEL, 2, '0') MONTH FROM DUAL CONNECT BY LEVEL <![CDATA[ <= ]]> 12) B
+		LEFT JOIN TB_LA_IS_MH_SOG_COW A 
+			ON  A.NA_BZPLC =#{ss_na_bzplc}
+			AND A.DEL_YN = '0'
+			AND SUBSTRING(A.AUC_DT,1,6)=#{cb_year}||B.MONTH
+		GROUP BY MONTH, B.MONTHNM
+		ORDER BY MONTH, B.MONTHNM
+    </select>
     
-    <select id="MainSogQcn_selList" resultType="hashMap">
+    <select id="MainSogQcn_selList_bak" resultType="hashMap">
         SELECT '1월'            AS MONTHNM
              , nvl(B.SOCOW, 0) AS SOCOW
              , nvl(C.BICOW, 0) AS BICOW
