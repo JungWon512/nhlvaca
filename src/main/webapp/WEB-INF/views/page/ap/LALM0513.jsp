@@ -517,8 +517,8 @@
                 			am_lows_sra_sbid_am = result_8[i]["MIN_SRA_SBID_AM"];
                 			am_max_sra_sbid_am = result_8[i]["MAX_SRA_SBID_AM"];
                 			am_avg_sra_sbid_am = result_8[i]["AVG_SRA_SBID_AM"];
-                			am_lows_sra_mwmnnm = result_8[i]["AM_LOWS_SRA_MWMNNM"];
-                			am_max_sra_mwmnnm = result_8[i]["AM_MAX_SRA_MWMNNM"];
+                			am_lows_sra_mwmnnm = result_8[i]["LOWS_SRA_MWMNNM"];
+                			am_max_sra_mwmnnm = result_8[i]["MAX_SRA_MWMNNM"];
                 			
                 		} else if(result_8[i]["INDV_SEX_C"] == "2") {
                 			su_tot_su = parseInt(su_tot_su) + parseInt(result_8[i]["TOT_TOT_SU"]);
@@ -527,8 +527,8 @@
                 			su_lows_sra_sbid_am = result_8[i]["MIN_SRA_SBID_AM"];
                 			su_max_sra_sbid_am = result_8[i]["MAX_SRA_SBID_AM"];
                 			su_avg_sra_sbid_am = result_8[i]["AVG_SRA_SBID_AM"];
-                			su_lows_sra_mwmnnm = result_8[i]["SU_LOWS_SRA_MWMNNM"];
-                			su_max_sra_mwmnnm = result_8[i]["SU_MAX_SRA_MWMNNM"];
+                			su_lows_sra_mwmnnm = result_8[i]["LOWS_SRA_MWMNNM"];
+                			su_max_sra_mwmnnm = result_8[i]["MAX_SRA_MWMNNM"];
                 			
                 		} else if(result_8[i]["INDV_SEX_C"] == "3") {
                 			no_tot_su = parseInt(no_tot_su) + parseInt(result_8[i]["TOT_TOT_SU"]);
@@ -537,8 +537,8 @@
                 			no_lows_sra_sbid_am = result_8[i]["MIN_SRA_SBID_AM"];
                 			no_max_sra_sbid_am = result_8[i]["MAX_SRA_SBID_AM"];
                 			no_avg_sra_sbid_am = result_8[i]["AVG_SRA_SBID_AM"];
-                			no_lows_sra_mwmnnm = result_8[i]["NO_LOWS_SRA_MWMNNM"];
-                			no_max_sra_mwmnnm = result_8[i]["NO_MAX_SRA_MWMNNM"];
+                			no_lows_sra_mwmnnm = result_8[i]["LOWS_SRA_MWMNNM"];
+                			no_max_sra_mwmnnm = result_8[i]["MAX_SRA_MWMNNM"];
                 			
                 		} else if(result_8[i]["INDV_SEX_C"] == "4") {
                 			etc_tot_su = parseInt(etc_tot_su) + parseInt(result_8[i]["TOT_TOT_SU"]);
@@ -547,8 +547,8 @@
                 			etc_lows_sra_sbid_am = result_8[i]["MIN_SRA_SBID_AM"];
                 			etc_max_sra_sbid_am = result_8[i]["MAX_SRA_SBID_AM"];
                 			etc_avg_sra_sbid_am = result_8[i]["AVG_SRA_SBID_AM"];
-                			etc_lows_sra_mwmnnm = result_8[i]["ETC_LOWS_SRA_MWMNNM"];
-                			etc_max_sra_mwmnnm = result_8[i]["ETC_MAX_SRA_MWMNNM"];
+                			etc_lows_sra_mwmnnm = result_8[i]["LOWS_SRA_MWMNNM"];
+                			etc_max_sra_mwmnnm = result_8[i]["MAX_SRA_MWMNNM"];
                 			
                 		}
                 	}

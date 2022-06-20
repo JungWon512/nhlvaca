@@ -1242,6 +1242,56 @@
 	</select>
 	
 	<select id="LALM0513_selSubList_8" resultType="hashMap">
+		SELECT G.*
+		FROM (
+			SELECT 	T.INDV_SEX_C 
+					, FLOOR(MAX(DECODE(T.SEL_STS_DSC,'0',T.SRA_SBID_AM))) MAX_SRA_SBID_AM
+					, FLOOR(MIN(DECODE(T.SEL_STS_DSC,'0',T.SRA_SBID_AM))) MIN_SRA_SBID_AM
+					, FLOOR(AVG(DECODE(T.SEL_STS_DSC,'0',T.SRA_SBID_AM))) AS AVG_SRA_SBID_AM 
+					, SUM(DECODE(T.SEL_STS_DSC,'0',T.COW_SOG_WT)) AS COW_SOG_WT 
+					, MIN(T.FTSNM ) KEEP(DENSE_RANK LAST ORDER BY T.SRA_SBID_AM)  MAX_SRA_MWMNNM
+					, MIN(T.FTSNM ) KEEP(DENSE_RANK FIRST ORDER BY T.SEL_STS_DSC,T.SRA_SBID_AM) LOWS_SRA_MWMNNM 
+					, COUNT(DECODE(T.SEL_STS_DSC,'0',T.SRA_INDV_AMNNO)) AS TOT_SU
+					, COUNT(*) AS TOT_TOT_SU 			
+			FROM (	
+				SELECT
+					CASE
+						WHEN C.INDV_SEX_C = '1' THEN '1'
+						WHEN C.INDV_SEX_C = '2' THEN '2'
+						WHEN C.INDV_SEX_C = '3' THEN '3'
+						WHEN C.INDV_SEX_C = '6' THEN '1'
+						ELSE '4'
+					END AS INDV_SEX_C
+					, CASE
+						WHEN A.AUC_OBJ_DSC = '2' THEN A.SRA_SBID_UPR
+						ELSE A.SRA_SBID_AM
+					END AS SRA_SBID_AM
+					, A.SRA_INDV_AMNNO
+					, A.COW_SOG_WT
+					, B.FTSNM || '(' || A.FHS_ID_NO || '-' || A.FARM_AMNNO || ')' AS FTSNM
+					, DECODE(A.SEL_STS_DSC,'22','0','1') SEL_STS_DSC
+				FROM
+					TB_LA_IS_MH_SOG_COW A ,
+					TB_LA_IS_MM_INDV C ,
+					TB_LA_IS_MM_FHS B
+				WHERE
+					A.NA_BZPLC = #{ss_na_bzplc}
+					AND A.AUC_OBJ_DSC = #{auc_obj_dsc}
+					AND A.AUC_DT = #{auc_dt}
+					AND A.DEL_YN = '0'
+					AND A.LED_SQNO = 1
+					AND A.NA_BZPLC = C.NA_BZPLC
+					AND A.SRA_SRS_DSC = C.SRA_SRS_DSC
+					AND A.SRA_INDV_AMNNO = C.SRA_INDV_AMNNO
+					AND A.NA_BZPLC  = B.NA_BZPLC 
+					AND A.FHS_ID_NO = B.FHS_ID_NO 
+					AND A.FARM_AMNNO = B.FARM_AMNNO
+			) T
+			GROUP BY T.INDV_SEX_C
+		) G
+	</select>
+	
+	<select id="LALM0513_selSubList_8_bak" resultType="hashMap">
 	<![CDATA[
 		SELECT
 	          A.INDV_SEX_C       AS INDV_SEX_C
