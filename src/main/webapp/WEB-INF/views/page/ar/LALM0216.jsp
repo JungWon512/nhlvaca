@@ -1999,6 +1999,24 @@ var na_bzplc = App_na_bzplc;
 				o.DNA_YN_CHK = '';
 			}
 			
+			if(o.CALF_INDV_SEX_C == '0' ){
+				o.CALF_INDV_SEX_C ="없음";
+			}else if(o.CALF_INDV_SEX_C == '1' ){
+				o.CALF_INDV_SEX_C ="암";
+			}else if(o.CALF_INDV_SEX_C == '2' ){
+				o.CALF_INDV_SEX_C ="수";
+			}else if(o.CALF_INDV_SEX_C == '3' ){
+				o.CALF_INDV_SEX_C ="거세";
+			}else if(o.CALF_INDV_SEX_C == '4' ){
+				o.CALF_INDV_SEX_C ="미경산";
+			}else if(o.CALF_INDV_SEX_C == '5' ){
+				o.CALF_INDV_SEX_C ="비거세";
+			}else if(o.CALF_INDV_SEX_C == '6' ){
+				o.CALF_INDV_SEX_C ="프리마틴";
+			}else if(o.CALF_INDV_SEX_C == '9' ){
+				o.CALF_INDV_SEX_C ="공통";
+			}
+			
 			return o;
 		}); 
     }
