@@ -667,7 +667,7 @@ var isFrmOrgData = null;
                                 <th scope="row">계좌번호</th>
                                 <td>
                                     <div>
-                                        <input type="text" id="io_sra_farm_acno" name="io_sra_farm_acno" maxlength="20"/>
+                                        <input type="text" id="io_sra_farm_acno" name="io_sra_farm_acno" maxlength="17"/>
                                     </div>
                                 </td>
                                 <th scope="row">사료사용여부</th>

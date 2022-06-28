@@ -406,6 +406,11 @@ public class TradeMcaMsgDataController {
         	data.append(",\"RPT_DATA\":[");
     		for(int k = 0; k < mwmnList.size(); k++) {
     			Map<String, Object> inMap = mwmnList.get(k);
+    			
+    			String sraFarmAcno = (String)inMap.get("SRA_FARM_ACNO");
+    			if(sraFarmAcno != null) {
+    				sraFarmAcno = sraFarmAcno.replaceAll("-", "");
+    			}
         	    data.append("{");
         	    data.append("\"NA_BZPLC\":\""            + padLeftBlank((String)inMap.get("NA_BZPLC"),13)          + "\"");
             	data.append(",\"FHS_ID_NO\":\""          + padLeftBlank((String)inMap.get("FHS_ID_NO"),10)         + "\"");
@@ -430,7 +435,7 @@ public class TradeMcaMsgDataController {
             	data.append(",\"LS_CMENO\":\""           + padLeftBlank((String)inMap.get("LS_CMENO"),15)           + "\"");
             	data.append(",\"MACO_YN\":\""            + padLeftBlank((String)inMap.get("MACO_YN"),1)            + "\"");
             	data.append(",\"BRC\":\""                + padLeftBlank((String)inMap.get("BRC"),6)                + "\"");
-            	data.append(",\"SRA_FARM_ACNO\":\""      + padLeftBlank((String)inMap.get("SRA_FARM_ACNO"),25)     + "\"");
+            	data.append(",\"SRA_FARM_ACNO\":\""      + padLeftBlank(sraFarmAcno,25)     + "\"");
         	    
         	    if(k+1 == mwmnList.size()) {
 	            	data.append("}");	
