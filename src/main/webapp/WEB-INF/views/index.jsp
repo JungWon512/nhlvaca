@@ -391,6 +391,8 @@ $(document).ready(function() {
         
     }else{      
         wmcList = setDecrypt(wmcListData);
+        wmcList[0].NA_BZPLNM = wmcList[0].NA_BZPLNM.replace('&#40;','').replace('&#41;','');
+        
     }
     //환경설정기본 가져오기
     var envListData  = sendAjaxFrm("", "/selectEnvListData", "POST");
