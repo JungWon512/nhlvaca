@@ -78,10 +78,9 @@
           AND na_bzplc     = #{ss_na_bzplc}
           AND (DEL_YN      = #{del_yn}
            OR #{del_yn}     IS NULL)
-          <if test="broker == '1'"> 
+          <if test='"1".equals(broker)'> 
           	AND SUBSTR(fhs_id_no,1,1) IN ('T','N','S')
           </if>
-<!--           AND SUBSTR(fhs_id_no,1,1) = case when #{broker} = '1' then 'T' else SUBSTR(fhs_id_no,1,1) end -->
         ORDER BY lschg_dtm DESC
     </select>    
     

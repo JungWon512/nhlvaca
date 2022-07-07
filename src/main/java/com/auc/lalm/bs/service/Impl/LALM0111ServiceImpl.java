@@ -30,6 +30,10 @@ public class LALM0111ServiceImpl implements LALM0111Service{
 		Map<String, Object> reMap = new HashMap<String, Object>();
 		int insertNum = 0;
 		insertNum = lalm0111Mapper.LALM0111_insFarm(map);
+
+		reMap.put("sraFhsIdNo", map.get("sra_fhs_id_no"));
+		reMap.put("farmAmnno", map.get("farm_amnno"));
+		reMap.put("ftsnm", map.get("ftsnm"));
 		reMap.put("insertNum", insertNum);
 		return reMap;
 	}

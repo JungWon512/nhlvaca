@@ -113,11 +113,11 @@ var isFrmOrgData = null;
     function fn_Save(){
     	 
         //필수항목체크
+        /*
     	if($("#sra_fhs_id_no").val() == ''){
            MessagePopup('OK','농가식별번호를 입력하세요.');
            return;
         }
-        /*
     	if($("#farm_amnno").val() == ''){
             MessagePopup('OK','농장관리번호를 입력하세요.');
             return;
@@ -136,7 +136,8 @@ var isFrmOrgData = null;
     	var fhs_result;
     	    	
     	//수정
-    	if($("#sra_fhs_id_no").is(":disabled")){
+    	//if($("#sra_fhs_id_no").is(":disabled")){
+    	if($("#sra_fhs_id_no").val() != ''){
     		MessagePopup('YESNO',"수정하시겠습니까?",function(res){                           
                 if(res){
                     fhs_results = sendAjaxFrm("frm_Farm", "/LALM0111_updFarm", "POST");        
@@ -160,7 +161,7 @@ var isFrmOrgData = null;
                             
                             fhs_results = sendAjax(srchData, "/LALM0111_updFhsAnw", "POST");    
                             if(fhs_results.status != RETURN_SUCCESS){
-                                showErrorMessage(fhs_results,'NOTFOUND');
+                                //showErrorMessage(fhs_results,'NOTFOUND');
                             }else{      
                                 fhs_result = setDecrypt(fhs_results);
                             }
@@ -196,12 +197,6 @@ var isFrmOrgData = null;
             if(result != null){
             	$("#sra_fhs_id_no").val(result[0].FHS_ID_NO);
             }
-            else {
-               	if ($("#sra_fhs_id_no").val().charAt(0) != "T" && $("#sra_fhs_id_no").val().charAt(0) != "N") {
-               		MessagePopup('OK','농가 식별 번호를 확인하세요<br/>(T 또는 N으로 시작해야합니다.)');
-                    return;
-               	}
-            }
             
             MessagePopup('YESNO',"저장하시겠습니까?",function(res){                           
                 if(res){
@@ -211,6 +206,22 @@ var isFrmOrgData = null;
                         showErrorMessage(fhs_results);
                         return;
                     }else{      
+                    	fhs_result = setDecrypt(fhs_results);
+                        //3800 전송
+                        //개체이력 농가 조회
+                        var srchData           = new Object(); 
+                        srchData["ctgrm_cd"]   = "3800";
+                        srchData["fhs_id_no"]  = fhs_result.sraFhsIdNo;
+                        srchData["farm_amnno"] = fhs_result.farmAmnno;
+                        srchData["ftsnm"]      = fhs_result.ftsnm;
+                        
+                        
+                        fhs_results = sendAjax(srchData, "/LALM0111_updFhsAnw", "POST");    
+                        if(fhs_results.status != RETURN_SUCCESS){
+                            //showErrorMessage(fhs_results,'NOTFOUND');
+                        }else{      
+                            fhs_result = setDecrypt(fhs_results);
+                        }
                     	MessagePopup("OK", "정상적으로 처리되었습니다.", function(res){
                             fn_Search();
                         });
@@ -430,7 +441,7 @@ var isFrmOrgData = null;
         
         $("#anw_yn").attr('disabled', true);
         
-        $("#sra_fhs_id_no").attr('disabled', false);
+        //$("#sra_fhs_id_no").attr('disabled', false);
         $("#farm_amnno").attr('disabled', false); 
         
         $("#btn_Save").attr('disabled', false);
