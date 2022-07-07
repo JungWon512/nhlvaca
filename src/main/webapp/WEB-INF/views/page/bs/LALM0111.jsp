@@ -148,6 +148,7 @@ var isFrmOrgData = null;
                     	
                     	//한우종합
                         if($("#anw_yn").val() == '9'){
+                        /* 축경 전자경매 농가채번 issue: 농가번호가 T이후로 숫자만 입력이 되어야하는데 TYJ,T영축,영축으로 등록되는 데이터로인하여 문제*/
                             //3800 전송
                             //개체이력 농가 조회
                             var srchData           = new Object(); 

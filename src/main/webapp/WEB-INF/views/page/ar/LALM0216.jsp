@@ -1979,6 +1979,9 @@ var na_bzplc = App_na_bzplc;
 			if(o.MATIME == '0'){
 				o.MATIME = '';
 			}
+			if(o.PRNY_MTCN == '0'){
+				o.PRNY_MTCN = '';
+			}
 			if(o.COW_SOG_WT == '0'){
 				o.COW_SOG_WT = '';
 			}

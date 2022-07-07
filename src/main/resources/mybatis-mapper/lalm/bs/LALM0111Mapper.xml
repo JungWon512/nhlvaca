@@ -78,11 +78,19 @@
           AND na_bzplc     = #{ss_na_bzplc}
           AND (DEL_YN      = #{del_yn}
            OR #{del_yn}     IS NULL)
-          AND SUBSTR(fhs_id_no,1,1) = case when #{broker} = '1' then 'T' else SUBSTR(fhs_id_no,1,1) end
+          <if test="broker == '1'"> 
+          	AND SUBSTR(fhs_id_no,1,1) IN ('T','N','S')
+          </if>
+<!--           AND SUBSTR(fhs_id_no,1,1) = case when #{broker} = '1' then 'T' else SUBSTR(fhs_id_no,1,1) end -->
         ORDER BY lschg_dtm DESC
     </select>    
     
     <insert id="LALM0111_insFarm">
+        <selectKey resultType="string" keyProperty="sra_fhs_id_no" order="BEFORE">        
+	    	SELECT 'S'|| LPAD(NVL(MAX(SUBSTR(FHS_ID_NO,2,LENGTH(FHS_ID_NO)-1)),0)+1,6,0) sra_fhs_id_no
+			FROM TB_LA_IS_MM_FHS 
+			WHERE SUBSTR(FHS_ID_NO,1,1) IN ('S')
+    	</selectKey> 
         insert into tb_la_is_mm_fhs(
               na_bzplc
             , fhs_id_no
@@ -211,7 +219,7 @@
 	      and trim(a.fhs_id_no)   = trim(#{fhs_id_no})
 	      and trim(a.farm_amnno)  = trim(#{farm_amnno})	      
           and trim(a.ftsnm) = trim(#{ftsnm})
-	      and substr(a.fhs_id_no,1,1) in ('T', 'N')
+	      and substr(a.fhs_id_no,1,1) in ('T', 'N','S')
     </select>
     
     <select id="LALM0111_selChkFhsCow" resultType="_int">
