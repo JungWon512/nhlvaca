@@ -1025,7 +1025,7 @@
                                 </td>
                                 <th scope="row">경매번호</th>
                                 <td>
-                                    <input type="text" id="auc_prg_sq" class="number" maxlength="10">                                        
+                                    <input type="text" id="auc_prg_sq" class="integer" maxlength="10">                                        
                                 </td>                                
                             </tr>
                         </tbody>

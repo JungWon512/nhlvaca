@@ -55,6 +55,17 @@ $(document).ready(function() {
         changeYear: true
         
     });
+    $(document).on("input",".integer", function(){
+    	$(this).val($(this).val().replace(/[^0-9]/g,'').replace(/(\..*)\./g,'$1'));
+    }).on("focus",".integer",function(){
+    	if($(this).val() == 0){
+    		$(this).val(null) ;
+    	}else {
+    		$(this).val($(this).val().replace(/[^0-9]/g,'').replace(/(\..*)\./g,'$1'));
+    	}
+    }).on("focusout",".integer",function(){
+    	$(this).val($(this).val().replace(/(\d)(?=(?:\d{3})+(?!\d))/g, '$1,'));
+    });
 
     //NUMBER타입 음수 INPUT변수에 숫자만 입력 콤마추가
     $(document).on("input",".minusnumber", function(){

@@ -201,6 +201,8 @@
                 if(tagType == 'text' || tagType == 'password' || tagType == 'hidden'){
                 	if(String(className) != 'undefined' && className.indexOf('date') > -1){
                 		data[id] = $(frmIds[i]).val().replace(/[^0-9]/g,"");
+                	}else if(String(className) != 'undefined' && className.indexOf('onlynumber') > -1){
+                		data[id] = $(frmIds[i]).val().replace(/[^0-9]/g,'').replace(/(\..*)\./g,'$1');
                 	}else if(String(className) != 'undefined' && className.indexOf('minusnumber') > -1){
                 		data[id] = $(frmIds[i]).val().replace(/[^-?0-9.]/g,'').replace(/(\..*)\./g,'$1');
                 	}else if(String(className) != 'undefined' && className.indexOf('number') > -1){
