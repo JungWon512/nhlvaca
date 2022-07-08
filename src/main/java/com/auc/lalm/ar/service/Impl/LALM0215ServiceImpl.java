@@ -356,24 +356,25 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		aucObjDscCnt = Integer.parseInt(map.get("auc_obj_dsc").toString());
 		
-		if(aucObjDscCnt == 3) {
+		if(aucObjDscCnt == 3 && ("3".equals(map.get("ppgcow_fee_dsc")) || "4".equals(map.get("ppgcow_fee_dsc")))) {
 			for(int tmpi = 0; tmpi < calfList.size(); tmpi++) {
 				tmpMap = new HashMap<String, Object>();
+
 				tmpMap.put("ss_na_bzplc",		map.get("ss_na_bzplc"));
 				tmpMap.put("ss_userid", 		map.get("ss_userid"));
 				tmpMap.put("auc_obj_dsc",		map.get("auc_obj_dsc"));
 				tmpMap.put("auc_dt", 			map.get("auc_dt"));
 				tmpMap.put("v_oslp_no", 		vOslpNO);
 				tmpMap.put("v_rg_sqno", 		tmpi+1);
-				tmpMap.put("sra_srs_dsc", 		calfList.get(tmpi).get("SRA_SRS_DSC"));
-				tmpMap.put("sra_indv_amnno", 	calfList.get(tmpi).get("SRA_INDV_AMNNO"));
-				tmpMap.put("indv_sex_c", 		calfList.get(tmpi).get("INDV_SEX_C"));
-				tmpMap.put("cow_sog_wt", 		calfList.get(tmpi).get("COW_SOG_WT"));
-				tmpMap.put("birth", 			calfList.get(tmpi).get("BIRTH"));
-				tmpMap.put("kpn_no", 			calfList.get(tmpi).get("KPN_NO"));
+				tmpMap.put("sra_srs_dsc", 		calfList.get(tmpi).get("sra_srs_dsc"));
+				tmpMap.put("sra_indv_amnno", 	calfList.get(tmpi).get("sra_indv_amnno"));
+				tmpMap.put("indv_sex_c", 		calfList.get(tmpi).get("indv_sex_c"));
+				tmpMap.put("cow_sog_wt", 		calfList.get(tmpi).get("cow_sog_wt"));
+				tmpMap.put("birth", 			calfList.get(tmpi).get("birth"));
+				tmpMap.put("kpn_no", 			calfList.get(tmpi).get("kpn_no"));
 				tmpMap.put("del_yn", 			0);
 				tmpMap.put("tms_yn", 			0);
-				
+
 				insertNum = insertNum + lalm0215Mapper.LALM0215_insMhCalf(tmpMap);
 			}
 		}
@@ -461,7 +462,7 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		aucObjDscCnt = Integer.parseInt(map.get("auc_obj_dsc").toString());
 		
-		if(aucObjDscCnt == 3) {
+		if(aucObjDscCnt == 3 && ("3".equals(map.get("ppgcow_fee_dsc")) || "4".equals(map.get("ppgcow_fee_dsc")))) {
 			for(int tmpi = 0; tmpi < calfList.size(); tmpi++) {
 				if(!calfList.get(tmpi).get("_status_").equals("-")) {
 					tmpMap = new HashMap<String, Object>();
