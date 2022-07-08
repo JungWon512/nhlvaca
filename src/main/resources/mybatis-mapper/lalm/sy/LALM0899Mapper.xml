@@ -1514,7 +1514,7 @@
     where a.na_bzplc    = #{ss_na_bzplc}
       and a.na_bzplc    = b.na_bzplc
       and a.anw_yn      = '9'
-      and substr(a.fhs_id_no,1,1) in ('T', 'N')
+      and substr(a.fhs_id_no,1,1) in ('T', 'N','S')
       and a.lschg_dtm >= (select max(auc_dt) from TB_LA_IS_MH_AUC_QCN where tms_yn = '1')
     </select>
     

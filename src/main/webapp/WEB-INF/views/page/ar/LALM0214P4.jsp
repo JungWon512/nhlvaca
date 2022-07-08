@@ -86,6 +86,7 @@
             </ul>
             <div class="fl_R"><!--  //버튼 모두 우측정렬 -->   
                  
+                <button class="tb_btn" id="pb_DelModDt">수정일자 일괄삭제</button>
                 <button class="tb_btn" id="pb_ListReport">감정 명단</button>
                 <button class="tb_btn" id="pb_ConfirmReport">감정 확인서</button>
             </div>  
@@ -127,7 +128,7 @@
                 }else {
                     var data = new Object();  
                     data['lvst_mkt_trpl_dsc'] = '1';
-                    data['sra_mwmnnm'] = $("#brkr_name").val();
+                    data['brkr_name'] = $("#brkr_name").val();
                     fn_CallMmTrplPopup(data,true,function(result){
                         if(result){
                             $("#lvst_mkt_trpl_amnno").val(result.LVST_MKT_TRPL_AMNNO);
@@ -145,8 +146,8 @@
             e.preventDefault();
             this.blur();
             var data = new Object();
-            data['lvst_mkt_trpl_dsc'] = '1';            
-            data['sra_mwmnnm'] = $("#brkr_name").val();
+            data['lvst_mkt_trpl_dsc'] = '1';
+            data['brkr_name'] = $("#brkr_name").val();
             fn_CallMmTrplPopup(data,false,function(result){
                 if(result){
                     $("#lvst_mkt_trpl_amnno").val(result.LVST_MKT_TRPL_AMNNO);
@@ -154,7 +155,19 @@
                 }
             });
         });
-        
+        /******************************
+         * 수정일자 일괄삭제
+         ******************************/        
+        $("#pb_DelModDt").on('click',function(){
+        	var rowList = $('#grd_CowBun').getRowData()?.filter((o,i)=>{if(o.SEL_STS_DSC !='22'){o.ROWNUM=i+1; return o;}});
+        	if(rowList.length > 0 ){
+        		rowList .forEach((o,i) => {        			
+        			$("#grd_CowBun").jqGrid('setCell', o.ROWNUM, 'AFISM_MOD_DT', null);
+	        		fn_setGridStatus('grd_CowBun',o.ROWNUM, '' , o.AFISM_MOD_DT);
+	        		fn_GridAfismModDtChange(o.ROWNUM, '');
+        		});
+        	}
+        });     
         /******************************
          * 감정명단
          ******************************/        
