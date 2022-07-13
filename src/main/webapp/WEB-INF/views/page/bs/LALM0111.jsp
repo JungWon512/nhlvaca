@@ -148,8 +148,9 @@ var isFrmOrgData = null;
                     }else{ 
                     	
                     	//한우종합
+                    	
+                        /* 축경 전자경매 농가채번 issue: 농가번호가 T이후로 숫자만 입력이 되어야하는데 TYJ,T영축,영축으로 등록되는 데이터로인하여 문제
                         if($("#anw_yn").val() == '9'){
-                        /* 축경 전자경매 농가채번 issue: 농가번호가 T이후로 숫자만 입력이 되어야하는데 TYJ,T영축,영축으로 등록되는 데이터로인하여 문제*/
                             //3800 전송
                             //개체이력 농가 조회
                             var srchData           = new Object(); 
@@ -167,7 +168,7 @@ var isFrmOrgData = null;
                             }
                             
                         }
-                    	
+                    	*/
                     	MessagePopup("OK", "정상적으로 처리되었습니다.", function(res){
                             fn_Search();
                         });
@@ -208,6 +209,8 @@ var isFrmOrgData = null;
                     }else{      
                     	fhs_result = setDecrypt(fhs_results);
                         //3800 전송
+                        /* 2022.07.13 농가 인터페이스 pk issue
+                        	축경 전자경매 농가채번 issue: 농가번호가 T이후로 숫자만 입력이 되어야하는데 TYJ,T영축,영축으로 등록되는 데이터로인하여 문제
                         //개체이력 농가 조회
                         var srchData           = new Object(); 
                         srchData["ctgrm_cd"]   = "3800";
@@ -222,9 +225,11 @@ var isFrmOrgData = null;
                         }else{      
                             fhs_result = setDecrypt(fhs_results);
                         }
+                        */
                     	MessagePopup("OK", "정상적으로 처리되었습니다.", function(res){
                             fn_Search();
                         });
+                        
                     }
                 }                            
             });   
