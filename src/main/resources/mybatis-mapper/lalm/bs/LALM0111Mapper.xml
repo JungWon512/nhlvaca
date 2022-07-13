@@ -86,7 +86,7 @@
     
     <insert id="LALM0111_insFarm">
         <selectKey resultType="string" keyProperty="sra_fhs_id_no" order="BEFORE">        
-	    	SELECT 'S'|| LPAD(NVL(MAX(SUBSTR(FHS_ID_NO,2,LENGTH(FHS_ID_NO)-1)),0)+1,6,0) sra_fhs_id_no
+	    	SELECT 'S'|| LPAD(NVL(MAX(TO_NUMBER(SUBSTR(FHS_ID_NO,2,LENGTH(FHS_ID_NO)-1))),0)+1,6,0) sra_fhs_id_no
 			FROM TB_LA_IS_MM_FHS 
 			WHERE SUBSTR(FHS_ID_NO,1,1) IN ('S')
     	</selectKey> 
@@ -228,7 +228,8 @@
     </select>
     
     <delete id="LALM0111_delFhs">
-       delete from tb_la_is_mm_fhs
+       UPDATE tb_la_is_mm_fhs SET
+       	DEL_YN = '1'
 	    where na_bzplc   = #{ss_na_bzplc}                /* 경제통합사업장코드    */
 	      and trim(fhs_id_no)  = trim(#{sra_fhs_id_no})  /* 농가코드              */
 	      and trim(farm_amnno) = trim(#{farm_amnno})     /* 농장관리번호          */

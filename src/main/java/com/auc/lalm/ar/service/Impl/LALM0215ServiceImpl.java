@@ -231,13 +231,13 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 				tmpMap.put("auc_obj_dsc",	map.get("auc_obj_dsc"));
 				tmpMap.put("auc_dt", 		map.get("auc_dt"));
 				tmpMap.put("v_oslp_no", 	vOslpNO);
-				tmpMap.put("fee_rg_sqno", 	selFeemapList.get(i).get("FEE_RG_SQNO"));
-				tmpMap.put("na_fee_c", 		selFeemapList.get(i).get("NA_FEE_C"));
-				tmpMap.put("apl_dt", 		selFeemapList.get(i).get("APL_DT"));
-				tmpMap.put("fee_apl_obj_c", selFeemapList.get(i).get("FEE_APL_OBJ_C"));
-				tmpMap.put("ans_dsc", 		selFeemapList.get(i).get("ANS_DSC"));
-				tmpMap.put("sbid_yn", 		selFeemapList.get(i).get("SBID_YN"));
-				tmpMap.put("sra_tr_fee", 	selFeemapList.get(i).get("SRA_TR_FEE"));
+				tmpMap.put("fee_rg_sqno", 	selFeemapList.get(i).get("fee_rg_sqno"));
+				tmpMap.put("na_fee_c", 		selFeemapList.get(i).get("na_fee_c"));
+				tmpMap.put("apl_dt", 		selFeemapList.get(i).get("apl_dt"));
+				tmpMap.put("fee_apl_obj_c", selFeemapList.get(i).get("fee_apl_obj_c"));
+				tmpMap.put("ans_dsc", 		selFeemapList.get(i).get("ans_dsc"));
+				tmpMap.put("sbid_yn", 		selFeemapList.get(i).get("sbid_yn"));
+				tmpMap.put("sra_tr_fee", 	selFeemapList.get(i).get("sra_tr_fee"));
 				
 				insertNum = insertNum + lalm0215Mapper.LALM0215_insMhFeeImps(tmpMap);
 			}
@@ -245,7 +245,7 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		aucObjDscCnt = Integer.parseInt(map.get("auc_obj_dsc").toString());
 		
-		if(aucObjDscCnt == 3) {
+		if(aucObjDscCnt == 3 && ("3".equals(map.get("ppgcow_fee_dsc")) || "4".equals(map.get("ppgcow_fee_dsc")))) {
 			for(int tmpi = 0; tmpi < calfList.size(); tmpi++) {
 				tmpMap = new HashMap<String, Object>();
 				tmpMap.put("ss_na_bzplc",		map.get("ss_na_bzplc"));
@@ -254,12 +254,12 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 				tmpMap.put("auc_dt", 			map.get("auc_dt"));
 				tmpMap.put("v_oslp_no", 		vOslpNO);
 				tmpMap.put("v_rg_sqno", 		tmpi+1);
-				tmpMap.put("sra_srs_dsc", 		calfList.get(tmpi).get("SRA_SRS_DSC"));
-				tmpMap.put("sra_indv_amnno", 	calfList.get(tmpi).get("SRA_INDV_AMNNO"));
-				tmpMap.put("indv_sex_c", 		calfList.get(tmpi).get("INDV_SEX_C"));
-				tmpMap.put("cow_sog_wt", 		calfList.get(tmpi).get("COW_SOG_WT"));
-				tmpMap.put("birth", 			calfList.get(tmpi).get("BIRTH"));
-				tmpMap.put("kpn_no", 			calfList.get(tmpi).get("KPN_NO"));
+				tmpMap.put("sra_srs_dsc", 		calfList.get(tmpi).get("sra_srs_dsc"));
+				tmpMap.put("sra_indv_amnno", 	calfList.get(tmpi).get("sra_indv_amnno"));
+				tmpMap.put("indv_sex_c", 		calfList.get(tmpi).get("indv_sex_c"));
+				tmpMap.put("cow_sog_wt", 		calfList.get(tmpi).get("cow_sog_wt"));
+				tmpMap.put("birth", 			calfList.get(tmpi).get("birth"));
+				tmpMap.put("kpn_no", 			calfList.get(tmpi).get("kpn_no"));
 				tmpMap.put("del_yn", 			0);
 				tmpMap.put("tms_yn", 			0);
 				
