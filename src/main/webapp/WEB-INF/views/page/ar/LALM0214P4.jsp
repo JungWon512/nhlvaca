@@ -296,7 +296,7 @@
     function fn_Save(){
     	 //정합성 체크
          var v_selrow = $("#grd_CowBun").getGridParam('selrow');
-         $('#grd_CowBun').editCell( v_selrow , 0 , true); 
+         if(v_selrow) $('#grd_CowBun').editCell( v_selrow , 0 , true); 
     	 var ids = $('#grd_CowBun').jqGrid('getDataIDs');
     	 for (var i = 0, len = ids.length; i < len; i++) {
     		 var rowData = $('#grd_CowBun').jqGrid('getRowData', ids[i]);
