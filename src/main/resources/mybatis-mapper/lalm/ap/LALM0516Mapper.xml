@@ -30,7 +30,7 @@ SELECT    NM                /* 농가명                     */
                 WHEN LENGTH(trim(B.FTSNM)) = 2 THEN SUBSTR(trim(B.FTSNM),1,1) || '*' 
                 WHEN LENGTH(trim(B.FTSNM)) = 3 THEN SUBSTR(trim(B.FTSNM),1,1) || '*'  || SUBSTR(trim(B.FTSNM),3,1) 
                 WHEN LENGTH(trim(B.FTSNM)) = 4 THEN SUBSTR(trim(B.FTSNM),1,1) || '**' || SUBSTR(trim(B.FTSNM),4,1)  
-                WHEN LENGTH(trim(B.FTSNM)) = 5 THEN SUBSTR(trim(B.FTSNM),1,2) || '**' || SUBSTR(trim(B.FTSNM),5,1) ELSE trim(B.FTSNM) END AS NM  /* 농가명                     */           
+                WHEN LENGTH(trim(B.FTSNM)) >= 5 THEN SUBSTR(trim(B.FTSNM),1,2) || '**' || SUBSTR(trim(B.FTSNM),5,1) ELSE trim(B.FTSNM) END AS NM  /* 농가명                     */           
              , B.FHS_ID_NO                               /* 농가코드                  */
              , CASE WHEN '8808990643625' = '8808990811710' then b.rmk_cntn ELSE '' END             AS CUS_RLNO        /* 식별구분                  */
              , CASE WHEN #{ss_security} = '1' THEN B.OHSE_TELNO
@@ -96,7 +96,7 @@ SELECT    NM                /* 농가명                     */
 		           WHEN LENGTH(E.SRA_MWMNNM) = 2 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*' 
 		           WHEN LENGTH(E.SRA_MWMNNM) = 3 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*'  || SUBSTR(E.SRA_MWMNNM,3,1) 
 		           WHEN LENGTH(E.SRA_MWMNNM) = 4 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '**' || SUBSTR(E.SRA_MWMNNM,4,1)  
-		           WHEN LENGTH(E.SRA_MWMNNM) = 5 THEN SUBSTR(E.SRA_MWMNNM,1,2) || '**' || SUBSTR(E.SRA_MWMNNM,5,1) ELSE E.SRA_MWMNNM END AS NM  /* 농가명                     */             
+		           WHEN LENGTH(E.SRA_MWMNNM) >= 5 THEN SUBSTR(E.SRA_MWMNNM,1,2) || '**' || SUBSTR(E.SRA_MWMNNM,5, (LENGTH(E.SRA_MWMNNM)-5)) ELSE E.SRA_MWMNNM END AS NM  /* 농가명                     */             
 	        , ''                                       AS FHS_ID_NO          /* 농가코드                  */
 	        , E.CUS_RLNO                                                     /* 식별번호 - 중도매인(실명번호) */
 	        , CASE WHEN #{ss_security} = '1' THEN E.OHSE_TELNO 
