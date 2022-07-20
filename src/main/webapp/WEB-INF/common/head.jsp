@@ -146,7 +146,7 @@ $(document).ready(function() {
             tmpYYYYMMDD += "-";
             tmpYYYYMMDD += tmpNumber.substring(4,6);
             tmpYYYYMMDD += "-";
-            tmpYYYYMMDD += tmpNumber.substring(6);
+            tmpYYYYMMDD += tmpNumber.substring(6,8);
         }
         $(this).val(tmpYYYYMMDD);
         if(event.which == 8 || event.which == 46 
@@ -173,10 +173,42 @@ $(document).ready(function() {
             tmpYYYYMMDD += "-";
             tmpYYYYMMDD += tmpNumber.substring(6);
         }
-        $(this).val(tmpYYYYMMDD);
+        
+        if(fn_isDate(tmpYYYYMMDD)){
+        	$(this).val(tmpYYYYMMDD);
+        }else{
+        	$(this).val('');
+        }
         if(event.which == 8 || event.which == 46 
                 || event.which == 37 || event.which == 38 || event.which == 39 || event.which == 40)
         this.setSelectionRange(position,position);
+    });
+    
+    $(document).on("focusout", ".date", function(event) {
+        var tmpInputBox  = $(this).val();
+        var tmpInputLength = $(this).val().length;
+        var tmpNumber    = tmpInputBox.replace(/[^0-9]/g, "");
+        var position     = this.selectionStart;  
+        var tmpYYYYMMDD  = "";
+        if(tmpNumber.length <= 4) {
+            tmpYYYYMMDD = tmpNumber;
+        } else if(tmpNumber.length <= 6) {
+            tmpYYYYMMDD += tmpNumber.substring(0,4);
+            tmpYYYYMMDD += "-";
+            tmpYYYYMMDD += tmpNumber.substring(4);
+        } else {
+            tmpYYYYMMDD += tmpNumber.substring(0,4);
+            tmpYYYYMMDD += "-";
+            tmpYYYYMMDD += tmpNumber.substring(4,6);
+            tmpYYYYMMDD += "-";
+            tmpYYYYMMDD += tmpNumber.substring(6,8);
+        }
+        
+        if(fn_isDate(tmpYYYYMMDD)){
+        	$(this).val(tmpYYYYMMDD);
+        }else{
+        	$(this).val('');
+        }
     });
     
     //그리드 포멧
@@ -741,13 +773,7 @@ function fn_toDate(date,type){
 //* result     : 20211007
 //***************************************
 function fn_dateToData(date){
-	var yyyy = date.substr(0,4);
-	var mm = date.substr(5,2);
-	var dd = date.substr(8,2);
-
-	return yyyy + mm + dd; 
-
-
+	return date.replace(/[^0-9]/g,'').substring(0,6);
 }
 
 /*------------------------------------------------------------------------------

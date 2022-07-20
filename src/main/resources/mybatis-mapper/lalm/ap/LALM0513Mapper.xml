@@ -19,7 +19,7 @@
 	        , DEL_YN		  /* 삭제여부			*/
 	    FROM TB_LA_IS_MH_AUC_QCN
 	    WHERE NA_BZPLC         = #{ss_na_bzplc}		/* 경제통합사업장코드		*/
-	      AND AUC_OBJ_DSC      = #{auc_obj_dsc}		/* 경매대상구분코드		*/
+	      AND AUC_OBJ_DSC      = DECODE(AUC_OBJ_DSC,0,AUC_OBJ_DSC,#{auc_obj_dsc})		/* 경매대상구분코드		*/
 	      AND AUC_DT           = #{auc_dt}			/* 경매일자			*/
 		
 	]]>
@@ -30,14 +30,14 @@
 		SELECT
 	          SUM(CASE WHEN AA.FEE_APL_OBJ_C   = '1' THEN AA.SRA_UBD_FEE ELSE 0 END)   AS FHS_SRA_UBD_FEE
 	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C   = '2' THEN AA.SRA_UBD_FEE ELSE 0 END)   AS SEL_SRA_UBD_FEE
-	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C   = '1' THEN AA.INDV_SEX_C  ELSE 0 END)   AS AM_UBD_HDCN
-	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C   = '2' THEN AA.INDV_SEX_C  ELSE 0 END)   AS SU_UBD_HDCN
+	        , COUNT(CASE WHEN AA.INDV_SEX_C   = '1' THEN AA.INDV_SEX_C  ELSE 0 END)   AS AM_UBD_HDCN
+	        , COUNT(CASE WHEN AA.INDV_SEX_C   = '2' THEN AA.INDV_SEX_C  ELSE 0 END)   AS SU_UBD_HDCN
 	
 	    FROM (SELECT
 	                A.NA_BZPLC
 	              , A.AUC_OBJ_DSC
 	              , A.AUC_DT
-	              , SUM(CASE WHEN B.INDV_SEX_C IN ('1', '4', '6') THEN 1 ELSE 0 END) AS INDV_SEX_C
+	              , CASE WHEN B.INDV_SEX_C IN ('1', '4', '6') THEN 1 ELSE 2 END AS INDV_SEX_C
 	              , SUM(NVL(C.SRA_UBD_FEE, 0) + NVL(A.SRA_TRPCS, 0)
 	                                  + NVL(A.SRA_PYIVA, 0)
 	                                  + NVL(A.SRA_FED_SPY_AM, 0)
@@ -88,6 +88,7 @@
 	          GROUP BY A.NA_BZPLC
 	                 , A.AUC_OBJ_DSC
 	                 , A.AUC_DT
+	                 , CASE WHEN B.INDV_SEX_C IN ('1', '4', '6') THEN 1 ELSE 2 END
 	
 	          UNION ALL
 	
@@ -95,7 +96,7 @@
 	                A.NA_BZPLC
 	              , A.AUC_OBJ_DSC
 	              , A.AUC_DT
-	              , SUM(CASE WHEN B.INDV_SEX_C NOT IN ('1', '4', '6') THEN 1 ELSE 0 END) AS INDV_SEX_C
+	              , CASE WHEN B.INDV_SEX_C IN ('1', '4', '6') THEN 1 ELSE 2 END AS INDV_SEX_C
 	              , SUM(C.SRA_UBD_FEE) AS SRA_UBD_FEE
 	              , '2' AS FEE_APL_OBJ_C
 	
@@ -142,6 +143,7 @@
 	          GROUP BY A.NA_BZPLC
 	                 , A.AUC_OBJ_DSC
 	                 , A.AUC_DT
+	                 , CASE WHEN B.INDV_SEX_C IN ('1', '4', '6') THEN 1 ELSE 2 END
 	         ) AA
 	]]>
 	</select>

@@ -20,7 +20,7 @@ public class LALM0513ServiceImpl implements LALM0513Service{
 	public List<Map<String, Object>> LALM0513_selMhFeeImps(Map<String, Object> map) throws Exception {
 		
 		List<Map<String, Object>> list = null;		
-		list = lalm0513Mapper.LALM0513_selMhAucQcn(map);
+		list = lalm0513Mapper.LALM0513_selMhFeeImps(map);
 		return list;
 		
 	}

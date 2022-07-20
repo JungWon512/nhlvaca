@@ -619,16 +619,18 @@
                 results_9 = sendAjaxFrm("frm_Search", "/LALM0513_selMhFeeImps", "POST");
              	  
                 if(results_9.status != RETURN_SUCCESS){
-                    showErrorMessage(results_9);
-                    return;
+                    //showErrorMessage(results_9);
+                    //return;
+                    $("#fhs_sra_ubd_fee").val(0);
+                    $("#sel_sra_ubd_fee").val(0);
+                    $("#am_ubd_hdcn").val(0);
+                    $("#su_ubd_hdcn").val(0);
                 } else {
                     result_9 = setDecrypt(results_9);
                     $("#fhs_sra_ubd_fee").val(result_9[0].FHS_SRA_UBD_FEE);
                     $("#sel_sra_ubd_fee").val(result_9[0].SEL_SRA_UBD_FEE);
                     $("#am_ubd_hdcn").val(result_9[0].AM_UBD_HDCN);
                     $("#su_ubd_hdcn").val(result_9[0].SU_UBD_HDCN);
-                    $("#grd_MhSogCow9").jqGrid("clearGridData", true);
-                    fn_CreateGrid_9(result);
                 } 
                     
                 var result_9_1;
@@ -636,14 +638,13 @@
                 results_9_1 = sendAjaxFrm("frm_Search", "/LALM0513_selMhAucQcn", "POST");
              	  
                 if(results_9_1.status != RETURN_SUCCESS){
-                    showErrorMessage(results_4);
-                    return;
+                    //showErrorMessage(results_9_1);
                 } else {
                     result_9_1 = setDecrypt(results_9_1);
                     $("#qcn").val(result_9_1[0].QCN);
-                    $("#grd_MhSogCow9_1").jqGrid("clearGridData", true);
-                    fn_CreateGrid_9(result);
                 }
+                $("#grd_MhSogCow9").jqGrid("clearGridData", true);
+                fn_CreateGrid_9(result);
             	
             
             } else if($("#pb_tab10").hasClass("on")) {
