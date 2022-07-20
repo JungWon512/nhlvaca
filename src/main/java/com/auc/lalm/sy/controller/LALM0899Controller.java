@@ -449,7 +449,7 @@ public class LALM0899Controller {
 			}
 			reMap = commonFunc.createResultSetListData(dataList); 			
 			return reMap;	
-		}else if("4200".equals((String)map.get("ctgrm_cd")) || "4300".equals((String)map.get("ctgrm_cd"))) {
+		}else if("4200".equals((String)map.get("ctgrm_cd")) || "4300".equals((String)map.get("ctgrm_cd")) || "4500".equals((String)map.get("ctgrm_cd"))) {
 			mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), map);
 			Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");
 			dataMap = commonFunc.createResultSetMapData(dataMap); 			

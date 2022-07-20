@@ -527,6 +527,8 @@ public class TradeMcaMsgDataController {
         }else if("4300".equals(ctgrm_cd)) {
         	data.append("\"RC_NA_TRPL_C\":\"" + padLeftBlank((String)paraMap.get("RC_NA_TRPL_C"),13)    + "\"");
             data.append(",\"INDV_ID_NO\":\""  + padLeftBlank((String)paraMap.get("INDV_ID_NO"),15)  + "\"");
+        }else if("4500".equals(ctgrm_cd)) {
+        	data.append("\"NA_BZPLC\":\"" + padLeftBlank((String)paraMap.get("NA_BZPLC"),13)    + "\"");
         }
         
         int io_all_yn = 0;

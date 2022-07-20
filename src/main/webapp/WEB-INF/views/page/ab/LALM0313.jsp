@@ -102,6 +102,9 @@
         //폼 초기화
         fn_InitFrm('frm_Search');
         fn_DisableFrm('frm_Search', false);
+        
+        //$('#trmn_amnno').attr('disabled',true);
+        //$('#lvst_auc_ptc_mn_no').attr('disabled',true);
         $("#auc_dt").datepicker().datepicker("setDate", fn_getToday());
         
         // 경매대상 초기화면 '송아지' 설정(세종공주: 8808990656588 경주: 8808990659008)
@@ -119,11 +122,6 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Search(){
-        
-        if($('#trmn_amnno').val() =='' || $('#lvst_auc_ptc_mn_no').val() =='' || $('#sra_mwmnnm').val() ==''){
-        	MessagePopup('OK','응찰자를 입력하세요.',function(){$('#sra_mwmnnm').focus();});
-        	return;
-        }
         
     	var results = sendAjaxFrm("frm_Search", "/LALM0313_selList", "POST");        
         var result;
@@ -152,7 +150,7 @@
              if(res){
             	 gridSaveRow("mainGrid");
             	 var tmpSaveObject = $.grep($("#mainGrid").jqGrid('getRowData'), function(obj){
-            		return obj._STATUS_ == "*";
+            		return obj._STATUS_ == "*" && obj.LVST_AUC_PTC_MN_NO && obj.TRMN_AMNNO && obj.SRA_MWMNNM;
             	 });
                  
                  if(tmpSaveObject.length > 0) {
@@ -221,8 +219,7 @@
 	            rowNoValue = data.length;
 	        }
 	        
-	        var searchResultColNames = ["", "경매대상", "경매번호", "귀표번호", "생년월일", "성별", "KPN", "계대", "산차", "어미귀표번호", "어미구분", "중량", "응찰하한가", "코드", "번호", "성명",
-	         "입찰가", "경매일자", "원표번호"];      
+	        var searchResultColNames = ["", "경매대상", "경매번호", "귀표번호", "생년월일", "성별", "KPN", "계대", "산차", "어미귀표번호", "어미구분", "중량", "응찰하한가", "코드", "번호", "성명", "", "입찰가", "경매일자", "원표번호"];      
 	        var searchResultColModel = [	
 	        							{name:"_STATUS_",                 index:"_STATUS_",                  width:5,  align:'center'},
 	            						{name:"AUC_OBJ_DSC",              index:"AUC_OBJ_DSC",               width:30, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
@@ -240,7 +237,7 @@
 							            {name:"TRMN_AMNNO",               index:"TRMN_AMNNO",                width:35, align:'center'},
 							            {name:"LVST_AUC_PTC_MN_NO",       index:"LVST_AUC_PTC_MN_NO",        width:30, align:'center'},
 							            {name:"SRA_MWMNNM",               index:"SRA_MWMNNM",                width:45, align:'center'},
-//						                {name:"POPSCH",                   index:"POPSCH",                    width:15, align:'center', sortable: false, formatter :gridCboxFormat },							            
+						                {name:"POPSCH",                   index:"POPSCH",                    width:15, align:'center', sortable: false, formatter :gridCboxFormat },							            
 // 							            {name:"ATDR_AM",                  index:"ATDR_AM",                   width:35, align:'right', editable:true, formatter:'integer', formatoptions:{thousandsSeparator:','},
 // 	                                    	 editoptions:{
 // 	                                             dataInit:function(e){$(e).addClass('number');},
@@ -412,7 +409,7 @@
                                         <div class="cell"><input type="text" class="date" id="auc_dt"></div>
                                     </div>
                                 </td>
-                                <th scope="row">응찰자코드/참가번호/응찰자</th>
+                                <!--<th scope="row">응찰자코드/참가번호/응찰자</th>
                                 <td>
                                     <div class="cellBox v_addr">
                                          <div class="cell" style="width:60px;">
@@ -429,7 +426,7 @@
                                          </div>                                                                              
                                      </div>
                                 </td>                                 
-                                
+                                -->
                                                             
                             </tr>
                         </tbody>

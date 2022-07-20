@@ -295,6 +295,8 @@ public class RestApiJsonController {
             ctrn_cd = "IFLM0042";
         }else if("4300".equals(ctgrm_cd)) {
             ctrn_cd = "IFLM0043";
+        }else if("4500".equals(ctgrm_cd)) {
+            ctrn_cd = "IFLM0045";
         }
     }
 	
