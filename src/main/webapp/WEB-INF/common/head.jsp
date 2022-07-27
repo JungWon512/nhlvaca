@@ -773,7 +773,7 @@ function fn_toDate(date,type){
 //* result     : 20211007
 //***************************************
 function fn_dateToData(date){
-	return date.replace(/[^0-9]/g,'').substring(0,6);
+	return date.replace(/[^0-9]/g,'').substring(0,8);
 }
 
 /*------------------------------------------------------------------------------
