@@ -178,29 +178,47 @@ var isFrmOrgData = null;
     	//신규	
     	}else{
     		//개체이력 농가 조회
-            var srchData           = new Object(); 
-            srchData["ctgrm_cd"]   = "4100";
-            srchData["in_sqno"]    = 1;
-            srchData["in_rec_cn"]  = "1";
-            srchData["farm_amnno"] = $("#farm_amnno").val();
-            srchData["fhs_id_no"]  = $("#farm_id_no").val();
-            srchData["sra_fhsnm"]  = $("#ftsnm").val();
-
-            var results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");        
-            var result;
-            
-            if(results.status != RETURN_SUCCESS){
-                showErrorMessage(results,'NOTFOUND');
-            }else{      
-                result = setDecrypt(results);
-            }
-            
-            if(result != null){
-            	$("#sra_fhs_id_no").val(result[0].FHS_ID_NO);
-            }
+            //var srchData           = new Object(); 
+            //srchData["ctgrm_cd"]   = "4100";
+            //srchData["in_sqno"]    = 1;
+            //srchData["in_rec_cn"]  = "1";
+            //srchData["farm_amnno"] = $("#farm_amnno").val();
+            //srchData["fhs_id_no"]  = $("#farm_id_no").val();
+            //srchData["sra_fhsnm"]  = $("#ftsnm").val();
+            //
+            //var results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");        
+            //var result;
+            //
+            //if(results.status != RETURN_SUCCESS){
+            //    showErrorMessage(results,'NOTFOUND');
+            //}else{      
+            //    result = setDecrypt(results);
+            //}
+            //
+            //if(result != null){
+            //	$("#sra_fhs_id_no").val(result[0].FHS_ID_NO);
+            //}
             
             MessagePopup('YESNO',"저장하시겠습니까?",function(res){                           
                 if(res){
+	                var srchData           = new Object(); 
+					srchData["ctgrm_cd"]   = "4500";
+					srchData["na_bzplc"] = App_na_bzplc;
+					
+					var results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");        
+					var result;
+					
+					if(results.status != RETURN_SUCCESS){
+					    showErrorMessage(results,'NOTFOUND');
+					}else{      
+					    result = setDecrypt(results);
+					    if(result) $('#sra_fhs_id_no').val(result.FHS_ID_NO);
+					    else{
+	                    	MessagePopup("OK", "농가번호 채번중에 오류가 발생하였습니다.");
+					    	return;
+					    }
+					}
+					
                 	fhs_results = sendAjaxFrm("frm_Farm", "/LALM0111_insFarm", "POST");        
                     
                     if(fhs_results.status != RETURN_SUCCESS){
