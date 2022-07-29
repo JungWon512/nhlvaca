@@ -30,8 +30,8 @@
 		SELECT
 	          SUM(CASE WHEN AA.FEE_APL_OBJ_C   = '1' THEN AA.SRA_UBD_FEE ELSE 0 END)   AS FHS_SRA_UBD_FEE
 	        , SUM(CASE WHEN AA.FEE_APL_OBJ_C   = '2' THEN AA.SRA_UBD_FEE ELSE 0 END)   AS SEL_SRA_UBD_FEE
-	        , COUNT(CASE WHEN AA.INDV_SEX_C   = '1' THEN AA.INDV_SEX_C  ELSE 0 END)   AS AM_UBD_HDCN
-	        , COUNT(CASE WHEN AA.INDV_SEX_C   = '2' THEN AA.INDV_SEX_C  ELSE 0 END)   AS SU_UBD_HDCN
+	        , COUNT(CASE WHEN AA.INDV_SEX_C   = '1' THEN AA.UBD_HDCN  ELSE 0 END)   AS AM_UBD_HDCN
+	        , COUNT(CASE WHEN AA.INDV_SEX_C   = '2' THEN AA.UBD_HDCN  ELSE 0 END)   AS SU_UBD_HDCN
 	
 	    FROM (SELECT
 	                A.NA_BZPLC
@@ -44,7 +44,7 @@
 	                                  + NVL(A.TD_RC_CST, 0)
 	                                  + NVL(A.MT12_OVR_FEE, 0)) AS SRA_UBD_FEE
 	              , '1' AS FEE_APL_OBJ_C
-	
+				  , COUNT(*) UBD_HDCN
 	          FROM TB_LA_IS_MH_SOG_COW   A
 	             , TB_LA_IS_MM_INDV      B
 	             , (SELECT
@@ -99,7 +99,7 @@
 	              , CASE WHEN B.INDV_SEX_C IN ('1', '4', '6') THEN 1 ELSE 2 END AS INDV_SEX_C
 	              , SUM(C.SRA_UBD_FEE) AS SRA_UBD_FEE
 	              , '2' AS FEE_APL_OBJ_C
-	
+				  , 0 UBD_HDCN	
 	          FROM TB_LA_IS_MH_SOG_COW   A
 	             , TB_LA_IS_MM_INDV      B
 	             , (SELECT
