@@ -758,7 +758,6 @@
     //농가정보 전송
     function fn_FhsSend(){
     	//축경 전자경매 농가채번 issue: 농가번호가 T이후로 숫자만 입력이 되어야하는데 TYJ,T영축,영축으로 등록되는 데이터로인하여 문제
-    	return;    	
         var srchData = new Object();
         srchData["ctgrm_cd"]    = "3800";
         srchData["auc_dt"]      = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
