@@ -42,6 +42,7 @@
     	 
          fn_setCodeBox("cb_auc_obj_dsc", "AUC_OBJ_DSC", 2, true);
  //        fn_setCodeBox("maco_yn", "MACO_YN", 1, true);
+		 
          fn_Init();    
          /******************************
           * 폼변경시 클리어 이벤트
@@ -147,19 +148,19 @@
     	   
     	$('#mainGrid').getRowData().forEach((o,i)=>{
     		if(o.AUC_DT != '일계'){
-    			tot_lows_sbid_lmt_am += new Number(o.LOWS_SBID_LMT_AM_SEL_22);
+    			tot_lows_sbid_lmt_am += new Number(o.LOWS_SBID_LMT_AM);
     			tot_sra_sbid_am += new Number(o.SRA_SBID_AM); 
-    			tot_wt += new Number(o.TOT_WT_22);
+    			tot_wt += new Number(o.TOT_WT);
     			tot_cnt += new Number(o.TOT_HDCN); 
     			if(o.INDV_SEX_C == 1){ //암컷
-        			tot_w_lows_sbid_lmt_am += new Number(o.LOWS_SBID_LMT_AM_SEL_22);
+        			tot_w_lows_sbid_lmt_am += new Number(o.LOWS_SBID_LMT_AM);
         			tot_w_sra_sbid_am += new Number(o.SRA_SBID_AM); 
-        			tot_w_wt += new Number(o.TOT_WT_22);
+        			tot_w_wt += new Number(o.TOT_WT);
         			tot_w_cnt += new Number(o.TOT_HDCN);
     			}else{	//수컷
-        			tot_m_lows_sbid_lmt_am += new Number(o.LOWS_SBID_LMT_AM_SEL_22);
+        			tot_m_lows_sbid_lmt_am += new Number(o.LOWS_SBID_LMT_AM);
         			tot_m_sra_sbid_am += new Number(o.SRA_SBID_AM); 
-        			tot_m_wt += new Number(o.TOT_WT_22);
+        			tot_m_wt += new Number(o.TOT_WT);
         			tot_m_cnt += new Number(o.TOT_HDCN);     				
     			}
     		}
@@ -212,8 +213,8 @@
             rowNoValue = data.length;
         }
         
-        	/*                            1          2         3        4      5        6       7        8            			9          10     		  				11	   			   12	  			 13 	                14               15        16  */
-        	var searchResultColNames = ["경매일자", "경매대상", "등록구분", "성별", "출장두수", "두수", "유찰두수", "전체(kg)", "낙찰(kg)", "평균(kg)", "총 응찰하한가", "총 낙찰하한가", "응찰하한가<br>평균금액(A)", "총 낙찰가<br>금액", "낙찰가<br>평균금액(B)", "비고(평균차액)<br>(B-A)", "최고가", "최저가"
+        	/*                            1          2         3        4      5        6       7        8            9          10     		  11	   			   12	  			 13 	                14               15        16  */
+        	var searchResultColNames = ["경매일자", "경매대상", "등록구분", "성별", "출장두수", "두수", "유찰두수", "전체(kg)", "평균(kg)", "총 응찰하한가", "응찰하한가<br>평균금액(A)", "총 낙찰가<br>금액", "낙찰가<br>평균금액(B)", "비고(평균차액)<br>(B-A)", "최고가", "최저가"
         								];        
 	        var searchResultColModel = [						 
 						                {name:"AUC_DT",     		    index:"AUC_DT",     		    width:70, align:'center'},
@@ -224,10 +225,8 @@
 						                {name:"TOT_HDCN",               index:"TOT_HDCN",               width:40, align:'right'},
 						                {name:"TOT_HDCN2",              index:"TOT_HDCN2",              width:40, align:'right'},
 						                {name:"TOT_WT",                 index:"TOT_WT",  				width:40, align:'right'},
-						                {name:"TOT_WT_22",              index:"TOT_WT_22",  			width:40, align:'right', hidden:true},
 						                {name:"AVG_WT",        		    index:"AVG_WT",        	        width:40, align:'right'},
 						                {name:"LOWS_SBID_LMT_AM",       index:"LOWS_SBID_LMT_AM",       width:70, align:'right', formatter:'integer', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
-						                {name:"LOWS_SBID_LMT_AM_SEL_22",index:"LOWS_SBID_LMT_AM_SEL_22",width:70, align:'right', hidden:true, formatter:'integer', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
 						                {name:"AVG_PR",                 index:"AVG_PR",      			width:70, align:'right', formatter:'integer', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
 						                {name:"SRA_SBID_AM",            index:"SRA_SBID_AM",            width:60, align:'right', formatter:'integer', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
 						                {name:"SRA_AVG_SBID_UPR",       index:"SRA_AVG_SBID_UPR",       width:50, align:'right', formatter:'integer', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
@@ -303,13 +302,6 @@
         var tot_sra_avg_sbid_upr = 0; //낙찰가<br>평균금액(B)   
         var tot_bigo             = 0; //비고(평균차액)<br>(B-A)
         
-        var tot_bigo_lows_sbid_lmt_am = 0;
-        var ftot_bigo_lows_sbid_lmt_am = 0;
-        var mtot_bigo_lows_sbid_lmt_am = 0;   
-        var ftot_tot_wt_22 = 0;   
-        var mtot_tot_wt_22 = 0;   
-        var tot_tot_wt_22 = 0;    
-        
         var fCnt = 0;
         var mCnt = 0;
 
@@ -322,14 +314,12 @@
 	        	ftot_tot_hdcn         += parseInt(gridDatatemp[i].TOT_HDCN);	  
 	        	ftot_tot_hdcn2        += parseInt(gridDatatemp[i].TOT_HDCN2);	  
 	        	ftot_tot_wt           += parseInt(gridDatatemp[i].TOT_WT);	  
-	        	ftot_tot_wt_22        += parseInt(gridDatatemp[i].TOT_WT_22);	  
 	        	ftot_avg_wt           += parseInt(gridDatatemp[i].AVG_WT);	  
 	        	ftot_lows_sbid_lmt_am += parseInt(gridDatatemp[i].LOWS_SBID_LMT_AM);	  
 	        	ftot_avg_pr           += parseInt(gridDatatemp[i].AVG_PR);	  
 	        	ftot_sra_sbid_am      += parseInt(gridDatatemp[i].SRA_SBID_AM);	  
 	        	ftot_sra_avg_sbid_upr += parseInt(gridDatatemp[i].SRA_AVG_SBID_UPR);	  
 	        	ftot_bigo             += parseInt(gridDatatemp[i].BIGO);	
-	        	ftot_bigo_lows_sbid_lmt_am += parseInt(gridDatatemp[i].LOWS_SBID_LMT_AM_SEL_22);
 	        	fCnt++;
         	}
 			//수 합
@@ -338,14 +328,12 @@
 	        	mtot_tot_hdcn         += parseInt(gridDatatemp[i].TOT_HDCN);	  
 	        	mtot_tot_hdcn2        += parseInt(gridDatatemp[i].TOT_HDCN2);	  
 	        	mtot_tot_wt           += parseInt(gridDatatemp[i].TOT_WT); 
-	        	mtot_tot_wt_22        += parseInt(gridDatatemp[i].TOT_WT_22);	  
 	        	mtot_avg_wt           += parseInt(gridDatatemp[i].AVG_WT);	  
 	        	mtot_lows_sbid_lmt_am += parseInt(gridDatatemp[i].LOWS_SBID_LMT_AM);	  
 	        	mtot_avg_pr           += parseInt(gridDatatemp[i].AVG_PR);	  
 	        	mtot_sra_sbid_am      += parseInt(gridDatatemp[i].SRA_SBID_AM);	  
 	        	mtot_sra_avg_sbid_upr += parseInt(gridDatatemp[i].SRA_AVG_SBID_UPR);	  
 	        	mtot_bigo             += parseInt(gridDatatemp[i].BIGO);	  
-	        	mtot_bigo_lows_sbid_lmt_am += parseInt(gridDatatemp[i].LOWS_SBID_LMT_AM_SEL_22);
 	        	mCnt++;
         	}  
         	//총합
@@ -354,14 +342,12 @@
 	        	tot_tot_hdcn         += parseInt(gridDatatemp[i].TOT_HDCN);	  
 	        	tot_tot_hdcn2        += parseInt(gridDatatemp[i].TOT_HDCN2);	  
 	        	tot_tot_wt           += parseInt(gridDatatemp[i].TOT_WT);
-	        	tot_tot_wt_22        += parseInt(gridDatatemp[i].TOT_WT_22);	  
 	        	tot_avg_wt           += parseInt(gridDatatemp[i].AVG_WT);	  
 	        	tot_lows_sbid_lmt_am += parseInt(gridDatatemp[i].LOWS_SBID_LMT_AM);	  
 	        	tot_avg_pr           += parseInt(gridDatatemp[i].AVG_PR);	  
 	        	tot_sra_sbid_am      += parseInt(gridDatatemp[i].SRA_SBID_AM);	  
 	        	tot_sra_avg_sbid_upr += parseInt(gridDatatemp[i].SRA_AVG_SBID_UPR);	  
 	        	tot_bigo             += parseInt(gridDatatemp[i].BIGO);	  
-	        	tot_bigo_lows_sbid_lmt_am += parseInt(gridDatatemp[i].LOWS_SBID_LMT_AM_SEL_22);
         	}         	
 
         });        
@@ -374,12 +360,12 @@
                ,["TOT_HDCN"               ,ftot_tot_hdcn           ,1 ,"Integer"]               
                ,["TOT_HDCN2"              ,ftot_tot_hdcn2          ,1 ,"Integer"]               
                ,["TOT_WT"                 ,ftot_tot_wt             ,1 ,"Integer"]               
-               ,["AVG_WT"                 ,isNaN(Math.round(ftot_tot_wt_22/ftot_tot_hdcn)) ? 0 : Math.round(ftot_tot_wt_22/ftot_tot_hdcn)  ,1 ,"Integer"]               
+               ,["AVG_WT"                 ,isNaN(Math.round(ftot_tot_wt/ftot_tot_hdcn)) ? 0 : Math.round(ftot_tot_wt/ftot_tot_hdcn)  ,1 ,"Integer"]               
                ,["LOWS_SBID_LMT_AM"       ,ftot_lows_sbid_lmt_am   ,1 ,"Integer"]               
-               ,["AVG_PR"                 ,isNaN(Math.round(ftot_bigo_lows_sbid_lmt_am/ftot_tot_hdcn)) ? 0 : Math.round(ftot_bigo_lows_sbid_lmt_am/ftot_tot_hdcn)  ,1 ,"Integer"]               
+               ,["AVG_PR"                 ,isNaN(Math.round(ftot_lows_sbid_lmt_am/ftot_tot_hdcn)) ? 0 : Math.round(ftot_lows_sbid_lmt_am/ftot_tot_hdcn)  ,1 ,"Integer"]               
                ,["SRA_SBID_AM"            ,ftot_sra_sbid_am        ,1 ,"Integer"]               
                ,["SRA_AVG_SBID_UPR"       ,isNaN(Math.round(ftot_sra_sbid_am/ftot_tot_hdcn)) ? 0 : Math.round(ftot_sra_sbid_am/ftot_tot_hdcn)   ,1 ,"Integer"]               
-               ,["BIGO"                   ,isNaN(Math.round((ftot_sra_sbid_am-ftot_bigo_lows_sbid_lmt_am)/ftot_tot_hdcn)) ? 0 : Math.round((ftot_sra_sbid_am-ftot_bigo_lows_sbid_lmt_am)/ftot_tot_hdcn)                ,1 ,"Integer"]                   
+               ,["BIGO"                   ,isNaN(Math.round((ftot_sra_sbid_am-ftot_lows_sbid_lmt_am)/ftot_tot_hdcn)) ? 0 : Math.round((ftot_sra_sbid_am-ftot_lows_sbid_lmt_am)/ftot_tot_hdcn)                ,1 ,"Integer"]                   
            ]
  	       ,
  	       [//입력 컬럼 , 입력값, COLSPAN, 타입{String/Integer/Number}
@@ -389,12 +375,12 @@
               ,["TOT_HDCN"               ,mtot_tot_hdcn           ,1 ,"Integer"]               
               ,["TOT_HDCN2"              ,mtot_tot_hdcn2          ,1 ,"Integer"]               
               ,["TOT_WT"                 ,mtot_tot_wt             ,1 ,"Integer"]               
-              ,["AVG_WT"                 ,isNaN(Math.round(mtot_tot_wt_22/mtot_tot_hdcn)) ? 0 : Math.round(mtot_tot_wt_22/mtot_tot_hdcn)             ,1 ,"Integer"]               
+              ,["AVG_WT"                 ,isNaN(Math.round(mtot_tot_wt/mtot_tot_hdcn)) ? 0 : Math.round(mtot_tot_wt/mtot_tot_hdcn)             ,1 ,"Integer"]               
               ,["LOWS_SBID_LMT_AM"       ,mtot_lows_sbid_lmt_am   ,1 ,"Integer"]               
-              ,["AVG_PR"                 ,isNaN(Math.round(mtot_bigo_lows_sbid_lmt_am/mtot_tot_hdcn)) ? 0 : Math.round(mtot_bigo_lows_sbid_lmt_am/mtot_tot_hdcn)             ,1 ,"Integer"]               
+              ,["AVG_PR"                 ,isNaN(Math.round(mtot_lows_sbid_lmt_am/mtot_tot_hdcn)) ? 0 : Math.round(mtot_lows_sbid_lmt_am/mtot_tot_hdcn)             ,1 ,"Integer"]               
               ,["SRA_SBID_AM"            ,mtot_sra_sbid_am        ,1 ,"Integer"]               
               ,["SRA_AVG_SBID_UPR"       ,isNaN(Math.round(mtot_sra_sbid_am/mtot_tot_hdcn)) ? 0 : Math.round(mtot_sra_sbid_am/mtot_tot_hdcn)   ,1 ,"Integer"]               
-              ,["BIGO"                   ,isNaN(Math.round((mtot_sra_sbid_am-mtot_bigo_lows_sbid_lmt_am)/mtot_tot_hdcn)) ? 0 : Math.round((mtot_sra_sbid_am-mtot_bigo_lows_sbid_lmt_am)/mtot_tot_hdcn)               ,1 ,"Integer"]                   
+              ,["BIGO"                   ,isNaN(Math.round((mtot_sra_sbid_am-mtot_lows_sbid_lmt_am)/mtot_tot_hdcn)) ? 0 : Math.round((mtot_sra_sbid_am-mtot_lows_sbid_lmt_am)/mtot_tot_hdcn)               ,1 ,"Integer"]                   
           ] 	
  	       ,
  	       [//입력 컬럼 , 입력값, COLSPAN, 타입{String/Integer/Number}
@@ -404,12 +390,12 @@
               ,["TOT_HDCN"               ,tot_tot_hdcn           ,1 ,"Integer"]               
               ,["TOT_HDCN2"              ,tot_tot_hdcn2          ,1 ,"Integer"]               
               ,["TOT_WT"                 ,tot_tot_wt             ,1 ,"Integer"]               
-              ,["AVG_WT"                 ,isNaN(Math.round(tot_tot_wt_22/tot_tot_hdcn)) ? 0 : Math.round(tot_tot_wt_22/tot_tot_hdcn)             ,1 ,"Integer"]               
+              ,["AVG_WT"                 ,isNaN(Math.round(tot_tot_wt/tot_tot_hdcn)) ? 0 : Math.round(tot_tot_wt/tot_tot_hdcn)             ,1 ,"Integer"]               
               ,["LOWS_SBID_LMT_AM"       ,tot_lows_sbid_lmt_am   ,1 ,"Integer"]               
-              ,["AVG_PR"                 ,isNaN(Math.round(tot_bigo_lows_sbid_lmt_am/tot_tot_hdcn)) ? 0 : Math.round(tot_bigo_lows_sbid_lmt_am/tot_tot_hdcn)             ,1 ,"Integer"]               
+              ,["AVG_PR"                 ,isNaN(Math.round(tot_lows_sbid_lmt_am/tot_tot_hdcn)) ? 0 : Math.round(tot_lows_sbid_lmt_am/tot_tot_hdcn)             ,1 ,"Integer"]               
               ,["SRA_SBID_AM"            ,tot_sra_sbid_am        ,1 ,"Integer"]               
               ,["SRA_AVG_SBID_UPR"       ,isNaN(Math.round(tot_sra_sbid_am/tot_tot_hdcn)) ? 0 : Math.round(tot_sra_sbid_am/tot_tot_hdcn)   ,1 ,"Integer"]               
-              ,["BIGO"                   ,isNaN(Math.round((tot_sra_sbid_am-tot_bigo_lows_sbid_lmt_am)/tot_tot_hdcn)) ? 0 : Math.round((tot_sra_sbid_am-tot_bigo_lows_sbid_lmt_am)/tot_tot_hdcn)               ,1 ,"Integer"]                   
+              ,["BIGO"                   ,isNaN(Math.round((tot_sra_sbid_am-tot_lows_sbid_lmt_am)/tot_tot_hdcn)) ? 0 : Math.round((tot_sra_sbid_am-tot_lows_sbid_lmt_am)/tot_tot_hdcn)               ,1 ,"Integer"]                   
           ]  	       
  	       
         ];
@@ -463,10 +449,9 @@
                             <col width="30">
                             <col width="50">
                             <col width="30">
-                            <col width="100">                          
-                            <col width="30">
                             <col width="100">
-                            <col width="300">                        
+                            <col width="100">
+                            <col width="200">                        
                         </colgroup>
                         <tbody>
                             <tr>
