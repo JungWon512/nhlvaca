@@ -702,6 +702,14 @@ var na_bzplc = App_na_bzplc;
             			 ReportPopup('LALM0216R3_110',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		
             		 } else {
+	            		 grid4 = grid4.map((o,i)=>{	
+							if(na_bzplc == '8808990227207'){
+								o.MTCN = o.MTCN+'개월 '+o.MTCN4+'일';								
+							}else{
+								o.MTCN = '('+o.MTCN+'개월)';
+							}
+							return o;
+						}); 
             			 ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
@@ -902,6 +910,14 @@ var na_bzplc = App_na_bzplc;
             			 ReportPopup('LALM0216R3_112',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             		 } else {
+	            		 grid4 = grid4.map((o,i)=>{	
+							if(na_bzplc == '8808990227207'){
+								o.MTCN = o.MTCN+'개월 '+o.MTCN4+'일';								
+							}else{
+								o.MTCN = '('+o.MTCN+'개월)';
+							}
+							return o;
+						 }); 
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 }
@@ -1133,6 +1149,14 @@ var na_bzplc = App_na_bzplc;
              			 ReportPopup('LALM0216R3_113',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
              		 } else {
+	            		 grid4 = grid4.map((o,i)=>{	
+							if(na_bzplc == '8808990227207'){
+								o.MTCN = o.MTCN+'개월 '+o.MTCN4+'일';								
+							}else{
+								o.MTCN = '('+o.MTCN+'개월)';
+							}
+							return o;
+						 }); 
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 }
