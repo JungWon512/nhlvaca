@@ -588,7 +588,8 @@
    		        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
    		      		// ★익산: 8808990227283
    		        	if(App_na_bzplc == "8808990227283") {
-   		        		fn_contrChBox(false, "prny_jug_yn", "");
+   		        		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게 기존 false 고정
+   		        		//fn_contrChBox(false, "prny_jug_yn", "");
    		            } else {
    		            	fn_contrChBox(true, "prny_jug_yn", "");
    		            }

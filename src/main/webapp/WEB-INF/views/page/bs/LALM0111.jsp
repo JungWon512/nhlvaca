@@ -178,29 +178,47 @@ var isFrmOrgData = null;
     	//신규	
     	}else{
     		//개체이력 농가 조회
-            var srchData           = new Object(); 
-            srchData["ctgrm_cd"]   = "4100";
-            srchData["in_sqno"]    = 1;
-            srchData["in_rec_cn"]  = "1";
-            srchData["farm_amnno"] = $("#farm_amnno").val();
-            srchData["fhs_id_no"]  = $("#farm_id_no").val();
-            srchData["sra_fhsnm"]  = $("#ftsnm").val();
-
-            var results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");        
-            var result;
-            
-            if(results.status != RETURN_SUCCESS){
-                showErrorMessage(results,'NOTFOUND');
-            }else{      
-                result = setDecrypt(results);
-            }
-            
-            if(result != null){
-            	$("#sra_fhs_id_no").val(result[0].FHS_ID_NO);
-            }
+            //var srchData           = new Object(); 
+            //srchData["ctgrm_cd"]   = "4100";
+            //srchData["in_sqno"]    = 1;
+            //srchData["in_rec_cn"]  = "1";
+            //srchData["farm_amnno"] = $("#farm_amnno").val();
+            //srchData["fhs_id_no"]  = $("#farm_id_no").val();
+            //srchData["sra_fhsnm"]  = $("#ftsnm").val();
+            //
+            //var results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");        
+            //var result;
+            //
+            //if(results.status != RETURN_SUCCESS){
+            //    showErrorMessage(results,'NOTFOUND');
+            //}else{      
+            //    result = setDecrypt(results);
+            //}
+            //
+            //if(result != null){
+            //	$("#sra_fhs_id_no").val(result[0].FHS_ID_NO);
+            //}
             
             MessagePopup('YESNO',"저장하시겠습니까?",function(res){                           
                 if(res){
+	                var srchData           = new Object(); 
+					srchData["ctgrm_cd"]   = "4500";
+					srchData["na_bzplc"] = App_na_bzplc;
+					
+					var results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");        
+					var result;
+					
+					if(results.status != RETURN_SUCCESS){
+					    showErrorMessage(results,'NOTFOUND');
+					}else{      
+					    result = setDecrypt(results);
+					    if(result) $('#sra_fhs_id_no').val(result.FHS_ID_NO);
+					    else{
+	                    	MessagePopup("OK", "농가번호 채번중에 오류가 발생하였습니다.");
+					    	return;
+					    }
+					}
+					
                 	fhs_results = sendAjaxFrm("frm_Farm", "/LALM0111_insFarm", "POST");        
                     
                     if(fhs_results.status != RETURN_SUCCESS){
@@ -211,6 +229,8 @@ var isFrmOrgData = null;
                         //3800 전송
                         /* 2022.07.13 농가 인터페이스 pk issue
                         	축경 전자경매 농가채번 issue: 농가번호가 T이후로 숫자만 입력이 되어야하는데 TYJ,T영축,영축으로 등록되는 데이터로인하여 문제
+                         * 2022.08.02 농가인터페이스 4500 채번인터페이스 실행후 신규 농가번호발급받아 진행                         
+                        */
                         //개체이력 농가 조회
                         var srchData           = new Object(); 
                         srchData["ctgrm_cd"]   = "3800";
@@ -225,7 +245,6 @@ var isFrmOrgData = null;
                         }else{      
                             fhs_result = setDecrypt(fhs_results);
                         }
-                        */
                     	MessagePopup("OK", "정상적으로 처리되었습니다.", function(res){
                             fn_Search();
                         });
