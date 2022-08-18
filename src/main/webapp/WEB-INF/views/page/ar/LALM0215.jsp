@@ -2554,7 +2554,7 @@
 		fn_InitSet();
 		console.log($("#chack_on").is(":checked"));
 		if ($("#chack_on").is(":checked")) {
-			$("#auc_prg_sq").focus();
+			$("#auc_prg_sq").focus().select();
 		}
 		else {
 			$("#sra_indv_amnno").focus();
