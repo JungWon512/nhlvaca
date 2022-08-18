@@ -703,8 +703,16 @@ var na_bzplc = App_na_bzplc;
             		
             		 } else {
 	            		 grid4 = grid4.map((o,i)=>{	
-							if(na_bzplc == '8808990227207'){
-								o.MTCN = o.MTCN+'개월 '+o.MTCN4+'일';								
+	            			 if(na_bzplc == '8808990227207'){
+	            				if(o.MTCN4 !='0'){
+									o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';	            					
+	            				}else{
+	            					o.MTCN = '('+o.MTCN+'개월)';	            					
+	            				}
+								if(o.CALF_SRA_INDV_AMNNO){
+									var tempSraNo = o.CALF_SRA_INDV_AMNNO.substr(3);
+									o.CALF_SRA_INDV_AMNNO = tempSraNo.substr(0,3)+'-'+tempSraNo.substr(3);									
+								}
 							}else{
 								o.MTCN = '('+o.MTCN+'개월)';
 							}
@@ -911,8 +919,8 @@ var na_bzplc = App_na_bzplc;
             		 
             		 } else {
 	            		 grid4 = grid4.map((o,i)=>{	
-							if(na_bzplc == '8808990227207'){
-								o.MTCN = o.MTCN+'개월 '+o.MTCN4+'일';								
+							if(na_bzplc == '8808990227207' && o.MTCN4 !='0'){
+								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';								
 							}else{
 								o.MTCN = '('+o.MTCN+'개월)';
 							}
@@ -1150,8 +1158,8 @@ var na_bzplc = App_na_bzplc;
             		 
              		 } else {
 	            		 grid4 = grid4.map((o,i)=>{	
-							if(na_bzplc == '8808990227207'){
-								o.MTCN = o.MTCN+'개월 '+o.MTCN4+'일';								
+							if(na_bzplc == '8808990227207' && o.MTCN4 !='0'){
+								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';								
 							}else{
 								o.MTCN = '('+o.MTCN+'개월)';
 							}
