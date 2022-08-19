@@ -581,7 +581,7 @@ function fn_InitFrm(p_FrmId){
 //**************************************
 function fn_setClearFromFrm(p_FrmId,p_GridIDs){
    
-	$("#"+ p_FrmId).find('input[type=hidden], input[type=text], input[type=password], textarea, select, input[type=checkbox]').bind('input',function(event){
+	$("#"+ p_FrmId).find('input[type=hidden], input[type=text], input[type=password], textarea, select, input[type=checkbox]').not('.noEvent').bind('input',function(event){
 		//console.log(event);
         //그리드 초기화
         $(p_GridIDs).jqGrid("clearGridData", true);

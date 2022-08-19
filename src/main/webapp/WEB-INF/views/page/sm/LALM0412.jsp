@@ -1332,6 +1332,8 @@ var mCnt = 0;
 				} else if(na_bzplc == '8808990656557') {
     				ReportPopup('LALM0412R0_5_2',p_param, p_grid, 'T');
     				
+    			} else if(na_bzplc == '8808990227207') { //남원
+    				ReportPopup('LALM0412R0_5_6',p_param, p_grid, 'V');
     			} else {
     				ReportPopup('LALM0412R0_5_3',p_param, p_grid, 'V');
     			}
@@ -1359,10 +1361,10 @@ var mCnt = 0;
     				
     			} else if(na_bzplc == '8808990661315' || na_bzplc == '8808990656960' || na_bzplc == '8808990656953') { //화순,정읍,순창
 					ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'T');//원본	
-				} else {	
+				}else if(na_bzplc == '8808990227207') { //남원
+    				ReportPopup('LALM0412R0_5_6',p_param, p_grid, 'V');
+    			} else {	
     				ReportPopup('LALM0412R0_5_3',p_param, p_grid, 'V');
-    				
-
     			}
 			}
 		}

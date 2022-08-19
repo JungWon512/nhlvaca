@@ -9,11 +9,13 @@
 	    SELECT
 	          A.AUC_PRG_SQ                           /* 경매진행순서                            */
 	        , A.AUC_OBJ_DSC                          /* 경매대상구분                            */
-	        , CASE WHEN LENGTH(C.FTSNM) = 2 THEN SUBSTR(C.FTSNM,1,1) || '*' 
+	        , CASE WHEN #{ss_security} = '1' THEN C.FTSNM
+	        	   WHEN LENGTH(C.FTSNM) = 2 THEN SUBSTR(C.FTSNM,1,1) || '*' 
 	               WHEN LENGTH(C.FTSNM) = 3 THEN SUBSTR(C.FTSNM,1,1) || '*'  || SUBSTR(C.FTSNM,3,1) 
 	               WHEN LENGTH(C.FTSNM) = 4 THEN SUBSTR(C.FTSNM,1,1) || '**' || SUBSTR(C.FTSNM,4,1)  
 	               WHEN LENGTH(C.FTSNM) = 5 THEN SUBSTR(C.FTSNM,1,2) || '**' || SUBSTR(C.FTSNM,5,1) ELSE C.FTSNM END AS FTSNM  /* 출하자명                     */ 
-	        , CASE WHEN LENGTH(A.SRA_PDMNM) = 2 THEN SUBSTR(A.SRA_PDMNM,1,1) || '*' 
+	        , CASE WHEN #{ss_security} = '1' THEN A.SRA_PDMNM
+	        	   WHEN LENGTH(A.SRA_PDMNM) = 2 THEN SUBSTR(A.SRA_PDMNM,1,1) || '*' 
 	               WHEN LENGTH(A.SRA_PDMNM) = 3 THEN SUBSTR(A.SRA_PDMNM,1,1) || '*'  || SUBSTR(A.SRA_PDMNM,3,1) 
 	               WHEN LENGTH(A.SRA_PDMNM) = 4 THEN SUBSTR(A.SRA_PDMNM,1,1) || '**' || SUBSTR(A.SRA_PDMNM,4,1)  
 	               WHEN LENGTH(A.SRA_PDMNM) = 5 THEN SUBSTR(A.SRA_PDMNM,1,2) || '**' || SUBSTR(A.SRA_PDMNM,5,1) ELSE A.SRA_PDMNM END AS SRA_PDMNM   /* 축산생산자명                            */     
@@ -28,7 +30,8 @@
 	        , nvl(substr(B.MCOW_SRA_INDV_AMNNO,1, 3) || '-' || substr(B.MCOW_SRA_INDV_AMNNO,4, 3) || '-' || substr(B.MCOW_SRA_INDV_AMNNO,7, 9), B.MCOW_SRA_INDV_AMNNO)  AS MCOW_SRA_INDV_AMNNO
 	        , B.MCOW_DSC                             /* 어미구분코드                            */
 	        , A.PPGCOW_FEE_DSC                       /* 번식우수수료구분코드                    */
-            , C.DONGUP ||' '||  TRIM(LPAD(' ', LENGTH(C.DONGBW) +1, '*')) AS ADDR                   /* 주소                      */
+            , CASE WHEN #{ss_security} = '1' THEN C.DONGUP ||' '|| C.DONGBW
+              ELSE C.DONGUP ||' '||  TRIM(LPAD(' ', LENGTH(C.DONGBW) +1, '*')) END AS ADDR                   /* 주소                      */
 	        , A.EPD_YN                               /* 고능력여부                                    */
 	        , A.RMK_CNTN                             /* 비고내용                                */
 	        , A.RC_DT                                /* 접수일자                                */

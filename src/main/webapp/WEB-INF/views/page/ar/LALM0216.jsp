@@ -84,7 +84,8 @@ var na_bzplc = App_na_bzplc;
  		
  		$("#tab_1").click(function(){
             $(".ftsnm_td").show();             
-            $(".dong_td").hide();  
+            $(".dong_td").hide();
+            $(".bothPrint_td").hide();            
           
         });
         
@@ -92,18 +93,21 @@ var na_bzplc = App_na_bzplc;
         $("#tab_2").click(function(){
             $(".ftsnm_td").hide();          
             $(".dong_td").show();
+            $(".bothPrint_td").hide();
          
         });
         
         $("#tab_3").click(function(){
             $(".ftsnm_td").hide();          
             $(".dong_td").hide();
+            $(".bothPrint_td").hide();
            
         });
         
         $("#tab_4").click(function(){
             $(".ftsnm_td").hide();          
             $(".dong_td").hide();
+            $(".bothPrint_td").show();
            
             
         });
@@ -700,22 +704,28 @@ var na_bzplc = App_na_bzplc;
             		 // ★포항: 8808990679549
             		 } else if(na_bzplc == '8808990679549') {
             			 ReportPopup('LALM0216R3_110',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-            		
+            		 // ★남원 : 8808990227207
+            		 } else if(na_bzplc == '8808990227207'){
+	            		 grid4 = grid4.map((o,i)=>{	
+            				if(o.MTCN4 !='0'){
+								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';	            					
+            				}else{
+            					o.MTCN = '('+o.MTCN+'개월)';	            					
+            				}
+							if(o.CALF_SRA_INDV_AMNNO){
+								var tempSraNo = o.CALF_SRA_INDV_AMNNO.substr(3);
+								o.CALF_SRA_INDV_AMNNO = tempSraNo.substr(0,3)+'-'+tempSraNo.substr(3);									
+							}
+							if(o.RG_DSC == '미등록우'){
+								o.RG_DSC = '';
+							}
+							return o;
+						}); 
+            			 ReportPopup('LALM0216R3_5_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 
             		 } else {
 	            		 grid4 = grid4.map((o,i)=>{	
-	            			 if(na_bzplc == '8808990227207'){
-	            				if(o.MTCN4 !='0'){
-									o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';	            					
-	            				}else{
-	            					o.MTCN = '('+o.MTCN+'개월)';	            					
-	            				}
-								if(o.CALF_SRA_INDV_AMNNO){
-									var tempSraNo = o.CALF_SRA_INDV_AMNNO.substr(3);
-									o.CALF_SRA_INDV_AMNNO = tempSraNo.substr(0,3)+'-'+tempSraNo.substr(3);									
-								}
-							}else{
-								o.MTCN = '('+o.MTCN+'개월)';
-							}
+							o.MTCN = '('+o.MTCN+'개월)';
 							return o;
 						}); 
             			 ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -917,13 +927,23 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990643625') {
             			 ReportPopup('LALM0216R3_112',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
-            		 } else {
+            		 } else if(na_bzplc == '8808990227207'){
 	            		 grid4 = grid4.map((o,i)=>{	
-							if(na_bzplc == '8808990227207' && o.MTCN4 !='0'){
+							if(o.MTCN4 !='0'){
 								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';								
 							}else{
 								o.MTCN = '('+o.MTCN+'개월)';
 							}
+							if(o.RG_DSC == '미등록우'){
+								o.RG_DSC = '';
+							}
+							return o;
+						 }); 
+             			 ReportPopup('LALM0216R3_6_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 
+             		 }else {
+	            		 grid4 = grid4.map((o,i)=>{	
+							o.MTCN = '('+o.MTCN+'개월)';
 							return o;
 						 }); 
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1136,6 +1156,12 @@ var na_bzplc = App_na_bzplc;
              			 
              		 // ★남원: 8808990227207
              		 } else if(na_bzplc == '8808990227207') {
+	            		 grid4 = grid4.map((o,i)=>{	
+							if(o.RG_DSC == '미등록우'){
+								o.RG_DSC = '';
+							}
+							return o;
+						}); 
              			 ReportPopup('LALM0216R3_93',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★예천축협 : 8808990656557
@@ -1157,12 +1183,8 @@ var na_bzplc = App_na_bzplc;
              			 ReportPopup('LALM0216R3_113',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
              		 } else {
-	            		 grid4 = grid4.map((o,i)=>{	
-							if(na_bzplc == '8808990227207' && o.MTCN4 !='0'){
-								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';								
-							}else{
-								o.MTCN = '('+o.MTCN+'개월)';
-							}
+	            		 grid4 = grid4.map((o,i)=>{
+							o.MTCN = '('+o.MTCN+'개월)';
 							return o;
 						 }); 
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -2000,8 +2022,9 @@ var na_bzplc = App_na_bzplc;
 		       });
 		   }
 		}
-		var tempGrid = $('#'+frmId).getRowData();
-		return tempGrid.map((o,i)=>{			
+		var result = new Array();
+		var index = 0;
+		$('#'+frmId).getRowData().forEach((o,i)=>{
 			if(o.SRA_INDV_PASG_QCN == '0'){
 				o.SRA_INDV_PASG_QCN = '';
 			}
@@ -2051,9 +2074,21 @@ var na_bzplc = App_na_bzplc;
 			}else if(o.CALF_INDV_SEX_C == '9' ){
 				o.CALF_INDV_SEX_C ="공통";
 			}
+			result.push(cloneObj(o));
+			if($('#bothPrint:checked').val() == 'Y'){
+				result.push(cloneObj(o));
+			}
 			
-			return o;
+			function cloneObj(source) {
+			  var target = {};
+			  for (let i in source) {			    
+			      target[i] = source[i];
+			  }
+			  return target;
+			}
 		}); 
+		
+		return result;
     }
     
     </script>
@@ -2127,6 +2162,14 @@ var na_bzplc = App_na_bzplc;
 											<div class="cell">
 												<input type="text" id="dongup">
 												<input type="hidden" id="qcn"/>
+											</div>
+										</div>
+									</td>
+									<th class="bothPrint_td" scope="row"><span class="tb_dot">양면인쇄</span></th>
+									<td class="bothPrint_td">
+										<div class="cellbox">
+											<div class="cell">
+												<input type="checkbox" id="bothPrint" class="noEvent" value="Y">
 											</div>
 										</div>
 									</td>
