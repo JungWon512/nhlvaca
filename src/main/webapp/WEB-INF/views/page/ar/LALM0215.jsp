@@ -128,7 +128,7 @@
          * 경매대상 라디오 버튼클릭 이벤트
          ******************************/
         $(document).on("click", "input[name='auc_obj_dsc_radio']", function(e) {
-        	fn_AucOnjDscModify();
+        	fn_AucOnjDscModify("init");
         	
         });
     	
@@ -1209,6 +1209,8 @@
      	
     	// 경매차수 조회
 		var resultAucQcn = fn_SelAucQcn();
+    	
+    	console.log(resultAucQcn, fn_delComma($("#lows_sbid_lmt_am").val()));
 		
 		if(resultAucQcn == null) {
 			MessagePopup('OK',"경매차수가 등록되지 않았습니다.");
@@ -1242,8 +1244,8 @@
 			v_sra_sbid_upr = parseInt(fn_delComma($("#sra_sbid_upr").val())) * parseInt(parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"]);
 		}
 		
-		if(parseInt(v_sra_sbid_upr) > parseInt(fn_delComma($("#base_lmt_am").val()))) {
-			MessagePopup('OK','낙찰단가가 최고 응찰 한도금액을 초과 하였습니다.(최고응찰한도금액:'+$("#base_lmt_am").val()+'원');
+		if(parseInt(v_sra_sbid_upr) > parseInt(resultAucQcn[0]["BASE_LMT_AM"])) {
+			MessagePopup('OK','낙찰단가가 최고 응찰 한도금액을 초과 하였습니다.(최고응찰한도금액:'+resultAucQcn[0]["BASE_LMT_AM"]+'원');
 			$("#sra_sbid_upr").focus();
 			return;
 		}
@@ -2608,7 +2610,7 @@
     		fn_setRadioChecked("auc_obj_dsc");
     		
     		mv_RunMode = 1;
-    		fn_AucOnjDscModify();
+    		fn_AucOnjDscModify("init");
         	fn_Search();
         	
     		mv_RunMode = 2;
@@ -2671,7 +2673,7 @@
 		    mv_flg = "";
 		    
 			// 경매대상 관련 초기 셋팅
-		    fn_AucOnjDscModify();
+		    fn_AucOnjDscModify("init");
 			
 		    if(fn_isNull($("#auc_dt").val())) {
 		    	$("#auc_dt").focus();
@@ -3283,10 +3285,12 @@
  	//paramater : N/A
  	// result   : N/A
  	//**************************************
-    function fn_SelAucDt(){
+    function fn_SelAucDt(flag){
  		 
 	    var srchData = new Object();
         srchData["auc_obj_dsc"] = $("#auc_obj_dsc").val();
+        srchData["auc_dt"] = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
+        srchData["flag"] = flag;
         
         var resultsAuc = sendAjax(srchData, "/Common_selAucDt", "POST");    
         var resultAuc;
@@ -3383,13 +3387,13 @@
  	function fn_AucOnjDscModify() {
  		
  		// 경매일 셋팅을 위한 조회
-		fn_SelAucDt();
+		fn_SelAucDt(flag);
  		
 	    if (mv_RunMode == '1' && mv_flg == '') {
 	    	$("#btn_Save").attr("disabled", false);
 	    	$("#btn_Delete").attr("disabled", true);
 	    	
-	    	if(!fn_isNull($("#auc_dt").val)) {
+	    	if(!fn_isNull($("#auc_dt").val())) {
 	    		// 경매차수 조회
 				var resultAucQcn = fn_SelAucQcn();
 				
@@ -5362,7 +5366,7 @@
 		                        		<input type="hidden" id="sra_srs_dsc">
 		                        	</td>
 		                        	<td>
-		                        		<input type="hidden" id="fir_lows_sbid_lmt_am">
+		                        		<input type="hidden" id="fir_lows_sbid_lmt_am" class="number">
 		                        	</td>
 		                        	<td>
 		                        		<input type="hidden" id="sog_na_trpl_c">
