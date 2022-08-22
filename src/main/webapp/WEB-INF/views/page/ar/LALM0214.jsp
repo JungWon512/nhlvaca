@@ -16,6 +16,8 @@
 <style>
 #gbox_grd_MhSogCow_1 .ui-jqgrid-hbox{width:100% !important; padding-right:0 !important;}
 #gbox_grd_MhSogCow_1 .ui-jqgrid-bdiv{overflow-y:hidden !important;}
+.ui-jqgrid tr.jqgrow{height: 30px;white-space: nowrap;}
+
 </style>
 
 <script type="text/javascript">
@@ -426,10 +428,19 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Excel(){
+    	var tempObj = [];
+    	$('#gbox_grd_MhSogCow_1 tr.footrow:visible td:visible').each((i,o)=>{
+    		tempObj.push({label:$(o).text(),name:$(o).attr('aria-describedby')?.replace('grd_MhSogCow_1_',''),width:$(o).outerWidth(),align:$(o).css('text-align'),formatter:'',colspan:$(o).attr('colspan')??'1'});
+		});
+    	$('#gbox_grd_MhSogCow_2 tr.footrow:visible td:visible').each((i,o)=>{
+    		tempObj.push({label:$(o).text(),name:$(o).attr('aria-describedby')?.replace('grd_MhSogCow_1_',''),width:$(o).outerWidth(),align:$(o).css('text-align'),formatter:'',colspan:$(o).attr('colspan')??'1'});
+		});
+    
+    
     	if (App_na_bzplc == '8808990657622') {  // 홍성: 8808990657622
     		fn_ExcelDownlad('grd_MhSogCow3', '출장우내역조회');
     	}else{
-            fn_ExcelDownlad('grd_MhSogCow', '출장우내역조회');
+            fn_ExcelDownlad('grd_MhSogCow', '출장우내역조회',tempObj);
     	}
     } 
     
@@ -491,7 +502,7 @@
                                   
                                   ];        
         var searchResultColModel = [
-        	                         {name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,  sortable:false, align:'center', hidden:true},
+        	                         {name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,height:30,  sortable:false, align:'center', hidden:true},
         	                         {name:"AUC_DT",               index:"AUC_DT",               width:90,  sortable:false, align:'center', hidden:true},
                                      {name:"OSLP_NO",              index:"OSLP_NO",              width:90,  sortable:false, align:'center', hidden:true},
                                      {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:40,  sortable:false, align:'center', sorttype: "number"},

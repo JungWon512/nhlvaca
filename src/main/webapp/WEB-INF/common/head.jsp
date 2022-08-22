@@ -1474,7 +1474,7 @@ function gridSaveRow(gridID) {
 //* paramater  : grid
 //* result     : N/A
 //***************************************
-function fn_ExcelDownlad(gid, p_title){
+function fn_ExcelDownlad(gid, p_title, p_footer){
         
    gridSaveRow(gid);
 	
@@ -1539,7 +1539,7 @@ function fn_ExcelDownlad(gid, p_title){
    var excelUrl = "/excelDownload";
    var xhr  = new XMLHttpRequest();
    
-   var param = JSON.stringify({'colModel': newcolModel, 'gridData': gridDatatemp, 'title': title});
+   var param = JSON.stringify({'colModel': newcolModel, 'gridData': gridDatatemp, 'title': title, 'footer': p_footer});
    
    xhr.open("POST", excelUrl, true);
    xhr.responseType = "blob";

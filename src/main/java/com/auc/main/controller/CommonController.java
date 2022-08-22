@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.util.CellRangeAddress;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
@@ -72,9 +74,11 @@ public class CommonController {
 		param.put("colModel", reqData.getParamDataList("colModel"));
 		param.put("gridData", reqData.getParamDataList("gridData"));
 		param.put("title", reqData.getParamDataVal("title"));
-		
+		param.put("footer", reqData.getParamDataList("footer"));
+
 		List<HashMap<String, Object>> colModelList = (List<HashMap<String, Object>>) param.get("colModel");
 		List<HashMap<String, Object>> gridDataList = (List<HashMap<String, Object>>) param.get("gridData");
+		List<HashMap<String, Object>> footerList = (List<HashMap<String, Object>>) param.get("footer");
 		String title = StringUtils.NULL(param.get("title"));
 		
 		if(colModelList == null) {
@@ -82,6 +86,9 @@ public class CommonController {
 		}
 		if(gridDataList == null) {
 			gridDataList = new ArrayList<HashMap<String, Object>>();
+		}
+		if(footerList == null) {
+			footerList = new ArrayList<HashMap<String, Object>>();
 		}
 		
 		//jqGrid RowValue 삭제
@@ -101,6 +108,7 @@ public class CommonController {
 		
 		int colModelLength = colModelList.size();
 		int gridDataLength = gridDataList.size();
+		int footerLength = footerList.size();
 		
 		try {
 			
@@ -192,7 +200,41 @@ public class CommonController {
 	    			xsCell.setCellStyle(xsdCSs[j]);
 	    		}
 	        }
+
+    		xsRow = xsSheet.createRow(gridDataLength+1);
+    		xsRow.createCell(0).setCellStyle(xsdCSs[0]);
+    		
+    		int chkColIndex = 0;
 			
+	    	for (int i=0; i<footerLength; i++) {
+	    		if(footerList.get(i).containsKey("width")) {
+	    			xsSheet.setColumnWidth(chkColIndex + 1, 40 * (Integer.parseInt(StringUtils.NULL(footerList.get(i).get("width"), "0"))));
+	    		}else {
+	    			xsSheet.setColumnWidth(chkColIndex + 1, 40 * 0);
+	    		}
+	    		xsCell = xsRow.createCell(chkColIndex + 1);
+	    		//xsCell.setCellStyle(xshCS);
+	    		if(footerList.get(i).containsKey("label")) {
+	    			xsCell.setCellValue(StringUtils.NULL(footerList.get(i).get("label")));
+	    		}else {
+	    			xsCell.setCellValue("");
+	    		}
+				
+	    		xsdCSs[i] = xsWB.createCellStyle();
+	    		xsdCSs[i].setVerticalAlignment(VerticalAlignment.CENTER);
+	    		//xsdCSs[i].setFont(xsdFont);
+				if (footerList.get(i).containsKey("align") && "center".equals(footerList.get(i).get("align")))
+					xsdCSs[i].setAlignment(HorizontalAlignment.CENTER);
+	 			else if (footerList.get(i).containsKey("right") && "right".equals(footerList.get(i).get("align")))
+	 				xsdCSs[i].setAlignment(HorizontalAlignment.RIGHT);
+	 			else if(footerList.get(i).containsKey("left") && "lfet".equals(footerList.get(i).get("align")))
+	 				xsdCSs[i].setAlignment(HorizontalAlignment.LEFT);
+
+	    		String cellColSpan = (String) footerList.get(i).get("colspan");     
+	    		int tempVal = Integer.valueOf(cellColSpan);
+				xsSheet.addMergedRegion(new CellRangeAddress(xsRow.getRowNum(), xsRow.getRowNum(), chkColIndex+1, chkColIndex+=tempVal));
+	    	}
+    					
 			String filename = title;
 			res.reset();			
 			res.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -203,6 +245,7 @@ public class CommonController {
 			
 		}catch(RuntimeException | IOException e){
 			log.info("동작중 오류가 발생하였습니다.");
+			log.info("",e);
 		}		 
 		
 		return "success";
