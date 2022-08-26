@@ -467,7 +467,8 @@
             $("#pb_CalfRg").show(); 
             $("#msg_Sbid").hide();
         }
-    	var results = sendAjaxFrm("frm_Search", "/Common_selAucDt", "POST");        
+    	$("#frm_Search").append("<input type='hidden' id='flag' name='flag' value='init' />");
+    	var results = sendAjaxFrm("frm_Search", "/Common_selAucDt", "POST"); 
         var result;
         
         if(results.status != RETURN_SUCCESS){

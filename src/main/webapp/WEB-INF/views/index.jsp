@@ -950,7 +950,7 @@ function fn_sendIFrameDataReport(id, data){
 
     iform.reportID.value = id;
     iform.data.value = data;
-    iform.reportParams.value = "showEXCEL:fasle,showHWP:false,showPOWERPOINT:false,showMSWORD:false,contextMenu:false";
+    iform.reportParams.value = "showEXCEL:true,showHWP:false,showPOWERPOINT:false,showMSWORD:false,contextMenu:false";
     
     iform.submit();
     
