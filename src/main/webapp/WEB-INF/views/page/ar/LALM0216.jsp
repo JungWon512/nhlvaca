@@ -719,6 +719,9 @@ var na_bzplc = App_na_bzplc;
 							if(o.RG_DSC == '미등록우'){
 								o.RG_DSC = '';
 							}
+							if(o.MCOW_DSC == '미등록우'){
+								o.MCOW_DSC = '';
+							}
 							return o;
 						}); 
             			 ReportPopup('LALM0216R3_5_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -936,6 +939,9 @@ var na_bzplc = App_na_bzplc;
 							}
 							if(o.RG_DSC == '미등록우'){
 								o.RG_DSC = '';
+							}
+							if(o.MCOW_DSC == '미등록우'){
+								o.MCOW_DSC = '';
 							}
 							return o;
 						 }); 
@@ -1159,6 +1165,9 @@ var na_bzplc = App_na_bzplc;
 	            		 grid4 = grid4.map((o,i)=>{	
 							if(o.RG_DSC == '미등록우'){
 								o.RG_DSC = '';
+							}
+							if(o.MCOW_DSC == '미등록우'){
+								o.MCOW_DSC = '';
 							}
 							return o;
 						}); 

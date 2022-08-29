@@ -207,11 +207,11 @@ public class CommonController {
     		int chkColIndex = 0;
 			
 	    	for (int i=0; i<footerLength; i++) {
-	    		if(footerList.get(i).containsKey("width")) {
-	    			xsSheet.setColumnWidth(chkColIndex + 1, 40 * (Integer.parseInt(StringUtils.NULL(footerList.get(i).get("width"), "0"))));
-	    		}else {
-	    			xsSheet.setColumnWidth(chkColIndex + 1, 40 * 0);
-	    		}
+	    		//if(footerList.get(i).containsKey("width")) {
+	    		//	xsSheet.setColumnWidth(chkColIndex + 1, 40 * (Integer.parseInt(StringUtils.NULL(footerList.get(i).get("width"), "0"))));
+	    		//}else {
+	    		//	xsSheet.setColumnWidth(chkColIndex + 1, 40 * 0);
+	    		//}
 	    		xsCell = xsRow.createCell(chkColIndex + 1);
 	    		//xsCell.setCellStyle(xshCS);
 	    		if(footerList.get(i).containsKey("label")) {
