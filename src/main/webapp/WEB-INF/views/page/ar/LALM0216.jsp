@@ -2015,10 +2015,14 @@ var na_bzplc = App_na_bzplc;
     
         gridSaveRow(frmId);
         var colModel    = $('#'+frmId).jqGrid('getGridParam', 'colModel');
-        var gridData    = $('#'+frmId).jqGrid('getGridParam', 'data');                
+        var gridData    = $('#'+frmId).jqGrid('getGridParam', 'data');
+                        
+		var result = new Array();
+		var index = 0;
+		        
         if (gridData.length == 0) {
            MessagePopup("OK", '조회된 데이터가 없습니다.');
-           return false;
+           return result;
         }
 		for (var i = 0, len = colModel.length; i < len; i++) {
 		   if (colModel[i].hidden === true) {
@@ -2031,8 +2035,7 @@ var na_bzplc = App_na_bzplc;
 		       });
 		   }
 		}
-		var result = new Array();
-		var index = 0;
+		
 		$('#'+frmId).getRowData().forEach((o,i)=>{
 			if(o.SRA_INDV_PASG_QCN == '0'){
 				o.SRA_INDV_PASG_QCN = '';
