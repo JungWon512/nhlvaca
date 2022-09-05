@@ -202,13 +202,13 @@
                     	 if($("#seal_img_flnm").val() != ""){
                     		 g_newFlg = false;
                              if(fileUpload() == true){
-                                 MessagePopup("OK", "신규등록되었습니다.<br>시스템 적용하기위해서는 제시작 하셔야 합니다.",function(res){
+                                 MessagePopup("OK", "신규등록되었습니다.<br>시스템 적용하기위해서는 재시작 하셔야 합니다.",function(res){
                                 	 fn_Search();
                                  });
                                  
                              }
                          }else {
-                             MessagePopup("OK", "신규등록되었습니다.<br>시스템 적용하기위해서는 제시작 하셔야 합니다.",function(res){
+                             MessagePopup("OK", "신규등록되었습니다.<br>시스템 적용하기위해서는 재시작 하셔야 합니다.",function(res){
                             	 fn_Search();
                              });
                          }
@@ -228,13 +228,13 @@
                     }else{
                     	if($("#seal_img_flnm").val() != ""){
                     		if(fileUpload() == true){
-                                MessagePopup("OK", "수정되었습니다.<br>시스템 적용하기위해서는 제시작 하셔야 합니다.",function(res){
+                                MessagePopup("OK", "수정되었습니다.<br>시스템 적용하기위해서는 재시작 하셔야 합니다.",function(res){
                                 	fn_Search();
                                 });
                                 
                             }
                     	}else {
-                    		MessagePopup("OK", "수정되었습니다.<br>시스템 적용하기위해서는 제시작 하셔야 합니다.",function(res){
+                    		MessagePopup("OK", "수정되었습니다.<br>시스템 적용하기위해서는 재시작 하셔야 합니다.",function(res){
                     			fn_Search();
                     		});
                     	}
@@ -282,7 +282,7 @@
         var result;
         
         var formData = new FormData($("#frm_MmWmc")[0]);
-        
+        formData.append("na_bzplc", $("#na_bzplc").val());
         $.ajax({
             url: "/LALM0912_updSealImg",
             type: "POST",
