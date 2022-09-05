@@ -127,7 +127,7 @@
         
         var sendData = new Object();       
 
-        sendData["ctgrm_cd"]  = '3000';
+        sendData["ctgrm_cd"]  = '3100';
         sendData["usrid"]     = $("#usrid").val();
         sendData["usrnm"]     = $("#usrnm").val();
         sendData["mpno"]      = $("#mpno").val().replace(/-/gi,"");

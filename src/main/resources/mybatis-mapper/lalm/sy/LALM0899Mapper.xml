@@ -1670,6 +1670,7 @@
 		     , #{mpno}   as MPNO
 		     , #{usrid}  as USRNM
 		     , #{pw}     as PW
+		     , ATTC_NO
 		  FROM TB_LA_IS_MM_USR
 		 WHERE usrid = #{usrid}
     </select>

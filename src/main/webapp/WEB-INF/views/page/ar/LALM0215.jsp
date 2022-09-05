@@ -3384,7 +3384,7 @@
  	//paramater : N/A
  	// result   : N/A
  	//**************************************
- 	function fn_AucOnjDscModify() {
+ 	function fn_AucOnjDscModify(flag) {
  		
  		// 경매일 셋팅을 위한 조회
 		fn_SelAucDt(flag);

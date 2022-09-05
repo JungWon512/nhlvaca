@@ -87,6 +87,10 @@ public class LALM0915Controller {
 	  			if((int)inMap.get("updateNum") > 0) {
 	  				//SMS 처리
 	  				Map<String, Object> mcaInMap = lalm0899Service.LALM0899_selMca3000(map);
+	  				String smsContent = "[스마트가축시장] 고객님의 SMS인증을 위한 인증번호는 ["+mcaInMap.get("ATTC_NO")+"]입니다.";
+	  				mcaInMap.put("CUS_MPNO", map.get("mpno"));
+	  				mcaInMap.put("USRNM", map.get("usrnm"));
+	  				mcaInMap.put("MSG_CNTN", smsContent);
 	  		        Map<String, Object> mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), mcaInMap);
 	  				
 	  		        //조회 결과가 0건일 경우 201 리턴

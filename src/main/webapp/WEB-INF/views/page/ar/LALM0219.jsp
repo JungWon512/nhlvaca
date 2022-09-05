@@ -454,7 +454,7 @@ window.addEventListener("contextmenu",function(event){
             rowNoValue = data.length;
         }
         	/*                               1         2      3        4       5           6         7        8     9      10     11      12          13         14        15    16          17        18       19         20   */
-        	var searchResultColNames = [ "", "경매번호", "경매대상", "출하주", "생산자", "귀표번호", "등록우 구분", "생년월일", "성별", "KPN", "계대", "산차", "어미귀표번호", "어미구분", "번식우구분", "주소", "고능력여부", "비고내용", "접수일자", "등록일시"
+        	var searchResultColNames = [ "", "경매번호", "경매대상", "출하주", "생산자", "귀표번호", "등록우 구분", "생년월일","월령", "성별", "KPN", "계대", "산차", "어미귀표번호", "어미구분", "번식우구분", "주소", "고능력여부", "비고내용", "접수일자", "등록일시"
 						        		, "경매일자", "원장일련번호(경매=1)", "하한가", "중량", "원표번호"
 						        		];        
 	        var searchResultColModel = [	
@@ -472,6 +472,7 @@ window.addEventListener("contextmenu",function(event){
 						                {name:"SRA_INDV_AMNNO"      ,   	index:"SRA_INDV_AMNNO"      ,   		width:150, align:'center' },
 						                {name:"RG_DSC"              ,   	index:"RG_DSC"              ,   		width:70, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)} },
 						                {name:"BIRTH"               ,   	index:"BIRTH"               ,   		width:70, align:'center' },
+						                {name:"MTCN"             	,   	index:"MTCN"	            ,   		width:70, align:'center' },
 						                {name:"INDV_SEX_C"          ,   	index:"INDV_SEX_C"          ,   		width:70, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
 						                {name:"KPN_NO"              ,   	index:"KPN_NO"              ,   		width:70, align:'center' },
 						                {name:"SRA_INDV_PASG_QCN"   ,   	index:"SRA_INDV_PASG_QCN"   ,   		width:70, align:'center' },
