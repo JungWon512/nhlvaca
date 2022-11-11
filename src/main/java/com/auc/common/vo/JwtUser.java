@@ -26,6 +26,7 @@ public class JwtUser implements UserDetails{
 	private String grp_c;
 	private String na_bzplnm;
 	private String strg_dt;
+	private String strg_yn;
 	
 	public JwtUser() {super();}
 	
@@ -41,7 +42,7 @@ public class JwtUser implements UserDetails{
 		this.na_bzplnm  = (String)claims.get("na_bzplnm");
 	}
 	
-	public JwtUser(String userId, String password, String eno, String username, String na_bzplc, String na_bzplnm, String grp_c, String strg_dt) {
+	public JwtUser(String userId, String password, String eno, String username, String na_bzplc, String na_bzplnm, String grp_c, String strg_dt, String strg_yn) {
 		this.userId   = userId;
 		this.password = password;
 		this.eno      = eno;
@@ -50,6 +51,7 @@ public class JwtUser implements UserDetails{
 		this.grp_c     = grp_c;
 		this.na_bzplnm = na_bzplnm;
 		this.strg_dt   = strg_dt;
+		this.strg_yn   = strg_yn;
 	}
 
 	public String getPassword() {
@@ -86,6 +88,10 @@ public class JwtUser implements UserDetails{
 	
 	public String getStrg_dt() {
 		return this.strg_dt;		
+	}
+	
+	public String getStrg_yn() {
+		return this.strg_yn;		
 	}
 	
 	public String getNa_bzplnm() {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.auc.common.config.ConvertConfig;
 import com.auc.common.vo.ResolverMap;
 import com.auc.main.service.CommonService;
+import com.auc.main.service.LogService;
 import com.auc.main.service.MainService;
 
 @Service("CommonService")
@@ -22,6 +23,8 @@ public class CommonServiceImpl implements CommonService{
 	MainService mainService;
 	@Autowired
 	ConvertConfig convertConfig;
+	@Autowired
+	private LogService logService;
 	
 	@Override
 	public Map<String, Object> Common_selAucDt(Map<String, Object> map) throws Exception {
@@ -435,6 +438,37 @@ public class CommonServiceImpl implements CommonService{
 		reMap.put("updateNum", deleteNum);		
 		return reMap;
 	}
-	
+
+	@Override
+	public Map<String, Object> common_updIndvInfo(Map<String, Object> map) throws Exception {
+		
+		final Map<String, Object> reMap = new HashMap<String, Object>();
+
+		// 조합에 등록된 개체가 있으면 수정 없는 경우 저장
+		final List<Map<String, Object>> amnnolist = commonMapper.common_selAmnno(map);
+		if(amnnolist.size() > 0) {
+			//개체 정보 업데이트
+			commonMapper.common_updMnIndv(map);
+			// 로그 저장
+			logService.insMmIndvLog(map);
+		}
+		else {
+			commonMapper.common_insMmIndv(map);
+			map.put("sra_srs_dsc ", "01");
+			map.put("anw_yn ", "9");
+			//개체 정보 업데이트
+			logService.insMmIndvLog(map);
+		}
+		return reMap;
+	}
+
+	@Override
+	public Map<String, Object> Common_insDownloadLog(Map<String, Object> map) throws Exception{
+		Map<String, Object> reMap = new HashMap<String, Object>();		
+		int insNum = 0;
+		insNum = insNum + commonMapper.Common_insDownloadLog(map);
+		reMap.put("updateNum", insNum);		
+		return reMap;		
+	}
 
 }

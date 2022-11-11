@@ -525,12 +525,15 @@ public class LALM0899Controller {
 			for(int i = 0; i < nList.getLength(); i++) {
 				Node nNode = nList.item(i); // <item> i 의 값을 nNode 에 넣는다.
 				//브루셀라
-				Element eElement = (Element) nNode;
-				nodeMap.put("insepctDt", getTagValue("inspectDt",eElement));
-				log.debug(getTagValue("inspectDt",eElement));
-				nodeMap.put("inspectYn", getTagValue("inspectYn",eElement));
-				log.debug(getTagValue("inspectYn",eElement));
-				
+				Element eElement = (Element)nNode;
+
+				nodeMap.put("insepctDt", getTagValue("inspectDt",eElement));					// 브루셀라 검사일
+				nodeMap.put("inspectYn", getTagValue("inspectYn",eElement));					// 브루셀라 접종 유무
+				nodeMap.put("tbcInspectYmd", getTagValue("tbcInspectYmd",eElement));			// 결핵 검사일
+				nodeMap.put("tbcInspectRsltNm", getTagValue("tbcInspectRsltNm",eElement));		// 결핵 검사결과
+				nodeMap.put("injectionYmd", getTagValue("injectionYmd",eElement));				// 구제역 백신접종일
+				nodeMap.put("vaccineorder", getTagValue("vaccineorder",eElement));				// 구제역 백신접종 차수
+				nodeMap.put("injectionDayCnt", getTagValue("injectionDayCnt",eElement));		// 구제역 백신접종경과일
 			}
 			
 		} catch (RuntimeException e) {
@@ -541,21 +544,21 @@ public class LALM0899Controller {
             if (conn!= null) conn.disconnect();
         }
 		
-		Map<String, Object> reMap = commonFunc.createResultSetMapData(nodeMap); 	
+		Map<String, Object> reMap = commonFunc.createResultSetMapData(nodeMap);
         return reMap;
     }
 	
     //*tag 값의 정보를 가져오는 메소드
 	private static String getTagValue(String tag, Element eElement) {
-		
-		NodeList nList = eElement.getElementsByTagName(tag).item(0).getChildNodes();
-		Node nValue = (Node)nList.item(0);
-		
-		if(nValue == null) {
-			return null;
+		String rtnString = "";
+		NodeList list = eElement.getChildNodes();
+		for (int i = 0; i < list.getLength(); i++) {
+			Node node = list.item(i);
+			if (tag.equals(node.getNodeName())) {
+				return node.getTextContent();
+			}
 		}
-		return nValue.getNodeValue();
-		
+		return rtnString;
 	}
 	
 }

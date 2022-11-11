@@ -217,7 +217,7 @@ public class CommonFunc {
 	        if(!map.containsKey("insertNum") && !map.containsKey("updateNum") && !map.containsKey("deleteNum")) {
 				reMap.put("status", 201);
 				reMap.put("code", "C001");
-				reMap.put("message", "저장된 내역이 없습니다");
+				reMap.put("message", map.getOrDefault("message", "저장된 내역이 없습니다"));
 			}
 		}
 		

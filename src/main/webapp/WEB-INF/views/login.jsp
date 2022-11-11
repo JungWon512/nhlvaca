@@ -33,7 +33,6 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
 <script type="text/javascript">
     var login_pop_zIndex = 10003;
 	$(document).ready(function(){
-		
 		var cookie_user_id = getCookie();
 		
 		if(cookie_user_id != ''){
@@ -178,6 +177,7 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
         results = getRsaKey();
                 
         results = loginToken(sendFrm, "/signIn", "POST");       
+        console.log(results);
         if(results != null){  
         	if(results.token       == null || results.token  == '' || 
                     results.key    == null || results.key    == '' ||
@@ -210,11 +210,13 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
 	                        localStorage.setItem("nhlvaca_usrnm", results.usrnm);
 	                        localStorage.setItem("nhlvaca_grp_c", results.grp_c);
 	                        localStorage.setItem("nhlvaca_strg_dt", results.strg_dt);
+	                        localStorage.setItem("nhlvaca_strg_yn", results.strg_yn);
                         	window.location.href = "/index";
                         }
                     });
             	});
-            }else {
+            }
+            else {
             	localStorage.setItem("nhlvaca_token", results.token);
                 localStorage.setItem("nhlvaca_key", results.key);
                 localStorage.setItem("nhlvaca_iv", results.iv);
@@ -226,9 +228,9 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
                 localStorage.setItem("nhlvaca_usrnm", results.usrnm);
                 localStorage.setItem("nhlvaca_grp_c", results.grp_c);
                 localStorage.setItem("nhlvaca_strg_dt", results.strg_dt);
+                localStorage.setItem("nhlvaca_strg_yn", results.strg_yn);
             	window.location.href = "/index";
             }
-       	    
         }        
     }
     

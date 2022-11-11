@@ -6,7 +6,7 @@
 <mapper namespace="com.auc.main.service.Impl.MainMapper">
 
 	<select id="getUserList" resultType="java.util.LinkedHashMap" parameterType="Map">
-        SELECT USRID, USRNM, MPNO, NA_BZPLC, strg_dt
+        SELECT USRID, USRNM, MPNO, NA_BZPLC, STRG_DT, STRG_YN
           FROM TB_LA_IS_MM_USR          
           <if test="data1 != null">
          	WHERE usrnm LIKE '%'||#{data1}||'%' 
@@ -227,13 +227,15 @@
 		     , A.usrnm          /* 사용자명              */
 		     , A.mpno           /* 사용자휴대번호        */
 		     , A.eno            /* 사용자개인번호        */
-		     , A.strg_dt        /* 사용권한              */
+		     , A.strg_dt        /* 비밀번호변경일자      */
 		     , A.pwerr_nt       /* 패스워드틀린횟수      */
 		     , A.fsrg_dtm       /* 최초등록일시          */
 		     , A.fsrgmn_eno     /* 최초등록자개인번호    */
 		     , A.lschg_dtm      /* 최종변경일시          */
 		     , A.ls_cmeno       /* 최종변경자개인번호    */
              , NVL(C.GRP_C, '002') AS GRP_C /*권한코드 권한코드 없을시 일반사용자(002)*/
+             , A.TOKEN
+             , A.STRG_YN		/* 사용권한(1:등록, 0:조회) */
 		  FROM TB_LA_IS_MM_USR A,
 		       TB_LA_IS_MM_WMC B,
                TB_LA_IS_MM_GRP_USR C
@@ -256,12 +258,13 @@
           AND usrid    = #{ss_userid}
     </update>
     
-        <update id="updPwerr_ntInit">
+	<update id="updPwerr_ntInit">
        UPDATE TB_LA_IS_MM_USR
-          SET pwerr_nt = 0
+          SET pwerr_nt = 0          
+			, TOKEN = #{refresh_token} 
         WHERE na_bzplc = #{NA_BZPLC}
           AND usrid    = #{USRID}
-    </update>
+	</update>
     
     <select id="selChkPw" resultType="_int">
         SELECT count(*)
@@ -278,9 +281,9 @@
     
     <select id="MainSogQcn_selList" resultType="hashMap">		
 		SELECT B.MONTHNM
-			,COUNT(CASE WHEN A.AUC_OBJ_DSC =1 AND SUBSTRING(A.AUC_DT,5,2) = B.MONTH THEN 1 END) SOCOW
-			,COUNT(CASE WHEN A.AUC_OBJ_DSC =2 AND SUBSTRING(A.AUC_DT,5,2) = B.MONTH THEN 1 END) BICOW
-			,COUNT(CASE WHEN A.AUC_OBJ_DSC =3 AND SUBSTRING(A.AUC_DT,5,2) = B.MONTH THEN 1 END) BUCOW
+			,COUNT(CASE WHEN A.AUC_OBJ_DSC = '1' AND SUBSTRING(A.AUC_DT,5,2) = B.MONTH THEN 1 END) SOCOW
+			,COUNT(CASE WHEN A.AUC_OBJ_DSC = '2' AND SUBSTRING(A.AUC_DT,5,2) = B.MONTH THEN 1 END) BICOW
+			,COUNT(CASE WHEN A.AUC_OBJ_DSC = '3' AND SUBSTRING(A.AUC_DT,5,2) = B.MONTH THEN 1 END) BUCOW
 		FROM (SELECT LEVEL || '월' MONTHNM,LPAD(LEVEL, 2, '0') MONTH FROM DUAL CONNECT BY LEVEL <![CDATA[ <= ]]> 12) B
 		LEFT JOIN TB_LA_IS_MH_SOG_COW A 
 			ON  A.NA_BZPLC =#{ss_na_bzplc}
@@ -735,8 +738,6 @@
 		CONNECT BY LEVEL <11
 		ORDER BY CB_YEAR DESC
 	]]>
-    </select>       
-    
-    
+    </select>
 
 </mapper>

@@ -18,7 +18,7 @@ public class JwtUserDetailsService implements UserDetailsService{
 	
 	@Autowired
 	MainMapper mainMapper;
-
+	
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
@@ -38,13 +38,13 @@ public class JwtUserDetailsService implements UserDetailsService{
 		if (selMap.get("USRID").equals(user_id)) { 
 		    return new JwtUser((String)selMap.get("USRID"), passwordEncoder.encode((String)selMap.get("USRID")), (String)selMap.get("ENO"), 
 		    		           (String)selMap.get("USRNM"), (String)selMap.get("NA_BZPLC"), (String)selMap.get("NA_BZPLNM"), (String)selMap.get("GRP_C"),
-		    		           (String)selMap.get("STRG_DT"));
+		    		           (String)selMap.get("STRG_DT"), selMap.getOrDefault("STRG_YN", "1"));
 	    } else { 
 	        throw new UsernameNotFoundException("User not found with username: " + username);
 	    }
     }			
 	  
-	public Map<String, String> signIn(Map<String, Object> signMap) throws Exception{
+	public Map<String, String> signIn(Map<String, Object> signMap) throws Exception{						
 	    Map<String, String> selMap = null;						
 	    selMap = mainMapper.signIn(signMap);	
 	    if(selMap == null)selMap = new HashMap<String, String>(); 
