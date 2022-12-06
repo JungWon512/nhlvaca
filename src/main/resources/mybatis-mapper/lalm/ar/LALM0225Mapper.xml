@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ar.service.Impl.LALM0225Mapper">
+	
+	<select id="LALM0225_selList" parameterType="hashMap" resultType="hashMap">
+		SELECT A.NA_BZPLC														/* 사업장 코드 */
+			 , A.AUC_OBJ_DSC													/* 경매대상구분코드*/
+			 , A.AUC_RECV_DT													/* 접수일자 */
+			 , A.AUC_RECV_NO													/* 접수번호 */
+			 , A.AUC_DT															/* 경매일자 */
+			 , A.AUC_PRG_SQ														/* 경매번호 */
+			 , A.SRA_INDV_AMNNO													/* 개체번호 */
+			 , A.RECV_CAN_YN													/* 예약취소여부 */
+			 , A.RECV_CAN_DT													/* 취소일자 */
+			 , A.VHC_SHRT_C														/* 차량단축코드 */
+			 , A.TRPCS_PY_YN													/* 운송비 지급여부 */
+			 , A.SRA_TRPCS														/* 추가운송비 */
+			 , A.SRA_FED_SPY_AM													/* 사료대금 */
+			 , A.FHS_ID_NO														/* 농가식별번호 */
+			 , A.FARM_AMNNO														/* 농장관리번호 */
+			 , A.BRCL_ISP_DT													/* 브루셀라 검사일자 */
+			 , A.VACN_DT														/* 백신접종일자 */
+			 , A.RMK_CNTN														/* 비고 */
+			 , A.PPGCOW_FEE_DSC													/* 임신구분 */
+			 , A.AFISM_MOD_DT													/* 인공수정일자 */
+			 , A.MOD_KPN_NO														/* 수정KPN */
+			 , A.PRNY_MTCN														/* 임신개월수 */
+			 , A.PTUR_PLA_DT													/* 분만예정일 */
+			 , A.PRNY_JUG_YN													/* 임신감정여부 */
+			 , A.NCSS_JUG_YN													/* 괴사감정여부 */
+			 , A.DNA_YN_CHE														/* 친자감정여부 */
+			 , A.DNA_JUG_RESULT													/* 친자감정결과 */
+			 , A.DNA_SAMPLED_YN													/* 모근채취여부 */
+			 , A.DEBT_CANCEL_YN													/* */
+			 , A.DEBD_CANCEL_YN													/* 제각여부 */
+			 , A.FSRG_DTM														/* 최초등록일자 */
+			 , A.FSRGMN_ENO														/* 최초등록자 개인번호 */
+			 , NVL((SELECT F.USRNM FROM TB_LA_IS_MM_USR F WHERE F.NA_BZPLC = A.NA_BZPLC AND F.USRID = A.FSRGMN_ENO), 'SYSTEM') AS FSRGMN_NM	/* 최초등록자 */
+			 , A.LSCHG_DTM														/* 최종수정일자 */
+			 , A.LS_CMENO														/* 최종수정자 개인번호 */
+			 , NVL((SELECT F.USRNM FROM TB_LA_IS_MM_USR F WHERE F.NA_BZPLC = A.NA_BZPLC AND F.USRID = A.LS_CMENO), 'SYSTEM') AS LSCHG_NM	/* 최종수정자 */
+			 , B.BIRTH															/* 생년월일 */
+			 , TRUNC(MONTHS_BETWEEN(A.AUC_DT, B.BIRTH))+1 AS MTCN				/* 월령 */
+			 , B.MCOW_DSC														/* 어미구분 */
+			 , B.KPN_NO															/* KPN 번호 */
+			 , B.INDV_SEX_C														/* 개체 성별코드 */
+			 , B.MCOW_SRA_INDV_AMNNO											/* 어미 개체번호 */
+			 , B.MATIME															/* 산차 */
+			 , B.SRA_INDV_PASG_QCN												/* 계대 */
+			 , B.INDV_ID_NO														/* 개체식별번호 */
+			 , B.SRA_INDV_BRDSRA_RG_NO											/* 축산개체종축등록번호 */
+			 , B.RG_DSC															/* 등록구분 */
+			 , CASE WHEN #{ss_security} = '1' THEN C.FTSNM
+					WHEN LENGTH(C.FTSNM) = 2 THEN SUBSTR(C.FTSNM,1,1) || '*' 
+					WHEN LENGTH(C.FTSNM) = 3 THEN SUBSTR(C.FTSNM,1,1) || '*'  || SUBSTR(C.FTSNM,3,1) 
+					WHEN LENGTH(C.FTSNM) = 4 THEN SUBSTR(C.FTSNM,1,1) || '**' || SUBSTR(C.FTSNM,4,1)  
+					WHEN LENGTH(C.FTSNM) >= 5 THEN SUBSTR(C.FTSNM,1,2) || '**' || SUBSTR(C.FTSNM,5,1)
+				END AS FTSNM			/* 농가명 */
+			 , CASE WHEN #{ss_security} = '1' THEN NVL(C.SRA_FARM_ACNO, C.NEW_SRA_FARM_ACNO)
+					ELSE CASE WHEN ( C.SRA_FARM_ACNO = '' OR C.SRA_FARM_ACNO IS NULL ) THEN
+									CASE WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 12 THEN SUBSTR(C.NEW_SRA_FARM_ACNO,1,8)||'****'
+										 WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 13 THEN SUBSTR(C.NEW_SRA_FARM_ACNO,1,9)||'****'
+										 WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 14 THEN SUBSTR(C.NEW_SRA_FARM_ACNO,1,10)||'****'
+										 WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 15 THEN SUBSTR(C.NEW_SRA_FARM_ACNO,1,11)||'****'
+										 WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 16 THEN SUBSTR(C.NEW_SRA_FARM_ACNO,1,12)||'****'
+										 WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 17 THEN SUBSTR(C.NEW_SRA_FARM_ACNO,1,13)||'****'
+										 WHEN LENGTH(C.NEW_SRA_FARM_ACNO) >= 18 THEN SUBSTR(C.NEW_SRA_FARM_ACNO,1,14)||'****'
+										 ELSE C.NEW_SRA_FARM_ACNO
+									 END
+							  ELSE
+									CASE WHEN LENGTH(C.SRA_FARM_ACNO) = 12 THEN SUBSTR(C.SRA_FARM_ACNO,1,8)||'****'
+										 WHEN LENGTH(C.SRA_FARM_ACNO) = 13 THEN SUBSTR(C.SRA_FARM_ACNO,1,9)||'****'
+										 WHEN LENGTH(C.SRA_FARM_ACNO) = 14 THEN SUBSTR(C.SRA_FARM_ACNO,1,10)||'****'
+										 WHEN LENGTH(C.SRA_FARM_ACNO) = 15 THEN SUBSTR(C.SRA_FARM_ACNO,1,11)||'****'
+										 WHEN LENGTH(C.SRA_FARM_ACNO) = 16 THEN SUBSTR(C.SRA_FARM_ACNO,1,12)||'****'
+										 WHEN LENGTH(C.SRA_FARM_ACNO) = 17 THEN SUBSTR(C.SRA_FARM_ACNO,1,13)||'****'
+										 WHEN LENGTH(C.SRA_FARM_ACNO) >= 18 THEN SUBSTR(C.SRA_FARM_ACNO,1,14)||'****'
+										 ELSE C.SRA_FARM_ACNO
+									 END
+						 END
+				END AS SRA_FARM_ACNO		/* 계좌번호 */
+			 , CASE WHEN #{ss_security} = '1' THEN C.CUS_MPNO
+					WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) || '-***-' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),6,4)
+					WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 10 THEN 
+						(CASE WHEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) = '02' THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) || '-****-' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),7,4)
+							  ELSE SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,3) || '-***-' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),7,4) END)
+					WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) IN (11,12) THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,3) || '-****-' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),8,4)
+				END AS CUS_MPNO				/* 농가 휴대전화번호 */
+			 , CASE WHEN #{ss_security} = '1' THEN C.OHSE_TELNO
+					WHEN LENGTH(REPLACE(RTRIM(C.OHSE_TELNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),1,2) || '-***-' || SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),6,4)
+					WHEN LENGTH(REPLACE(RTRIM(C.OHSE_TELNO),'-','')) = 10 THEN 
+						(CASE WHEN SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),1,2) = '02' THEN SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),1,2) || '-****-' || SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),7,4)
+							  ELSE SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),1,3) || '-***-' || SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),7,4)  END) 
+					WHEN LENGTH(REPLACE(RTRIM(C.OHSE_TELNO),'-','')) IN (11,12) THEN SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),1,3) || '-****-' || SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),8,4)                                             
+				END AS OHSE_TELNO			/* 농가 전화번호 */
+			 , C.DONGUP						/* 주소 */
+			 , C.DONGBW						/* 동이하주소 */
+			 , C.SRA_FED_SPY_YN				/* 사료 사용여부 */
+			 , CASE WHEN #{ss_security} = '1' THEN D.VHC_DRV_CAFFNM
+					WHEN LENGTH(D.VHC_DRV_CAFFNM) = 2 THEN SUBSTR(D.VHC_DRV_CAFFNM,1,1) || '*' 
+					WHEN LENGTH(D.VHC_DRV_CAFFNM) = 3 THEN SUBSTR(D.VHC_DRV_CAFFNM,1,1) || '*'  || SUBSTR(D.VHC_DRV_CAFFNM,3,1)
+					WHEN LENGTH(D.VHC_DRV_CAFFNM) = 4 THEN SUBSTR(D.VHC_DRV_CAFFNM,1,1) || '**' || SUBSTR(D.VHC_DRV_CAFFNM,4,1)
+					WHEN LENGTH(D.VHC_DRV_CAFFNM) >= 5 THEN SUBSTR(D.VHC_DRV_CAFFNM,1,2) || '**' || SUBSTR(D.VHC_DRV_CAFFNM,5,1)
+				END AS VHC_DRV_CAFFNM /* 수송자명 */
+		  FROM TB_LA_IS_MH_COW_RECV A
+		 INNER JOIN TB_LA_IS_MM_INDV B
+		    ON ( A.NA_BZPLC = B.NA_BZPLC AND A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO )
+		 INNER JOIN TB_LA_IS_MM_FHS C
+		    ON ( A.NA_BZPLC = C.NA_BZPLC AND A.FHS_ID_NO = C.FHS_ID_NO AND A.FARM_AMNNO = C.FARM_AMNNO )
+		  LEFT OUTER JOIN TB_LA_IS_MM_VHC D
+		    ON ( A.NA_BZPLC = D.NA_BZPLC AND A.VHC_SHRT_C = D.VHC_SHRT_C )
+		 WHERE A.NA_BZPLC = #{ss_na_bzplc}
+		<if test="auc_obj_dsc != null and auc_obj_dsc != ''">
+		   AND A.AUC_OBJ_DSC = #{auc_obj_dsc}
+		</if>
+		<if test="auc_dt_st != null and auc_dt_st != '' and auc_dt_en != null and auc_dt_en != ''">
+		   AND A.AUC_DT BETWEEN #{auc_dt_st} AND #{auc_dt_en}
+		</if>
+		<if test="fhs_id_no != null and fhs_id_no != ''">
+		   AND A.FHS_ID_NO = #{fhs_id_no}
+		</if>
+		<if test="recv_can_yn != null and recv_can_yn != ''">
+		   AND A.RECV_CAN_YN = #{recv_can_yn}
+		</if>
+	</select>
+
+</mapper>

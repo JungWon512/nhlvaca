@@ -24,6 +24,7 @@ var comboList;
 var wmcList;
 var envList;
 var pop_zIndex = 10003;
+var inputRn;
 $(document).ready(function() {
     //새로고침 및 페이지 이동 방지
     window.addEventListener('beforeunload', beforeunloadFunc, true);
@@ -65,6 +66,7 @@ $(document).ready(function() {
                     data['na_bzplc']  = $('#nav_menu_userInfo').attr('na_bzplc');
 
                     var results = sendAjax(data, "/relogin", "POST");
+                    console.log(results);
                     
                     if(results.status != RETURN_SUCCESS){
                         showErrorMessage(results);
@@ -80,6 +82,7 @@ $(document).ready(function() {
                         localStorage.setItem("nhlvaca_na_bzplnm", results.na_bzplnm);
                         localStorage.setItem("nhlvaca_usrnm", results.usrnm);
                         localStorage.setItem("nhlvaca_grp_c", results.grp_c);
+                        localStorage.setItem("nhlvaca_strg_yn", results.strg_yn);
                         offBeforeunload();
                         document.location.href = '/index';
                     }
@@ -252,7 +255,6 @@ $(document).ready(function() {
         
     
     $('.sidebar-toggle').on('click',function(){
-        console.log(tp);
         if(tp=="PC"){
             if($('body').hasClass('sidebar-mini')!=true){
                 $('.treeview').stop().removeClass('menu-open');
@@ -574,6 +576,7 @@ function logout(){
                 localStorage.removeItem("nhlvaca_na_bzplnm");
                 localStorage.removeItem("nhlvaca_usrnm");
                 localStorage.removeItem("nhlvaca_grp_c");
+                localStorage.removeItem("nhlvaca_strg_yn");
                 offBeforeunload();
                 document.location.href="/";
             }                 
@@ -918,7 +921,7 @@ function fn_sendIFrameDataReport(id, data){
     iform.id   = "iframeParam";
     iform.name = "iframeParam";
     iform.target = "report_" + id;
-<% if(InetAddress.getLocalHost().getHostAddress().indexOf("192.168.") > -1 || InetAddress.getLocalHost().getHostAddress().indexOf("10.220.235.") > -1) { %>
+<% if(InetAddress.getLocalHost().getHostAddress().indexOf("10.220.235.") > -1) { %>
     iform.action = "http://localhost:8270/aireport65/aiServer.jsp";
 <% }else { %>
     iform.action = "/AIREPORT/AISERVER";

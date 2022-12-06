@@ -11,6 +11,7 @@
 		      , MPNO                  /* 사용자휴대번호           */
 		      , ENO                   /* 사용자개인번호           */
 		      , STRG_DT               /* 비밀번호변경일자         */
+		      , STRG_YN               /* 사용권한(1:등록, 0:조회) */
 		    FROM TB_LA_IS_MM_USR
          WHERE NA_BZPLC       = #{ss_na_bzplc} 
     ]]>
@@ -40,6 +41,7 @@
                , FSRGMN_ENO                         /* 최초등록자개인번호       */
                , LSCHG_DTM                          /* 최종변경일시             */
                , LS_CMENO                           /* 최종변경자개인번호       */
+               , STRG_YN                            /* 사용권한(1:등록, 0:조회) */
         )VALUES(
                  #{ss_na_bzplc}                     /* 경제통합사업장코드       */
                , #{usrid}                           /* 사용자아이디             */
@@ -53,6 +55,7 @@
                , #{ss_userid}                       /* 최초등록자개인번호       */
                , SYSDATE                            /* 최종변경일시             */
                , #{ss_userid}                       /* 최종변경자개인번호       */
+               , NVL(#{strg_yn}, '0')               /* 사용권한(1:등록, 0:조회) */
         )         
     ]]>
     </insert>
@@ -62,6 +65,7 @@
         UPDATE TB_LA_IS_MM_USR SET
                USRNM     = #{usrnm}               /* 사용자명                 */
              , MPNO      = #{mpno}                /* 사용자휴대번호           */
+             , STRG_YN   = NVL(#{strg_yn}, '0')   /* 사용권한(1:등록, 0:조회) */
              , LSCHG_DTM = SYSDATE                /* 최종변경일시             */
              , LS_CMENO  = #{ss_userid}           /* 최종변경자개인번호       */
          WHERE NA_BZPLC       = #{ss_na_bzplc} 
@@ -76,7 +80,6 @@
           FROM TB_LA_IS_MM_USR
          WHERE NA_BZPLC       = #{ss_na_bzplc} 
            AND usrid          = #{usrid}
-         
     ]]>
     </delete>
 </mapper>

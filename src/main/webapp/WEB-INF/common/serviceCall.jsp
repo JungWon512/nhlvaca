@@ -58,6 +58,8 @@
 <script src="/js/jqGrid/grid_common.js"></script>
 <script src="/js/jqGrid/jqGrid.min.js"></script>
 
+<script src="/js/date/dayjs.min.js"></script>
+
 <script type="text/javascript">
     //OS사용에 따른 레이어 체크
     var isMobile = (navigator.platform)?("win16|win32|win64|mac|macintel".indexOf(navigator.platform.toLowerCase()) < 0):false;
@@ -133,7 +135,8 @@
                 }
             },
             complete:function(data){
-            	setTimeout(hideLodingImg,0);
+//          	  localStorage.setItem("nhlvaca_token", getCookie('token'));
+              setTimeout(hideLodingImg,0);
             }
         });         
         return result;
@@ -149,7 +152,6 @@
     function sendAjaxFrm(frmStr, sendUrl, methodType){
         var encrypt = setEncrypt(setFrmToData(frmStr));
         var result;
-        
         $.ajax({
             url: sendUrl,
             type: methodType,
@@ -173,6 +175,7 @@
             	}            
             },
             complete:function(data){
+//          	   localStorage.setItem("nhlvaca_token", getCookie('token'));
             	setTimeout(hideLodingImg,0);
             }
         });        
@@ -201,10 +204,10 @@
                 if(tagType == 'text' || tagType == 'password' || tagType == 'hidden'){
                 	if(String(className) != 'undefined' && className.indexOf('date') > -1){
                 		data[id] = $(frmIds[i]).val().replace(/[^0-9]/g,"");
-                	}else if(String(className) != 'undefined' && className.indexOf('onlynumber') > -1){
-                		data[id] = $(frmIds[i]).val().replace(/[^0-9]/g,'').replace(/(\..*)\./g,'$1');
                 	}else if(String(className) != 'undefined' && className.indexOf('minusnumber') > -1){
                 		data[id] = $(frmIds[i]).val().replace(/[^-?0-9.]/g,'').replace(/(\..*)\./g,'$1');
+                	}else if(String(className) != 'undefined' && className.indexOf('integer') > -1){
+                		data[id] = $(frmIds[i]).val().replace(/[^0-9]/g,'').replace(/(\..*)\./g,'$1');
                 	}else if(String(className) != 'undefined' && className.indexOf('number') > -1){
                 		data[id] = $(frmIds[i]).val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
                 	}else {
@@ -296,4 +299,13 @@
         
     } 
 
+
+    var getCookie = function(name){
+    	var cookies = document.cookie.split(';');
+    	for(var i = 0;i<cookies.length;i++){
+    		if(cookies[i].split('=')[0].trim() == name){
+    			return cookies[i].split('=')[1].trim();
+    		}
+    	}
+    };
 </script>

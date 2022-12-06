@@ -12,4 +12,9 @@ public interface CommonService {
 	Map<String, Object> Common_insBack(Map<String, Object> map) throws Exception;
 	Map<String, Object> Common_updBack(Map<String, Object> map) throws Exception;
 	Map<String, Object> Common_delBack(Map<String, Object> map) throws Exception;
+
+	Map<String, Object> Common_insDownloadLog(Map<String, Object> map) throws Exception;
+	
+	// 개체정보 저장 or 수정
+	Map<String, Object> common_updIndvInfo(Map<String, Object> map) throws Exception;
 }

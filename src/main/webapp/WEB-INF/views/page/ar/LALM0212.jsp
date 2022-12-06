@@ -223,6 +223,12 @@
         	});
             return;
         }
+    	if(fn_isNull($( "#auc_infmsg" ).val())) {
+        	MessagePopup('OK','경매안내문구를 입력해주세요.',function(){
+        		$( "#auc_infmsg" ).focus();
+        	});
+            return;
+        }
         if(fn_isNull($( "#auc_dt" ).val())){
         	MessagePopup('OK','경매일자를 선택하세요.',function(){
         		$( "#auc_dt" ).focus();
@@ -241,6 +247,14 @@
 			});        	
 			return;
 		}
+		if($( "#auc_infmsg" ).length > 30) {
+        	MessagePopup('OK','경매안내문구를 30자 이하로 입력해주세요',function(){
+        		$( "#auc_infmsg" ).focus();
+        	});
+            return;
+        }
+		
+		$("#hd_auc_dsc").val($("input[name=auc_dsc_gb]:checked").val());
 		
 		MessagePopup('YESNO',"저장하시겠습니까?",function(res){
 			if(res){
@@ -438,34 +452,40 @@
         if(data != null){
             rowNoValue = data.length;
         }
-        
+        // 울산축협
         if(na_bzplc != "8808990656632") {
         	/*                               1         2      3            4                 5               6         7      8 */
-        	var searchResultColNames = ["경매일자", "경매대상", "차수", "응찰한도금액", "절사단위금액(비육우)", "절사구분(비육우)", "마감여부", "전송"];        
+        	var searchResultColNames = ["경매일자", "경매대상", "차수", "경매방식", "경매방식","응찰한도금액", "절사단위금액(비육우)", "절사구분(비육우)", "마감여부", "전송", "경매안내문구"];        
 	        var searchResultColModel = [						 
-	        							 {name:"AUC_DT",       	index:"AUC_DT",       	width:150, align:'center', formatter:'gridDateFormat'},
-	                                     {name:"AUC_OBJ_DSC",   index:"AUC_OBJ_DSC",    width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
-	                                     {name:"QCN",        	index:"QCN",        	width:150, align:'center'},
-	                                     {name:"BASE_LMT_AM",   index:"BASE_LMT_AM",    width:150, align:'right', formatter:'integer', formatoptions:{thousandsSeparator:','}},                                     
-	                                     {name:"CUT_AM",        index:"CUT_AM",       	width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_AM_DATA}},
-	                                     {name:"SGNO_PRC_DSC",  index:"SGNO_PRC_DSC",   width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SGNO_PRC_DSC", 1)}},
-	                                     {name:"DDL_YN",       	index:"DDL_YN",       	width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-	                                     {name:"TMS_YN",        index:"TMS_YN",        	width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}}
+	        							 {name:"AUC_DT",       		index:"AUC_DT",       		width:150, 	align:'center', formatter:'gridDateFormat'},
+	                                     {name:"AUC_OBJ_DSC",   index:"AUC_OBJ_DSC",	 	width:150, 	align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
+	                                     {name:"QCN",        			index:"QCN",        			width:150, 	align:'center'},
+	                                     {name:"AUC_DSC",   		index:"AUC_DSC",      		width:150, 	align:'center', hidden:true},
+	                                     {name:"AUC_DSC_STR",   index:"AUC_DSC_STR",      width:150, 	align:'center'},
+	                                     {name:"BASE_LMT_AM",   index:"BASE_LMT_AM",  	width:150, 	align:'right', formatter:'integer', formatoptions:{thousandsSeparator:','}},                                     
+	                                     {name:"CUT_AM",        	index:"CUT_AM",       	 	width:150, 	align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_AM_DATA}},
+	                                     {name:"SGNO_PRC_DSC", index:"SGNO_PRC_DSC",  	width:150, 	align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SGNO_PRC_DSC", 1)}},
+	                                     {name:"DDL_YN",       		index:"DDL_YN",       		width:150, 	align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+	                                     {name:"TMS_YN",        	index:"TMS_YN",        		width:150, 	align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+	                                     {name:"AUC_INFMSG",   	index:"AUC_INFMSG",      	width:150, 	align:'center', hidden:true}
 	                                    ];
         } else {
         	/*                               1         2      3           4                  5               6         7      8                9              10 */
-        	var searchResultColNames = ["경매일자", "경매대상", "차수", "응찰한도금액", "절사단위금액(비육우)", "절사구분(비육우)", "마감여부", "전송", "암송아지(KG)단가", "수송아지(KG)단가"];        
+        	var searchResultColNames = ["경매일자", "경매대상", "차수", "경매방식", "경매방식", "응찰한도금액", "절사단위금액(비육우)", "절사구분(비육우)", "마감여부", "전송", "암송아지(KG)단가", "수송아지(KG)단가", "경매안내문구"];        
 	        var searchResultColModel = [						 
-	        							 {name:"AUC_DT",       	index:"AUC_DT",       	width:150, align:'center', formatter:'gridDateFormat'},
-	                                     {name:"AUC_OBJ_DSC",   index:"AUC_OBJ_DSC",    width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
-	                                     {name:"QCN",        	index:"QCN",        	width:150, align:'center'},
-	                                     {name:"BASE_LMT_AM",   index:"BASE_LMT_AM",    width:150, align:'right', formatter:'integer', formatoptions:{thousandsSeparator:','}},                                     
-	                                     {name:"CUT_AM",        index:"CUT_AM",       	width:150, align:'right', edittype:"select", formatter : "select", editoptions:{value:GRID_AM_DATA}},
-	                                     {name:"SGNO_PRC_DSC",  index:"SGNO_PRC_DSC",   width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SGNO_PRC_DSC", 1)}},
-	                                     {name:"DDL_YN",       	index:"DDL_YN",       	width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-	                                     {name:"TMS_YN",        index:"TMS_YN",        	width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-	                                     {name:"MALE_KG",   	index:"MALE_KG",   		width:150, align:'center'},
-	                                     {name:"FEMALE_KG",   	index:"FEMALE_KG",    	width:150, align:'center'}
+	        							 {name:"AUC_DT",       		index:"AUC_DT",       		width:150, align:'center', formatter:'gridDateFormat'},
+	                                     {name:"AUC_OBJ_DSC",   index:"AUC_OBJ_DSC",    	width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
+	                                     {name:"QCN",        			index:"QCN",        			width:150, align:'center'},
+	                                     {name:"AUC_DSC",   		index:"AUC_DSC",      		width:150, 	align:'center', hidden:true},
+	                                     {name:"AUC_DSC_STR",   index:"AUC_DSC_STR",      width:150, 	align:'center'},
+	                                     {name:"BASE_LMT_AM",   index:"BASE_LMT_AM",    	width:150, align:'right', formatter:'integer', formatoptions:{thousandsSeparator:','}},                                     
+	                                     {name:"CUT_AM",        	index:"CUT_AM",       		width:150, align:'right', edittype:"select", formatter : "select", editoptions:{value:GRID_AM_DATA}},
+	                                     {name:"SGNO_PRC_DSC", index:"SGNO_PRC_DSC",   	width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SGNO_PRC_DSC", 1)}},
+	                                     {name:"DDL_YN",       		index:"DDL_YN",       		width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+	                                     {name:"TMS_YN",        	index:"TMS_YN",        		width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+	                                     {name:"MALE_KG",   		index:"MALE_KG",   			width:150, align:'center'},
+	                                     {name:"FEMALE_KG",   	index:"FEMALE_KG",    		width:150, align:'center'},
+	                                     {name:"AUC_INFMSG",   	index:"AUC_INFMSG",      	width:150, 	align:'center', hidden:true}
 	                                    ];
         }
             
@@ -499,7 +519,11 @@
                 $("#base_lmt_am").val(fn_toComma(sel_data.BASE_LMT_AM));
                 $("#cut_am").val(sel_data.CUT_AM);
                 $("#female_kg").val(sel_data.FEMALE_KG);
-                $("#male_kg").val(sel_data.MALE_KG);                
+                $("#male_kg").val(sel_data.MALE_KG);
+                $("#auc_infmsg").val(sel_data.AUC_INFMSG);
+                
+                fn_setChgRadio("auc_dsc", sel_data.AUC_DSC);
+                fn_setRadioChecked("auc_dsc");
                 
                 fn_DisableFrm('frm_MhAucQcn', false);
                 
@@ -639,7 +663,7 @@
             <!-- //tab_box e -->
             <div class="sec_table">
                 <div class="blueTable rsp_v">
-                    <form id="frm_Search" name="frm_Search">
+                    <form id="frm_Search" name="frm_Search" autocomplete="off">
                     <table>
                         <colgroup>
                             <col width="100">
@@ -683,7 +707,7 @@
             <!-- //tab_box e -->
             <div class="sec_table">
                 <div class="grayTable rsp_v">
-                	<form id="frm_MhAucQcn" name="frm_MhAucQcn">
+                	<form id="frm_MhAucQcn" name="frm_MhAucQcn" autocomplete="off">
                     <table>
                         <colgroup>
                             <col width="150">
@@ -733,6 +757,21 @@
                                     <div class="cellBox" id="sgno_prc_dsc">
                                     </div>
                                     <input type="hidden" id="hd_sgno_prc_dsc" name="hd_sgno_prc_dsc">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">경매안내문구<strong class="req_dot">*</strong></th>
+                                <td>
+                                    <input type="text" class="input_auc" id="auc_infmsg" maxlength="30">
+                                </td>
+                                
+                                <th scope="row"><span>경매방식</span></th>
+                                <td>
+                                	<div class="cellBox" id="auc_dsc">
+	                                    <input type="radio" id="auc_dsc_1" name="auc_dsc_gb" value="1"><label for="auc_dsc_01">단일경매</label>
+	                                   	<input type="radio" id="auc_dsc_2" name="auc_dsc_gb" value="2"><label for="auc_dsc_02">일괄경매</label>
+	                                   	<input type="hidden" id="hd_auc_dsc" name="hd_auc_dsc">
+                                   	</div>
                                 </td>
                             </tr>
                             <tr id="lastLine">

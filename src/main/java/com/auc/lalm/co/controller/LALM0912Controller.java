@@ -1,31 +1,12 @@
 package com.auc.lalm.co.controller;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Blob;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.Base64Utils;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,11 +16,11 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.auc.common.config.CommonFunc;
 import com.auc.common.config.ConvertConfig;
-import com.auc.common.util.BReqData;
 import com.auc.common.util.StringUtils;
 import com.auc.common.vo.ResolverMap;
 import com.auc.lalm.co.service.LALM0912Service;
 
+@SuppressWarnings({"unused"})
 @RestController
 public class LALM0912Controller {
 	
@@ -92,7 +73,7 @@ public class LALM0912Controller {
 	@ResponseBody   
 	@RequestMapping(value="/LALM0912_updSealImg", method=RequestMethod.POST)
 	public Map<String, Object> LALM0912_updSealImg(MultipartHttpServletRequest reqeust) throws Exception{				
-				
+		
 		MultipartFile mf = reqeust.getFile("seal_img_flnm");
 		
 		String na_bzplc = reqeust.getParameter("na_bzplc");

@@ -13,12 +13,10 @@ import java.util.Map;
 import java.util.Random;
 
 import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.ObjectUtils;
 
 import com.auc.common.exception.CusException;
 import com.auc.common.exception.ErrorCode;
@@ -220,6 +218,7 @@ public class RestApiJsonController {
         } catch (RuntimeException e) {
             throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
         } catch (Exception e) {
+        	logger.debug(e.getMessage());
             throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
         } finally {
             if (con!= null) con.disconnect();

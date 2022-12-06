@@ -173,7 +173,7 @@ public class JwtAuthenticationController {
 	        //정상 200 리턴
 	        return ResponseEntity.ok(new JwtResponse(token, 200, key, iv, userDetails.getUsername(), userDetails.getUserEno(), userDetails.getNa_bzplc(), 
 	        		                                 userDetails.getSecurity(), userDetails.getNa_bzplnm(), userDetails.getUserCusName(), userDetails.getGrp_c(),
-	        		                                 userDetails.getStrg_dt()));
+	        		                                 userDetails.getStrg_dt(), userDetails.getStrg_yn()));
 		}else {
 			return ResponseEntity.ok(null);
 		}
@@ -218,7 +218,7 @@ public class JwtAuthenticationController {
 	    //정상 200 리턴
 	    return ResponseEntity.ok(new JwtResponse(token, 200, key, iv, userDetails.getUsername(), userDetails.getUserEno(), userDetails.getNa_bzplc(), 
 	    		                                                      userDetails.getSecurity(), userDetails.getNa_bzplnm(), userDetails.getUserCusName(), userDetails.getGrp_c(),
-	    		                                                      userDetails.getStrg_dt()));
+	    		                                                      userDetails.getStrg_dt(), userDetails.getStrg_yn()));
 		
 	}
 	

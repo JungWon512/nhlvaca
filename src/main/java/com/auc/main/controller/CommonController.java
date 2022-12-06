@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -131,6 +130,7 @@ public class CommonController {
 	        xshCS.setAlignment(HorizontalAlignment.CENTER);
 	        xshCS.setVerticalAlignment(VerticalAlignment.CENTER);
 	        xshCS.setFont(xshFont);
+	        xshCS.setWrapText(true);
 	        
 	        // Header 데이터 적용 및 Body 스타일 설정
 	        XSSFRow xsRow = xsSheet.createRow(0);
@@ -386,6 +386,28 @@ public class CommonController {
         reMap.put("data", encript);  		
   		return reMap;
 	}
+
 	
+	@ResponseBody
+	@RequestMapping(value="/insDownloadLog", method= {RequestMethod.POST,RequestMethod.GET})
+	public Map<String, Object> Common_insLog(HttpServletRequest request, ResolverMap rMap) throws Exception{
+		Map<String, Object> inMap = convertConfig.conMapWithoutXxs(rMap);
+		String ipAdr = request.getHeader("X-FORWARDED-FOR") != null ? request.getHeader("X-FORWARDED-FOR") : request.getRemoteAddr();
+		String temp = (String) inMap.get("apvrqr_rsnctt");
+		
+		StringBuilder stringBuilder = new StringBuilder(500);
+		int nCnt = 0;
+		for(char ch:temp.toCharArray()){
+			nCnt += String.valueOf(ch).getBytes("EUC-KR").length;
+			if(nCnt > 1000) break;
+			stringBuilder.append(ch);
+		}
+		
+		inMap.put("ipadr", ipAdr);
+		inMap.put("apvrqr_rsnctt", stringBuilder.toString());
+		Map<String, Object> reList = commonService.Common_insDownloadLog(inMap);				
+		Map<String, Object> reMap = commonFunc.createResultSetMapData(reList);
+		return reMap;
+	}	
 
 }

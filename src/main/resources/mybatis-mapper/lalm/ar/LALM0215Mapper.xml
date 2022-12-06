@@ -291,7 +291,7 @@
     <![CDATA[
          SELECT
               SRA_INDV_AMNNO
-        FROM  TB_LA_IS_MH_SOG_COW
+        FROM  TB_LA_IS_MM_INDV
         WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
           AND SRA_INDV_AMNNO  = #{re_indv_no}					/* 축산개체관리번호		*/
 	]]>
@@ -808,14 +808,14 @@
 			</otherwise>
 		 </choose>
 		 , #{modl_no}                             /* 거치대 번호 */
-		<choose>
+         <choose>
 			<when test="auc_yn != null and auc_yn != ''">
-				, #{auc_yn}
+		 		, #{auc_yn}
 			</when>
 			<otherwise>
-				, '0'
+				, 0
 			</otherwise>
-		</choose>
+		 </choose>
     )
     </insert>
     
@@ -851,10 +851,10 @@
                 , #{farm_amnno}											/* 농장관리번호                        */
                 <choose>
 					<when test='birth == "" or birth == null'>
-						, BIRTH = NULL
+						, NULL
 					</when>
 					<otherwise>
-						, BIRTH = #{birth}
+						, #{birth}
 					</otherwise>
 				</choose>												/* 생년월일                            */
                 , #{mcow_dsc}											/* 어미구분코드                        */
@@ -863,10 +863,10 @@
                 , #{mcow_sra_indv_amnno}								/* 어미소축산개체관리번호              */
                 <choose>
 					<when test='matime == "" or matime == null'>
-						, MATIME = NULL
+						, NULL
 					</when>
 					<otherwise>
-						, MATIME = #{matime}
+						, #{matime}
 					</otherwise>
 				</choose>												/* 산차                                */
                 , #{sra_indv_pasg_qcn}									/* 축산개체계대차수                    */

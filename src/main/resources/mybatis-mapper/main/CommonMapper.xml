@@ -50,6 +50,7 @@
             , SGNO_PRC_DSC                              /* 단수처리구분코드     */
             , DDL_YN                                    /* 마감여부         */
             , DEL_YN                                    /* 삭제여부         */
+            , (SELECT WM_CONCAT(AUC_OBJ_DSC) FROM  TB_LA_IS_MH_AUC_QCN WHERE NA_BZPLC = #{ss_na_bzplc} AND AUC_DT = #{auc_dt} AND AUC_OBJ_DSC NOT IN ('0', #{auc_obj_dsc})) AS OT_AUC_OBJ_DSC
         FROM  TB_LA_IS_MH_AUC_QCN
         WHERE NA_BZPLC    = #{ss_na_bzplc}              /* 경제통합사업장코드        */
     ]]>
@@ -193,4 +194,158 @@
     <delete id="Common_delBack">
         ${query_text}
     </delete>
+    
+    
+    <insert id="Common_insDownloadLog">    
+		<selectKey keyProperty="sra_opr_sqno" resultType="int" order="BEFORE">
+			SELECT NVL(MAX(SRA_OPR_SQNO)+1,1) AS SRA_OPR_SQNO
+			  FROM TB_LA_IS_BI_PSN_INF
+			  WHERE NA_BZPLC = #{ss_na_bzplc}
+			  AND OPR_DT = TO_CHAR(SYSDATE,'YYYYMMDD')
+		</selectKey>
+        insert into TB_LA_IS_BI_PSN_INF (
+			NA_BZPLC
+			, OPR_DT
+			, SRA_OPR_SQNO 
+			, PGID 
+			, SRCH_CND_CNTRN 
+			, INQ_CN 
+			, BTN_TPC   
+			, APVRQR_RSNCTT 
+			, IPADR  
+			, FSRG_DTM 
+			, FSRGMN_ENO
+        )values(
+			#{ss_na_bzplc}
+			, TO_CHAR(SYSDATE,'YYYYMMDD')
+			, #{sra_opr_sqno} 
+			, #{pgid}
+			, #{srch_cnd_cntrn} 
+			, #{inq_cn} 
+			, #{btn_tpc}   
+			, #{apvrqr_rsnctt} 
+			, #{ipadr}  
+			, SYSDATE 
+			, #{ss_userid}
+        )
+    </insert>
+    
+	<!-- ************************************************ 개체 등록/수정 관련 [s] ************************************************ -->
+	<!-- 개체 정보 조회 -->
+	<select id="common_selAmnno" parameterType="hashMap" resultType="hashMap">
+		SELECT SRA_INDV_AMNNO
+		  FROM TB_LA_IS_MM_INDV
+		 WHERE NA_BZPLC				= #{ss_na_bzplc}					/* 경제통합사업장코드 */
+		   AND SRA_INDV_AMNNO		= #{re_indv_no}						/* 축산개체관리번호 */
+	</select>
+
+	<!-- 개체 정보 저장 -->
+	<insert id="common_insMmIndv" parameterType="hashMap">
+		INSERT INTO TB_LA_IS_MM_INDV (
+			  NA_BZPLC                                             /* 경제통합사업장코드                  */
+			, SRA_INDV_AMNNO                                       /* 축산개체관리번호                    */
+			, SRA_SRS_DSC                                          /* 축산축종구분코드                    */
+			, FHS_ID_NO                                            /* 농가식별번호                        */
+			, FARM_AMNNO                                           /* 농장관리번호                        */
+			, BIRTH                                                /* 생년월일                            */
+			, MCOW_DSC                                             /* 어미구분코드                        */
+			, KPN_NO		                                       /* KPN번호                             */
+			, INDV_SEX_C                                           /* 개체성별코드                        */
+			, MCOW_SRA_INDV_AMNNO                                  /* 어미소축산개체관리번호              */
+			, MATIME                                               /* 산차                                */
+			, SRA_INDV_PASG_QCN                                    /* 축산개체계대차수                    */
+			, INDV_ID_NO                                           /* 개체식별번호                        */
+			, SRA_INDV_BRDSRA_RG_NO                                /* 축산개체종축등록번호                */
+			, RG_DSC                                               /* 등록구분코드                        */
+			, ANW_YN                                               /* 한우종합등록여부                    */
+			, FSRG_DTM                                             /* 최초등록일시                        */
+			, FSRGMN_ENO                                           /* 최초등록자개인번호                  */
+			, LSCHG_DTM                                            /* 최종변경일시                        */
+			, LS_CMENO                                             /* 최종변경자개인번호                  */
+		) VALUES (
+			  #{ss_na_bzplc}										/* 경제통합사업장코드                  */
+			, #{re_indv_no}											/* 축산개체관리번호                    */
+			, '01'													/* 축산축종구분코드                    */
+			, #{fhs_id_no}											/* 농가식별번호                        */
+			, #{farm_amnno}											/* 농장관리번호                        */
+			<choose>
+				<when test='birth == "" or birth == null'>
+					, NULL
+				</when>
+				<otherwise>
+					, #{birth}
+				</otherwise>
+			</choose>												/* 생년월일                            */
+			, #{mcow_dsc}											/* 어미구분코드                        */
+			, #{kpn_no}												/* KPN번호                             */
+			, #{indv_sex_c}											/* 개체성별코드                        */
+			, #{mcow_sra_indv_amnno}								/* 어미소축산개체관리번호              */
+			<choose>
+				<when test='matime == "" or matime == null'>
+					, NULL
+				</when>
+				<otherwise>
+					, #{matime}
+				</otherwise>
+			</choose>												/* 산차                                */
+			, #{sra_indv_pasg_qcn}									/* 축산개체계대차수                    */
+			, #{indv_id_no}											/* 개체식별번호                        */
+			, #{sra_indv_brdsra_rg_no}								/* 축산개체종축등록번호                */
+			, #{rg_dsc}												/* 등록구분코드                        */
+			, '9'													/* 한우종합등록여부                    */
+			, SYSDATE												/* 최초등록일시                        */
+			, #{ss_userid}											/* 최초등록자개인번호                  */
+			, SYSDATE												/* 최종변경일시                        */
+			, #{ss_userid}											/* 최종변경자개인번호                  */
+		)
+	</insert>
+	
+	<!-- 개체 정보 수정 -->
+	<update id="common_updMnIndv" parameterType="hashMap">
+		UPDATE TB_LA_IS_MM_INDV
+		   SET KPN_NO              =  #{kpn_no}
+			 , FHS_ID_NO 	       =  #{fhs_id_no}
+			 , FARM_AMNNO 	       =  #{farm_amnno}
+			 , INDV_SEX_C          =  #{indv_sex_c}
+		<choose>
+		<when test='birth == "" or birth == null'>
+			, BIRTH = NULL
+		</when>
+		<otherwise>
+			, BIRTH = #{birth}
+		</otherwise>
+		</choose>
+			 , INDV_ID_NO            =  #{indv_id_no}
+			 , SRA_INDV_BRDSRA_RG_NO =  #{sra_indv_brdsra_rg_no}
+		<choose>
+		<when test='rg_dsc == "" or rg_dsc == null'>
+			 , RG_DSC = NULL
+		</when>
+		<otherwise>
+			 , RG_DSC = #{rg_dsc}
+		</otherwise>
+		</choose>
+		<choose>
+		<when test='mcow_dsc == "" or mcow_dsc == null'>
+			 , MCOW_DSC = NULL
+		</when>
+		<otherwise>
+			 , MCOW_DSC = #{mcow_dsc}
+		</otherwise>
+		</choose>
+			 , MCOW_SRA_INDV_AMNNO   =  #{mcow_sra_indv_amnno}
+		<choose>
+		<when test='matime == "" or matime == null'>
+			 , MATIME = NULL
+		</when>
+		<otherwise>
+			 , MATIME = #{matime}
+		</otherwise>
+		</choose>
+			 , SRA_INDV_PASG_QCN     = #{sra_indv_pasg_qcn}
+		 WHERE NA_BZPLC              = #{ss_na_bzplc}
+		   AND SRA_INDV_AMNNO        = #{re_indv_no}
+		   AND SRA_SRS_DSC           ='01'
+	</update>
+	<!-- ************************************************ 개체 등록/수정 관련 [e] ************************************************ -->
 </mapper>

@@ -20,4 +20,15 @@ public interface CommonMapper {
 	int Common_insBack(Map<String, Object> map) throws Exception;
 	int Common_updBack(Map<String, Object> map) throws Exception;
 	int Common_delBack(Map<String, Object> map) throws Exception;
+	
+	/* 20221005 jjw 공통 로그추가 */
+	int Common_insDownloadLog(Map<String, Object> inMap)  throws Exception;	
+	
+	// **************************** 개체 등록/수정 관련 [s] **************************************
+	List<Map<String, Object>> common_selAmnno(Map<String, Object> map);
+	int common_updMnIndv(Map<String, Object> map) throws Exception;
+	int common_insMmIndv(Map<String, Object> map) throws Exception;
+	// **************************** 개체 등록/수정 관련 [e] **************************************
+	
+	
 }

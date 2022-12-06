@@ -18,21 +18,19 @@ $(document).ready(function() {
             if (typeof event == "object") {
                 event.keyCode = 0;
             }
+            if($('#btn_Save')[0]) $('#btn_Save').click();
             return false;
         } else if (e.which === 82 && e.ctrlKey) {
             return false;
         }
-        if (code === 116) {
-            if($('#btn_Save')[0]) $('#btn_Save').click();
-            return false;
-        } else if (code == 115) {
+        if (code == 115) {
             if($('#btn_Search')[0]) $('#btn_Search').click();
             return false;
         }
     });
     
     //폼 엔터값 방지    
-    $('form').keypress(function(e){
+    $('form').not('.enterAllow').keypress(function(e){
     	var code = e.keyCode || e.which;
     	if(code == 13){
     		e.preventDefault();
@@ -55,6 +53,8 @@ $(document).ready(function() {
         changeYear: true
         
     });
+
+    //NUMBER타입 음수 INPUT변수에 숫자만 입력 콤마추가
     $(document).on("input",".integer", function(){
     	$(this).val($(this).val().replace(/[^0-9]/g,'').replace(/(\..*)\./g,'$1'));
     }).on("focus",".integer",function(){
@@ -215,14 +215,15 @@ $(document).ready(function() {
     //날짜 ####-##-##
     $.extend($.fn.fmatter,{
         gridDateFormat:function(val, options, rowdata) {
-        	if(val.trim().length == 8){
+        	val = !val?.trim() ? '' : val.trim().replace(/[^0-9]/g,'');
+        	if(val.length == 8 && fn_isDate(val)){
         		var y,m,d;
                 y = val.substring(0,4);
                 m = val.substring(4,6);
                 d = val.substring(6,8);
                 return y+"-"+m+"-"+d;
         	}else{
-        		return val;
+        		return '';
         	}
             
         }
@@ -251,6 +252,12 @@ $(document).ready(function() {
             }
         }
     });
+    $.extend($.fn.fmatter,{
+        gridBarCodeFormat : function(val, options, rowdata) {
+        	val = !val?.trim() ? '' : val.trim().replace(/[^0-9]/g,'');
+        	return val.slice(-9, val.length);
+        }
+    });
     $.extend($.fn.fmatter.gridIndvFormat,{
         unformat:function(val,options){
             return val.replace(/-/gi,"");
@@ -274,7 +281,7 @@ $(document).ready(function() {
         unformat:function(val,options){
             return val.replace(/-/gi,"");
         }
-    });    
+    });
 });
 
 //**************************************
@@ -797,7 +804,7 @@ function fn_isNum(str){
  * 3. 출 력 변 수 : true, false
  ------------------------------------------------------------------------------*/
 function fn_isChar(str){        
-    const regExp = /[ㄱ-ㅎㅏ-ㅣ가-힣]/g;
+    const regExp = /[ㄱ-ㅎㅏ-ㅣ가-힣a-zA-Z]/g;
 	if(regExp.test(str)){
 		return true;
 	} else {
@@ -938,6 +945,8 @@ function fn_setCodeRadio(p_target, p_obj, p_simp_tpc, p_simp_c_grp_sqno) {
 //***************************************
 function fn_setChgRadio(p_target, p_simp_c) {
     $("#" + p_target).val(p_simp_c);
+	var v_target = p_target + '_' + p_simp_c;
+	$("#" + v_target).prop('checked',true);
 }
 
 //***************************************
@@ -974,6 +983,31 @@ function fn_setCodeString(p_simp_tpc, p_simp_c_grp_sqno, p_flag) {
       }        
   }); 
   return resultString;
+}
+
+//***************************************
+//* function   : fn_setCodeArr
+//* paramater  : 
+//* result     : ex) 1:여;0:부
+//***************************************
+function fn_setCodeArr(p_simp_tpc, p_simp_c_grp_sqno) {
+<c:if test="${requestScope['javax.servlet.forward.request_uri'] != '/index'}">
+  var comboList = parent.comboList;
+</c:if>
+
+var resultArr = [];
+
+$.each(comboList, function(i){
+    if(comboList[i].SIMP_TPC == p_simp_tpc && comboList[i].SIMP_C_GRP_SQNO == p_simp_c_grp_sqno){
+    	var tempObj = {
+    		code: comboList[i].SIMP_C,
+    		codeNm: comboList[i].SIMP_CNM
+    	}
+    	
+    	resultArr.push(tempObj);
+    }        
+}); 
+return resultArr;
 }
  
 //***************************************
@@ -1409,6 +1443,35 @@ function fn_CallIndvInfHstPopup(p_param,p_flg,callback){
 	}
 }
 
+function fn_CallIndvInfHstPopupForExcel(p_param,p_flg,callback){
+	var pgid = 'LALM0222P';
+	var menu_id = $("#menu_info").attr("menu_id");
+	p_param["ctgrm_cd"]  = "2200"
+	
+	if(p_flg){
+		
+		var result;
+		
+		var resultData = sendAjax(p_param, "/LALM0899_selIfSend", "POST");  
+		
+		if(resultData.status != RETURN_SUCCESS){
+        	showErrorMessage(resultData,'NOTFOUND');
+	    }else{      
+	        result = setDecrypt(resultData);
+		    if(result != null && result["INQ_CN"] == 1){
+		  	    callback(result);
+		    } else {
+		  	    parent.layerPopupPage(pgid, menu_id, p_param, result, 1300, 900,function(result){
+		          callback(result);
+		      	});
+		    }
+	    }
+	} else {
+		parent.layerPopupPage(pgid, menu_id, p_param, null, 1300, 900,function(result){
+	        callback(result);
+	    });
+	}
+}
 //***************************************
 //* function   : 농가정보조회 팝업(인터페이스)
 //* paramater  : p_param(object), p_flg(단건 리턴여부)
@@ -1475,108 +1538,156 @@ function gridSaveRow(gridID) {
 //* result     : N/A
 //***************************************
 function fn_ExcelDownlad(gid, p_title, p_footer){
-        
-   gridSaveRow(gid);
-	
-   var newcolModel = [];
-   var colModel    = $('#' + gid).jqGrid('getGridParam', 'colModel');
-   var colName     = $('#' + gid).jqGrid('getGridParam', 'colNames');
-   var gridData    = $('#' + gid).jqGrid('getGridParam', 'data');
 
-   var title       = p_title + "_" + fn_getDay(0).replace(/-/gi, "").replace(" ", "").replace(":", "");
-   
-   if (gridData.length == 0) {
-       MessagePopup("OK", '조회된 데이터가 없습니다.');
-       return false;
-   }
-   for (var i = 0, len = colModel.length; i < len; i++) {
-       if (colModel[i].hidden === true) {
-           continue;
-       }
-       if (colModel[i].colmenu === false) {
-           continue;
-       }
-       var rowdata = {};
-       if(colModel[i].name != 'CHK' && colModel[i].name != 'ROWNUM1') {  //엑셀파일 출력 시 NO와 CHK박스 제외
-           rowdata['label']     = colName[i];
-           rowdata['name']      = colModel[i].name;
-           rowdata['width']     = colModel[i].width;
-           rowdata['align']     = fn_isNull(colModel[i].align) ? 'left' : colModel[i].align;
-           rowdata['formatter'] = fn_isNull(colModel[i].formatter) ? '' : colModel[i].formatter;
-           
-       }
-       newcolModel.push(rowdata);
-       if (colModel[i].formatter == 'select') {
-           $('#' + gid).jqGrid('setColProp', colModel[i].name, {
-               unformat: gridUnfmt
-           });
-       }
-   }
-   var rowNumtemp    = $('#' + gid).jqGrid('getGridParam', 'rowNum');
-   var scrolltemp    = $('#' + gid).jqGrid('getGridParam', 'scroll');
-   var pgbuttonstemp = $('#' + gid).jqGrid('getGridParam', 'pgbuttons');
-   $('#' + gid).jqGrid('setGridParam', {
-       rowNum   : 1000000000
-     , scroll   : 1
-     , pgbuttons: false
-   });
-   var gridDatatemp = $('#' + gid).getRowData();
-        
-   $('#' + gid).jqGrid('setGridParam', {
-       rowNum   : rowNumtemp
-     , scroll   : scrolltemp
-     , pgbuttons: pgbuttonstemp
-   });
-   $('#' + gid).trigger('reloadGrid');
-   for (var i = 0,
-   len = colModel.length; i < len; i++) {
-       if (colModel[i].formatter == 'select') {
-           $('#' + gid).jqGrid('setColProp', colModel[i].name, {
-               unformat: null
-           });
-       }
-   }
-   var excelUrl = "/excelDownload";
-   var xhr  = new XMLHttpRequest();
-   
-   var param = JSON.stringify({'colModel': newcolModel, 'gridData': gridDatatemp, 'title': title, 'footer': p_footer});
-   
-   xhr.open("POST", excelUrl, true);
-   xhr.responseType = "blob";
-   xhr.setRequestHeader("Authorization", 'Bearer ' + localStorage.getItem("nhlvaca_token"));
-   xhr.setRequestHeader("Content-Type",  "application/json; charset=UTF-8");
-                     
-   xhr.onload = function(e){
-       
-       var filename = title;
-       var disposition = xhr.getResponseHeader('Content-Disposition');
-       if(disposition && disposition.indexOf("attachment") !== -1){
-           var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-           var matches       = filenameRegex.exec(disposition);
-           if(matches != null && matches[1]){
-               filename = decodeURI(matches[1].replace(/['"]/g, ''));
-           }
-           
-           if(this.status == 200){
-               var blob = this.response;
-               if(window.navigator.msSaveOrOpenBlob){
-                   window.navigator.msSaveBlob(blob, filename);
-               }else{
-                  var downloadLink = window.document.createElement('a');
-                  var contentTypeHeader = xhr.getResponseHeader("Content-Type");
-                  downloadLink.href = window.URL.createObjectURL(new Blob([blob], {type:contentTypeHeader}));
-                  downloadLink.download = filename;
-                  document.body.appendChild(downloadLink);
-                  downloadLink.click();
-                  document.body.removeChild(downloadLink);                     
-               }
-           }                 
-       }           
-   };
-               
-   xhr.send(param);
+	gridSaveRow(gid);
+	var gridData = $('#' + gid).jqGrid('getGridParam', 'data');
+
+	if (gridData.length == 0) {
+		MessagePopup("OK", '조회된 데이터가 없습니다.');
+		return false;
+	}
+	
+	var message = '다운로드사유를 입력하세요.<br/><br/><input id="input_rn" maxlength="50" style="padding: 4px 6px 2px 6px;width: 100%;line-height: 12px;border: 1px solid #d9d9d9;vertical-align: middle;background: #fff;outline: none;"';   
+	message += '/>';
+	message += '<script type="text/javascript">';
+	message += '$(document).find(\'input[id=input_rn]\').focusout(function(e){';
+	message += 'parent.inputRn=$(this).val();';
+	message += '});';
+	message += '<';
+	message += "/script>";
+
+	MessagePopup('YESNO', message, function(res){
+		if(res){
+			if(parent.inputRn.length < 2){
+				MessagePopup('OK','다운로드사유를 2글자 이상 입력해주세요.');
+				return;
+			}
+			fn_ExcelDownlad_Tmp(gid, p_title, p_footer,parent.inputRn);
+		}
+	});
+	
+	function fn_ExcelDownlad_Tmp(gid, p_title, p_footer,input_rn) {
+		var newcolModel	= [];
+		var colModel	= $('#' + gid).jqGrid('getGridParam', 'colModel');
+		var colName		= $('#' + gid).jqGrid('getGridParam', 'colNames');
+		var gridData	= $('#' + gid).jqGrid('getGridParam', 'data');
+	
+		var title = p_title + "_" + fn_getDay(0).replace(/-/gi, "").replace(" ", "").replace(":", "");
+	
+		if (gridData.length == 0) {
+			MessagePopup("OK", '조회된 데이터가 없습니다.');
+			return false;
+		}
+		
+		for (var i = 0, len = colModel.length; i < len; i++) {
+			if (colModel[i].hidden === true) {
+				continue;
+			}
+			if (colModel[i].colmenu === false) {
+				continue;
+			}
+			var rowdata = {};
+			if(colModel[i].name != 'CHK' && colModel[i].name != 'ROWNUM1') {  //엑셀파일 출력 시 NO와 CHK박스 제외
+				rowdata['label']     = colName[i].replaceAll("<br/>", "\n").replaceAll("<br />", "\n");
+				rowdata['name']      = colModel[i].name;
+				rowdata['width']     = colModel[i].width;
+				rowdata['align']     = fn_isNull(colModel[i].align) ? 'left' : colModel[i].align;
+				rowdata['formatter'] = fn_isNull(colModel[i].formatter) ? '' : colModel[i].formatter;
+			}
+			newcolModel.push(rowdata);
+			if (colModel[i].formatter == 'select') {
+				$('#' + gid).jqGrid('setColProp', colModel[i].name, {
+					unformat: gridUnfmt
+				});
+			}
+		}
+		
+		var rowNumtemp    = $('#' + gid).jqGrid('getGridParam', 'rowNum');
+		var scrolltemp    = $('#' + gid).jqGrid('getGridParam', 'scroll');
+		var pgbuttonstemp = $('#' + gid).jqGrid('getGridParam', 'pgbuttons');
+		$('#' + gid).jqGrid('setGridParam', {
+			rowNum   : 1000000000,
+			scroll   : 1,
+			pgbuttons: false
+		});
+		
+		var gridDatatemp = $('#' + gid).getRowData();
+
+		$('#' + gid).jqGrid('setGridParam', {
+			rowNum   : rowNumtemp,
+			scroll   : scrolltemp,
+			pgbuttons: pgbuttonstemp
+		});
+		
+		$('#' + gid).trigger('reloadGrid');
+		for (var i = 0, len = colModel.length; i < len; i++) {
+			if (colModel[i].formatter == 'select') {
+				$('#' + gid).jqGrid('setColProp', colModel[i].name, {
+					unformat: null
+				});
+			}
+		}
+		
+		var excelUrl = "/excelDownload";
+		var xhr  = new XMLHttpRequest();
+		var param = JSON.stringify({'colModel': newcolModel, 'gridData': gridDatatemp, 'title': title, 'footer': p_footer});
+	
+		xhr.open("POST", excelUrl, true);
+		xhr.responseType = "blob";
+		xhr.setRequestHeader("Authorization", 'Bearer ' + localStorage.getItem("nhlvaca_token"));
+		xhr.setRequestHeader("Content-Type",  "application/json; charset=UTF-8");
+		
+		xhr.onload = function(e) {
+// 						localStorage.setItem("nhlvaca_token", getCookie('token'));    
+						var filename = title;
+						var disposition = xhr.getResponseHeader('Content-Disposition');
+						if(disposition && disposition.indexOf("attachment") !== -1){
+							var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+							var matches       = filenameRegex.exec(disposition);
+							if(matches != null && matches[1]){
+								filename = decodeURI(matches[1].replace(/['"]/g, ''));
+							}
+							
+							if(this.status == 200){
+								var blob = this.response;
+								if(window.navigator.msSaveOrOpenBlob){
+									window.navigator.msSaveBlob(blob, filename);
+								}
+								else{
+									var downloadLink = window.document.createElement('a');
+									var contentTypeHeader = xhr.getResponseHeader("Content-Type");
+									downloadLink.href = window.URL.createObjectURL(new Blob([blob], {type:contentTypeHeader}));
+									downloadLink.download = filename;
+									document.body.appendChild(downloadLink);
+									downloadLink.click();
+									document.body.removeChild(downloadLink);
+								}
+							}
+						}
+					}
+
+		xhr.send(param);
+		
+		/*20221005 jjw 리포트 로그 저장*/
+		var srchData = new Object();
+		if(typeof pageInfo == 'undefined'){
+			srchData["PGID"]	= p_title;
+		}else{
+			srchData["PGID"]	= pageInfo.pgid??p_title;
+		}
+		
+		srchData["INQ_CN"]			= gridData.length;
+		srchData["BTN_TPC"]			= "E";
+		srchData["APVRQR_RSNCTT"]	= input_rn;
+		fn_InsDownloadLog(srchData);
+	};
 }
  
+ function fn_InsDownloadLog(param){
+	parent.inputRn = '';
+    param["SRCH_CND_CNTRN"] 		= JSON.stringify(setFrmToData('frm_Search')).substr(0,2000);
+	result = sendAjax(param, "/insDownloadLog", "POST");	 
+ }
  
 //***************************************
 //* function   : fn_fileDownlad
@@ -1595,6 +1706,7 @@ function fn_fileDownlad(p_title){
     xhr.setRequestHeader("Content-Type",  "application/json; charset=UTF-8");
                          
     xhr.onload = function(e){
+//  	   localStorage.setItem("nhlvaca_token", getCookie('token'));
            
         var filename = p_title;
         var disposition = xhr.getResponseHeader('Content-Disposition');

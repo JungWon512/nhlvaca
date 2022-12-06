@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 public class DataBaseConfig {
 	
+<<<<<<< HEAD
  	 @Bean
 	 public DataSource dataSource() {
 	  return DataSourceBuilder.create()
@@ -25,6 +26,24 @@ public class DataBaseConfig {
 	     .username("lalm")
 	     .password("lalm123")
 	     .build();
+=======
+// 	 @Bean
+//	 public DataSource dataSource() {
+//	  return DataSourceBuilder.create()
+//	     .driverClassName("com.tmax.tibero.jdbc.TbDriver")
+//	     .url("jdbc:tibero:thin:@192.168.70.60:5550:NHLVADBD")
+//	     .username("nhlva")
+//	     .password("Nhlva1!")
+//	     .build();
+//	}
+	
+	@Bean
+	public DataSource dataSource() throws NamingException {
+		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
+		lookup.setResourceRef(true);
+		DataSource ds = lookup.getDataSource("jdbc/nhlva");
+		return ds;
+>>>>>>> branch 'master' of https://github.com/yuchansong410/nhlvaca.git
 	}
  	
  	@Bean

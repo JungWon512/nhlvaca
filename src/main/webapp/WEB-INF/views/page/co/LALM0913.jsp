@@ -1,17 +1,20 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
 <!-- 암호화 -->
-<%@ include file="/WEB-INF/common/serviceCall.jsp" %>
-<%@ include file="/WEB-INF/common/head.jsp" %>
+<%@ include file="/WEB-INF/common/serviceCall.jsp"%>
+<%@ include file="/WEB-INF/common/head.jsp"%>
 
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <!-- Tell the browser to be responsive to screen width -->
- <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
 </head>
 
 
@@ -251,7 +254,7 @@ var g_cmpid = false;
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["H사업장코드","사용자ID","비밀번호변경","사용자명", "개인번호","휴대전화번호", "비밀번호변경일자",];        
+        var searchResultColNames = ["H사업장코드","사용자ID","비밀번호변경","사용자명", "개인번호","휴대전화번호", "비밀번호변경일자", "등록여부"];        
         var searchResultColModel = [
         	                         {name:"NA_BZPLC",     index:"NA_BZPLC",    width:150, align:'center', hidden:true},
                                      {name:"USRID",        index:"USRID",       width:150, align:'left'},
@@ -260,6 +263,7 @@ var g_cmpid = false;
                                      {name:"ENO",          index:"ENO",         width:150, align:'center',hidden:true},
                                      {name:"MPNO",         index:"MPNO",        width:150, align:'center'},
                                      {name:"STRG_DT",      index:"STRG_DT",     width:150, align:'center', formatter:'gridDateFormat'},
+                                     {name:"STRG_YN",      index:"STRG_YN",     width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:"1:등록;0:조회"}}
                                     ];
             
         $("#grd_MmUsr").jqGrid("GridUnload");
@@ -287,7 +291,14 @@ var g_cmpid = false;
             		$('#btn_Save').attr('disabled',true);            
                     $('#btn_Delete').attr('disabled',true);
             	}
-                
+                if(sel_data["STRG_YN"] == "1") {
+                	fn_setChgRadio("strg_yn", "1");
+                	$("#strg_yn_1").prop("checked", true);
+                }
+                else if(sel_data["STRG_YN"] == "0") {
+                	fn_setChgRadio("strg_yn", "0");
+                	$("#strg_yn_0").prop("checked", true);
+                }
            },
         });
         
@@ -325,100 +336,113 @@ var g_cmpid = false;
             }
         });
     }
-      
-    
-    
-    
 </script>
 
 <body>
-    <div class="contents">
-        <%@ include file="/WEB-INF/common/menuBtn.jsp" %>
-        
-        
-        <!-- content -->
-        <section class="content">
-            
-            <ul class="clearfix">
-                <li class="fl_L allow_R m_full" style="width:40%;"><!-- //좌측 화살표 추가 할때 allow_R 클래스 추가 -->
-                    <div class="tab_box clearfix fl_L">
-                        <ul class="tab_list">
-                            <li><p class="dot_allow">사용자정보 </p></li>
-                        </ul>
-                    </div> 
-                    <div class="fl_R"><!--  //버튼 모두 우측정렬 -->   
-	                     
-	                    <button class="tb_btn" id="pb_Init">입력초기화</button>
-	                </div>                         
-                    <div class="grayTable rsp_h">
-                        <form id=frm_MmUsr>
-                        <input type="hidden" id="RunMode"/>
-                            <table>
-                                <colgroup>
-                                    <col width="120">
-                                    <col width="*">
-                                </colgroup>
-                                <tbody>
-                                   <tr>
-                                       <th scope="row"><span class="tb_dot">사용자ID</span></th>
-		                               <td>
-		                                    <div class="cellBox">
-		                                        <div class="cell" style="width:150px;"><input type="text" id="usrid" class="pops" maxlength="9" autocomplete="off"></div>
-		                                        <div class="cell pl2"><button class="tb_btn" id="pb_CmpId" >중복확인</button></div>
-		                                    </div>
-		                                    
-		                                 </td>
-                                   </tr>
-                                   <tr>
-                                       <th scope="row"><span class="tb_dot">사용자명</span></th>
-                                       <td>
-                                          <input type="text" id="usrnm" autocomplete="off">
-                                       </td>
-                                   </tr>
-                                   <tr>
-                                       <th scope="row"><span class="tb_dot">휴대전화번호</span></th>
-                                       <td>
-                                           <div class="cellBox">
-                                                <div class="cell"><input type="text" id="mpno" class="digit" maxlength="11" autocomplete="off"></div>
-                                                <div class="cell pl2">'-'없이 숫자만 입력</div>
-		                                    </div>
-                                       </td>
-                                   </tr>
-                                   <tr class="pws">
-                                       <th scope="row"><span class="tb_dot">비밀번호</span></th>
-                                       <td>
-                                          <input type="password" id="pw" autocomplete="new-password">
-                                       </td>
-                                   </tr>
-                                   <tr class="pws">
-                                       <th scope="row"><span class="tb_dot">비밀번호확인</span></th>
-                                       <td>
-                                          <input type="password" id="pw2" autocomplete="new-password">
-                                       </td>
-                                   </tr>
-                                </tbody>
-                            </table>
-                        </form>
-                    </div>
-                    <div id="txtPw" class="tab_box fl_R"><!--  //버튼 모두 우측정렬 -->
-		                <label style="font-size:15px;color: blue;font: message-box;">* 영문,숫자의 조합으로 8자리 이상</label>
-		            </div>
-               </li>
-            
-               <!-- //좌 e -->
-               <li class="fl_R m_full" style="width: 58%">
-                   <div class="tab_box clearfix"> 
-                       <ul class="tab_list">
-                           <li><p class="dot_allow">검색결과</p></li>
-                       </ul>
-                   </div>
-                   <div class="listTable">
-                       <table id="grd_MmUsr">
-                       </table>
-                   </div>
-               </li>
-            </ul>
-        </section>       
-    </div>
+	<div class="contents">
+		<%@ include file="/WEB-INF/common/menuBtn.jsp"%>
+		<!-- content -->
+		<section class="content">
+			<ul class="clearfix">
+				<li class="fl_L allow_R m_full" style="width: 40%;">
+					<!-- //좌측 화살표 추가 할때 allow_R 클래스 추가 -->
+					<div class="tab_box clearfix fl_L">
+						<ul class="tab_list">
+							<li><p class="dot_allow">사용자정보</p></li>
+						</ul>
+					</div>
+					<div class="fl_R">
+						<!--  //버튼 모두 우측정렬 -->
+						<button class="tb_btn" id="pb_Init">입력초기화</button>
+					</div>
+					<div class="grayTable rsp_h">
+						<form id=frm_MmUsr autocomplete="off">
+							<input type="hidden" id="RunMode" />
+							<table>
+								<colgroup>
+									<col width="120">
+									<col width="*">
+								</colgroup>
+								<tbody>
+									<tr>
+										<th scope="row"><span class="tb_dot">사용자ID</span></th>
+										<td>
+											<div class="cellBox">
+												<div class="cell" style="width: 150px;">
+													<input type="text" id="usrid" class="pops" maxlength="9" autocomplete="off" />
+												</div>
+												<div class="cell pl2">
+													<button class="tb_btn" id="pb_CmpId">중복확인</button>
+												</div>
+											</div>
+
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><span class="tb_dot">사용자명</span></th>
+										<td><input type="text" id="usrnm" autocomplete="off" />
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><span class="tb_dot">휴대전화번호</span></th>
+										<td>
+											<div class="cellBox">
+												<div class="cell">
+													<input type="text" id="mpno" class="digit" maxlength="11" autocomplete="off">
+												</div>
+												<div class="cell pl2">'-'없이 숫자만 입력</div>
+											</div>
+										</td>
+									</tr>
+									<tr class="pws">
+										<th scope="row"><span class="tb_dot">비밀번호</span></th>
+										<td><input type="password" id="pw" autocomplete="new-password"></td>
+									</tr>
+									<tr class="pws">
+										<th scope="row"><span class="tb_dot">비밀번호확인</span></th>
+										<td><input type="password" id="pw2" autocomplete="new-password"></td>
+									</tr>
+									<tr>
+										<th scope="row"><span class="tb_dot">사용권한</span></th>
+										<td>
+											<div class="cellBox" style="width:30%;">
+												<div class="cell">
+													<input type="radio" id="strg_yn_0" name="strg_yn_radio" value="0" onclick="javascript:fn_setChgRadio('strg_yn','0');" checked="checked" />
+													<label for="strg_yn_0">조회</label>
+												</div>
+												<div class="cell">
+													<input type="radio" id="strg_yn_1" name="strg_yn_radio" value="1" onclick="javascript:fn_setChgRadio('strg_yn','1');" />
+													<label for="strg_yn_1">등록</label>
+												</div>
+												<input type="hidden" id="strg_yn" value="" />
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</form>
+					</div>
+					<div id="txtPw" class="tab_box fl_R">
+						<!--  //버튼 모두 우측정렬 -->
+						<label style="font-size: 15px; color: blue; font: message-box;">*
+							영문,숫자의 조합으로 8자리 이상</label>
+					</div>
+				</li>
+
+				<!-- //좌 e -->
+				<li class="fl_R m_full" style="width: 58%">
+					<div class="tab_box clearfix">
+						<ul class="tab_list">
+							<li><p class="dot_allow">검색결과</p></li>
+						</ul>
+					</div>
+					<div class="listTable">
+						<table id="grd_MmUsr">
+						</table>
+					</div>
+				</li>
+			</ul>
+		</section>
+	</div>
 </body>
 </html>
