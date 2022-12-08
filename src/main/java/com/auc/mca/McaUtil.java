@@ -1,19 +1,67 @@
 package com.auc.mca;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.amazonaws.SdkClientException;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.ListObjectsRequest;
+import com.amazonaws.services.s3.model.ObjectListing;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.util.Base64;
+import com.amazonaws.util.IOUtils;
+import com.auc.common.exception.CusException;
+import com.auc.common.exception.ErrorCode;
 
 @Component
 public class McaUtil {
 
 	private static Logger log = LoggerFactory.getLogger(McaUtil.class);
+	
+	@Value("${bucket.endPoint}")
+	private String endPoint;
+	
+	@Value("${bucket.regionName}")
+	private String regionName;
+	
+	@Value("${bucket.accessKey}")
+	private String accessKey;
+	
+	@Value("${bucket.secretKey}")
+	private String secretKey;
+	
+	@Value("${bucket.bucketName}")
+	private String bucketName;
 	
 	@Autowired
     TradeMcaMsgDataController tradeMcaMsgDataController;
@@ -57,5 +105,315 @@ public class McaUtil {
 	    }
     	return reMap;
     }
+
+	/**
+	 * @methodName    : getOpenDataApi
+	 * @author        : Jung JungWon
+	 * @param map 
+	 * @throws CusException 
+	 * @date          : 2022.11.02
+	 * @Comments      : 
+	 */
+	public Map<String, Object> getOpenDataApi(Map<String, Object> map) throws CusException {
+		// TODO Auto-generated method stub
+
+		Map<String, Object> nodeMap      = new HashMap<String, Object>();
+		String sendUrl = "http://data.ekape.or.kr/openapi-data/service/user/animalTrace/traceNoSearch";
+		sendUrl += "?serviceKey=" + "7vHI8ukF3BjfpQW8MPs9KtxNwzonZYSbYq6MVPIKshJNeQHkLqxsqd1ru5btfLgIFuLRCzCLJDLYkHp%2FvI6y0A%3D%3D";
+		sendUrl += "&traceNo=" + map.get("trace_no");//  "002125769192";
+		//sendUrl += "&optionNo=" + map.get("option_no");//"7"; 브루셀라
+        HttpURLConnection conn = null;
+		log.debug("sendUrl: " + sendUrl);
+		try {
+			StringBuilder urlBuilder = new StringBuilder(sendUrl);
+	        URL url = new URL(urlBuilder.toString());
+				
+			
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(1000);
+			conn.setReadTimeout(1000);
+	        conn.setRequestMethod("GET");
+	        conn.setRequestProperty("Content-type", "application/json");
+	        log.debug("Response code: " + conn.getResponseCode());
+	        BufferedReader rd = null;
+	        
+	        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <=300 ) {
+				rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			}else {
+				rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+			}
+	        
+	        StringBuilder sb = new StringBuilder();
+	        String line;
+	        while ((line = rd.readLine()) != null) {
+	            sb.append(line);
+	        }
+	        rd.close();
+	        conn.disconnect();
+	        log.debug(sb.toString());
+	        JSONObject json = XML.toJSONObject(sb.toString());
+	        
+	        if(json != null && json.getJSONObject("response") != null && json.getJSONObject("response").getJSONObject("body") !=null
+	        		&& json.getJSONObject("response").getJSONObject("body").getJSONObject("items") != null) {
+		        JSONArray jArr = json.getJSONObject("response").getJSONObject("body").getJSONObject("items").getJSONArray("item");
+		        for(Object item : jArr) {
+		        	JSONObject jItem = (JSONObject) item;
+		        	String infoType = jItem.get("infoType").toString();
+		        	if("5,6,7".indexOf(infoType)> -1) {
+		        		Iterator<String> it =jItem.keySet().iterator();
+		        		while(it.hasNext()) {
+		        			String key = (String) it.next();
+			        		nodeMap.put(key, jItem.get(key));			        			
+		        		}
+		        		
+		        	}
+		        }	        	
+	        }	        
+		} catch (JSONException e) {
+			//log.debug("",e);
+			//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+			nodeMap = null;
+        } catch (RuntimeException e) {
+			log.debug("",e);
+			//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+			nodeMap = null;
+        } catch (Exception e) {
+        	//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+			nodeMap = null;
+        } finally {
+            if (conn!= null) conn.disconnect();
+        }
+		return nodeMap;
+	}
+
+	public List<Map<String, Object>> getOpenDataApiCattleMove(Map<String, Object> map) throws CusException {
+		// TODO Auto-generated method stub
+
+		List<Map<String, Object>> nodeList      = new ArrayList<>();
+		String sendUrl = "http://data.ekape.or.kr/openapi-data/service/user/animalTrace/traceNoSearch";
+		sendUrl += "?serviceKey=" + "7vHI8ukF3BjfpQW8MPs9KtxNwzonZYSbYq6MVPIKshJNeQHkLqxsqd1ru5btfLgIFuLRCzCLJDLYkHp%2FvI6y0A%3D%3D";
+		sendUrl += "&traceNo=" + map.get("trace_no");//  "002125769192";
+		sendUrl += "&optionNo=2";
+		
+        HttpURLConnection conn = null;
+		log.debug("sendUrl: " + sendUrl);
+		try {
+			StringBuilder urlBuilder = new StringBuilder(sendUrl);
+	        URL url = new URL(urlBuilder.toString());
+				
+			
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setConnectTimeout(1000);
+			conn.setReadTimeout(1000);
+	        conn.setRequestMethod("GET");
+	        conn.setRequestProperty("Content-type", "application/json");
+	        log.debug("Response code: " + conn.getResponseCode());
+	        BufferedReader rd = null;
+	        
+	        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <=300 ) {
+				rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			}else {
+				rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+			}
+	        
+	        StringBuilder sb = new StringBuilder();
+	        String line;
+	        while ((line = rd.readLine()) != null) {
+	            sb.append(line);
+	        }
+	        rd.close();
+	        conn.disconnect();
+	        log.debug(sb.toString());
+	        JSONObject json = XML.toJSONObject(sb.toString());
+	        
+	        if(json != null && json.getJSONObject("response") != null && json.getJSONObject("response").getJSONObject("body") !=null
+	        		&& json.getJSONObject("response").getJSONObject("body").getJSONObject("items") != null) {
+		        JSONArray jArr = json.getJSONObject("response").getJSONObject("body").getJSONObject("items").getJSONArray("item");
+		        for(Object item : jArr) {
+		        	JSONObject jItem = (JSONObject) item;
+	        		Iterator<String> it =jItem.keySet().iterator();
+	        		HashMap<String,Object> nodeMap = new HashMap<String, Object>();
+	        		while(it.hasNext()) {
+	        			String key = (String) it.next();
+		        		nodeMap.put(key, jItem.get(key));			        			
+	        		}
+	        		nodeList.add(nodeMap);
+		        }	        	
+	        }	        
+		} catch (JSONException e) {
+			//log.debug("",e);
+			//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+        } catch (RuntimeException e) {
+			log.debug("",e);
+			throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+        } catch (Exception e) {
+        	throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+        } finally {
+            if (conn!= null) conn.disconnect();
+        }
+		return nodeList;
+	}
+	
+	public List<Map<String, Object>> LALM0215_selImgList(Map<String, Object> map) throws IOException {
+		List<Map<String, Object>> reList = new ArrayList<>();
+
+		// S3 client
+		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+		    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+		    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+		    .build();
+
+		// list all in the bucket
+		try {
+		    ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
+		        .withBucketName(bucketName)
+		        .withMaxKeys(300);
+
+		    ObjectListing objectListing = s3.listObjects(listObjectsRequest);
+
+		    System.out.println("Object List:");
+		    while (true) {
+		        for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+		            System.out.println("    name=" + objectSummary.getKey() + ", size=" + objectSummary.getSize() + ", owner=" + objectSummary.getOwner().getId());
+		        }
+
+		        if (objectListing.isTruncated()) {
+		            objectListing = s3.listNextBatchOfObjects(objectListing);
+		        } else {
+		            break;
+		        }
+		    }
+		} catch (AmazonS3Exception e) {
+		    System.err.println(e.getErrorMessage());
+		    System.exit(1);
+		}
+
+		// top level folders and files in the bucket
+		try {
+		    ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
+		        .withBucketName(bucketName)
+		        .withDelimiter("/")
+		        .withMaxKeys(300);
+
+		    ObjectListing objectListing = s3.listObjects(listObjectsRequest);
+
+		    System.out.println("Folder List:");
+		    for (String commonPrefixes : objectListing.getCommonPrefixes()) {
+		        System.out.println("    name=" + commonPrefixes);
+		    }
+
+		    System.out.println("File List:");
+		    for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+		        System.out.println("    name=" + objectSummary.getKey() + ", size=" + objectSummary.getSize() + ", owner=" + objectSummary.getOwner().getId());
+		    }
+		} catch (AmazonS3Exception e) {
+		    e.printStackTrace();
+		} catch(SdkClientException e) {
+		    e.printStackTrace();
+		}
+		
+		return reList;
+	}
+	
+	public String LALM0215_downImgList(Map<String, Object> map) {
+		String val = "";
+		
+		// S3 client
+		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+		    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+		    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+		    .build();
+
+		String objectName = "433b5d89-b8e0-4701-a23d-ba27dc8bbe0e" + ".png";
+		String downloadFilePath = "C://cowImage/"+ objectName;
+
+		// download object
+		try {
+		    S3Object s3Object = s3.getObject(bucketName, objectName);
+		    S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
+		    
+		    byte[] sourceBytes = IOUtils.toByteArray(s3ObjectInputStream);
+
+		    val = "data:image/png;base64," + Base64.encodeAsString(sourceBytes); 
+
+//		    OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(downloadFilePath));
+//		    byte[] bytesArray = new byte[4096];
+//		    int bytesRead = -1;
+//		    while ((bytesRead = s3ObjectInputStream.read(bytesArray)) != -1) {
+//		        outputStream.write(bytesArray, 0, bytesRead);
+//		    }
+//
+//		    outputStream.close();
+		    s3ObjectInputStream.close();
+		    System.out.format("Object %s has been downloaded.\n", objectName);
+		} catch (AmazonS3Exception e) {
+		    e.printStackTrace();
+		} catch(SdkClientException e) {
+		    e.printStackTrace();
+		} catch(IOException e) {
+		    e.printStackTrace();
+		}
+		
+		return val;
+	}
+	
+	public Map<String, Object> LALM0215_insImgList(Map<String, Object> paramMap) {
+		Map<String, Object> reMap = new HashMap<>();
+		try {
+		// S3 client
+		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+		    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+		    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+		    .build();
+		
+		// create folder(if) empty folder)
+		String folderName = paramMap.get("na_bzplc") + "/" + paramMap.get("sra_indv_amnno") + "/";
+		MultipartFile file = (MultipartFile) paramMap.get("file");
+		
+		ObjectMetadata objectMetadata = new ObjectMetadata();
+		objectMetadata.setContentType(MediaType.IMAGE_PNG_VALUE);
+		objectMetadata.setContentLength(file.getBytes().length);
+		System.out.format("Folder %s has been created.\n", folderName);
+
+		// upload parameter file
+		String objectName = UUID.randomUUID().toString() + ".png";
+		
+		s3.putObject(bucketName, objectName, file.getInputStream(), objectMetadata);
+		
+	    System.out.format("Object %s has been created.\n", objectName);
+	    
+	    this.LALM0215_selImgList(reMap);
+		} catch (AmazonS3Exception e) {
+		    e.printStackTrace();
+		} catch(SdkClientException e) {
+		    e.printStackTrace();
+		} catch(IOException e) {
+		    e.printStackTrace();
+		}
+		
+		return reMap;
+	}
+	
+	public Map<String, Object> LALM0215_delImgList(String key) {
+		Map<String, Object> reMap = new HashMap<>();
+		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+			    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+			    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+			    .build();
+
+			String bucketName = "sample-bucket";
+			String objectName = "sample-object";
+
+			// delete object
+			try {
+			    s3.deleteBucket(bucketName);
+			    System.out.format("Object %s has been deleted.\n", objectName);
+			} catch (AmazonS3Exception e) {
+			    e.printStackTrace();
+			} catch(SdkClientException e) {
+			    e.printStackTrace();
+			}
+			return reMap;
+	}
     
 }

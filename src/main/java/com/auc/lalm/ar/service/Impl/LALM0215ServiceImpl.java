@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.auc.lalm.ar.service.LALM0215Service;
 import com.auc.main.service.LogService;
 import com.auc.main.service.Impl.LogMapper;
+import com.auc.mca.McaUtil;
 
 @Service("LALM0215Service")
 public class LALM0215ServiceImpl implements LALM0215Service{
@@ -21,6 +22,9 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 	LogService logService;
 	
 	@Autowired
+	McaUtil mcaUtil;
+	
+	@Autowired
 	LogMapper logMapper;
 	
 	@Override
@@ -28,6 +32,7 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		List<Map<String, Object>> list = null;		
 		list = lalm0215Mapper.LALM0215_selList(map);
+		
 		return list;
 		
 	}
@@ -125,6 +130,7 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		List<Map<String, Object>> list = null;		
 		list = lalm0215Mapper.LALM0215_selMhCalf(map);
+		
 		return list;
 		
 	}
@@ -484,6 +490,44 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 				}
 			}
 		}
+		
+		reMap.put("insertNum", insertNum);
+		reMap.put("deleteNum", deleteNum);
+		reMap.put("updateNum", updateNum);
+		
+		return reMap;
+	}
+	
+	
+	@Override
+	public List<Map<String, Object>> LALM0215_selImgList(Map<String, Object> map) throws Exception {
+		
+		List<Map<String, Object>> list = null;		
+		list = mcaUtil.LALM0215_selImgList(map);
+		
+		return list;
+		
+	}
+	
+	@Override
+	public Map<String, Object> LALM0215_downImgFile(Map<String, Object> map) throws Exception {
+		Map<String, Object> reMap = new HashMap<>();
+		
+		reMap.put("data", mcaUtil.LALM0215_downImgList(map));
+
+		return reMap;
+	}
+	
+	@Override
+	public Map<String, Object> LALM0215_insImgList(Map<String, Object> paramMap) throws Exception {
+		Map<String, Object> reMap = new HashMap<String, Object>();
+		Map<String, Object> tmpMap = new HashMap<String, Object>();
+		
+		int insertNum = 0;
+		int deleteNum = 0;
+		int updateNum = 0;
+		
+		tmpMap = mcaUtil.LALM0215_insImgList(paramMap);
 		
 		reMap.put("insertNum", insertNum);
 		reMap.put("deleteNum", deleteNum);

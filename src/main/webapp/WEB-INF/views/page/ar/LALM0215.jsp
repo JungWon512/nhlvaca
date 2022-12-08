@@ -1009,6 +1009,20 @@
             	}
              }
        	});
+       	
+       	/******************************
+         * 이미지 저장 이벤트
+         ******************************/
+        $("#btnUpload").click(function() {
+    		fn_InsImgList();
+    	});
+    	
+    	/******************************
+         * 이미지 저장 이벤트
+         ******************************/
+        $("#btnDownload").click(function() {
+    		fn_DownImgList();
+    	});
      	
      	/******************************
          * 낙찰가 금액 초기화 이벤트
@@ -1104,6 +1118,7 @@
          
 		 $("#pb_tab2").removeClass('on');
 		 $("#pb_tab1").addClass('on');
+		 $("#pb_tab3").addClass('on');
     	
     	 if(mv_InitBoolean) {
     		 fn_Reset();
@@ -2611,6 +2626,7 @@
     		
     		mv_RunMode = 1;
     		fn_AucOnjDscModify("init");
+    		fn_SelImgList();
         	fn_Search();
         	
     		mv_RunMode = 2;
@@ -3187,6 +3203,105 @@
                  return;
              }
     	 }        
+    }
+    
+    //**************************************
+ 	//function  : fn_SelImgList(이미지 조회) 
+ 	//paramater : N/A 
+ 	// result   : N/A
+ 	//**************************************
+    function fn_SelImgList() {
+		 var results = sendAjaxFrm("frm_Hdn", "/LALM0215_selImgList", "POST");
+		 var result;
+	    
+	    console.log(results);
+	    
+	     if(results.status == RETURN_SUCCESS){
+	     	result = setDecrypt(results);	         
+	        fn_SetData(result);
+	        
+	     }else {
+	         showErrorMessage(results);
+	         //mv_InitBoolean = true;
+			 //fn_Init();
+			 //$("#btn_Delete").attr("disabled", true);
+	         return;
+	     }
+    	     
+    }
+    
+    //**************************************
+ 	//function  : fn_InsImgList(이미지 저장) 
+ 	//paramater : N/A 
+ 	// result   : N/A
+ 	//**************************************
+    function fn_InsImgList() {
+		 //폼데이터 전송           
+        var result;
+        
+        var formData = new FormData($("#frm_MhSogCow")[0]);
+        // 사업장코드
+        formData.append("na_bzplc", App_na_bzplc);
+        // 개체번호
+        formData.append("sra_indv_amnno", "410" + $("#sra_indv_amnno").val());
+        $.ajax({
+            url: "/LALM0215_insImgList",
+            type: "POST",
+            enctype:"multipart/form-data",
+            processData:false,
+            contentType:false,
+            data: formData,
+            async: false,
+            headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
+            success:function(data) {    
+            	result = true;            
+            },
+            error:function(request){            
+                result = false;
+                            
+            }
+        }); 
+        
+        return result; 
+    	     
+    }
+    
+    //**************************************
+ 	//function  : fn_DownImgList(이미지 다운로드) 
+ 	//paramater : N/A 
+ 	// result   : N/A
+ 	//**************************************
+    function fn_DownImgList() {
+		 //폼데이터 전송           
+		var encrypt = setEncrypt(setFrmToData('frm_MhSogCow'));
+        var result;
+        
+        //var formData = new FormData($("#frm_MhSogCow")[0]);
+        // 사업장코드
+        //formData.append("na_bzplc", App_na_bzplc);
+        // 개체번호
+        //formData.append("sra_indv_amnno", "410" + $("#sra_indv_amnno").val());
+   		var results = sendAjaxFrm("frm_MhSogCow", "/LALM0215_downImgList", "POST");
+       	var result;
+           
+         $.ajax({
+                url: '/LALM0215_downImgList',
+                type: 'POST',
+                async: false,
+                headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
+                success:function(data) {  
+	                var data2 = setDecrypt(data);    
+	                  
+	                if(data2 != null){
+                		$('#preeview-image').prop('src',data2.data);
+	                }                                    
+                },
+                error:function(response){
+                	MessagePopup("OK", "이미지를 다운로드하지 못하였습니다.");
+                    return;
+                }
+            }); 
+    	     
     }
  	
   	//**************************************
@@ -3883,6 +3998,37 @@
         }
     }
     
+  	//**************************************
+	//function  : fn_CallCattleMove(소 이력정보 조회) 
+	//paramater : N/A
+	// result   : N/A
+	//**************************************
+    function fn_CallCattleMove() {
+    	var srchData = new Object();
+    	var P_sra_indv_amnno = "";
+    	
+    	if($("#sra_indv_amnno").val().replace("-", "").length == 12) {
+        	P_sra_indv_amnno = $("#hed_indv_no").val() + $("#sra_indv_amnno").val().replace("-", "");
+		} else {
+			MessagePopup('OK','귀표번호를 확인하세요.',null,function(){
+                $("#sra_indv_amnno").focus();
+            });
+			return;
+		}
+
+        srchData["trace_no"]     = P_sra_indv_amnno;
+        
+        var results = sendAjax(srchData, "/LALM0899_selRestApiCattleMove", "POST");        
+        var result;
+        
+        if(results.status != RETURN_SUCCESS) {
+        	$("#brcl_isp_rzt_c").val("9");
+            return;
+        } else {
+            result = setDecrypt(results);
+            console.log(result);
+        }
+    }
   	//**************************************
 	//function  : fn_CallLsPtntInfSrch(축산연구원 친자확인 조회 인터페이스) 
 	//paramater : N/A
@@ -4723,6 +4869,7 @@
 				<ul class="tab_list fl_L">
 					<li><a href="#tab1" id="pb_tab1" class="on">출장우정보</a></li>
 					<li><a href="#tab2" id="pb_tab2">송아지정보</a></li>
+					<li><a href="#tab3" id="pb_tab3">이미지</a></li>
 				</ul>
                               
                 <div class="fl_R" id="tab1_text"><!--  //버튼 모두 우측정렬 -->   
@@ -5404,6 +5551,16 @@
 	        <div id="tab2" class="tab_content">
 	        	<table id="calfGrid" style="width:1807px;">
                 </table>
+	        </div>
+	        <div id="tab3" class="tab_content">
+	        	<div>
+	        		<input type="file" id="uploadImg" name="uploadImg">
+	        		<button type="button" id="btnUpload">이미지 저장</button>
+	        		<button type="button" id="btnDownload">이미지 다운로드</button>
+	        	</div>
+	        	<div id="imageView">
+			       <img id="preeview-image">
+		  		</div>
 	        </div>
             </form>
             
