@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <!-- 암호화 -->
 <%@ include file="/WEB-INF/common/serviceCall.jsp" %>
 <%@ include file="/WEB-INF/common/head.jsp" %>
@@ -43,12 +44,19 @@
         $("#pb_SearchZip").on('click',function(e){
             e.preventDefault();
             this.blur();
-            fn_CallRoadnmPopup(function(result){
-                if(result){
-                	$("#zip").val(result.ZIP);
-                    $("#dongup").val(result.RODNM_ADR);
-                }
-            });
+            //fn_CallRoadnmPopup(function(result){
+            //    if(result){
+            //    	$("#zip").val(result.ZIP);
+            //        $("#dongup").val(result.RODNM_ADR);
+            //    }
+            //});
+            new daum.Postcode({
+		        oncomplete: function(data) {
+		        	console.log(data);
+            		$("#zip").val(data.zonecode);
+                    $("#dongup").val(data.roadAddress);
+		        }
+		    }).open();
         });
         
         /******************************
