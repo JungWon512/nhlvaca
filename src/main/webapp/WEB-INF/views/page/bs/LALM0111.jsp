@@ -5,6 +5,7 @@
 <html>
 <head>
 <!-- 암호화 -->
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <%@ include file="/WEB-INF/common/serviceCall.jsp" %>
 <%@ include file="/WEB-INF/common/head.jsp" %>
 
@@ -55,6 +56,27 @@ var isFrmOrgData = null;
         
         $("#birth").datepicker();
         
+                
+        /******************************
+        * 주소 검색
+        ******************************/
+        $("#pb_SearchZip").on('click',function(e){
+            e.preventDefault();
+            this.blur();
+            new daum.Postcode({
+		        oncomplete: function(data) {
+		        	console.log(data);
+            		$("#zip").val(data.zonecode);
+                    $("#dongup").val(data.roadAddress);
+		        }
+		    }).open();
+            //fn_CallRoadnmPopup(function(result){
+            //    if(result){
+            //    	 $("#zip").val(result.ZIP);
+            //         $("#dongup").val(result.RODNM_ADR);
+            //    }
+            //});
+        });
         fn_Init();
     });   
     
@@ -676,9 +698,12 @@ var isFrmOrgData = null;
                             <tr>
                                 <th scope="row">우편번호</th>
                                 <td>
-                                    <div>
-                                        <input type="text" id="zip" name="zip" class="digit" maxlength="6"/>
-                                    </div>
+	                                <div class="cell" style="width:70px;float:left;">
+	                                    <input type="text" id="zip" name="zip" class="digit" maxlength="6" disabled="disabled"/>
+	                                </div>
+	                                <div class="cell pl2" style="width:26px;float:left;">
+	                                    <button id="pb_SearchZip" class="tb_btn white srch"><i class="fa fa-search"></i></button>
+	                                </div>
                                 </td>
                                 <th scope="row">동이상주소</th>
                                 <td colspan="3">
