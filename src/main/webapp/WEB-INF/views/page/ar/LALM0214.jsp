@@ -61,7 +61,7 @@
         }
         //엑셀변환버튼사용안함
         $("#pb_ExcelConversion").hide();
-        $("#pb_ExcelUpload").hide();
+//         $("#pb_ExcelUpload").hide();
         
         //귀표번호 컨트롤
         $("#sra_indv_amnno").on("keypress",function(e){           
@@ -294,8 +294,13 @@
              this.blur();
              var pgid = 'LALM0214P3';
              var menu_id = $("#menu_info").attr("menu_id");
-             parent.layerPopupPage(pgid, menu_id, null, null, 1000, 600,function(result){
-                 //
+             var param = {
+            		 auc_obj_dsc : $('#auc_obj_dsc').val()
+            		 , auc_dt : $('#auc_dt').val()
+             }
+             parent.layerPopupPage(pgid, menu_id, param, null, 1000, 600,function(result){
+            	 if(result)fn_Search();
+                 
              });
          });
          
