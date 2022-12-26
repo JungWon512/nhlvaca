@@ -320,8 +320,6 @@ public class LALM0215Controller {
 		Map<String, Object> tempMap = new HashMap<>();		
 		MultipartFile file = request.getFile("uploadImg");
 		
-		System.out.println(file.getSize());
-		
 		tempMap.put("file", request.getFile("uploadImg"));
 		tempMap.put("fileMap", request.getFileMap());
 		tempMap.put("na_bzplc", request.getParameter("na_bzplc"));
@@ -335,11 +333,22 @@ public class LALM0215Controller {
 	}
 	
 	@ResponseBody
-	@RequestMapping(value="/LALM0215_downImgList", method=RequestMethod.POST)
-	public Map<String, Object> LALM0215_downImgList(ResolverMap rMap) throws Exception{				
+	@RequestMapping(value="/LALM0215_selImg", method=RequestMethod.POST)
+	public Map<String, Object> LALM0215_selImg(ResolverMap rMap) throws Exception{				
 		
 		Map<String, Object> map = convertConfig.conMap(rMap);		
-		Map<String, Object> tempMap = lalm0215Service.LALM0215_downImgFile(map);
+		Map<String, Object> tempMap = lalm0215Service.LALM0215_selImg(map);
+		Map<String, Object> reMap = commonFunc.createResultSetMapData(tempMap);
+		
+		return reMap;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/LALM0215_delImgList", method=RequestMethod.POST)
+	public Map<String, Object> LALM0215_delImgList(ResolverMap rMap) throws Exception{				
+		
+		Map<String, Object> map = convertConfig.conMap(rMap);	
+		Map<String, Object> tempMap = lalm0215Service.LALM0215_delImgList(map);
 		Map<String, Object> reMap = commonFunc.createResultSetMapData(tempMap);
 		
 		return reMap;

@@ -49,8 +49,10 @@ public interface LALM0215Service {
 
 	List<Map<String, Object>> LALM0215_selImgList(Map<String, Object> map) throws Exception;
 	
-	Map<String, Object> LALM0215_downImgFile(Map<String, Object> map) throws Exception;
+	Map<String, Object> LALM0215_selImg(Map<String, Object> map) throws Exception;
 	
 	Map<String, Object> LALM0215_insImgList(Map<String, Object> map) throws Exception;
+	
+	Map<String, Object> LALM0215_delImgList(Map<String, Object> map) throws Exception;
 
 }

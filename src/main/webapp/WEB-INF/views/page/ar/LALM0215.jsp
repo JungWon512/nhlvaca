@@ -1018,10 +1018,24 @@
     	});
     	
     	/******************************
-         * 이미지 저장 이벤트
+         * 이미지 리스트 조회 이벤트
          ******************************/
-        $("#btnDownload").click(function() {
-    		fn_DownImgList();
+        $("#btnSelImgList").click(function() {
+    		fn_selImgList();
+    	});
+    	
+    	/******************************
+         * 이미지 조회 이벤트
+         ******************************/
+        $("#btnSelImg").click(function() {
+    		fn_selImg();
+    	});
+    	
+    	/******************************
+         * 이미지 삭제 이벤트
+         ******************************/
+        $(document).on("click","p.btnDelete",function() {
+    		fn_DelImgList($(this).attr("id"));
     	});
      	
      	/******************************
@@ -2626,7 +2640,6 @@
     		
     		mv_RunMode = 1;
     		fn_AucOnjDscModify("init");
-    		fn_SelImgList();
         	fn_Search();
         	
     		mv_RunMode = 2;
@@ -3206,25 +3219,36 @@
     }
     
     //**************************************
- 	//function  : fn_SelImgList(이미지 조회) 
+ 	//function  : fn_SelImgList(이미지 리스트 조회) 
  	//paramater : N/A 
  	// result   : N/A
  	//**************************************
-    function fn_SelImgList() {
-		 var results = sendAjaxFrm("frm_Hdn", "/LALM0215_selImgList", "POST");
+    function fn_selImgList() {
+		 var results = sendAjaxFrm("frm_MhSogCow", "/LALM0215_selImgList", "POST");
 		 var result;
-	    
-	    console.log(results);
-	    
+
 	     if(results.status == RETURN_SUCCESS){
-	     	result = setDecrypt(results);	         
-	        fn_SetData(result);
+	     	result = setDecrypt(results);
+	     	
+	     	$('.list-area > ul li').remove();
+	     	
+	     	var sHtml = "";
+	     	
+	     	for (item of result) {
+		     	sHtml += '<li>';
+		     	sHtml += '	<span class="fileNm">파일명 : '+ item.fileNm +'</span>';
+		     	sHtml += '	<span class="fileSize">파일사이즈 : '+ item.fileSize +'</span>';
+		     	sHtml += '	<span class="fileExt">확장자명 : '+ item.fileExt +'</span>';		     	
+		     	sHtml += '	<p class="btnDelete" id="'+item.fileNm+'" style="display:inline-block;cursor: pointer;color:grey;">파일삭제</p>';
+		     	sHtml += '</li>';		     			     	
+	        }
 	        
+    		$('.list-area > ul').append(sHtml);
 	     }else {
 	         showErrorMessage(results);
-	         //mv_InitBoolean = true;
-			 //fn_Init();
-			 //$("#btn_Delete").attr("disabled", true);
+	         mv_InitBoolean = true;
+			 fn_Init();
+			 $("#btn_Delete").attr("disabled", true);
 	         return;
 	     }
     	     
@@ -3267,33 +3291,41 @@
     }
     
     //**************************************
- 	//function  : fn_DownImgList(이미지 다운로드) 
+ 	//function  : fn_selImg(이미지 조회) 
  	//paramater : N/A 
  	// result   : N/A
  	//**************************************
-    function fn_DownImgList() {
+    function fn_selImg(imgId) {
 		 //폼데이터 전송           
 		var encrypt = setEncrypt(setFrmToData('frm_MhSogCow'));
-        var result;
-        
-        //var formData = new FormData($("#frm_MhSogCow")[0]);
-        // 사업장코드
-        //formData.append("na_bzplc", App_na_bzplc);
-        // 개체번호
-        //formData.append("sra_indv_amnno", "410" + $("#sra_indv_amnno").val());
-   		var results = sendAjaxFrm("frm_MhSogCow", "/LALM0215_downImgList", "POST");
-       	var result;
-           
+		
+		var params = new Object();
+		params['imgId'] = '433b5d89-b8e0-4701-a23d-ba27dc8bbe0e';
+		
+   		//var results = sendAjax(params, "/LALM0215_selImg", "POST");
+       	//var result;
+       	//
+       	//if(results.status != RETURN_SUCCESS){
+		//	showErrorMessage(results);
+		//	return;
+		//}
+		//else{
+		//	result = setDecrypt(results);
+		//	if (result != null) {
+		//		$('#preview-image').prop('src',data.data);
+		//	}
+		//}
+        //   
          $.ajax({
-                url: '/LALM0215_downImgList',
+                url: '/LALM0215_selImg',
                 type: 'POST',
                 async: false,
                 headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
                 success:function(data) {  
-	                var data2 = setDecrypt(data);    
+	                var img = setDecrypt(data.data);    
 	                  
 	                if(data2 != null){
-                		$('#preeview-image').prop('src',data2.data);
+                		$('#preview-image').prop('src',img.data);
 	                }                                    
                 },
                 error:function(response){
@@ -3301,6 +3333,42 @@
                     return;
                 }
             }); 
+    	     
+    }
+    
+    //**************************************
+ 	//function  : fn_DelImgList(이미지 삭제) 
+ 	//paramater : N/A 
+ 	// result   : N/A
+ 	//**************************************
+    function fn_DelImgList(imgId) {
+    	if (imgId == null || imgId == '') {
+    		MessagePopup("OK", "삭제할 이미지가 없습니다.");
+			return;
+    	}
+    	
+    	// [TO-DO] imgId Array에 push(전체삭제 및 체크삭제 처리)
+    	let imgarray = new Array();
+    	
+    	imgarray.push(imgId);
+    	
+    	var data = new Object();
+    	data["imgarray"] = imgarray;
+    	data["imgid"] = imgId;
+    	
+   		var results = sendAjax(data, "/LALM0215_delImgList", "POST");
+       	var result;
+           
+         if(results.status == RETURN_SUCCESS){
+            fn_selImgList();
+            
+         }else {
+             showErrorMessage(results);
+             mv_InitBoolean = true;
+    		 fn_Init();
+    		 $("#btn_Delete").attr("disabled", true);
+             return;
+         }
     	     
     }
  	
@@ -5553,13 +5621,18 @@
                 </table>
 	        </div>
 	        <div id="tab3" class="tab_content">
-	        	<div>
+	        	<div class="btn_area">
 	        		<input type="file" id="uploadImg" name="uploadImg">
-	        		<button type="button" id="btnUpload">이미지 저장</button>
-	        		<button type="button" id="btnDownload">이미지 다운로드</button>
+	        		<button type="button" class="tb_btn" id="btnSelImgList">이미지 리스트 조회</button>
+	        		<button type="button" class="tb_btn" id="btnUpload">이미지 추가</button>
+	        		<button type="button" class="tb_btn" id="btnSelImg">이미지 조회</button>
+	        		<button type="button" class="tb_btn" id="btnAllDelete">이미지 삭제</button>
+	        	</div>
+	        	<div class="list-area">
+	        		<ul style="border:1px solid grey; width:100%;"></ul>
 	        	</div>
 	        	<div id="imageView">
-			       <img id="preeview-image">
+			       <img id="preview-image" />
 		  		</div>
 	        </div>
             </form>

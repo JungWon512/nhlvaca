@@ -263,31 +263,6 @@ public class McaUtil {
 		    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
 		    .build();
 
-		// list all in the bucket
-		try {
-		    ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
-		        .withBucketName(bucketName)
-		        .withMaxKeys(300);
-
-		    ObjectListing objectListing = s3.listObjects(listObjectsRequest);
-
-		    System.out.println("Object List:");
-		    while (true) {
-		        for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-		            System.out.println("    name=" + objectSummary.getKey() + ", size=" + objectSummary.getSize() + ", owner=" + objectSummary.getOwner().getId());
-		        }
-
-		        if (objectListing.isTruncated()) {
-		            objectListing = s3.listNextBatchOfObjects(objectListing);
-		        } else {
-		            break;
-		        }
-		    }
-		} catch (AmazonS3Exception e) {
-		    System.err.println(e.getErrorMessage());
-		    System.exit(1);
-		}
-
 		// top level folders and files in the bucket
 		try {
 		    ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
@@ -297,14 +272,18 @@ public class McaUtil {
 
 		    ObjectListing objectListing = s3.listObjects(listObjectsRequest);
 
-		    System.out.println("Folder List:");
-		    for (String commonPrefixes : objectListing.getCommonPrefixes()) {
-		        System.out.println("    name=" + commonPrefixes);
-		    }
-
-		    System.out.println("File List:");
 		    for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-		        System.out.println("    name=" + objectSummary.getKey() + ", size=" + objectSummary.getSize() + ", owner=" + objectSummary.getOwner().getId());
+		    	Map<String, Object> reMap = new HashMap<>();
+			    S3Object s3Object = s3.getObject(bucketName, objectSummary.getKey());
+			    S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
+			    byte[] sourceBytes = IOUtils.toByteArray(s3ObjectInputStream);
+			    reMap.put("fileNm", objectSummary.getKey()); 
+			    reMap.put("fileSize", objectSummary.getSize()); 
+			    reMap.put("fileExt", objectSummary.getKey().substring(objectSummary.getKey().lastIndexOf(".")+1)); 
+			    reMap.put("fileImg","data:image/png;base64," + Base64.encodeAsString(sourceBytes)); 
+			    
+			    s3ObjectInputStream.close();
+			    reList.add(reMap);
 		    }
 		} catch (AmazonS3Exception e) {
 		    e.printStackTrace();
@@ -312,12 +291,13 @@ public class McaUtil {
 		    e.printStackTrace();
 		}
 		
+		
 		return reList;
 	}
 	
-	public String LALM0215_downImgList(Map<String, Object> map) {
-		String val = "";
-		
+	public Map<String, Object> LALM0215_selImg(Map<String, Object> map) {
+		Map<String, Object> reMap = new HashMap<>();
+
 		// S3 client
 		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
 		    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
@@ -325,7 +305,7 @@ public class McaUtil {
 		    .build();
 
 		String objectName = "433b5d89-b8e0-4701-a23d-ba27dc8bbe0e" + ".png";
-		String downloadFilePath = "C://cowImage/"+ objectName;
+//		String objectName = map.get("imgid").toString();
 
 		// download object
 		try {
@@ -334,18 +314,9 @@ public class McaUtil {
 		    
 		    byte[] sourceBytes = IOUtils.toByteArray(s3ObjectInputStream);
 
-		    val = "data:image/png;base64," + Base64.encodeAsString(sourceBytes); 
+		    reMap.put("data","data:image/png;base64," + Base64.encodeAsString(sourceBytes)); 
 
-//		    OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(downloadFilePath));
-//		    byte[] bytesArray = new byte[4096];
-//		    int bytesRead = -1;
-//		    while ((bytesRead = s3ObjectInputStream.read(bytesArray)) != -1) {
-//		        outputStream.write(bytesArray, 0, bytesRead);
-//		    }
-//
-//		    outputStream.close();
 		    s3ObjectInputStream.close();
-		    System.out.format("Object %s has been downloaded.\n", objectName);
 		} catch (AmazonS3Exception e) {
 		    e.printStackTrace();
 		} catch(SdkClientException e) {
@@ -354,7 +325,7 @@ public class McaUtil {
 		    e.printStackTrace();
 		}
 		
-		return val;
+		return reMap;
 	}
 	
 	public Map<String, Object> LALM0215_insImgList(Map<String, Object> paramMap) {
@@ -394,26 +365,32 @@ public class McaUtil {
 		return reMap;
 	}
 	
-	public Map<String, Object> LALM0215_delImgList(String key) {
+	public Map<String, Object> LALM0215_delImgList(Map<String, Object> map) {
 		Map<String, Object> reMap = new HashMap<>();
 		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-			    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-			    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-			    .build();
+		    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+		    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+		    .build();
 
-			String bucketName = "sample-bucket";
-			String objectName = "sample-object";
-
-			// delete object
-			try {
-			    s3.deleteBucket(bucketName);
-			    System.out.format("Object %s has been deleted.\n", objectName);
-			} catch (AmazonS3Exception e) {
-			    e.printStackTrace();
-			} catch(SdkClientException e) {
-			    e.printStackTrace();
-			}
-			return reMap;
+//		String[] keyArr = (String[]) map.get("imgarray");
+		String key = map.get("imgid").toString();
+		// delete object
+		try {
+//			if (keyArr.length > 0) {
+//				for (String key : keyArr) {
+					s3.deleteObject(bucketName, key);
+//				}
+				this.LALM0215_selImgList(reMap);								
+//			}
+		
+		} catch (AmazonS3Exception e) {
+		    e.printStackTrace();
+		} catch(SdkClientException e) {
+		    e.printStackTrace();
+		} catch(IOException e) {
+		    e.printStackTrace();
+		}
+		return reMap;
 	}
     
 }

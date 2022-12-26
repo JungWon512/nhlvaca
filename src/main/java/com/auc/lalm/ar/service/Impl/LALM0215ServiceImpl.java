@@ -510,11 +510,16 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 	}
 	
 	@Override
-	public Map<String, Object> LALM0215_downImgFile(Map<String, Object> map) throws Exception {
+	public Map<String, Object> LALM0215_selImg(Map<String, Object> map) throws Exception {
 		Map<String, Object> reMap = new HashMap<>();
-		
-		reMap.put("data", mcaUtil.LALM0215_downImgList(map));
-
+		reMap.put("data", mcaUtil.LALM0215_selImg(map));
+		return reMap;
+	}
+	
+	@Override
+	public Map<String, Object> LALM0215_delImgList(Map<String, Object> map) throws Exception {
+		Map<String, Object> reMap = new HashMap<>();
+		reMap.put("data", mcaUtil.LALM0215_delImgList(map));
 		return reMap;
 	}
 	
