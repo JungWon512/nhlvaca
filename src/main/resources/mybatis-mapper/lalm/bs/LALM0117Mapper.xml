@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.bs.service.Impl.LALM0117Mapper">
+    
+	<select id="LALM0117_selDormacPreUserList" resultType="HashMap">
+		/*LALM0117Mapper.LALM0117_selDormacPreUserList_20221031_추가*/
+		SELECT MWN.NA_BZPLC
+		 	, MWN.TRMN_AMNNO AS VIEW_CODE
+		 	, CASE WHEN #{ss_security} = '1' THEN MBT.MB_INTG_NM
+		 		ELSE SUBSTR(MBT.MB_INTG_NM,1,1) || LPAD('*',LENGTH(MBT.MB_INTG_NM)-2, '*') || SUBSTR(MBT.MB_INTG_NM, LENGTH(MBT.MB_INTG_NM), 1) 
+	 		  END MB_INTG_NM
+			, MBT.MB_RLNO
+			, CASE WHEN #{ss_security} = '1' THEN MBT.MB_MPNO
+				ELSE REGEXP_REPLACE(MBT.MB_MPNO, '(.{3})(.*)(.{4})', '\1-****-\3')
+			  END MB_MPNO
+			, MWN.DONGUP
+			, CASE WHEN #{ss_security} = '1' THEN MWN.DONGBW
+				ELSE LPAD(' ', LENGTH(MWN.DONGBW), '*')
+			  END DONGBW
+			, '' AS SMS_DATE /*문자발송일자*/
+			, MBT.FNCON_DTM
+			, TO_CHAR(TO_DATE(MBT.DORMDUE_DT, 'YYYYMMDD'), 'YYYY-MM-DD') AS DORMANCY_DATE
+			, TO_DATE(MBT.DORMDUE_DT, 'YYYYMMDD') - TRUNC(SYSDATE, 'dd') AS CHARGE_DATE
+			, MBT.MB_INTG_NO
+		FROM TB_LA_IS_MM_MBINTG MBT
+			INNER JOIN TB_LA_IS_MM_MWMN MWN
+			ON(MBT.MB_INTG_NO = MWN.MB_INTG_NO
+				AND MWN.NA_BZPLC = #{ss_na_bzplc}
+				AND MWN.DEL_YN = '0'
+			)
+		WHERE MBT.MB_INTG_GB = #{mbintg_gubun}
+			AND MBT.DORMACC_YN = '0'
+			AND MBT.DELACC_YN = '0'
+			AND MBT.DORMDUE_DT BETWEEN TO_CHAR(SYSDATE, 'YYYYMMDD') AND TO_CHAR(SYSDATE + 30, 'YYYYMMDD')		/*휴면예정일자가 30일 이내인 사람*/
+			<if test='mb_intg_nm != null and mb_intg_nm != ""'>
+			AND MBT.MB_INTG_NM LIKE '%' || #{mb_intg_nm} || '%'
+			</if>
+		ORDER BY MBT.DORMDUE_DT ASC
+	</select>
+	
+	<select id="LALM0117_selDormacPreFhsList" resultType="HashMap">
+		/*LALM0117Mapper.LALM0117_selDormacPreFhsList_20221101_추가*/
+		SELECT FHS.NA_BZPLC
+		 	, FHS.FHS_ID_NO || '-' || FHS.FARM_AMNNO AS VIEW_CODE
+		 	, CASE WHEN #{ss_security} = '1' THEN MBT.MB_INTG_NM
+		 		ELSE SUBSTR(MBT.MB_INTG_NM,1,1) || LPAD('*',LENGTH(MBT.MB_INTG_NM)-2, '*') || SUBSTR(MBT.MB_INTG_NM, LENGTH(MBT.MB_INTG_NM), 1) 
+	 		  END MB_INTG_NM
+			, MBT.MB_RLNO
+			, CASE WHEN #{ss_security} = '1' THEN MBT.MB_MPNO
+				ELSE REGEXP_REPLACE(MBT.MB_MPNO, '(.{3})(.*)(.{4})', '\1-****-\3')
+			  END MB_MPNO
+			, FHS.DONGUP
+			, CASE WHEN #{ss_security} = '1' THEN FHS.DONGBW
+				ELSE LPAD(' ', LENGTH(FHS.DONGBW), '*')
+			  END DONGBW
+			, '' AS SMS_DATE /*문자발송일자*/
+			, MBT.FNCON_DTM
+			, TO_CHAR(TO_DATE(MBT.DORMDUE_DT, 'YYYYMMDD'), 'YYYY-MM-DD') AS DORMANCY_DATE
+			, TO_DATE(MBT.DORMDUE_DT, 'YYYYMMDD') - TRUNC(SYSDATE, 'dd') AS CHARGE_DATE
+			, MBT.MB_INTG_NO
+		FROM TB_LA_IS_MM_MBINTG MBT
+			INNER JOIN TB_LA_IS_MM_FHS FHS
+			ON(MBT.MB_INTG_NO = FHS.MB_INTG_NO
+				AND FHS.NA_BZPLC = #{ss_na_bzplc}
+				AND FHS.DEL_YN = '0'
+			)
+		WHERE MBT.MB_INTG_GB = #{mbintg_gubun}
+			AND MBT.DORMACC_YN = '0'
+			AND MBT.DELACC_YN = '0'
+			AND MBT.DORMDUE_DT BETWEEN TO_CHAR(SYSDATE, 'YYYYMMDD') AND TO_CHAR(SYSDATE + 30, 'YYYYMMDD')		/*휴면예정일자가 30일 이내인 사람*/
+			<if test='mb_intg_nm != null and mb_intg_nm != ""'>
+			AND MBT.MB_INTG_NM LIKE '%' || #{mb_intg_nm} || '%'
+			</if>
+		ORDER BY MBT.FNCON_DTM DESC
+	</select>
+	
+	<update id="LALM0117_updDormcPreClear">
+		/*LALM0117Mapper.LALM0117_updDormcPreClear_20221102_추가*/
+		UPDATE TB_LA_IS_MM_MBINTG
+		SET DORMDUE_DT = TO_CHAR(SYSDATE + 365, 'YYYYMMDD')
+			, LSCHG_DTM = SYSDATE
+			, LS_CMENO = #{ss_userid}
+		WHERE DORMACC_YN = '0'
+			AND MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+	</update>
+	
+	<insert id="LALM0117_insMbintgHistoryData">
+		/*LALM0117Mapper.LALM0117_insMbintgHistoryData_20221102_추가*/
+		INSERT INTO TB_LA_IS_MM_MBINTGHIS(
+			MB_INTG_NO
+			, MB_INTG_NM
+			, MB_RLNO
+			, OHSE_TELNO
+			, MB_MPNO
+			, DORMACC_YN
+			, DORMACC_DT
+			, DELACC_YN
+			, DELACC_DT
+			, MB_INTG_DT
+			, TMS_YN
+			, FNCON_DTM
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, MB_INTG_GB
+			, DORMDUE_DT
+		)
+		SELECT MB_INTG_NO
+			, MB_INTG_NM
+			, MB_RLNO
+			, OHSE_TELNO
+			, MB_MPNO
+			, DORMACC_YN
+			, DORMACC_DT
+			, DELACC_YN
+			, DELACC_DT
+			, MB_INTG_DT
+			, TMS_YN
+			, FNCON_DTM
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, MB_INTG_GB
+			, DORMDUE_DT
+		FROM TB_LA_IS_MM_MBINTG
+		WHERE 1=1
+			<choose>
+			<when test='(batch_flag != null and batch_flag != "") or (sec_apply != null and sec_apply != "")'>
+			AND MB_INTG_NO = #{mb_intg_no}
+			</when>
+			<otherwise>
+			AND MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+			</otherwise>
+			</choose>
+	</insert>
+	
+	<insert id="LALM0117_insMwmnHistoryData">
+		/*LALM0117Mapper.LALM0117_insMwmnHistoryData_20221103_추가*/
+		INSERT INTO TB_LA_IS_MI_MWMN(
+			NA_BZPLC
+			, TRMN_AMNNO
+			, MWMN_NA_TRPL_C
+			, SRA_MWMNNM
+			, FRLNO
+			, ZIP
+			, DONGUP
+			, DONGBW
+			, OHSE_TELNO
+			, CUS_MPNO
+			, MACO_YN
+			, JRDWO_DSC
+			, PSN_INF_OFR_AGR_YN
+			, TMS_YN
+			, DEL_YN
+			, RMK_CNTN
+			, CUS_RLNO
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, SMS_NO
+			, SMS_YMD
+			, MB_INTG_NO
+		)
+		SELECT NA_BZPLC
+			, TRMN_AMNNO
+			, MWMN_NA_TRPL_C
+			, SRA_MWMNNM
+			, FRLNO
+			, ZIP
+			, DONGUP
+			, DONGBW
+			, OHSE_TELNO
+			, CUS_MPNO
+			, MACO_YN
+			, JRDWO_DSC
+			, PSN_INF_OFR_AGR_YN
+			, TMS_YN
+			, DEL_YN
+			, RMK_CNTN
+			, CUS_RLNO
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, SMS_NO
+			, SMS_YMD
+			, MB_INTG_NO
+		FROM TB_LA_IS_MM_MWMN
+		WHERE 1=1
+			<choose>
+			<when test='batch_flag != null  and batch_flag != ""'>
+			AND MB_INTG_NO = #{mb_intg_no}
+			</when>
+			<when test='sec_apply != null and sec_apply != ""'>
+			AND NA_BZPLC = #{ss_na_bzplc}
+			AND TRMN_AMNNO = #{trmn_amnno}
+			</when>
+			<otherwise>
+			AND MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+			</otherwise>
+			</choose>
+	</insert>
+	
+	<select id="LALM0117_selDormacUserList" resultType="HashMap">
+		/*LALM0117Mapper.LALM0117_selDormacUserList_20221103_추가*/
+		SELECT MWN.TRMN_AMNNO AS VIEW_CODE
+			, CASE WHEN #{ss_security} = '1' THEN BDM.MB_INTG_NM
+				ELSE SUBSTR(BDM.MB_INTG_NM,1,1) || LPAD('*',LENGTH(BDM.MB_INTG_NM)-2, '*') || SUBSTR(BDM.MB_INTG_NM, LENGTH(BDM.MB_INTG_NM), 1) 
+			  END MB_INTG_NM
+			, BDM.MB_RLNO
+			, CASE WHEN #{ss_security} = '1' THEN BDM.MB_MPNO
+				ELSE REGEXP_REPLACE(BDM.MB_MPNO, '(.{3})(.*)(.{4})', '\1-****-\3')
+			  END MB_MPNO	
+			, MWN.DONGUP
+			, CASE WHEN #{ss_security} = '1' THEN MWN.DONGBW
+				ELSE LPAD(' ', LENGTH(MWN.DONGBW), '*')
+			  END DONGBW
+			, TO_CHAR(TO_DATE(MBT.DORMACC_DT, 'YYYYMMDD'), 'YYYY-MM-DD') AS DORMACC_DT
+			, TO_CHAR(MBT.FNCON_DTM, 'YYYY-MM-DD') AS FNCON_DTM
+			, MBT.MB_INTG_NO
+		FROM  TB_LA_IS_BK_DORM_MBINTG BDM
+			INNER JOIN TB_LA_IS_BK_DORM_MWMN MWN
+			ON(BDM.MB_INTG_NO = MWN.MB_INTG_NO
+				AND MWN.NA_BZPLC = #{ss_na_bzplc}
+			)
+			INNER JOIN TB_LA_IS_MM_MBINTG MBT
+			ON(BDM.MB_INTG_NO = MBT.MB_INTG_NO
+				AND MBT.DORMACC_YN = '1'
+				AND MBT.DELACC_YN = '0'
+			)
+		WHERE 1=1
+			<if test='mb_intg_nm != null and mb_intg_nm != ""'>
+			AND BDM.MB_INTG_NM LIKE '%' || #{mb_intg_nm} || '%'
+			</if>
+	</select>
+	
+	<select id="LALM0117_selDormacFhsList" resultType="HashMap">
+		/*LALM0117Mapper.LALM0117_selDormacFhsList_20221103_추가*/
+		SELECT FHS.FHS_ID_NO || '-' || FHS.FARM_AMNNO AS VIEW_CODE
+			, CASE WHEN #{ss_security} = '1' THEN BDM.MB_INTG_NM
+				ELSE SUBSTR(BDM.MB_INTG_NM,1,1) || LPAD('*',LENGTH(BDM.MB_INTG_NM)-2, '*') || SUBSTR(BDM.MB_INTG_NM, LENGTH(BDM.MB_INTG_NM), 1) 
+			  END MB_INTG_NM
+			, BDM.MB_RLNO
+			, CASE WHEN #{ss_security} = '1' THEN BDM.MB_MPNO
+				ELSE REGEXP_REPLACE(BDM.MB_MPNO, '(.{3})(.*)(.{4})', '\1-****-\3')
+			  END MB_MPNO
+			, FHS.DONGUP
+			, CASE WHEN #{ss_security} = '1' THEN FHS.DONGBW
+				ELSE LPAD(' ', LENGTH(FHS.DONGBW), '*')
+			  END DONGBW
+			, TO_CHAR(TO_DATE(MBT.DORMACC_DT, 'YYYYMMDD'), 'YYYY-MM-DD') AS DORMACC_DT
+			, TO_CHAR(MBT.FNCON_DTM, 'YYYY-MM-DD') AS FNCON_DTM
+			, MBT.MB_INTG_NO
+		FROM  TB_LA_IS_BK_DORM_MBINTG BDM
+			INNER JOIN TB_LA_IS_BK_DORM_FHS FHS
+			ON(BDM.MB_INTG_NO = FHS.MB_INTG_NO
+				AND FHS.NA_BZPLC = #{ss_na_bzplc}
+			)
+			INNER JOIN TB_LA_IS_MM_MBINTG MBT
+			ON(BDM.MB_INTG_NO = MBT.MB_INTG_NO
+				AND MBT.DORMACC_YN = '1'
+				AND MBT.DELACC_YN = '0'
+			)
+		WHERE 1=1
+			<if test='mb_intg_nm != null and mb_intg_nm != ""'>
+			AND BDM.MB_INTG_NM LIKE '%' || #{mb_intg_nm} || '%'
+			</if>
+	</select>
+	
+	<update id="LALM0117_updDormcUsrClear">
+		/*LALM0117Mapper.LALM0117_updDormcUsrClear_20221103_추가*/
+		MERGE INTO TB_LA_IS_MM_MBINTG MBT
+		USING TB_LA_IS_BK_DORM_MBINTG BDM
+		ON(MBT.MB_INTG_NO = BDM.MB_INTG_NO
+			AND BDM.MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+		)
+		WHEN MATCHED THEN
+			UPDATE
+			SET MBT.DORMDUE_DT = TO_CHAR(SYSDATE + 365, 'YYYYMMDD')
+				, MBT.LSCHG_DTM = SYSDATE
+				, MBT.LS_CMENO = #{ss_userid}
+				, MBT.DORMACC_YN = '0'
+				, MBT.DORMACC_DT = ''
+				, MBT.MB_INTG_NM = BDM.MB_INTG_NM
+				, MBT.MB_RLNO = BDM.MB_RLNO
+				, MBT.OHSE_TELNO = BDM.OHSE_TELNO
+				, MBT.MB_MPNO = BDM.MB_MPNO
+	</update>
+	
+	<update id="LALM0117_updDormacMwmnClear">
+		/*LALM0117Mapper.LALM0117_updDormacMwmnClear_20221103_추가*/
+		MERGE INTO TB_LA_IS_MM_MWMN MWN
+		USING (
+			SELECT * 
+			FROM TB_LA_IS_BK_DORM_MWMN
+			WHERE MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+		) BDM
+		ON(MWN.MB_INTG_NO = BDM.MB_INTG_NO
+			AND MWN.NA_BZPLC = BDM.NA_BZPLC 
+			AND MWN.TRMN_AMNNO = BDM.TRMN_AMNNO
+		)
+		WHEN MATCHED THEN
+			UPDATE
+			SET
+				MWN.LSCHG_DTM = SYSDATE
+				, MWN.LS_CMENO = #{ss_userid}
+				, MWN.SRA_MWMNNM = BDM.SRA_MWMNNM
+				, MWN.FRLNO = BDM.FRLNO
+				, MWN.ZIP = BDM.ZIP
+				, MWN.DONGUP = BDM.DONGUP
+				, MWN.DONGBW = BDM.DONGBW
+				, MWN.OHSE_TELNO = BDM.OHSE_TELNO
+				, MWN.CUS_MPNO = BDM.CUS_MPNO
+				, MWN.CUS_RLNO = BDM.CUS_RLNO
+				, MWN.RMK_CNTN = BDM.RMK_CNTN
+	</update>
+	
+	<update id="LALM0117_updDormacFhsClear">
+		/*LALM0117Mapper.LALM0117_updDormacFhsClear_20221103_추가*/
+		MERGE INTO TB_LA_IS_MM_FHS FHS
+		USING (
+			SELECT * 
+			FROM TB_LA_IS_BK_DORM_FHS
+			WHERE MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+		) BDF
+		ON(FHS.MB_INTG_NO = BDF.MB_INTG_NO
+			AND FHS.NA_BZPLC = BDF.NA_BZPLC
+			AND FHS.FHS_ID_NO = BDF.FHS_ID_NO
+			AND FHS.FARM_AMNNO = BDF.FARM_AMNNO
+		)	
+		WHEN MATCHED THEN 
+			UPDATE
+			SET FHS.FTSNM = BDF.FTSNM
+				, FHS.ZIP = BDF.ZIP
+				, FHS.DONGUP = BDF.DONGUP
+				, FHS.DONGBW = BDF.DONGBW
+				, FHS.OHSE_TELNO = BDF.OHSE_TELNO
+				, FHS.CUS_MPNO = BDF.CUS_MPNO
+				, FHS.RMK_CNTN = BDF.RMK_CNTN
+				, FHS.SRA_FARM_ACNO = BDF.SRA_FARM_ACNO
+				, FHS.NEW_SRA_FARM_ACNO = BDF.NEW_SRA_FARM_ACNO
+				, FHS.BIRTH = BDF.BIRTH
+				, FHS.LSCHG_DTM = SYSDATE
+				, FHS.LS_CMENO = #{ss_userid}
+	</update>
+	
+	<delete id="LALM0117_delDormacUsrData">
+		/*LALM0117Mapper.LALM0117_delDormacUsrData_20221103_추가*/
+		DELETE FROM TB_LA_IS_BK_DORM_MBINTG
+		WHERE MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+	</delete>
+	
+	<delete id="LALM0117_delDormacMwmnData">
+		/*LALM0117Mapper.LALM0117_delDormacMwmnData_20221103_추가*/
+		DELETE FROM TB_LA_IS_BK_DORM_MWMN
+		WHERE MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+	</delete>
+	
+	<delete id="LALM0117_delDormacFhsData">
+		/*LALM0117Mapper.LALM0117_delDormacFhsData_20221103_추가*/
+		DELETE FROM TB_LA_IS_BK_DORM_FHS
+		WHERE MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+	</delete>
+	
+	<update id="LALM0117_updDormacDelAccYn">
+		/*LALM0117Mapper.LALM0117_updDormacDelAccYn_20221104_추가*/
+		UPDATE TB_LA_IS_MM_MBINTG
+		SET DELACC_YN = '1'
+			, DELACC_DT = TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, LSCHG_DTM = SYSDATE
+			, LS_CMENO = #{ss_userid}
+		WHERE MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+	</update>
+	
+	<update id="LALM0117_updDormacMwmnDelAccYn">
+		/*LALM0117Mapper.LALM0117_updDormacMwmnDelAccYn_20221104_추가*/
+		UPDATE TB_LA_IS_MM_MWMN
+		SET DEL_YN = '1'
+			, LSCHG_DTM = SYSDATE
+			, LS_CMENO = #{ss_userid}
+		WHERE MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+	</update>
+	
+	<update id="LALM0117_updDormacFhsDelAccYn">
+		/*LALM0117Mapper.LALM0117_updDormacFhsDelAccYn_20221104_추가*/
+		UPDATE TB_LA_IS_MM_FHS
+		SET DEL_YN = '1'
+			, LSCHG_DTM = SYSDATE
+			, LS_CMENO = #{ss_userid}
+		WHERE MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+	</update>
+	
+	<select id="LALM0117_selSecessionAplyUsrList" resultType="HashMap">
+		/*LALM0117Mapper.LALM0117_selSecessionAplyUsrList_20221109_추가*/
+		SELECT SEC.TRMN_AMNNO
+			, CASE WHEN #{ss_security} = '1' THEN MWN.SRA_MWMNNM
+				ELSE SUBSTR(MWN.SRA_MWMNNM,1,1) || LPAD('*',LENGTH(MWN.SRA_MWMNNM)-2, '*') || SUBSTR(MWN.SRA_MWMNNM, LENGTH(MWN.SRA_MWMNNM), 1)
+			  END SRA_MWMNNM
+			, MWN.CUS_RLNO
+			, CASE WHEN #{ss_security} = '1' THEN MWN.CUS_MPNO
+				ELSE REGEXP_REPLACE(MWN.CUS_MPNO, '(.{3})(.*)(.{4})', '\1-****-\3')
+			  END CUS_MPNO
+			, SEC.SEC_RECE_DTM
+			, SEC.SEC_REASON
+			, SEC.MB_INTG_NO	
+		FROM TB_LA_IS_MM_MBSECAPP SEC	
+			INNER JOIN TB_LA_IS_MM_MWMN MWN
+			ON(SEC.NA_BZPLC = MWN.NA_BZPLC
+				AND SEC.TRMN_AMNNO = MWN.TRMN_AMNNO
+				AND MWN.DEL_YN = '0'
+			)
+		WHERE SEC.NA_BZPLC = #{ss_na_bzplc}
+			AND SEC.MGR_APPR_YN = '0'
+			AND SEC.SEC_WITHDRAW_YN = '0'
+			<if test='mb_intg_nm != null and mb_intg_nm != ""'>
+			AND MWN.SRA_MWMNNM LIKE '%' || #{mb_intg_nm} || '%'
+			</if>
+		ORDER BY SEC.SEC_RECE_DTM ASC
+	</select>
+	
+	<update id="LALM0117_updSecessionMwmnDelAccYn">
+		/*LALM0117Mapper.LALM0117_updSecessionMwmnDelAccYn_20221110_추가*/
+		UPDATE TB_LA_IS_MM_MWMN
+		SET DEL_YN = '1'
+			, LSCHG_DTM = SYSDATE
+			, LS_CMENO = #{ss_userid}
+			, SRA_MWMNNM = '***'
+			, FRLNO = '***'
+			, ZIP = '***'
+			, DONGUP = '***'
+			, DONGBW = '***'
+			, OHSE_TELNO = '***'
+			, CUS_MPNO = '***'
+			, CUS_RLNO = '***'
+			, RMK_CNTN = '***'
+		WHERE NA_BZPLC = #{ss_na_bzplc}
+			AND TRMN_AMNNO = #{trmn_amnno}
+	</update>
+	
+	<select id="LALM0117_selSecAplyRemainTrmnCnt" resultType="HashMap">
+		/*LALM0117Mapper.LALM0117_selSecAplyRemainTrmnCnt_20221111_추가*/
+		SELECT COUNT(*) N_ALL_CNT
+			, COUNT(DECODE(DEL_YN, '1', 1, NULL)) AS N_DEL_CNT
+		FROM TB_LA_IS_MM_MWMN
+		WHERE MB_INTG_NO = #{mb_intg_no}
+	</select>
+	
+	<update id="LALM0117_delSecessionMbintgDelAccYn">
+		/*LALM0117Mapper.LALM0117_delSecessionMbintgDelAccYn_20221111_추가*/
+		UPDATE TB_LA_IS_MM_MBINTG
+		SET DELACC_YN = '1'
+			, DELACC_DT = TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, LSCHG_DTM = SYSDATE
+			, LS_CMENO = #{ss_userid}
+			, MB_INTG_NM = '***'
+			, MB_RLNO = '***'
+			, OHSE_TELNO = '***'
+			, MB_MPNO = '***'
+		WHERE MB_INTG_NO = #{mb_intg_no}
+	</update>
+	
+	<update id="LALM0117_updSecessionMgrApprYn">
+		/*LALM0117Mapper.LALM0117_updSecessionMgrApprYn_20221111_추가*/
+		UPDATE TB_LA_IS_MM_MBSECAPP
+		SET MGR_APPR_YN = '1'
+			, MGR_APPR_DTM = SYSDATE
+			, MGR_APPR_ENO = #{ss_userid}
+		WHERE NA_BZPLC = #{ss_na_bzplc}
+			AND TRMN_AMNNO = #{trmn_amnno}
+	</update>
+	
+	<select id="LALM0117_sendAlimPreDormcUser" resultType="HashMap">
+		/*LALM0117Mapper.LALM0117_sendAlimPreDormcUser_20230103_추가*/
+		SELECT MBT.MB_INTG_NO
+			, MBT.MB_INTG_NM
+			, MBT.MB_RLNO
+			, TRIM(MBT.OHSE_TELNO) AS OHSE_TELNO
+			, TRIM(MBT.MB_MPNO) AS MB_MPNO
+			, MBT.MB_INTG_GB
+			, TO_CHAR(TO_DATE(MBT.DORMDUE_DT, 'YYYYMMDD'), 'YYYY.MM.DD') AS DORMDUE_DT 
+		FROM TB_LA_IS_MM_MBINTG MBT
+		WHERE MBT.DORMACC_YN = '0'
+			AND MBT.DELACC_YN = '0'
+			AND MB_INTG_NO IN (
+				<foreach item="mb_intg_no" collection="mbintglist" separator=",">
+				#{mb_intg_no}
+				</foreach>
+			)
+		ORDER BY MBT.MB_INTG_NO ASC
+	</select>
+</mapper>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ar.service.Impl.LALM0227Mapper">
+
+	<!-- 알림톡 템플릿 리스트 조회 -->
+	<select id="LALM0227_selList" parameterType="hashMap" resultType="hashMap">
+		SELECT NA_BZPLC														/* 경제통합사업장코드 */
+				, REG_NO															/* 등록 순번 */
+				, TALK_TITLE														/* 알림톡 제목 */
+				, TALK_CONTENT													/* 알림톡 내용 */
+				, FSRG_DTM														/* 최초등록일자 */
+				, FSRGMN_ENO														/* 최초등록자 개인번호 */
+				, LSCHG_DTM														/* 최종수정일자 */
+				, LS_CMENO														/* 최종수정자 개인번호 */
+				, SENDER_GB														/* 메시지 발송대상자 (01 : 응찰자, 02 : 출하자) */
+				, (CASE WHEN SENDER_GB = '01' THEN '응찰자'
+						WHEN SENDER_GB = '02' THEN '출하자' 
+						ELSE '' END) AS SENDER_GB_STR
+				, MSG_GB															/* 메시지 발송구분(01:경매전(응찰자), 02:경매후(낙찰평균), 03:경매후(최고,최저) */
+				, (CASE WHEN MSG_GB = '01' THEN '경매전(응찰자)'
+						WHEN MSG_GB = '02' THEN '경매후(낙찰평균)' 
+						WHEN MSG_GB = '03' THEN '경매후(최고,최저)' 
+						ELSE '' END) AS MSG_GB_STR
+		FROM TB_LA_IS_MM_MSGTALK
+		WHERE NA_BZPLC = #{ss_na_bzplc}
+		<if test="sender_gb != null and sender_gb != ''">
+		   AND SENDER_GB = #{sender_gb}
+		</if>
+		<if test="msg_gb != null and msg_gb != ''">
+		   AND MSG_GB = #{msg_gb}
+		</if>
+	</select>
+	
+	<!-- 알림톡 템플릿 상세 -->
+	<select id="LALM0227_selInfo" parameterType="hashMap" resultType="hashMap">
+		SELECT NA_BZPLC														/* 경제통합사업장코드 */
+				, REG_NO															/* 등록 순번 */
+				, TALK_TITLE														/* 알림톡 제목 */
+				, TALK_CONTENT													/* 알림톡 내용 */
+				, FSRG_DTM														/* 최초등록일자 */
+				, FSRGMN_ENO														/* 최초등록자 개인번호 */
+				, LSCHG_DTM														/* 최종수정일자 */
+				, LS_CMENO														/* 최종수정자 개인번호 */
+				, SENDER_GB														/* 메시지 발송대상자 (01 : 응찰자, 02 : 출하자) */
+				, MSG_GB															/* 메시지 발송구분(01:경매전(응찰자), 02:경매후(낙찰평균), 03:경매후(최고,최저) */
+		FROM TB_LA_IS_MM_MSGTALK
+		WHERE NA_BZPLC = #{ss_na_bzplc}
+			AND REG_NO = #{reg_no}
+		<if test="sender_gb != null and sender_gb != ''">
+		   AND SENDER_GB = #{sender_gb}
+		</if>
+		<if test="msg_gb != null and msg_gb != ''">
+		   AND MSG_GB = #{msg_gb}
+		</if>
+	</select>
+	
+	<!-- 알림톡 템플릿 저장 -->
+	<insert id="LALM0227_insMsgTalk" parameterType="hashMap">
+		<selectKey keyProperty="reg_no" resultType="int" order="BEFORE">
+			SELECT NVL(MAX(REG_NO) + 1, 1)
+			  FROM TB_LA_IS_MM_MSGTALK
+			 WHERE NA_BZPLC = #{ss_na_bzplc}
+		</selectKey>
+		INSERT INTO TB_LA_IS_MM_MSGTALK (
+			NA_BZPLC															/* 경제통합사업장코드 */
+			, REG_NO															/* 등록 순번 */
+			, TALK_TITLE														/* 알림톡 제목 */
+			, TALK_CONTENT													/* 알림톡 내용 */
+			, FSRG_DTM														/* 최초등록일자 */
+			, FSRGMN_ENO														/* 최초등록자 개인번호 */
+			, LSCHG_DTM														/* 최종수정일자 */
+			, LS_CMENO														/* 최종수정자 개인번호 */
+			, SENDER_GB														/* 메시지 발송대상자 (01 : 응찰자, 02 : 출하자) */
+			, MSG_GB															/* 메시지 발송구분(01:경매전(응찰자), 02:경매후(낙찰평균), 03:경매후(최고,최저) */
+		) VALUES (
+			#{ss_na_bzplc}
+			, #{reg_no}
+			, #{talk_title}
+			, #{talk_content}
+			, SYSDATE
+			, #{ss_userid}
+			, SYSDATE
+			, #{ss_userid}
+			, #{sender_gb}
+			, #{msg_gb}
+		)
+	</insert>
+	
+	<!-- 알림톡 템플릿 수정 -->
+	<update id="LALM0227_updMsgTalk" parameterType="hashMap">
+		UPDATE TB_LA_IS_MM_MSGTALK
+		   SET NA_BZPLC			= #{ss_na_bzplc}
+			, REG_NO				= #{reg_no}
+			, TALK_TITLE			= #{talk_title}
+			, TALK_CONTENT		= #{talk_content}
+			, LSCHG_DTM			= SYSDATE
+			, LS_CMENO			= #{ss_userid}
+			, SENDER_GB			= #{sender_gb}
+			, MSG_GB				= #{msg_gb}
+		 WHERE NA_BZPLC               	= #{ss_na_bzplc}
+			AND REG_NO					= #{reg_no}
+	</update>
+	
+	<delete id="LALM0227_delMsgTalk" parameterType="hashMap">
+		DELETE 
+			FROM TB_LA_IS_MM_MSGTALK
+		WHERE NA_BZPLC               	= #{ss_na_bzplc}
+			AND REG_NO					= #{reg_no}
+	</delete>
+
+</mapper>

@@ -446,7 +446,7 @@ var mCnt = 0;
 	    	                       ,"원장일련번호","농가식별번호","농장관리번호","출하경제통합거래처코드","차량단축코드"
 	    	                       ,"접수일자","거래인관리번호","가축경매참여자번호","축산축종구분코드"
 	    	                       ,"최초최저낙찰한도금액","최저낙찰한도금액","축산낙찰단가"
-	    	                       ,"판매상태구분코드","브루셀라검사증명서제출여부","브루셀라검사일자","최저가변경횟수","예방접종일자"
+	    	                       ,"판매상태구분코드","브루셀라검사증명서제출여부","브루셀라검사일자","예정가변경횟수","예방접종일자"
 	    	                       ,"가축시장거래처관리번호(수의사)","12개월이상여부","임신감정여부","임신여부"
 	    	                       ,"괴사감정여부","괴사여부","운송비지급여부","축산운송비","축산납입출자금"
 	    	                       ,"축산가료공급금액","당일접수비용","인공수정일자","인공수정증명서제출여부"
@@ -608,7 +608,7 @@ var mCnt = 0;
 	    	                       ,"원장일련번호","농가식별번호","농장관리번호","출하경제통합거래처코드","차량단축코드"
 	    	                       ,"접수일자","거래인관리번호","가축경매참여자번호","축산축종구분코드"
 	    	                       ,"최초최저낙찰한도금액","최저낙찰한도금액","축산낙찰단가"
-	    	                       ,"판매상태구분코드","브루셀라검사증명서제출여부","브루셀라검사일자","최저가변경횟수","예방접종일자"
+	    	                       ,"판매상태구분코드","브루셀라검사증명서제출여부","브루셀라검사일자","예정가변경횟수","예방접종일자"
 	    	                       ,"가축시장거래처관리번호(수의사)","12개월이상여부","임신감정여부","임신여부"
 	    	                       ,"괴사감정여부","괴사여부","운송비지급여부","축산운송비","축산납입출자금"
 	    	                       ,"축산가료공급금액","당일접수비용","인공수정일자","인공수정증명서제출여부"
@@ -1417,6 +1417,8 @@ var mCnt = 0;
 		 	}
 	   		
 	   		if (na_bzplc == '8808990671086') {  // 보은옥천 옥천지점: 8808990671086  테스트: 8808990643625
+	   			var kNumber = fn_getKNumber(TitleData.tot_npym_am?.replaceAll(',',''));
+	   			TitleData.tot_npym_am_k = kNumber;
 				ReportPopup('LALM0412R1_1',TitleData, 'grd_MhSogCow', 'T');
 			}else if (na_bzplc == '8808990656519') {  // 경남사천:          8808990656519
 				ReportPopup('LALM0412R1_2',TitleData, 'grd_MhSogCow', 'T');
@@ -1499,6 +1501,29 @@ var mCnt = 0;
  			TitleData.sra_mwmnnm = $("#sra_mwmnnm").val(); //축산중도매인명
 			//$("#qcn").val(result_6[0].QCN)
 	        ReportPopup('LALM0412R3',TitleData, 'grd_MhSogCow', 'T');
+		}
+		function fn_getKNumber(number){
+			var kNumber = ['','일','이','삼','사','오','육','칠','팔','구'];
+			var tenThousandUnit = ['','만','억','조'];
+			var tenUnit = ['','십','백','천'];
+			let index=0,unit=10000;
+			let division = Math.pow(unit,index);
+			let answer = '';
+	
+			while(Math.floor(number/division) > 0 ){
+				var mod = Math.floor(number % (division * unit) / division);
+				if(mod){
+					const modToArr = mod.toString().split('');
+					const modLen = modToArr.length - 1;
+					const toKorean = modToArr.reduce((a, v , i) =>{
+						a+= kNumber[v*1]+tenUnit[modLen -i];
+						return a;
+					},'');
+					answer = toKorean+tenThousandUnit[index] +answer; 
+				}
+				division = Math.pow(unit,++index);
+			}
+			return answer;
 		}
 </script>
 <body>

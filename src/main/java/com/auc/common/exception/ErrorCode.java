@@ -15,7 +15,8 @@ public enum ErrorCode {
     NOT_LOGIN(204, "T001", "로그인이 되어있지 않습니다."),
     EXPIERD_TOKEN(204, "T002", "만료된 사용자입니다."),
     INVALID_TOKEN(204, "T003", "부정확한 사용자입니다."),
-    UNABLE_TOKEN(204, "T004", "알수없는 사용자입니다."),
+    UNABLE_TOKEN(204, "T004", "알수없는 사용자입니다."), 
+    EXPIERD_SESSION(204,"T005","세션이 만료되었습니다."),
     //controller
     INVALID_INPUT_VALUE(205 , "C001", "적합하지 않은 문자열입니다."),
     METHOD_NOT_ALLOWED(205  , "C002", "허용되지 않습니다."),
@@ -23,9 +24,7 @@ public enum ErrorCode {
     
     SERVICE_FAILED(205, "C007", "서버 수행중 오류가 발생하였습니다."),
     
-    CUSTOM_ERROR(205, "C999", ""),
-
-    ;
+    CUSTOM_ERROR(205, "C999", "")    ;
 	private int status;
 	private String code;
 	private String message;

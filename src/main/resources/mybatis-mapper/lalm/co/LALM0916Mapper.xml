@@ -21,7 +21,7 @@
              , STRG_DT   = TO_CHAR(SYSDATE,'YYYYMMDD')
              , LSCHG_DTM = SYSDATE
              , LS_CMENO  = #{ss_userid}
-         WHERE NA_BZPLC  = #{ss_na_bzplc} 
+         WHERE 1=1
            AND usrid     = #{usrid}
     ]]>
     </update>

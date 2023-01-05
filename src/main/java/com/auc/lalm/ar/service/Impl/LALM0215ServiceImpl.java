@@ -32,7 +32,6 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		List<Map<String, Object>> list = null;		
 		list = lalm0215Mapper.LALM0215_selList(map);
-		
 		return list;
 		
 	}
@@ -130,7 +129,6 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		List<Map<String, Object>> list = null;		
 		list = lalm0215Mapper.LALM0215_selMhCalf(map);
-		
 		return list;
 		
 	}
@@ -497,8 +495,7 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		return reMap;
 	}
-	
-	
+
 	@Override
 	public List<Map<String, Object>> LALM0215_selImgList(Map<String, Object> map) throws Exception {
 		

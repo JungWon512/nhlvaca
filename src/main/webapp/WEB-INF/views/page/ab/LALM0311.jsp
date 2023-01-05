@@ -122,6 +122,11 @@
         	if($("#ch_rmk_cntn").is(":checked") && $("#ch_modl_no").is(":checked")) {
         		$("#ch_modl_no").prop("checked", false);
         	}
+        	if($("#ch_rmk_cntn").is(":checked")) {
+    			$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
+        	}else{
+        		$("#btn_allLowsSbidLmtAmMinus").attr("disabled", false);        		
+        	}
     	});
         
         /******************************
@@ -131,9 +136,44 @@
         	if($("#ch_rmk_cntn").is(":checked") && $("#ch_modl_no").is(":checked")) {
         		$("#ch_rmk_cntn").prop("checked", false);
         	}
+        	if($("#ch_modl_no").is(":checked")) {
+    			$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
+        	}else{
+        		$("#btn_allLowsSbidLmtAmMinus").attr("disabled", false);        		
+        	}
     	});
         
-    });    
+        $('#btn_allLowsSbidLmtAmMinus').click((e)=>{
+            e.preventDefault();
+            //this.blur();
+            var data = $('#mainGrid').getRowData();
+            if(data.length == 0){
+				MessagePopup("OK", "조회된 데이터가 없습니다.");
+            	return;
+            }
+            if($('#st_auc_no').val() ==''|| $('#ed_auc_no').val() ==''){
+				MessagePopup("OK", "경매번호를 확인 하세요.");
+            	return;
+            }
+            if($('#minus_am').val() ==''){
+            	MessagePopup("OK", "차감 금액을 확인 하세요.");
+            	return;
+            }
+            
+            var stAucNo = new Number($('#st_auc_no').val());
+            var edAucNo = new Number($('#ed_auc_no').val());
+            var minusAm = new Number($('#minus_am').val());
+            data.forEach((o,i)=>{
+        		var lowAm = new Number(o.LOWS_SBID_LMT_AM);
+            	if(stAucNo <= new Number(o.AUC_PRG_SQ) && edAucNo >= new Number(o.AUC_PRG_SQ) && lowAm > 0){
+               		var result =  lowAm - minusAm;
+       	            $("#mainGrid").jqGrid("setCell", i+1, 'LOWS_SBID_LMT_AM', (result<0?0:result));
+       	            $("#mainGrid").jqGrid('setCell', i+1, '_STATUS_', '*',GRID_MOD_BACKGROUND_COLOR);
+               		return o;
+           		};
+            });
+        });
+    });
     
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 초기화 함수
@@ -203,7 +243,8 @@
      ------------------------------------------------------------------------------*/
     function fn_Save(){
          
-         var tmpSaveObject = $("#mainGrid").getChangedCells("all");
+         //var tmpSaveObject = $("#mainGrid").getChangedCells("all");
+         var tmpSaveObject = $.grep($("#mainGrid").jqGrid('getRowData'), function(obj){return obj._STATUS_ == "*" || obj._STATUS_ == "+" ;});
          
          if(tmpSaveObject.length > 0) {
              var srchData      = new Object();
@@ -257,10 +298,10 @@
         if($("#ch_rmk_cntn").is(":checked")) {
             $("#ch_rmk_cntn").val("1");
             /*                                    1          2        3         4         5       6         7         8           9                10        11     12         13 */
-            var searchResultColNames = ["", "경매번호", "거치대번호", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량", "응찰하한가"];        
+            var searchResultColNames = ["", "경매번호", "거치대번호", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량", "예정가"];        
             var searchResultColModel = [                         
                                          {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},
-                                         {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", align: "right", sorttype: "number"},
+                                         {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", sorttype: "number"},
                                          {name:"MODL_NO",               index:"MODL_NO",                width:50,  align:'center'},
                                          {name:"AUC_OBJ_DSC",           index:"AUC_OBJ_DSC",            width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},                                     
                                          {name:"SRA_INDV_AMNNO1",       index:"SRA_INDV_AMNNO1",        width:80,  align:'center'},
@@ -279,10 +320,10 @@
         } else if(!$("#ch_rmk_cntn").is(":checked") && $("#ch_modl_no").is(":checked")) {
                 $("#ch_modl_no").val("1");
                 /*                                    1            2        3         4         5       6         7         8           9                10      11     12         13 */
-                var searchResultColNames = ["", "경매번호", "거치대번호(*)", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고", "중량", "응찰하한가"];        
+                var searchResultColNames = ["", "경매번호", "거치대번호(*)", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고", "중량", "예정가"];        
                 var searchResultColModel = [                         
                                              {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},
-                                             {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", align: "right", sorttype: "number"},
+                                             {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", sorttype: "number"},
                                              {name:"MODL_NO",               index:"MODL_NO",                width:50,  align:'center', editable:true},
                                              {name:"AUC_OBJ_DSC",           index:"AUC_OBJ_DSC",            width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},                                     
                                              {name:"SRA_INDV_AMNNO1",       index:"SRA_INDV_AMNNO1",        width:80,  align:'center'},
@@ -302,10 +343,10 @@
             $("#ch_rmk_cntn").val("0");
             $("#ch_modl_no").val("0");
             /*                                    1          2        3         4         5       6         7         8           9                10        11        12            13 */
-            var searchResultColNames = ["", "경매번호", "거치대번호", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량(*)", "응찰하한가(*)"];        
+            var searchResultColNames = ["", "경매번호", "거치대번호", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량(*)", "예정가(*)"];        
             var searchResultColModel = [                         
                                          {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},                       
-                                         {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", align: "right", sorttype: "number"},
+                                         {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", sorttype: "number"},
                                          {name:"MODL_NO",               index:"MODL_NO",                width:50,  align:'center'},
                                          {name:"AUC_OBJ_DSC",           index:"AUC_OBJ_DSC",            width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},                                     
                                          {name:"SRA_INDV_AMNNO1",       index:"SRA_INDV_AMNNO1",        width:80,  align:'center'},
@@ -485,6 +526,52 @@
                         </tbody>
                     </table>
                     </form>
+                </div>
+            </div>
+            
+            <div class="tab_box clearfix mobile_search">
+                <ul class="tab_list">
+                    <li><p style="float: left;" class="dot_allow">예정가 일괄차감</p>
+                    <p style="padding-top: 5px;padding-left: 13px;font-size: 14px;float: left;">*예정가에서 입력한 금액만큼 일괄로 차감합니다.</p>                    	
+                    </li>
+                </ul>
+            </div>
+            <div class="sec_table mobile_search">
+                <div class="blueTable rsp_v">
+                    <table>
+                        <colgroup>
+                            <col width="100">
+                            <col width="150">
+                            <col width="100">
+                            <col width="150">
+                            <col width="100">
+                            <col width="150">
+                            <col width="*">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+								<th scope="row"><span class="tb_dot">경매번호</span></th>
+								<td colspan="3">
+									<div class="cellBox">
+										<div class="cell">
+											<input type="text" id="st_auc_no" class="integer">
+										</div>
+										<div class="cell ta_c">~</div>
+										<div class="cell">
+											<input type="text" id="ed_auc_no" class="integer">
+										</div>
+									</div>
+								</td>
+                                <th scope="row"><span class="tb_dot">차감금액</span></th>
+                                <td>
+                                	<input type="text" id="minus_am" class="integer">
+                                </td>
+                                <td>
+                                	<button class="tb_btn" id="btn_allLowsSbidLmtAmMinus">일괄차감</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             

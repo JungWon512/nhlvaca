@@ -376,7 +376,7 @@
         }
         
         /*                                1        2       3         4         5      6      7      8      9           10        11     12         13        14             15       16       17  */
-        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "KPN", "중량", "응찰하한가", "응찰금액", "예정가 차이금액", "낙찰자", "참가번호", "계대", "산차", "어미소귀표번호", "어미구분"];        
+        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "KPN", "중량", "예정가", "응찰금액", "예정가 차이금액", "낙찰자", "참가번호", "계대", "산차", "어미소귀표번호", "어미구분"];        
         var searchResultColModel = [						 
 						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center', sorttype: "number"},
 						        	{name:"AUC_OBJ_DSC",                     index:"AUC_OBJ_DSC",                     width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
@@ -428,7 +428,7 @@
         }
         
         /*                                1        2       3         4         5      6      7      8      9           10        11     12         13  */
-        var searchResultColNames = ["최저가(낙찰단위)","경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "KPN", "중량", "응찰하한가", "계대", "산차", "어미소귀표번호", "어미구분","H축산낙찰금액","H낙찰자명"];        
+        var searchResultColNames = ["예정가(낙찰단위)","경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "KPN", "중량", "예정가", "계대", "산차", "어미소귀표번호", "어미구분","H축산낙찰금액","H낙찰자명"];        
         var searchResultColModel = [
 						        	{name:"LOWS_SBID_LMT_UPR",               index:"LOWS_SBID_LMT_UPR",               width:100, align:'center', hidden:true},
 						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center', sorttype: "number"},
@@ -478,7 +478,7 @@
         }
       
         /*                                1        2       3         4         5      6      7      8      9     10         11        12           13        14        15*/
-        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "중량", "최고가입찰금액", "응찰자수", "KPN", "계대", "산차", "응찰하한가", "원표번호", "경매일자"];        
+        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "중량", "최고가입찰금액", "응찰자수", "KPN", "계대", "산차", "예정가", "원표번호", "경매일자"];        
         var searchResultColModel = [						 
 						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center', sorttype: "number"},
 						        	{name:"AUC_OBJ_DSC",                     index:"AUC_OBJ_DSC",                     width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
@@ -576,7 +576,7 @@
         
         */
         /*                                1        2       3         4         5      6      7      8      9           10        11     12         13        14        15             16      17        18  */
-        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "KPN", "중량", "응찰하한가", "응찰금액", "낙찰금액", "예정가 차이금액", "낙찰자", "참가번호", "계대", "산차", "어미소귀표번호", "어미구분"];        
+        var searchResultColNames = ["경매번호", "경매대상", "출하자", "귀표번호", "생년월일", "성별", "KPN", "중량", "예정가", "응찰금액", "낙찰금액", "예정가 차이금액", "낙찰자", "참가번호", "계대", "산차", "어미소귀표번호", "어미구분"];        
         var searchResultColModel = [						 
 						        	{name:"AUC_PRG_SQ",                      index:"AUC_PRG_SQ",                      width:100, align:'center', sorttype: "number"},
 						        	{name:"AUC_OBJ_DSC",                     index:"AUC_OBJ_DSC",                     width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},

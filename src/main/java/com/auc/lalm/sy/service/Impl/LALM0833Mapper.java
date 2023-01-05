@@ -23,6 +23,8 @@ public interface LALM0833Mapper {
 	int LALM0833_delGrpList(Map<String, Object> map) throws Exception;
 
 	int LALM0833_updGrpList(Map<String, Object> map) throws Exception;
+
+	List<Map<String, Object>> LALM0833_selUsrList(Map<String, Object> map) throws Exception;
 	
 
 }

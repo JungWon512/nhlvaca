@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.bs.service.Impl.LALM0118Mapper">
+    
+    <select id="LALM0118_selList" resultType="HashMap">
+    	 /*LALM0118Mapper.LALM0118_selList*/
+	     SELECT BLK.NA_BZPLC		/*경제통합사업장코드(조합코드)*/
+	     	, BLK.REG_SEQ				/*등록일련번호*/
+			, BLK.TRMN_AMNNO		/*중도매인코드*/
+			, CASE 
+				WHEN MWN.SRA_MWMNNM = '***'
+				THEN
+				 	CASE 
+						WHEN #{ss_security} = '1' THEN DMW.SRA_MWMNNM	
+						ELSE SUBSTR(DMW.SRA_MWMNNM,1,1) || LPAD('*',LENGTH(DMW.SRA_MWMNNM)-2, '*') || SUBSTR(DMW.SRA_MWMNNM, LENGTH(DMW.SRA_MWMNNM), 1) 
+					  END
+				ELSE 
+					CASE 
+						WHEN #{ss_security} = '1' THEN MWN.SRA_MWMNNM	
+						ELSE SUBSTR(MWN.SRA_MWMNNM,1,1) || LPAD('*',LENGTH(MWN.SRA_MWMNNM)-2, '*') || SUBSTR(MWN.SRA_MWMNNM, LENGTH(MWN.SRA_MWMNNM), 1) 
+					  END
+			  END SRA_MWMNNM 	/*중도매인명, 개인정보 열람권한 있을 때만 값 그대로, 없으면 마스킹 처리*/	
+			, CASE WHEN MWN.CUS_RLNO = '***' THEN DMW.CUS_RLNO ELSE MWN.CUS_RLNO	END CUS_RLNO			/*앞자리실명번호(생년월일)*/
+			, CASE 
+				WHEN MWN.CUS_MPNO = '***' 
+				THEN
+					CASE 
+						WHEN #{ss_security} = '1' THEN DMW.CUS_MPNO
+						ELSE REGEXP_REPLACE(DMW.CUS_MPNO, '(.{3})(.*)(.{4})', '\1-****-\3')
+					  END
+				ELSE
+			  		CASE 
+						WHEN #{ss_security} = '1' THEN MWN.CUS_MPNO
+						ELSE REGEXP_REPLACE(MWN.CUS_MPNO, '(.{3})(.*)(.{4})', '\1-****-\3')
+					  END
+			  END CUS_MPNO		/*휴대전화번호, 개인정보 열람권한 있을 때만 값 그대로, 없으면 마스킹 처리*/
+			, BLK.AUC_PART_LIMIT_YN		/*경매참여제한여부*/
+			, LOC.CLNTNM				/*사업장명*/
+			, BLK.REG_DATE			/*B/L 등록일자*/
+			, BLK.LIMIT_DATE			/*B/L 거래제한일자*/
+			, BLK.REG_REASON		/*B/L 등록사유*/
+			, BLK.MB_INTG_NO			/*통합회원번호*/
+		FROM TB_LA_IS_MM_BLACKLIST BLK
+			INNER JOIN TB_LA_IS_MM_MWMN MWN
+			ON(BLK.NA_BZPLC = MWN.NA_BZPLC
+				AND BLK.TRMN_AMNNO = MWN.TRMN_AMNNO
+				AND BLK.MB_INTG_NO = MWN.MB_INTG_NO
+			)
+			INNER JOIN TB_LA_IS_BM_BZLOC LOC
+			ON(BLK.NA_BZPLC = LOC.NA_BZPLC)
+			INNER JOIN TB_LA_IS_MM_MBINTG MBT
+			ON(BLK.MB_INTG_NO = MBT.MB_INTG_NO
+				AND MBT.DELACC_YN = '0'
+			)
+			LEFT OUTER JOIN TB_LA_IS_BK_DORM_MWMN DMW
+			ON(BLK.NA_BZPLC = DMW.NA_BZPLC
+				AND BLK.TRMN_AMNNO = DMW.TRMN_AMNNO
+				AND BLK.MB_INTG_NO = BLK.MB_INTG_NO
+			)
+		WHERE TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN BLK.REG_DATE AND BLK.LIMIT_DATE
+			AND BLK.DEL_YN = '0'
+			<if test="srch_trmn_amnno != null and srch_trmn_amnno != ''">
+			AND	
+			(
+				MWN.TRMN_AMNNO LIKE '%' || #{srch_trmn_amnno} || '%'
+				OR
+				REPLACE(TRIM(MWN.SRA_MWMNNM),' ','') LIKE '%' || REPLACE(TRIM(#{srch_trmn_amnno}),' ','') || '%' 
+			)
+			</if>
+			<if test="na_bzplcloc != null and na_bzplcloc != ''">
+			AND BLK.NA_BZPLC IN (
+				SELECT NA_BZPLC FROM TB_LA_IS_BM_BZLOC WHERE NA_BZPLCLOC = #{na_bzplcloc}
+			)
+			</if>
+			<if test="na_bzplc != null and na_bzplc != ''">
+			AND BLK.NA_BZPLC = #{na_bzplc}
+			</if>
+    </select>
+    
+    <select id="LALM0118_selBlackDetail" resultType="HashMap">
+    	/*LALM0118Mapper.LALM0118_selBlackDetail*/
+	     SELECT BLK.NA_BZPLC		/*경제통합사업장코드(조합코드)*/
+	     	, BLK.REG_SEQ				/*등록일련번호*/
+			, BLK.TRMN_AMNNO		/*중도매인코드*/
+			, CASE WHEN MWN.SRA_MWMNNM = '***' THEN DMW.SRA_MWMNNM ELSE MWN.SRA_MWMNNM END	SRA_MWMNNM	/*중도매인명*/
+			, CASE WHEN MWN.CUS_RLNO = '***' THEN DMW.CUS_RLNO ELSE MWN.CUS_RLNO END CUS_RLNO		/*앞자리실명번호(생년월일)*/
+			, CASE WHEN MWN.CUS_MPNO = '***' THEN DMW.CUS_MPNO ELSE MWN.CUS_MPNO	END CUS_MPNO		/*휴대전화번호*/
+			, BLK.AUC_PART_LIMIT_YN		/*경매참여제한여부*/
+			, LOC.CLNTNM				/*사업장명*/
+			, BLK.REG_DATE			/*B/L 등록일자*/
+			, BLK.LIMIT_DATE			/*B/L 거래제한일자*/
+			, BLK.REG_REASON		/*B/L 등록사유*/
+			, BLK.MB_INTG_NO			/*통합회원번호*/
+			, CASE WHEN MWN.DONGUP = '***' THEN DMW.DONGUP ELSE MWN.DONGUP END DONGUP				/*동이상주소*/
+			, CASE WHEN MWN.DONGBW = '***' THEN DMW.DONGBW ELSE MWN.DONGBW END DONGBW			/*동이하주소*/
+		FROM TB_LA_IS_MM_BLACKLIST BLK
+			INNER JOIN TB_LA_IS_MM_MWMN MWN
+			ON(BLK.NA_BZPLC = MWN.NA_BZPLC
+				AND BLK.TRMN_AMNNO = MWN.TRMN_AMNNO
+				AND BLK.MB_INTG_NO = MWN.MB_INTG_NO
+			)
+			INNER JOIN TB_LA_IS_BM_BZLOC LOC
+			ON(BLK.NA_BZPLC = LOC.NA_BZPLC)
+			INNER JOIN TB_LA_IS_MM_MBINTG MBT
+			ON(BLK.MB_INTG_NO = MBT.MB_INTG_NO
+				AND MBT.DELACC_YN = '0'
+			)
+			LEFT OUTER JOIN TB_LA_IS_BK_DORM_MWMN DMW
+			ON(BLK.NA_BZPLC = DMW.NA_BZPLC
+				AND BLK.TRMN_AMNNO = DMW.TRMN_AMNNO
+				AND BLK.MB_INTG_NO = BLK.MB_INTG_NO
+			)
+		WHERE BLK.NA_BZPLC = #{na_bzplc}
+			AND BLK.REG_SEQ = #{reg_seq}
+    </select>
+    
+    <select id="LALM0118_chk_Black" resultType="_int">
+    	/*LALM0118Mapper.LALM0118_chk_Black*/
+    	SELECT NVL(MAX(REG_SEQ), 0)
+		FROM TB_LA_IS_MM_BLACKLIST
+		WHERE NA_BZPLC = #{na_bzplc}
+			AND TRMN_AMNNO = #{trmn_amnno}
+			AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN REG_DATE AND LIMIT_DATE
+    </select>
+    
+    <insert id="LALM0118_insBlack">
+    	/*LALM0118Mapper.LALM0118_insBlack*/
+    	<selectKey keyProperty="reg_seq" resultType="int" order="BEFORE">
+    		SELECT NVL(MAX(REG_SEQ) + 1, 1) FROM TB_LA_IS_MM_BLACKLIST 	WHERE NA_BZPLC = #{ss_na_bzplc}
+    	</selectKey>
+    	INSERT INTO TB_LA_IS_MM_BLACKLIST(
+    		NA_BZPLC
+    		, REG_SEQ
+    		, MB_INTG_NO
+    		, TRMN_AMNNO
+    		, REG_DATE
+    		, REG_REASON
+    		, LIMIT_DATE
+    		, AUC_PART_LIMIT_YN
+    		, FSRG_DTM
+    		, FSRGMN_ENO
+    		, LSCHG_DTM
+    		, LS_CMENO
+    	)
+		VALUES (
+			#{ss_na_bzplc}
+    		, #{reg_seq}
+    		, #{mb_intg_no}
+    		, #{trmn_amnno}
+    		, TO_CHAR(SYSDATE, 'YYYYMMDD')
+    		, #{reg_reason}
+    		, #{limit_date}
+    		, #{auc_part_limit_yn}
+    		, SYSDATE               /* 최초등록일시               */             
+            , #{ss_userid}          /* 최초등록자개인번호         */             
+            , SYSDATE               /* 최종변경일시               */             
+            , #{ss_userid}          /* 최종변경자개인번호         */ 
+		)    	
+    </insert>
+    
+    <update id="LALM0118_updBlack">
+    	/*LALM0118Mapper.LALM0118_updBlack*/
+    	UPDATE TB_LA_IS_MM_BLACKLIST
+    	SET LSCHG_DTM = SYSDATE
+    		, LS_CMENO = #{ss_userid}
+    		, REG_REASON = #{reg_reason}
+    		, LIMIT_DATE = #{limit_date}
+    		, AUC_PART_LIMIT_YN = #{auc_part_limit_yn}
+    	WHERE NA_BZPLC = #{na_bzplc}
+    		AND REG_SEQ = #{reg_seq}
+    		AND TRMN_AMNNO = #{trmn_amnno}
+    </update>
+    
+    <update id="LALM0118_delBlack">
+    	UPDATE TB_LA_IS_MM_BLACKLIST
+    	SET DEL_YN = '1'
+    		, LSCHG_DTM = SYSDATE
+    		, LS_CMENO = #{ss_userid}
+    	WHERE NA_BZPLC = #{na_bzplc}
+    		AND REG_SEQ = #{reg_seq}
+    </update>
+    
+    <select id="LALM0118_selBzplcLoc" resultType="hashMap">
+    	/*LALM0118Mapper.LALM0118_selBzplcLoc*/
+		SELECT 
+			DISTINCT NA_BZPLCLOC  /* 사업장 지역코드    */
+			, CASE 	WHEN NA_BZPLCLOC = 'A31' THEN '경기/인천'   /* 지역이름 */
+						WHEN NA_BZPLCLOC = 'A33' THEN '강원'
+						WHEN NA_BZPLCLOC = 'A41' THEN '충남'
+						WHEN NA_BZPLCLOC = 'A43' THEN '충북'
+						WHEN NA_BZPLCLOC = 'A52' THEN '울산'
+						WHEN NA_BZPLCLOC = 'A55' THEN '경남'
+						WHEN NA_BZPLCLOC = 'A54' THEN '경북'
+						WHEN NA_BZPLCLOC = 'A61' THEN '전남'
+						WHEN NA_BZPLCLOC = 'A63' THEN '전북'
+						WHEN NA_BZPLCLOC = 'A64' THEN '제주'
+				ELSE '' END NA_BZPLCLOC_NM
+		FROM TB_LA_IS_BM_BZLOC
+		WHERE NA_BZPLCLOC IS NOT NULL
+		ORDER BY NA_BZPLCLOC_NM
+	</select>
+		
+	<select id="LALM0118_selClntnm" resultType="hashMap">
+		/*LALM0118Mapper.LALM0118_selClntnm*/
+		SELECT 
+			NA_BZPLC      		/*사업장 코드*/
+			, NA_BZPLCNO 		/* 사업장 번호  */ 
+			, NA_BZPLCLOC 	/* 사업장 지역코드  */ 
+			, CLNTNM          	/* 사업장명   */ 
+		FROM TB_LA_IS_BM_BZLOC
+		WHERE NA_BZPLCLOC = #{na_bzplcloc}
+		ORDER BY CLNTNM
+	</select>	
+</mapper>
+

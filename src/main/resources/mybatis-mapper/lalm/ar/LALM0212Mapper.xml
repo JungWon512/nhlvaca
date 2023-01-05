@@ -7,33 +7,37 @@
 
     <select id="LALM0212_selList" resultType="hashMap">
     <![CDATA[
-         SELECT NA_BZPLC                    /* 경제통합사업장코드		*/
-	        , AUC_OBJ_DSC                 	/* 경매대상구분코드		*/
-	        , AUC_DT                      	/* 경매일자			*/
-	        , QCN                         	/* 차수				*/
-	        , BASE_LMT_AM                 	/* 기초한도금액			*/
-	        , CUT_AM                      	/* 절사단위금액(비육우)	*/
-	        , SGNO_PRC_DSC                	/* 절사구분(비육우)		*/
-	        , DDL_YN                      	/* 마감여부			*/
-	        , TMS_YN                      	/* 전송여부			*/
-	        , DEL_YN	                    /* 삭제여부			*/
-	        , MALE_KG                     	/* 최초등록일시			*/
-	        , FEMALE_KG                   	/* 최초등록자개인번호		*/
-	        , FSRG_DTM                    	/* 최종변경일시			*/
-	        , FSRGMN_ENO                  	/* 최종변경자개인번호		*/
-	        , LSCHG_DTM                   	/* 수송아지(KG) 단가	*/
-	        , LS_CMENO	                  	/* 암송아지(KG) 단가	*/
-	    FROM  TB_LA_IS_MH_AUC_QCN
+         SELECT A.NA_BZPLC                    /* 경제통합사업장코드	 TEST	*/
+	        , A.AUC_OBJ_DSC                 	/* 경매대상구분코드		*/
+	        , A.AUC_DT                      	/* 경매일자			*/
+	        , A.QCN                         	/* 차수				*/
+	        , NVL(A.AUC_DSC, B.AUC_DSC) AS AUC_DSC /* 경매방식 */
+	        , DECODE(NVL(A.AUC_DSC, B.AUC_DSC), '1', '단일경매', '일괄경매') AS AUC_DSC_STR /* 경매방식 문구 */
+	        , A.AUC_INFMSG                     /* 경매안내문구				*/
+	        , A.BASE_LMT_AM                 	/* 기초한도금액			*/
+	        , A.CUT_AM                      	/* 절사단위금액(비육우)	*/
+	        , A.SGNO_PRC_DSC                	/* 절사구분(비육우)		*/
+	        , A.DDL_YN                      	/* 마감여부			*/
+	        , A.TMS_YN                      	/* 전송여부			*/
+	        , A.DEL_YN	                    /* 삭제여부			*/
+	        , A.MALE_KG                     	/* 최초등록일시			*/
+	        , A.FEMALE_KG                   	/* 최초등록자개인번호		*/
+	        , A.FSRG_DTM                    	/* 최종변경일시			*/
+	        , A.FSRGMN_ENO                  	/* 최종변경자개인번호		*/
+	        , A.LSCHG_DTM                   	/* 수송아지(KG) 단가	*/
+	        , A.LS_CMENO	                  	/* 암송아지(KG) 단가	*/
+	    FROM  TB_LA_IS_MH_AUC_QCN A
+	    LEFT JOIN TB_LA_IS_BM_BZLOC B ON A.NA_BZPLC = B.NA_BZPLC
 	   WHERE 1 = 1
-	   		AND NA_BZPLC    = #{ss_na_bzplc}                      /* 경제통합사업장코드	*/
+	   		AND A.NA_BZPLC    = #{ss_na_bzplc}                      /* 경제통합사업장코드	*/
 	]]>
             <if test='cb_auc_obj_dsc != null and cb_auc_obj_dsc != ""'>
-            AND AUC_OBJ_DSC = #{cb_auc_obj_dsc}                   /* 경매대상구분코드	*/
+            AND A.AUC_OBJ_DSC = #{cb_auc_obj_dsc}                   /* 경매대상구분코드	*/
             </if>
 	<![CDATA[
-            AND AUC_DT BETWEEN #{auc_st_dt} AND #{auc_ed_dt}      /* 경매일자			*/
-            AND DEL_YN = '0'                                      /* 삭제여부			*/
-       ORDER BY AUC_DT DESC, AUC_OBJ_DSC
+            AND A.AUC_DT BETWEEN #{auc_st_dt} AND #{auc_ed_dt}      /* 경매일자			*/
+            AND A.DEL_YN = '0'                                      /* 삭제여부			*/
+       ORDER BY A.AUC_DT DESC, A.AUC_OBJ_DSC
 	]]>
     </select>
     
@@ -123,6 +127,8 @@
             , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
             , AUC_DT                                  	/* 경매일자			*/
             , QCN                                     	/* 차수				*/
+            , AUC_DSC                         			/* 경매방식				*/
+	        , AUC_INFMSG                     		/* 경매안내문구				*/
             , BASE_LMT_AM                             	/* 기초한도금액			*/
             , CUT_AM                                  	/* 절사단위금액(비육우)	*/
             , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
@@ -140,6 +146,8 @@
             , #{hd_auc_obj_dsc}             			/* 경매대상구분코드		*/
             , #{auc_dt}                  				/* 경매일자			*/
             , #{qcn}                      				/* 차수				*/
+            , #{hd_auc_dsc}                      				/* 경매방식				*/
+            , #{auc_infmsg}                      				/* 경매안내문구				*/
             , #{base_lmt_am}              				/* 기초한도금액			*/
             , #{cut_am}                   				/* 절사단위금액(비육우)	*/
             , #{hd_sgno_prc_dsc}             			/* 절사구분(비육우)		*/
@@ -163,6 +171,8 @@
             , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
             , AUC_DT                                  	/* 경매일자			*/
             , QCN                                     	/* 차수				*/
+            , AUC_DSC                         			/* 경매방식				*/
+	        , AUC_INFMSG                     		/* 경매안내문구				*/
             , BASE_LMT_AM                             	/* 기초한도금액			*/
             , CUT_AM                                  	/* 절사단위금액(비육우)	*/
             , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
@@ -182,6 +192,8 @@
             , #{hd_auc_obj_dsc}             			/* 경매대상구분코드		*/
             , #{auc_dt}                  				/* 경매일자			*/
             , #{qcn}                      				/* 차수				*/
+            , #{hd_auc_dsc}                      				/* 경매방식				*/
+            , #{auc_infmsg}                      				/* 경매안내문구				*/
             , #{base_lmt_am}              				/* 기초한도금액			*/
             , #{cut_am}                   				/* 절사단위금액(비육우)	*/
             , #{hd_sgno_prc_dsc}             			/* 절사구분(비육우)		*/
@@ -216,6 +228,8 @@
     <![CDATA[
          UPDATE TB_LA_IS_MH_AUC_QCN SET
               QCN                    = #{qcn}					/* 차수					*/
+            , AUC_DSC             = #{hd_auc_dsc}            			/* 경매방식				*/
+	        , AUC_INFMSG        = #{auc_infmsg}             		/* 경매안내문구				*/
             , BASE_LMT_AM            = #{base_lmt_am}			/* 기초한도금액				*/
             , CUT_AM                 = #{cut_am}				/* 절사단위금액(비육우)		*/
             , SGNO_PRC_DSC           = #{hd_sgno_prc_dsc}		/* 절사구분(비육우)			*/
@@ -237,6 +251,8 @@
             , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
             , AUC_DT                                  	/* 경매일자			*/
             , QCN                                     	/* 차수				*/
+            , AUC_DSC                         			/* 경매방식				*/
+	        , AUC_INFMSG                     		/* 경매안내문구				*/
             , BASE_LMT_AM                             	/* 기초한도금액			*/
             , CUT_AM                                  	/* 절사단위금액(비육우)	*/
             , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
@@ -256,6 +272,8 @@
             , #{hd_auc_obj_dsc}             			/* 경매대상구분코드		*/
             , #{auc_dt}                  				/* 경매일자			*/
             , #{qcn}                      				/* 차수				*/
+            , #{hd_auc_dsc}                      		/* 경매방식				*/
+            , #{auc_infmsg}                      				/* 경매안내문구				*/
             , #{base_lmt_am}              				/* 기초한도금액			*/
             , #{cut_am}                   				/* 절사단위금액(비육우)	*/
             , #{hd_sgno_prc_dsc}             			/* 절사구분(비육우)		*/
@@ -290,6 +308,8 @@
             , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
             , AUC_DT                                  	/* 경매일자			*/
             , QCN                                     	/* 차수				*/
+            , AUC_DSC                         			/* 경매방식				*/
+	        , AUC_INFMSG                     		/* 경매안내문구				*/
             , BASE_LMT_AM                             	/* 기초한도금액			*/
             , CUT_AM                                  	/* 절사단위금액(비육우)	*/
             , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
@@ -309,6 +329,8 @@
             , #{hd_auc_obj_dsc}             			/* 경매대상구분코드		*/
             , #{auc_dt}                  				/* 경매일자			*/
             , #{qcn}                      				/* 차수				*/
+            , #{hd_auc_dsc}                      				/* 경매방식				*/
+            , #{auc_infmsg}                      			/* 경매안내문구				*/
             , #{base_lmt_am}              				/* 기초한도금액			*/
             , #{cut_am}                   				/* 절사단위금액(비육우)	*/
             , #{hd_sgno_prc_dsc}             			/* 절사구분(비육우)		*/

@@ -61,6 +61,7 @@
                         	<td colspan=2>
                            		<input type="text" disabled="disabled" id="sra_fhsnm">
                            		<input type="hidden" id="hdn_sra_fhsnm">
+                           		<input type="hidden" id="sra_fhs_birth">
                            	</td>
                            	<td>
                            		<button class="tb_btn" id="pb_IndvHst" value="개체이력조회">농가변경</button>
@@ -178,21 +179,35 @@
                         	<td>
                            		<input type="text" disabled="disabled" id="mcow_sra_indv_eart_no">
                            	</td>
-                           	<th scope="row"><span>어미등록구분</span></th>
-                        	<td>
-                           		<select disabled="disabled"  id="sra_indv_mcow_brdsra_rg_dsc"></select>
-                           	</td>
                            	<th scope="row"><span>어미등록번호</span></th>
                         	<td>
                            		<input type="text" disabled="disabled" id="sra_indv_mcow_brdsra_rg_no">
+                           	</td>
+                        	<th scope="row"><span>외조부 KPN 번호</span></th>
+                        	<td>
+                           		<input type="text" disabled="disabled" id="mtgrfa_sra_kpn_no">
+                           	</td>
+                           	<th scope="row"><span>외조부 개체번호</span></th>
+                        	<td>
+                           		<input type="text" disabled="disabled" id="mtgrfa_sra_indv_eart_no">
+                           	</td>
+                           	<th scope="row"><span>외조모 개체번호</span></th>
+                        	<td>
+                           		<input type="text" disabled="disabled" id="mtgrmo_sra_indv_eart_no">
+                           	</td>
+                        </tr>
+                        <tr>
+                           	<th scope="row"><span>어미등록구분</span></th>
+                        	<td>
+                           		<select disabled="disabled"  id="sra_indv_mcow_brdsra_rg_dsc"></select>
                            	</td>
                            	<th scope="row"><span>어미산차</span></th>
                         	<td>
                            		<input type="text" disabled="disabled" id="sra_indv_mothr_matime">
                            	</td>
-                           	<td colspan=2>
-                           	</td>
-                        </tr>
+                           	<td colspan=6>
+                           	</td> 
+                        </tr>  
                         
                         <tr>
                         	<th scope="row"><span>아비귀표번호</span></th>
@@ -203,9 +218,19 @@
                         	<td>
                            		<input type="text" disabled="disabled" id="sra_indv_fcow_brdsra_rg_no">
                            	</td>
-                           	<td colspan=6>
+                        	<th scope="row"><span>조부 KPN 번호</span></th>
+                        	<td>
+                           		<input type="text" disabled="disabled" id="grfa_sra_kpn_no">
                            	</td>
-                        </tr>
+                           	<th scope="row"><span>조부 개체번호</span></th>
+                        	<td>
+                           		<input type="text" disabled="disabled" id="grfa_sra_indv_eart_no">
+                           	</td>
+                           	<th scope="row"><span>조모 개체번호</span></th>
+                        	<td>
+                           		<input type="text" disabled="disabled" id="grmo_sra_indv_eart_no">
+                           	</td>
+                        </tr>     
                     </tbody>
                 </table>
                 </form>
@@ -227,11 +252,41 @@
                 <li><p class="dot_allow">교배정보</p></li>
             </ul>
         </div>
-        
         <div class="listTable">           
             <table id="grd_BhCross">
             </table>
         </div>
+        
+        <div class="tab_box clearfix">
+            <ul class="tab_list">
+                <li><p class="dot_allow">개체 이동정보</p></li>
+            </ul>
+        </div>
+        <div class="listTable">           
+            <table id="grd_CattleMove">
+            </table>
+        </div>    
+        
+        <div class="tab_box clearfix">
+            <ul class="tab_list">
+                <li><p class="dot_allow">형매정보</p></li>
+            </ul>
+        </div>
+        
+        <div class="listTable">           
+            <table id="grd_SibIndv">
+            </table>
+        </div>
+        
+        <div class="tab_box clearfix">
+            <ul class="tab_list">
+                <li><p class="dot_allow">후대정보</p></li>
+            </ul>
+        </div>
+        <div class="listTable">           
+            <table id="grd_PostIndv">
+            </table>
+        </div>    
     </div>
     <!-- //pop_body e -->
 </body>
@@ -258,10 +313,13 @@
      * 2. 입 력 변 수 : N/A
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
-    $(document).ready(function(){      
+    $(document).ready(function(){
     	//그리드 초기화
         fn_CreatePturGrid();
         fn_CreateBhCrossGrid();
+        fn_CreateGridSibIndv();
+        fn_CreateGridPostIndv();
+        fn_CreateGridCattleMove();
         
         fn_setCodeBox("sra_indv_kn_c", "SRA_INDV_KN_C", 1);
         fn_setCodeBox("sra_indv_dsc", "SRA_INDV_DSC", 1);
@@ -342,7 +400,7 @@
     	var results = null;
     	selresult = null;
     	
-        srchData["ctgrm_cd"]  = "2200";
+        srchData["ctgrm_cd"]  = "4700";
         srchData["sra_indv_amnno"] = $("#sra_indv_amnno").val();
         
         results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");
@@ -353,6 +411,9 @@
         } else {
         	$("#grd_BhPtur").jqGrid("clearGridData", true);
          	$("#grd_BhCross").jqGrid("clearGridData", true);
+        	$("#grd_SibIndv").jqGrid("clearGridData", true);
+         	$("#grd_PostIndv").jqGrid("clearGridData", true);
+         	$("#grd_CattleMove").jqGrid("clearGridData", true);
          	
          	selresult = setDecrypt(results);
          	
@@ -363,6 +424,12 @@
          		fn_FrmMhSogCow(selresult);
                 fn_SelBhPtur();
                 fn_SelBhCross();
+				//형매
+                fn_SelSibIndv();
+              	//후대
+                fn_SelPostIndv();
+              	//개체 이동내역
+                fn_SelCattleMove();
          	}
          	
         }
@@ -374,7 +441,13 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Select(){
-   	 
+
+    	 selresult.LIST_SIB_INDV = $('#grd_SibIndv').getRowData();			//형매정보
+    	 selresult.LIST_POST_INDV = $('#grd_PostIndv').getRowData();		//후대정보
+    	 selresult.LIST_CATTLE_MOVE = $('#grd_CattleMove').getRowData();	//이동정보
+    	 selresult.LIST_BH_PTUR = $('#grd_BhPtur').getRowData();			//분만정보
+    	 selresult.LIST_BH_CROSS = $('#grd_BhCross').getRowData();			//교배정보
+    	 
          var results = sendAjax(selresult, "/LALM0222P_updReturnValue", "POST");
          var returnVal;
          
@@ -384,7 +457,11 @@
 
          } else {
         	 returnVal = setDecrypt(results);
+             var len = $('#grd_BhCross').getRowData().length;
              pageInfo.returnValue = returnVal[0];
+             pageInfo.returnValue.PTUR_PLA_DT = $('#grd_BhCross').jqGrid('getRowData',len).PTUR_PLA_DT;
+             //pageInfo.returnValue.SIB_INDV = $('#grd_SibIndv').getRowData();
+             //pageInfo.returnValue.POST_INDV = $('#grd_PostIndv').getRowData(); 
              var parentInput =  parent.$("#pop_result_" + pageInfo.popup_info.PGID );
              parentInput.val(true).trigger('change');
          }
@@ -397,6 +474,76 @@
     ////////////////////////////////////////////////////////////////////////////////
     //  사용자 함수 시작
     ////////////////////////////////////////////////////////////////////////////////
+    
+    
+  	//**************************************
+ 	//function  : fn_SelPostIndv(형매정보 인터페이스) 
+ 	//paramater : N/A
+ 	// result   : N/A
+ 	//**************************************
+    function fn_SelSibIndv() {
+    	var srchData = new Object();
+    	var results = null;
+    	var result = null;
+    	
+        srchData["ctgrm_cd"]  = "4900";
+        srchData["sra_indv_amnno"] = $("#mcow_sra_indv_eart_no").val();
+        //srchData["mcow_sra_indv_amnno"] = $("#mcow_sra_indv_eart_no").val();
+        results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");        
+        if(results.status != RETURN_SUCCESS){
+           //showErrorMessage(results,'NOTFOUND');
+           return;
+        }else{      
+        	result = setDecrypt(results);
+           fn_CreateGridSibIndv(result);
+        }
+    }
+  	//**************************************
+ 	//function  : fn_SelCattleMove(개체 이동내역 인터페이스) 
+ 	//paramater : N/A
+ 	// result   : N/A
+ 	//**************************************
+    function fn_SelCattleMove() {
+    	var srchData = new Object();
+    	var results = null;
+    	var result = null;
+    	
+        srchData["trace_no"] = $("#sra_indv_amnno").val();
+        results = sendAjax(srchData, "/LALM0899_selRestApiCattleMove", "POST");        
+        if(results.status != RETURN_SUCCESS){
+            //showErrorMessage(results,'NOTFOUND');
+            return;
+        }else{      
+        	result = setDecrypt(results);
+            fn_CreateGridCattleMove(result);
+        }
+    }
+    
+    
+    
+  	//**************************************
+ 	//function  : fn_SelPostIndv(후대정보 인터페이스) 
+ 	//paramater : N/A
+ 	// result   : N/A
+ 	//**************************************
+    function fn_SelPostIndv() {
+    	var srchData = new Object();
+    	var results = null;
+    	var result = null;
+    	
+        srchData["ctgrm_cd"]  = "4900";
+        srchData["sra_indv_amnno"] = $("#sra_indv_amnno").val();
+        results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");        
+        if(results.status != RETURN_SUCCESS){
+           //showErrorMessage(results,'NOTFOUND');
+           return;
+        }else{      
+        	result = setDecrypt(results);
+           fn_CreateGridPostIndv(result);
+        }
+    }
+    
+    
     //**************************************
  	//function  : fn_SelBhPtur(분만정보 인터페이스) 
  	//paramater : N/A
@@ -457,8 +604,9 @@
         if(data != null){
             rowNoValue = data.length;
         }
-        
-        var searchResultColNames = ["산차", "교배차수", "교배일자", "KPN", "분만일자", "분만구분", "송아지귀표번호", "성별", "생시체중", "분만간격", "분만농가"];        
+
+        var searchResultColNames = ["산차", "교배차수", "교배일자", "KPN", "분만일자", "분만구분", "송아지귀표번호", "성별", "생시체중", "분만간격", "분만농가"
+        							,"모개체번호","분만일련번호","농가식별번호","축산개체인공수정방법","분만두수","분만확인일자","분만상태코드","등록사무소코드","관리수무소코드","임신기간일수"];   
         var searchResultColModel = [
 						            {name:"MATIME"       			, index:"MATIME"         			, width:70,  align:'center', formatter:'integer'},
 						            {name:"CRSBD_QCN"       		, index:"CRSBD_QCN"              	, width:70,  align:'center', formatter:'integer'},
@@ -470,7 +618,20 @@
 						            {name:"INDV_SEX_C"           	, index:"INDV_SEX_C"             	, width:70,  align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
 						            {name:"LFTM_WGH"  				, index:"LFTM_WGH"    				, width:70,  align:'center', formatter:'integer'},
 						            {name:"PTUR_INTV_DDS"           , index:"PTUR_INTV_DDS"             , width:70,  align:'center', formatter:'integer'},
-						            {name:"SRA_FARMNM"    			, index:"SRA_FARMNM"      			, width:150, align:'center'}
+						            {name:"SRA_FARMNM"    			, index:"SRA_FARMNM"      			, width:150, align:'center'},
+						            {name:"SRA_INDV_AMNNO"    		, index:"SRA_INDV_AMNNO"      		, width:50, align:'center',hidden:true},
+						            {name:"PTUR_SQNO"    			, index:"PTUR_SQNO"      			, width:50, align:'center',hidden:true},
+						            {name:"FHS_ID_NO"    			, index:"FHS_ID_NO"      			, width:50, align:'center',hidden:true},						            
+						            {name:"FERT_METHC"    			, index:"FERT_METHC"      			, width:50, align:'center',hidden:true},						            
+						            {name:"PTUR_HDCN"    			, index:"PTUR_HDCN"      			, width:50, align:'center',hidden:true},
+						            {name:"PTUR_CNF_DT"    			, index:"PTUR_CNF_DT"      			, width:50, align:'center',hidden:true},
+						            {name:"PTUR_STSC"    			, index:"PTUR_STSC"      			, width:50, align:'center',hidden:true},
+						            {name:"RG_BRC"    				, index:"RG_BRC"      				, width:50, align:'center',hidden:true},
+						            {name:"MBR_BRC"    				, index:"MBR_BRC"      				, width:50, align:'center',hidden:true},
+						            {name:"PRNY_PRD_DDS"    		, index:"PRNY_PRD_DDS"      		, width:50, align:'center',hidden:true}
+						            
+						            
+						            
                                      ];
             
         $("#grd_BhPtur").jqGrid("GridUnload");
@@ -502,7 +663,7 @@
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["예정산차", "교배차수", "교배일자", "수정방법", "KPN", "인공수정사", "분만일자", "임신기간", "교배농가"];        
+        var searchResultColNames = ["예정산차", "교배차수", "교배일자", "수정방법", "KPN", "인공수정사", "분만일자", "임신기간", "교배농가","분만예정일자","농가번호"];        
         var searchResultColModel = [
 						            {name:"CRSBD_MATIME"       				, index:"CRSBD_MATIME"         			, width:100,  align:'center', formatter:'integer'},
 						            {name:"CRSBD_QCN"            			, index:"CRSBD_QCN"              		, width:100,  align:'center', formatter:'integer'},
@@ -512,7 +673,9 @@
 						            {name:"FERT_AMRNM"             	     	, index:"FERT_AMRNM"                 	, width:100,  align:'center'},
 						            {name:"PTUR_DT"               			, index:"PTUR_DT"                 		, width:100,  align:'center', formatter:'gridDateFormat'},
 						            {name:"PRNY_PRD_DDS"           			, index:"PRNY_PRD_DDS"             		, width:100,  align:'center', formatter:'integer'},
-						            {name:"SRA_FARMNM"  					, index:"SRA_FARMNM"    				, width:200,  align:'center'}
+						            {name:"SRA_FARMNM"  					, index:"SRA_FARMNM"    				, width:200,  align:'center'},
+						            {name:"PTUR_PLA_DT"               		, index:"PTUR_PLA_DT"                 		, hidden:true},
+						            {name:"FHS_ID_NO"               		, index:"FHS_ID_NO"                 		, hidden:true},
                                      ];
             
         $("#grd_BhCross").jqGrid("GridUnload");
@@ -534,6 +697,132 @@
            
         });   
         
+    }
+  	
+
+    
+  	// 형매정보 그리드 생성
+    function fn_CreateGridSibIndv(data){              
+        
+        var rowNoValue = 0;     
+        if(data != null){
+            rowNoValue = data.length;
+        }
+
+        var searchResultColNames = ["축산개체관리번호","산차","계대","등록구분코드","KPN번호","개체성별코드","생년월일","도체중","등급","도축일"];        
+        var searchResultColModel = [						            
+						            {name:"SRA_INDV_AMNNO"                   , index:"SRA_INDV_AMNNO"               , width:100,  align:'center'},
+						            {name:"MATIME"                           , index:"MATIME"                       , width:50,  align:'center'},
+						            {name:"SRA_INDV_PASG_QCN"                , index:"SRA_INDV_PASG_QCN"            , width:50,  align:'center'},
+						            {name:"RG_DSC"                           , index:"RG_DSC"                       , width:80,  align:'center'},
+						            {name:"KPN_NO"                           , index:"KPN_NO"                       , width:80,  align:'center'},
+						            {name:"INDV_SEX_C"                       , index:"INDV_SEX_C"                   , width:80,  align:'center'},
+						            {name:"BIRTH"                            , index:"BIRTH"                        , width:100,  align:'center'},
+						            {name:"METRB_BBDY_WT"                    , index:"METRB_BBDY_WT"                , width:100,  align:'center'},
+						            {name:"METRB_METQLT_GRD"                 , index:"METRB_METQLT_GRD"             , width:100,  align:'center'},
+						            {name:"MIF_BTC_DT"                       , index:"MIF_BTC_DT"                   , width:100,  align:'center'}
+
+                                     ];
+            
+        $("#grd_SibIndv").jqGrid("GridUnload");
+                
+        $("#grd_SibIndv").jqGrid({
+            datatype:    "local",
+            data:        data,
+            height:      100,
+            rowNum:      rowNoValue,
+            resizeing:   true,
+            autowidth:   false,
+            shrinkToFit: false, 
+            rownumbers:true,
+            rownumWidth:40,
+            colNames: searchResultColNames,
+            colModel: searchResultColModel,
+            ondblClickRow: function(rowid, row, col){                
+           },
+           
+        });        
+    }
+    
+  	// 후대정보 그리드 생성
+    function fn_CreateGridPostIndv(data){              
+        
+        var rowNoValue = 0;     
+        if(data != null){
+            rowNoValue = data.length;
+        }
+        
+        var searchResultColNames = ["축산개체관리번호","산차","계대","등록구분코드","KPN번호","개체성별코드","생년월일","도체중","등급","도축일"];        
+        var searchResultColModel = [
+			            {name:"SRA_INDV_AMNNO"                   , index:"SRA_INDV_AMNNO"               , width:100,  align:'center'},
+			            {name:"MATIME"                           , index:"MATIME"                       , width:50,  align:'center'},
+			            {name:"SRA_INDV_PASG_QCN"                , index:"SRA_INDV_PASG_QCN"            , width:50,  align:'center'},
+			            {name:"RG_DSC"                           , index:"RG_DSC"                       , width:80,  align:'center'},
+			            {name:"KPN_NO"                           , index:"KPN_NO"                       , width:80,  align:'center'},
+			            {name:"INDV_SEX_C"                       , index:"INDV_SEX_C"                   , width:80,  align:'center'},
+			            {name:"BIRTH"                            , index:"BIRTH"                        , width:100,  align:'center'},
+			            {name:"METRB_BBDY_WT"                    , index:"METRB_BBDY_WT"                , width:100,  align:'center'},
+			            {name:"METRB_METQLT_GRD"                 , index:"METRB_METQLT_GRD"             , width:100,  align:'center'},
+			            {name:"MIF_BTC_DT"                       , index:"MIF_BTC_DT"                   , width:100,  align:'center'}
+		];
+            
+        $("#grd_PostIndv").jqGrid("GridUnload");
+                
+        $("#grd_PostIndv").jqGrid({
+            datatype:    "local",
+            data:        data,
+            height:      100,
+            rowNum:      rowNoValue,
+            resizeing:   true,
+            autowidth:   false,
+            shrinkToFit: false, 
+            rownumbers:true,
+            rownumWidth:40,
+            colNames: searchResultColNames,
+            colModel: searchResultColModel,
+            ondblClickRow: function(rowid, row, col){                
+           },
+           
+        });        
+    }
+
+    
+  	// 후대정보 그리드 생성
+    function fn_CreateGridCattleMove(data){              
+        
+        var rowNoValue = 0;     
+        if(data != null){
+            rowNoValue = data.length;
+        }
+        
+        var searchResultColNames = ["축산개체관리번호","소유자","신고구분","신고일","사육지","농장번호"];        
+        var searchResultColModel = [
+			            {name:"SRA_INDV_AMNNO"          , index:"SRA_INDV_AMNNO"        , width:100,  align:'center'},
+			            {name:"FARMER_NM"               , index:"FARMER_NM"             , width:50,  align:'center'},
+			            {name:"REG_TYPE"                , index:"REG_TYPE"            	, width:50,  align:'center'},
+			            {name:"REG_YMD"                 , index:"MOVE_YMD"              , width:80,  align:'center'},
+			            {name:"FARM_ADDR"               , index:"FARM_ADDR"             , width:80,  align:'center'},
+			            {name:"FARM_NO"                 , index:"FARM_NO"             	, width:80,  align:'center'}
+		];
+            
+        $("#grd_CattleMove").jqGrid("GridUnload");
+                
+        $("#grd_CattleMove").jqGrid({
+            datatype:    "local",
+            data:        data,
+            height:      100,
+            rowNum:      rowNoValue,
+            resizeing:   true,
+            autowidth:   false,
+            shrinkToFit: false, 
+            rownumbers:true,
+            rownumWidth:40,
+            colNames: searchResultColNames,
+            colModel: searchResultColModel,
+            ondblClickRow: function(rowid, row, col){                
+           },
+           
+        });        
     }
 	////////////////////////////////////////////////////////////////////////////////
     //  그리드 함수 종료
@@ -621,6 +910,16 @@
 		$("#sra_indv_mothr_matime").val(parseInt($.trim(result.SRA_INDV_MOTHR_MATIME)==''?'0':$.trim(result.SRA_INDV_MOTHR_MATIME)));
 		$("#fcow_sra_indv_eart_no").val($.trim(result.FCOW_SRA_INDV_EART_NO));
 		$("#sra_indv_fcow_brdsra_rg_no").val($.trim(result.SRA_INDV_FCOW_BRDSRA_RG_NO));
+
+		//20221103 jjw 개체 인터페이스 2200 => 4700 변경시 적용
+		$("#sra_fhs_birth").val($.trim(result.BIRTH));		
+		$("#grfa_sra_kpn_no").val($.trim(result.GRFA_SRA_KPN_NO));		
+		$("#grfa_sra_indv_eart_no").val($.trim(result.GRFA_SRA_INDV_EART_NO));		
+		$("#grmo_sra_indv_eart_no").val($.trim(result.GRMO_SRA_INDV_EART_NO));		
+		$("#mtgrfa_sra_kpn_no").val($.trim(result.MTGRFA_SRA_KPN_NO));		
+		$("#mtgrfa_sra_indv_eart_no").val($.trim(result.MTGRFA_SRA_INDV_EART_NO));		
+		$("#mtgrmo_sra_indv_eart_no").val($.trim(result.MTGRMO_SRA_INDV_EART_NO));		
+		
 		
 	}
     

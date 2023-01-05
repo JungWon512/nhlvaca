@@ -78,9 +78,11 @@
 	         , C.TEL_NO                       /* 전화번호                    */
 	         , C.KKO_SVC_ID                   /* 카카오서비스아이디          */
 	         , C.KKO_SVC_KEY                  /* 카카오서비스키              */
+	         , C.KKO_SVC_CNT                  /* 카카오서비스카운트          */
 	         , C.SMS_AUTH_YN                  /* SMS인증사용여부 */
-	         , C.SMS_BUFFER_1
-	         , C.SMS_BUFFER_2
+	         , C.SMS_BUFFER_1					/* 출하주 정보 수정 제외항목 */
+	         , C.SMS_BUFFER_2					/* 모바일 업무 간편 비고항목 */
+	         , C.KIOSK_YN                     /* 키오스크 사용여부           */
 	      FROM TB_LA_IS_MM_WMC A
 	         , TB_LA_IS_MM_ENV_EST B
              , TB_LA_IS_BM_BZLOC   C
@@ -255,10 +257,11 @@
              , RMK_CNTN                     /* 비고내용                    */
              , TEL_NO                       /* 전화번호                    */
              , KKO_SVC_ID                   /* 카카오서비스아이디          */
-             , KKO_SVC_KEY                  /* 카카오서비스키              */     
+             , KKO_SVC_KEY                  /* 카카오서비스키              */
+             , KKO_SVC_CNT                  /* 카카오서비스카운트          */
              , SMS_AUTH_YN                  /* SMS인증사용여부 */     
-             , SMS_BUFFER_1                  /* SMS BUFFER 1 */    
-             , SMS_BUFFER_2                  /* SMS BUFFER 2 */
+             , SMS_BUFFER_1                 /* SMS BUFFER 1 */
+             , KIOSK_YN                     /* 키오스크 사용여부 */
              , FSRG_DTM                     /* 최초등록일시                */
              , FSRGMN_ENO                   /* 최초등록자개인번호          */
              , LSCHG_DTM                    /* 최종변경일사                */
@@ -279,9 +282,10 @@
              , #{tel_no}                         /* 전화번호                    */
              , #{kko_svc_id}                     /* 카카오서비스아이디          */
              , #{kko_svc_key}                    /* 카카오서비스키              */
+             , #{kko_svc_cnt}                    /* 카카오서비스카운트          */
              , #{sms_auth_yn}    
-             , #{sms_buffer_1}    
-             , #{sms_buffer_2}                  
+             , #{sms_buffer_1}                  
+             , #{kiosk_yn}                  
              , SYSDATE                           /* 최초등록일시                */
              , #{ss_userid}                      /* 최초등록자개인번호          */
              , SYSDATE                           /* 최종변경일시                */
@@ -489,12 +493,14 @@
              , A.RMK_CNTN                   = #{auc_rmk_cntn}  /* 비고내용                    */
              , A.TEL_NO                     = #{tel_no}        /* 전화번호                    */
              , A.KKO_SVC_ID                 = #{kko_svc_id}    /* 카카오서비스아이디          */
-             , A.KKO_SVC_KEY                = #{kko_svc_key}   /* 카카오서비스키              */     
+             , A.KKO_SVC_KEY                = #{kko_svc_key}   /* 카카오서비스키              */
+             , A.KKO_SVC_CNT                = #{kko_svc_cnt}   /* 카카오서비스카운트          */
              , A.SMS_AUTH_YN                = #{sms_auth_yn}   /* SMS인증사용여부 */
            	 , A.SMS_BUFFER_1 				= #{sms_buffer_1}
-           	 , A.SMS_BUFFER_2 				= #{sms_buffer_2}
+             , A.KIOSK_YN                   = #{kiosk_yn}      /* 키오스크 사용여부           */
              , A.LSCHG_DTM                  = SYSDATE          /* 최종변경일사                */
              , A.LS_CMENO                   = #{ss_userid}     /* 최종변경자개인번호          */
+             , A.SMS_BUFFER_2 				= #{sms_buffer_2}	/* 모바일 업무 간편 비고 항목 */
          WHEN NOT MATCHED THEN
          INSERT(
                NA_BZPLC                     /* 경제통합사업장코드          */
@@ -511,14 +517,16 @@
              , RMK_CNTN                     /* 비고내용                    */
              , TEL_NO                       /* 전화번호                    */
              , KKO_SVC_ID                   /* 카카오서비스아이디          */
-             , KKO_SVC_KEY                  /* 카카오서비스키              */     
+             , KKO_SVC_KEY                  /* 카카오서비스키              */
+             , KKO_SVC_CNT                  /* 카카오서비스카운트          */
              , SMS_AUTH_YN                  /* SMS인증사용여부 */
              , SMS_BUFFER_1					/* SMS BUFFER 1 */
-             , SMS_BUFFER_2					/* SMS BUFFER 2 */
+             , KIOSK_YN                     /* 키오스크 사용여부           */
              , FSRG_DTM                     /* 최초등록일시                */
              , FSRGMN_ENO                   /* 최초등록자개인번호          */
              , LSCHG_DTM                    /* 최종변경일사                */
              , LS_CMENO                     /* 최종변경자개인번호          */
+             , SMS_BUFFER_2 				/* 모바일 업무 간편 비고 항목 */
         ) VALUES(
                #{na_bzplc}                       /* 경제통합사업장코드          */
              , #{na_bzplcno}                     /* 사업장 번호                 */
@@ -535,13 +543,15 @@
              , #{tel_no}                         /* 전화번호                    */
              , #{kko_svc_id}                     /* 카카오서비스아이디          */
              , #{kko_svc_key}                    /* 카카오서비스키              */
-             , #{sms_auth_yn}	
-           	, #{sms_buffer_1}
-           	, #{sms_buffer_2}
+             , #{kko_svc_cnt}                    /* 카카오서비스카운트          */
+             , #{sms_auth_yn}                    /* SMS인증사용여부 */
+             , #{sms_buffer_1}					 /* SMS BUFFER 1 */
+             , #{kiosk_yn}                       /* 키오스크 사용여부           */
              , SYSDATE                           /* 최초등록일시                */
              , #{ss_userid}                      /* 최초등록자개인번호          */
              , SYSDATE                           /* 최종변경일시                */
              , #{ss_userid}                      /* 최종변경자개인번호          */
+             , #{sms_buffer_2}					/* 모바일 업무 간편 비고 항목 */
         )
     ]]>
     </update>
@@ -569,7 +579,6 @@
         DELETE 
           FROM TB_LA_IS_BM_BZLOC
          WHERE NA_BZPLC       = #{na_bzplc} 
-         
     ]]>
     </delete>
     

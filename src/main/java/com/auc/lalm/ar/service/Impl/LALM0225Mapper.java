@@ -15,4 +15,26 @@ public interface LALM0225Mapper {
 	 */
 	List<Map<String, Object>> LALM0225_selList(Map<String, Object> map);
 
+	/**
+	 * 경매차수 조회
+	 * @param map
+	 * @return
+	 */
+	Map<String, Object> LALM0225_selAucQcn(Map<String, Object> map);
+	
+	/**
+	 * 출장우 등록
+	 * @param map
+	 * @return
+	 */
+	int LALM0225_insSogCow(Map<String, Object> map);
+
+	/**
+	 * 출장우 삭제
+	 * @param map
+	 * @return
+	 */
+	int LALM0225_delSogCow(Map<String, Object> map);
+
+
 }

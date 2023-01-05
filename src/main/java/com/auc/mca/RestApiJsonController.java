@@ -45,7 +45,7 @@ public class RestApiJsonController {
         Map<String, Object> map = new HashMap<String, Object>();
         //받은메시지를 map에 담기
         if(recvMsg.length()>0) {
-            map = getMapFromJsonObject(recvMsg);
+            map = getMapFromJsonObject(recvMsg,ctgrm_cd);
         }else {
             map.put("jsonHeader", "Error");
             map.put("dataCnt", "0");
@@ -103,14 +103,16 @@ public class RestApiJsonController {
         sb.append(",\"CSPR_CD\":\"" + cspr_cd + "\"");
         sb.append(",\"CTGRM_TRNSM_DATETIME\":\"" + ctgrm_trnsm_datetime + "\"");
         sb.append(",\"CTGRM_RSP_CD\":\"0000\"");
-        if("1200".equals(ctgrm_cd) || //농가정보
-           "1400".equals(ctgrm_cd) || //개체정보
+        if("1400".equals(ctgrm_cd) || //개체정보
+           "4600".equals(ctgrm_cd) || //개체정보
            "1700".equals(ctgrm_cd) || //수수료정보
            "1800".equals(ctgrm_cd) || //불량거래인
            "2500".equals(ctgrm_cd) || //공통코드
            "3300".equals(ctgrm_cd) || //KPN정보
            "3400".equals(ctgrm_cd) || //거래처(산정위원_수의사)
-           "2200".equals(ctgrm_cd)){  //개체이력조회  
+           "2200".equals(ctgrm_cd) || //개체이력조회
+           "4700".equals(ctgrm_cd) //개체이력조회
+		){    
         	if(io_all_yn == 1) { //전체여부
         		sb.append(",\"CRSRVD\":\"                       1\"");
         	}else {
@@ -127,7 +129,7 @@ public class RestApiJsonController {
     
   //리턴 받은 전문에서 header, data 가져오기
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Map<String, Object> getMapFromJsonObject(String jsonObj) throws JSONException{
+    public Map<String, Object> getMapFromJsonObject(String jsonObj,String ctgrm_cd) throws JSONException{
         
         Map<String, Object> map = new HashMap<String, Object>();
         
@@ -145,8 +147,12 @@ public class RestApiJsonController {
         
         int cnt = 0;
         
-        if(jsonData.containsKey("IO_ROW_CNT")) {
-            cnt  = (int)(double)jsonData.get("IO_ROW_CNT");
+        if(jsonData.containsKey("IO_ROW_CNT")) {        	
+        	if("4600".equals(ctgrm_cd)) {
+        		cnt  = Integer.valueOf((String)jsonData.getOrDefault("IO_ROW_CNT","0"));
+        	}else {
+            	cnt  = (int)(double)jsonData.get("IO_ROW_CNT");        		
+        	}
         }
         
         logger.info("mca receive >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"+jsonObj);
@@ -172,7 +178,6 @@ public class RestApiJsonController {
 
         boolean result = true;
         try {
-            
             logger.debug("REST API START");
             
             byte[] sendData = jsonValue.getBytes("UTF-8");
@@ -296,6 +301,24 @@ public class RestApiJsonController {
             ctrn_cd = "IFLM0043";
         }else if("4500".equals(ctgrm_cd)) {
             ctrn_cd = "IFLM0045";
+        }else if("4600".equals(ctgrm_cd)) {
+            ctrn_cd = "IFLM0046";
+        }else if("4700".equals(ctgrm_cd)) {
+            ctrn_cd = "IFLM0047";
+        }else if("4900".equals(ctgrm_cd)) {
+            ctrn_cd = "IFLM0049";
+        }else if("5100".equals(ctgrm_cd)) {
+            ctrn_cd = "IFLM0051";
+        }else if("5200".equals(ctgrm_cd)) {
+            ctrn_cd = "IFLM0052";
+        }else if("5300".equals(ctgrm_cd)) {
+            ctrn_cd = "IFLM0053";
+        }else if("5400".equals(ctgrm_cd)) {
+            ctrn_cd = "IFLM0054";
+        }else if("5500".equals(ctgrm_cd)) {
+            ctrn_cd = "IFLM0055";
+        }else if("5600".equals(ctgrm_cd)) {
+            ctrn_cd = "IFLM0056";
         }
     }
 	

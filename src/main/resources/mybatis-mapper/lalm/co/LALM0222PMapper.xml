@@ -82,7 +82,14 @@
                     , FSRG_DTM                                                                                                                /* 최초등록일시                        */
                     , FSRGMN_ENO                                                                                                              /* 최초등록자개인번호                  */
                     , LSCHG_DTM                                                                                                               /* 최종변경일시                        */
-                    , LS_CMENO                                                                                                                /* 최종변경자개인번호                  */
+                    , LS_CMENO                             
+					, MIF_FCOW_SRA_INDV_EART_NO
+					, GRFA_SRA_KPN_NO
+					, GRFA_SRA_INDV_EART_NO
+					, GRMO_SRA_INDV_EART_NO
+					, MTGRFA_SRA_KPN_NO
+					, MTGRFA_SRA_INDV_EART_NO
+					, MTGRMO_SRA_INDV_EART_NO                                                                                   /* 최종변경자개인번호                  */
                 )VALUES(
                       #{ss_na_bzplc}                                                                                                        /* 경제통합사업장코드                  */
                     , #{sra_indv_amnno}                                                                                           /* 축산개체관리번호                    */
@@ -117,7 +124,14 @@
                     , SYSDATE                                                                                                                /* 최초등록일시                        */
                     , #{ss_userid}                                                                                                              /* 최초등록자개인번호                  */
                     , SYSDATE                                                                                                                /* 최종변경일시                        */
-                    , #{ss_userid}                                                                                                             /* 최종변경자개인번호                  */
+                    , #{ss_userid}                            /* 최종변경자개인번호                  */
+					, #{fcow_sra_indv_eart_no}
+					, #{grfa_sra_kpn_no}
+					, #{grfa_sra_indv_eart_no}
+					, #{grmo_sra_indv_eart_no}
+					, #{mtgrfa_sra_kpn_no}
+					, #{mtgrfa_sra_indv_eart_no}
+					, #{mtgrmo_sra_indv_eart_no}                                                                                                 
                 )
     </insert>
     
@@ -145,6 +159,7 @@
                     , LSCHG_DTM                                                /* 최종변경일시                        */
                     , LS_CMENO                                                 /* 최종변경자개인번호                  */
                     , NEW_SRA_FARM_ACNO                                        /* 선택시 계좌번호 저장                */
+                    , BIRTH
                 )VALUES(
                       #{ss_na_bzplc}                                         /* 경제통합사업장코드                  */
                     , #{fhs_id_no}                                 /* 농가식별번호                        */
@@ -167,6 +182,7 @@
                     , SYSDATE                                                 /* 최종변경일시                        */
                     , #{ss_userid}                                               /* 최종변경자개인번호                  */
                     , #{sra_farm_acno}                             /* 선택시 계좌번호 저장                */
+                    , #{sra_fhs_birth}
                 )
     </insert>
     
@@ -197,6 +213,13 @@
 					, SRA_INDV_PASG_QCN     = #{sra_indv_pasg_qcn}
 						</otherwise>
 					</choose>
+					, MIF_FCOW_SRA_INDV_EART_NO       = #{fcow_sra_indv_eart_no}
+					, GRFA_SRA_KPN_NO                 = #{grfa_sra_kpn_no}
+					, GRFA_SRA_INDV_EART_NO           = #{grfa_sra_indv_eart_no}
+					, GRMO_SRA_INDV_EART_NO           = #{grmo_sra_indv_eart_no}
+					, MTGRFA_SRA_KPN_NO               = #{mtgrfa_sra_kpn_no}
+					, MTGRFA_SRA_INDV_EART_NO         = #{mtgrfa_sra_indv_eart_no}
+					, MTGRMO_SRA_INDV_EART_NO         = #{mtgrmo_sra_indv_eart_no}    
 	
 	<![CDATA[
                     , INDV_ID_NO            = #{krbf_iprv_rg_no}                                                                                  /* 개체식별번호                        */
@@ -217,6 +240,7 @@
                       FARM_ID_NO  = #{farm_id_no}                            /* 농가식별번호                        */
                     , NA_TRPL_C   = #{na_trpl_c}                             /* 출하경제통합거래처코드              */
                     , FTSNM       = #{sra_fhsnm}                             /* 농가명                              */
+                    , BIRTH		  = #{sra_fhs_birth}
 	                <choose>
 	                	<when test="buffer_1 != null and buffer_1 != ''">
 			                <if test='!buffer_1.contains("AD")'>
@@ -296,6 +320,220 @@
 	       FROM TB_LA_IS_BM_BZLOC A
 	       WHERE A.NA_BZPLC       = #{ss_na_bzplc}
     </select>
+    
+    <insert id="LALM0222P_insSibInf">
+    	INSERT INTO TB_LA_IS_MM_INDV_SIBINF(
+			SRA_INDV_AMNNO
+			, SIB_SRA_INDV_AMNNO
+			, MATIME
+			, SRA_INDV_PASG_QCN
+			, RG_DSC
+			, KPN_NO
+			, INDV_SEX_C
+			, BIRTH
+			, METRB_BBDY_WT
+			, METRB_METQLT_GRD
+			, MIF_BTC_DT
+			, FSRG_DTM
+			, FSRGMN_ENO
+    	)VALUES(
+			#{p_sra_indv_amnno}
+			, #{sra_indv_amnno}
+			, #{matime}
+			, #{sra_indv_pasg_qcn}
+			, #{rg_dsc}
+			, #{kpn_no}
+			, #{indv_sex_c}
+			, #{birth}
+			, #{metrb_bbdy_wt}
+			, #{metrb_metqlt_grd}
+			, #{mif_btc_dt}
+			, SYSDATE
+			, #{ss_usrid}
+    	)	    
+    </insert>
+    
+    <insert id="LALM0222P_insPostInf">
+    	INSERT INTO TB_LA_IS_MM_INDV_POSTINF(
+			SRA_INDV_AMNNO
+			, POST_SRA_INDV_AMNNO
+			, MATIME
+			, SRA_INDV_PASG_QCN
+			, RG_DSC
+			, KPN_NO
+			, INDV_SEX_C
+			, BIRTH
+			, METRB_BBDY_WT
+			, METRB_METQLT_GRD
+			, MIF_BTC_DT
+			, FSRG_DTM
+			, FSRGMN_ENO
+    	)VALUES(
+			 #{p_sra_indv_amnno}
+			, #{sra_indv_amnno}
+			, #{matime}
+			, #{sra_indv_pasg_qcn}
+			, #{rg_dsc}
+			, #{kpn_no}
+			, #{indv_sex_c}
+			, #{birth}
+			, #{metrb_bbdy_wt}
+			, #{metrb_metqlt_grd}
+			, #{mif_btc_dt}
+			, SYSDATE
+			, #{ss_usrid}
+    	)	    
+    </insert>
+    
+    <delete id="LALM0222P_delSibInf">
+    	DELETE FROM TB_LA_IS_MM_INDV_SIBINF 
+		WHERE 1=1
+		AND SRA_INDV_AMNNO          =     #{p_sra_indv_amnno}                                  
+		AND SIB_SRA_INDV_AMNNO      =     #{sra_indv_amnno}
+    </delete>
+    
+    <delete id="LALM0222P_delPostInf">    
+    	DELETE FROM TB_LA_IS_MM_INDV_POSTINF                                                          
+		WHERE 1=1
+		AND SRA_INDV_AMNNO          =     #{p_sra_indv_amnno}                                  
+		AND POST_SRA_INDV_AMNNO      =     #{sra_indv_amnno}
+    </delete>
+    
+    <delete id="LALM0222P_delCattleMvInf">    
+    	DELETE FROM TB_LA_IS_MM_INDV_MVH                                                          
+		WHERE 1=1
+		AND SRA_INDV_AMNNO          =     #{sra_indv_amnno}
+    </delete>
+    
+    <insert id="LALM0222P_insCattleMvInf">
+    	INSERT INTO TB_LA_IS_MM_INDV_MVH(
+			SRA_INDV_AMNNO
+			, MV_SEQ
+			, REGTYPE
+			, REGYMD
+			, FARMERNM
+			, FARMADDR
+			, FARMNO
+			, FSRG_DTM
+			, FSRGMN_ENO
+    	)VALUES(
+			 #{p_sra_indv_amnno}
+			, #{sra_indv_amnno}
+			, #{matime}
+			, #{sra_indv_pasg_qcn}
+			, #{rg_dsc}
+			, #{kpn_no}
+			, #{indv_sex_c}
+			, #{birth}
+			, #{metrb_bbdy_wt}
+			, #{metrb_metqlt_grd}
+			, #{mif_btc_dt}
+			, SYSDATE
+			, #{ss_usrid}
+    	)	    
+    </insert>
+    
+    
+    
+    <delete id="LALM0222P_delChildbirthInf">    
+    	DELETE FROM TB_LA_IS_MM_INDV_CHILDBIRTH                                                          
+		WHERE 1=1
+		AND SRA_INDV_AMNNO          =     #{p_sra_indv_amnno}
+    </delete>
+    
+    <insert id="LALM0222P_insChildbirthInf">
+    	INSERT INTO TB_LA_IS_MM_INDV_CHILDBIRTH(
+			SRA_INDV_AMNNO
+			, PTUR_SQNO
+			, MATIME
+			, CRSBD_DT
+			, CRSBD_QCN
+			, FHS_ID_NO
+			, SRA_FARMNM
+			, FERT_METHC
+			, PTUR_DSC
+			, PTUR_HDCN
+			, PTUR_CNF_DT
+			, CALF_SRA_INDV_EART_NO
+			, INDV_SEX_C
+			, LFTM_WGH
+			, PTUR_DT
+			, PTUR_STSC
+			, RG_BRC
+			, MBR_BRC
+			, PRNY_PRD_DDS
+			, PTUR_INTV_DDS
+			, SRA_KPN_NO
+			, FSRG_DTM             
+			, FSRGMN_ENO           
+    	)VALUES(
+			trim(#{p_sra_indv_amnno})
+			, trim(#{ptur_sqno})
+			, trim(#{matime})
+			, trim(#{crsbd_dt})
+			, trim(#{crsbd_qcn})
+			, trim(#{fhs_id_no})
+			, trim(#{sra_farmnm})
+			, trim(#{fert_methc})
+			, trim(#{ptur_dsc})
+			, trim(#{ptur_hdcn})
+			, trim(#{ptur_cnf_dt})
+			, trim(#{calf_sra_indv_eart_no})
+			, trim(#{indv_sex_c})
+			, trim(#{lftm_wgh})
+			, trim(#{ptur_dt})
+			, trim(#{ptur_stsc})
+			, trim(#{rg_brc})
+			, trim(#{mbr_brc})
+			, trim(#{prny_prd_dds})
+			, trim(#{ptur_intv_dds})
+			, trim(#{sra_kpn_no})
+			, SYSDATE
+			, #{ss_usrid}
+    	)	    
+    </insert>
+    
+    
+    
+    <delete id="LALM0222P_delMatingInf">    
+    	DELETE FROM TB_LA_IS_MM_INDV_MATING                                                          
+		WHERE 1=1
+		AND SRA_INDV_AMNNO          =     #{p_sra_indv_amnno}
+    </delete>
+    
+    <insert id="LALM0222P_insMatingInf">
+    	INSERT INTO TB_LA_IS_MM_INDV_MATING(
+			SRA_INDV_AMNNO
+			, CRSBD_DT
+			, CRSBD_MATIME
+			, CRSBD_QCN
+			, PTUR_PLA_DT
+			, PTUR_DT
+			, FERT_METHC
+			, SRA_KPN_NO
+			, FHS_ID_NO
+			, SRA_FARMNM
+			, FERT_AMRNM
+			, PRNY_PRD_DDS
+			, FSRG_DTM
+			, FSRGMN_ENO         
+    	)VALUES(
+			trim(#{p_sra_indv_amnno})
+			, trim(#{crsbd_dt})
+			, trim(#{crsbd_matime})
+			, trim(#{crsbd_qcn})
+			, trim(#{ptur_pla_dt})
+			, trim(#{ptur_dt})
+			, trim(#{fert_methc})
+			, trim(#{sra_kpn_no})
+			, trim(#{fhs_id_no})
+			, trim(#{sra_farmnm})
+			, trim(#{fert_amrnm})
+			, trim(#{prny_prd_dds})
+			, SYSDATE
+			, #{ss_usrid}
+    	)	    
+    </insert>
 </mapper>
 
 

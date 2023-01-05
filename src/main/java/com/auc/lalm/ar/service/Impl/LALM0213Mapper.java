@@ -34,4 +34,8 @@ public interface LALM0213Mapper {
 	
 	int LALM0213_delPgm(Map<String, Object> map) throws Exception;
 
+	int LALM0213_insAllPgm(Map<String, Object> map) throws Exception;
+
+	int LALM0213_delAllPgm(Map<String, Object> map) throws Exception;
+
 }

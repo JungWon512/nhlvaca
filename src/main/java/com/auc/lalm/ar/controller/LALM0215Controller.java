@@ -302,7 +302,13 @@ public class LALM0215Controller {
 		
 	}
 	
-	
+	/* ---------------------------------------------------------- 출장우 이미지 업로드 [s] ---------------------------------------------------------- */
+	/**
+	 * 경매준비관리 > 출장우 내역등록 > 이미지 탭
+	 * @param rMap
+	 * @return
+	 * @throws SQLException 
+	 */
 	@ResponseBody
 	@RequestMapping(value="/LALM0215_selImgList", method=RequestMethod.POST)
 	public Map<String, Object> LALM0215_selImgList(ResolverMap rMap) throws Exception{				

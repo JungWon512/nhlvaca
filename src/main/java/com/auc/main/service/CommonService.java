@@ -17,4 +17,17 @@ public interface CommonService {
 	
 	// 개체정보 저장 or 수정
 	Map<String, Object> common_updIndvInfo(Map<String, Object> map) throws Exception;
+	
+	
+	/********************************************************************* 통합회원 관련 [s] *********************************************************************/
+
+	/**
+	 * 통합회원 신규 등록
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	Map<String, Object> Common_insMbintgInfo(Map<String, Object> map) throws Exception;
+	
+	/********************************************************************* 통합회원 관련 [e] *********************************************************************/
 }

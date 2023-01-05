@@ -304,6 +304,15 @@
              });
          });
          
+         $('#pb_ExcelTempDownload').on('click',function(e){					
+			    var pom = document.createElement('a');
+			    pom.setAttribute('href', '/files/20221219_SOGCOW_EXCEL.xlsx');
+			    pom.setAttribute('type', 'application/vnd.ms-excel');
+			    pom.setAttribute('download', "출장우_엑셀업로드.xls");
+			 
+		        pom.click();
+         });
+         
          /******************************
           * 수수료재설정
           ******************************/ 
@@ -500,7 +509,7 @@
         var searchResultColNames = ["H사업장코드","H경매일자","H원표번호"
         	                       ,"경매번호","경매대상","출하자코드","출하자","출하자<br>생년월일","조합원여부","관내외<br>구분","생산자","접수일자","진행상태"
                                    ,"낙찰자명","참가번호","귀표번호","성별","자가운송여부","생년월일","월령","계대","등록번호","등록구분"
-                                   ,"제각여부","KPN번호","어미귀표번호","어미구분","산차","중량","수송자","수의사","응찰하한가","낙찰단가"
+                                   ,"제각여부","KPN번호","어미귀표번호","어미구분","산차","중량","수송자","수의사","예정가","낙찰단가"
                                    ,"낙찰가","브루셀라<br>검사일자","브루셀라검사<br>증명서제출","예방접종일자","괴사감정여부","괴사여부","임신감정여부","임신여부","임신구분","인공수정일자"
                                    ,"수정KPN","임신개월","인공수정<br>증명서제출여부","우결핵검사일","전송","주소","휴대폰번호","비고","친자검사결과","친자검사여부"
                                    ,"사료미사용여부","추가운송비","사료대금","당일접수비","브랜드명","수의사구분","고능력여부","난소적출여부","등록일시","등록자"
@@ -827,11 +836,11 @@
         var gridDatatemp = $('#grd_MhSogCow').getRowData();
         var tot_sra_indv_amnno   = 0; //총두수
         var tot_cow_sog_wt = 0;       //중량등록두수
-        var tot_lows_sbid_lmt_am = 0; //하한가등록수
+        var tot_lows_sbid_lmt_am = 0; //예정가등록수
         var am_sra_indv_amnno    = 0; //암, 미경산, 프리마틴 총두수
         var su_sra_indv_amnno    = 0; //수 총두수
-        var am_lows_sbid_lmt_am  = 0; //하한가등록수 암
-        var su_lows_sbid_lmt_am  = 0; //하한가등록수 수
+        var am_lows_sbid_lmt_am  = 0; //예정가등록수 암
+        var su_lows_sbid_lmt_am  = 0; //예정가등록수 수
         $.each(gridDatatemp,function(i){
             tot_sra_indv_amnno++;
         	if(gridDatatemp[i].COW_SOG_WT != 0){
@@ -868,7 +877,7 @@
         
         var arr2 = [
             [//입력 컬럼 , 입력값, COLSPAN, 타입{String/Integer/Number}
-              ["BIRTH","하한가등록수",2,"String"]
+              ["BIRTH","예정가등록수",2,"String"]
              ,["SRA_INDV_PASG_QCN",tot_lows_sbid_lmt_am,1,"Integer"]
              ,["SRA_INDV_BRDSRA_RG_NO","암",1,"String"]
              ,["RG_DSC",am_lows_sbid_lmt_am,1,"Integer"]
@@ -1106,6 +1115,7 @@
                 <div class="fl_R"><!--  //버튼 모두 우측정렬 -->   
                      
                     <button class="tb_btn" id="pb_ExcelConversion">엑셀변환</button>
+                    <button class="tb_btn" id="pb_ExcelTempDownload">엑셀 템플릿</button>
                     <button class="tb_btn" id="pb_ExcelUpload">엑셀업로드</button>
                 </div> 
             </div>            

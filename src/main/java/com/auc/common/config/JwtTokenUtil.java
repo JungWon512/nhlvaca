@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.auc.common.vo.JwtUser;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -60,8 +61,12 @@ public class JwtTokenUtil implements Serializable{
 
     //check if the token has expired
     public Boolean isTokenExpired(String token) {
-        final Date expiration = getExpirationDateFromToken(token);
-        return expiration.before(new Date());
+    	try {
+            final Date expiration = getExpirationDateFromToken(token);
+            return expiration.before(new Date());    		
+    	}catch (ExpiredJwtException e) {
+			return true;
+		}
     }
 
     //generate token for user
@@ -90,8 +95,22 @@ public class JwtTokenUtil implements Serializable{
     	
     	return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
     			.setExpiration(createExpiredDate())
-//    			.setExpiration(new Date(System.currentTimeMillis() + JWT_TOJEN_VALIDITY * 1000))
-            //.setExpiration(new Date(System.currentTimeMillis() + 5 * 1000))
+            .signWith(SignatureAlgorithm.HS512, secret).compact();
+    }
+    private String doGenerateTokenRefresh(Map<String, Object> claims, JwtUser userDetails) {
+    	
+    	claims.put("userId", userDetails.getUsername());
+    	claims.put("password", userDetails.getPassword());
+    	claims.put("eno", userDetails.getUserEno());
+    	claims.put("userCusName", userDetails.getUserCusName());
+    	claims.put("na_bzplc", userDetails.getNa_bzplc());
+    	claims.put("security", userDetails.getSecurity());
+    	claims.put("apl_ed_dtm", userDetails.getApl_ed_dtm());
+    	claims.put("na_bzplnm", userDetails.getNa_bzplnm());
+    	claims.put("grp_c", userDetails.getGrp_c());
+
+    	return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
+    			.setExpiration(createExpiredDateRefresh())
             .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
@@ -120,18 +139,36 @@ public class JwtTokenUtil implements Serializable{
     	}
     }
     
-    
+    /***
+     * 2022.09.21 세션시간 이슈로 인하여 만료시간 토큰생성시점 + 8시간으로 수정
+     * @return
+     */
     private Date createExpiredDate() {
 		Date date = new Date();
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(calendar.get(Calendar.YEAR)
-					, calendar.get(Calendar.MONTH)
-					, calendar.get(Calendar.DATE)
-					, 23
-					, 59
-					, 59);
-		date = calendar.getTime();
+		date.setMinutes(date.getMinutes()+10);
+		return date;
+	}
 
+	public String generateTokenRefresh(JwtUser userDetails) {
+		// TODO Auto-generated method stub
+        Map<String, Object> claims = new HashMap<>();
+        //return doGenerateToken(claims, userDetails.getUsername());
+        return doGenerateTokenRefresh(claims, userDetails);
+	}
+    
+    
+    private Date createExpiredDateRefresh() {
+		Date date = new Date();
+		date.setHours(date.getHours()+2);
+		/*		Calendar calendar = Calendar.getInstance();
+				calendar.set(calendar.get(Calendar.YEAR)
+							, calendar.get(Calendar.MONTH)
+							, calendar.get(Calendar.DATE)
+							, 23
+							, 59
+							, 59);
+				date = calendar.getTime();
+		*/
 		return date;
 	}
 

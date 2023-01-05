@@ -5,6 +5,7 @@
 
 <mapper namespace="com.auc.lalm.ar.service.Impl.LALM0225Mapper">
 	
+	<!-- 출장우 접수내역 조회 -->
 	<select id="LALM0225_selList" parameterType="hashMap" resultType="hashMap">
 		SELECT A.NA_BZPLC														/* 사업장 코드 */
 			 , A.AUC_OBJ_DSC													/* 경매대상구분코드*/
@@ -31,13 +32,15 @@
 			 , A.PTUR_PLA_DT													/* 분만예정일 */
 			 , A.PRNY_JUG_YN													/* 임신감정여부 */
 			 , A.NCSS_JUG_YN													/* 괴사감정여부 */
-			 , A.DNA_YN_CHE														/* 친자감정여부 */
+			 , A.DNA_YN_CHK														/* 친자감정여부 */
 			 , A.DNA_JUG_RESULT													/* 친자감정결과 */
 			 , A.DNA_SAMPLED_YN													/* 모근채취여부 */
 			 , A.DEBT_CANCEL_YN													/* */
 			 , A.DEBD_CANCEL_YN													/* 제각여부 */
 			 , A.FSRG_DTM														/* 최초등록일자 */
 			 , A.FSRGMN_ENO														/* 최초등록자 개인번호 */
+			 , A.CCOW_SRA_INDV_AMNNO											/* 송아지 귀표번호 */
+			 , A.LOC_GB															/* 지역구분 */
 			 , NVL((SELECT F.USRNM FROM TB_LA_IS_MM_USR F WHERE F.NA_BZPLC = A.NA_BZPLC AND F.USRID = A.FSRGMN_ENO), 'SYSTEM') AS FSRGMN_NM	/* 최초등록자 */
 			 , A.LSCHG_DTM														/* 최종수정일자 */
 			 , A.LS_CMENO														/* 최종수정자 개인번호 */
@@ -97,7 +100,9 @@
 					WHEN LENGTH(REPLACE(RTRIM(C.OHSE_TELNO),'-','')) IN (11,12) THEN SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),1,3) || '-****-' || SUBSTR(REPLACE(RTRIM(C.OHSE_TELNO),'-',''),8,4)                                             
 				END AS OHSE_TELNO			/* 농가 전화번호 */
 			 , C.DONGUP						/* 주소 */
-			 , C.DONGBW						/* 동이하주소 */
+			 , CASE WHEN #{ss_security} = '1' THEN C.DONGBW
+					ELSE '*****'
+				END AS DONGBW				/* 동이하주소 */
 			 , C.SRA_FED_SPY_YN				/* 사료 사용여부 */
 			 , CASE WHEN #{ss_security} = '1' THEN D.VHC_DRV_CAFFNM
 					WHEN LENGTH(D.VHC_DRV_CAFFNM) = 2 THEN SUBSTR(D.VHC_DRV_CAFFNM,1,1) || '*' 
@@ -126,5 +131,131 @@
 		   AND A.RECV_CAN_YN = #{recv_can_yn}
 		</if>
 	</select>
+	
+	<select id="LALM0225_selAucQcn" parameterType="hashMap" resultType="hashMap">
+		SELECT *
+		  FROM TB_LA_IS_MH_AUC_QCN
+		 WHERE NA_BZPLC = #{ss_na_bzplc}
+		   AND AUC_DT = #{auc_dt_st}
+		   AND AUC_OBJ_DSC = NVL(#{auc_obj_dsc}, AUC_OBJ_DSC)
+	</select>
+	
+	<!-- 출장우 내역 삭제 -->
+	<delete id="LALM0225_delSogCow" parameterType="hashMap">
+		DELETE TB_LA_IS_MH_SOG_COW
+		 WHERE NA_BZPLC = #{ss_na_bzplc}
+		   AND AUC_DT = #{auc_dt_st}
+		   AND AUC_OBJ_DSC = NVL(#{auc_obj_dsc}, AUC_OBJ_DSC)
+	</delete>
+	
+	<!-- 출장우 등록 -->
+	<insert id="LALM0225_insSogCow" parameterType="hashMap">
+		INSERT INTO TB_LA_IS_MH_SOG_COW (
+			NA_BZPLC
+			, AUC_OBJ_DSC
+			, AUC_DT
+			, OSLP_NO
+			, LED_SQNO
+			, FHS_ID_NO
+			, FARM_AMNNO
+			, SOG_NA_TRPL_C
+			, VHC_SHRT_C
+			, RC_DT
+			, SRA_INDV_AMNNO
+			, SRA_SRS_DSC
+			, SEL_STS_DSC
+			, BRCL_ISP_DT
+			, LWPR_CHG_NT
+			, VACN_DT
+			, PPGCOW_FEE_DSC
+			, PRNY_JUG_YN
+			, NCSS_JUG_YN
+			, TRPCS_PY_YN
+			, SRA_TRPCS
+			, SRA_FED_SPY_AM
+			, AFISM_MOD_DT
+			, PRNY_MTCN
+			, RMHN_YN
+			, SRA_PDMNM
+			, SRA_PD_RGNNM
+			, RMK_CNTN
+			, AUC_PRG_SQ
+			, TMS_YN
+			, DEL_YN
+			, AUC_YN
+			, MOD_KPN_NO
+			, DDL_QCN
+			, FEE_CHK_YN
+			, SELFEE_CHK_YN
+			, FEE_CHK_YN_FEE
+			, SELFEE_CHK_YN_FEE
+			, BLOOD_AM
+			, DNA_YN
+			, DNA_YN_CHK
+			, FED_SPY_YN
+			, AMNNO
+			, MODL_NO
+			, DNA_SAMPLED_YN
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+		)
+		SELECT A.NA_BZPLC
+			 , A.AUC_OBJ_DSC
+			 , A.AUC_DT
+			 , ROW_NUMBER() OVER(ORDER BY A.AUC_RECV_DT ASC, A.AUC_RECV_NO ASC) AS OSLP_NO
+			 , 1 AS LED_SQNO
+			 , A.FHS_ID_NO
+			 , A.FARM_AMNNO
+			 , B.NA_TRPL_C
+			 , A.VHC_SHRT_C
+			 , A.AUC_RECV_DT
+			 , A.SRA_INDV_AMNNO
+			 , '01' AS SRA_SRS_DSC
+			 , '11' AS SEL_STS_DSC
+			 , A.BRCL_ISP_DT
+			 , 0 AS LWPR_CHG_NT
+			 , A.VACN_DT
+			 , A.PPGCOW_FEE_DSC
+			 , A.PRNY_JUG_YN
+			 , A.NCSS_JUG_YN
+			 , A.TRPCS_PY_YN
+			 , A.SRA_TRPCS
+			 , A.SRA_FED_SPY_AM
+			 , A.AFISM_MOD_DT
+			 , A.PRNY_MTCN
+			 , A.DEBD_CANCEL_YN
+			 , B.FTSNM
+			 , B.DONGUP
+			 , A.RMK_CNTN
+			 , ROW_NUMBER() OVER(ORDER BY A.AUC_RECV_DT ASC, A.AUC_RECV_NO ASC) AS AUC_PRG_SQ
+			 , '0' AS TMS_YN
+			 , '0' AS DEL_YN
+			 , '0' AS DEL_YN
+			 , A.MOD_KPN_NO
+			 , '0' AS DDL_QCN
+			 , '0' AS FEE_CHK_YN
+			 , '0' AS SELFEE_CHK_YN
+			 , 0 AS FEE_CHK_YN_FEE
+			 , 0 AS SELFEE_CHK_YN_FEE
+			 , 0 AS BLOOD_AM
+			 , A.DNA_JUG_RESULT
+			 , A.DNA_YN_CHK
+			 , B.SRA_FED_SPY_YN
+			 , ROW_NUMBER() OVER(ORDER BY A.AUC_RECV_DT ASC, A.AUC_RECV_NO ASC) AS AUC_PRG_SQ
+			 , ROW_NUMBER() OVER(ORDER BY A.AUC_RECV_DT ASC, A.AUC_RECV_NO ASC) AS AUC_PRG_SQ
+			 , A.DNA_SAMPLED_YN
+			 , SYSDATE
+			 , #{ss_userid}
+			 , SYSDATE
+			 , #{ss_userid}
+		  FROM TB_LA_IS_MH_COW_RECV A
+		 INNER JOIN TB_LA_IS_MM_FHS B
+			ON ( A.NA_BZPLC = B.NA_BZPLC AND A.FHS_ID_NO = B.FHS_ID_NO AND A.FARM_AMNNO = B.FARM_AMNNO)
+		 WHERE A.NA_BZPLC = #{ss_na_bzplc}
+		   AND A.AUC_DT = #{auc_dt_st}
+		   AND A.RECV_CAN_YN = '0'
+	</insert>
 
 </mapper>

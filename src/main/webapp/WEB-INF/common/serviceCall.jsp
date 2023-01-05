@@ -135,7 +135,7 @@
                 }
             },
             complete:function(data){
-//          	  localStorage.setItem("nhlvaca_token", getCookie('token'));
+         	  localStorage.setItem("nhlvaca_token", getCookie('token'));
               setTimeout(hideLodingImg,0);
             }
         });         
@@ -152,6 +152,7 @@
     function sendAjaxFrm(frmStr, sendUrl, methodType){
         var encrypt = setEncrypt(setFrmToData(frmStr));
         var result;
+        
         $.ajax({
             url: sendUrl,
             type: methodType,
@@ -175,7 +176,7 @@
             	}            
             },
             complete:function(data){
-//          	   localStorage.setItem("nhlvaca_token", getCookie('token'));
+         	   localStorage.setItem("nhlvaca_token", getCookie('token'));
             	setTimeout(hideLodingImg,0);
             }
         });        
@@ -304,7 +305,8 @@
     	var cookies = document.cookie.split(';');
     	for(var i = 0;i<cookies.length;i++){
     		if(cookies[i].split('=')[0].trim() == name){
-    			return cookies[i].split('=')[1].trim();
+    			var result = cookies[i].split('=')[1]?.trim();
+    			return result?result:'';
     		}
     	}
     };

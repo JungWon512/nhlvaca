@@ -199,7 +199,7 @@
              , STRG_DT   = TO_CHAR(SYSDATE,'YYYYMMDD')
              , LSCHG_DTM = SYSDATE
              , LS_CMENO  = #{usrid}
-         WHERE NA_BZPLC  = (SELECT na_bzplc FROM TB_LA_IS_MM_USR WHERE usrid = #{usrid})  
+         WHERE NA_BZPLC  IN (SELECT na_bzplc FROM TB_LA_IS_MM_USR WHERE usrid = #{usrid})  
            AND usrid     = #{usrid}
            AND attc_no   = #{usr_pw}
     ]]>
@@ -220,6 +220,14 @@
 		  GROUP BY NA_BZPLC, NA_BZPLNM
     </select>
     
+    <select id="selectNaUserList" resultType="HashMap">
+         SELECT A.NA_BZPLC
+         		,B.CLNTNM NA_BZPLCNM
+		   FROM TB_LA_IS_MM_USR A
+		   INNER JOIN TB_LA_IS_BM_BZLOC B ON A.NA_BZPLC = B.NA_BZPLC 
+		   WHERE A.USRID = #{user_id}
+    </select>
+    
     <select id="signIn" parameterType="hashMap" resultType="hashMap">
     	SELECT A.NA_BZPLC
 		     , B.NA_BZPLNM
@@ -236,18 +244,26 @@
              , NVL(C.GRP_C, '002') AS GRP_C /*권한코드 권한코드 없을시 일반사용자(002)*/
              , A.TOKEN
              , A.STRG_YN		/* 사용권한(1:등록, 0:조회) */
-		  FROM TB_LA_IS_MM_USR A,
-		       TB_LA_IS_MM_WMC B,
-               TB_LA_IS_MM_GRP_USR C
-		 WHERE A.NA_BZPLC = B.NA_BZPLC(+)		 
-           AND A.USRID    = C.USRID(+)
-		   AND A.USRID    = #{user_id}
+		  FROM TB_LA_IS_MM_USR A 
+		       LEFT OUTER JOIN TB_LA_IS_MM_WMC B ON A.NA_BZPLC = B.NA_BZPLC
+               LEFT OUTER JOIN TB_LA_IS_MM_GRP_USR C  ON A.USRID = C.USRID AND TO_CHAR(SYSDATE,'YYYYMMDD') BETWEEN C.APL_ST_DT AND C.APL_ED_DT AND C.APL_STS_DSC = '1'
+		 WHERE 1=1
+           <choose>
+           	<when test="refresh_token != null and refresh_token != ''">
+           		AND A.TOKEN    = #{refresh_token}
+           	</when>
+           	<otherwise>
+           		AND A.USRID    = #{user_id}
+           	</otherwise>
+           </choose>
+		   AND A.NA_BZPLC    = #{na_bzplc}
     </select>
     
     <update id="updPwerr_nt">
        UPDATE TB_LA_IS_MM_USR
           SET pwerr_nt = #{PWERR_NT} + 1
-        WHERE na_bzplc = #{NA_BZPLC}
+        WHERE 1=1 
+<!--         na_bzplc = #{NA_BZPLC} -->
           AND usrid    = #{USRID}
     </update>
     
@@ -260,17 +276,21 @@
     
 	<update id="updPwerr_ntInit">
        UPDATE TB_LA_IS_MM_USR
-          SET pwerr_nt = 0          
-			, TOKEN = #{refresh_token} 
-        WHERE na_bzplc = #{NA_BZPLC}
+          SET pwerr_nt = 0
+			, TOKEN = #{refresh_token}           
+        WHERE 1=1
+		<!--         na_bzplc = #{NA_BZPLC} -->
           AND usrid    = #{USRID}
 	</update>
     
     <select id="selChkPw" resultType="_int">
-        SELECT count(*)
+		SELECT COUNT(*)
           FROM TB_LA_IS_MM_USR
          WHERE PW    = Damo.ENC_B64('KEY1', #{user_pw})
            AND USRID = #{usrid}
+		<if test="na_bzplc != null and na_bzplc != ''">
+			AND NA_BZPLC    = #{na_bzplc}
+		</if>
     </select>
     
     <select id="selChkPwTibero" resultType="hashMap">
@@ -704,6 +724,7 @@
     </select>    
    
     <select id="MainNotice_selList" resultType="hashMap">
+    	/*MainMapper.MainNotice_selList_20221109_수정*/
         SELECT ROWNUM, A.*
           FROM 
         (
@@ -727,7 +748,7 @@
            AND A.BBRD_DEL_YN  != '1'
          ORDER BY FIX_YN desc, FSRG_DTM desc
        ) A
-         WHERE ROWNUM <![CDATA[ <= ]]> 10  
+         WHERE ROWNUM <![CDATA[ <= ]]> 4  
     </select>      
     
     <select id="MainSogYear_selList" resultType="hashMap">
@@ -739,5 +760,46 @@
 		ORDER BY CB_YEAR DESC
 	]]>
     </select>
+    
+    
+    <update id="updRefreshToken">
+    <![CDATA[
+        UPDATE TB_LA_IS_MM_USR SET
+             TOKEN   = #{refresh_new_token}
+             , LSCHG_DTM = SYSDATE
+             , LS_CMENO  = #{usrid}
+         WHERE TOKEN    = #{refresh_token}
+    ]]>
+    </update>
+    
+    <update id="delUser">
+       DELETE FROM TB_LA_IS_MM_USR
+        WHERE na_bzplc = #{NA_BZPLC}
+          AND usrid    = #{USRID}
+    </update>
 
+	<select id="MainSecApply_selList" resultType="hashMap">
+		/*MainMapper.MainSecApply_selList_20221110_추가*/
+		SELECT ROWNUM
+			, A.*
+        FROM 
+        (
+			SELECT SEC.TRMN_AMNNO
+				, SUBSTR(MWN.SRA_MWMNNM,1,1) || LPAD('*',LENGTH(MWN.SRA_MWMNNM)-2, '*') || SUBSTR(MWN.SRA_MWMNNM, LENGTH(MWN.SRA_MWMNNM), 1) AS SRA_MWMNNM
+				, TO_CHAR(SEC.SEC_RECE_DTM, 'YYYY-MM-DD') AS SEC_RECE_DTM
+				, CASE WHEN LENGTH(SEC.SEC_REASON) > 20 THEN SUBSTR(SEC.SEC_REASON,1,19)||'...'
+               		ELSE SEC.SEC_REASON 
+            	  END AS SEC_REASON 
+				, SEC.MB_INTG_NO	
+			FROM TB_LA_IS_MM_MBSECAPP SEC	
+				INNER JOIN TB_LA_IS_MM_MWMN MWN
+				ON(SEC.NA_BZPLC = MWN.NA_BZPLC
+					AND SEC.TRMN_AMNNO = MWN.TRMN_AMNNO)
+			WHERE SEC.NA_BZPLC = #{ss_na_bzplc}
+				AND SEC.MGR_APPR_YN = '0'
+				AND SEC.SEC_WITHDRAW_YN = '0'
+			ORDER BY SEC.SEC_RECE_DTM ASC
+		) A
+		WHERE ROWNUM <![CDATA[ <= ]]> 4  
+	</select>
 </mapper>

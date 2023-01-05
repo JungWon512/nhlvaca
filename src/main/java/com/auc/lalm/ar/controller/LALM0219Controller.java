@@ -1,5 +1,6 @@
 package com.auc.lalm.ar.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,22 @@ public class LALM0219Controller {
 		
 		return reMap;	
 		
-	}		
+	}	
+	
+
+
+	@ResponseBody
+	@RequestMapping(value="/LALM0219P1_updExcelUpload", method=RequestMethod.POST)
+	public Map<String, Object> LALM0219P1_updExcelUpload(ResolverMap rMap) throws Exception{				
+				
+		Map<String, Object> reMap = new HashMap<String, Object>();
+		Map<String, Object> map = convertConfig.conMapWithoutXxs(rMap);
+		Map<String, Object> inMap = lalm0219Service.LALM0219P1_updExcelUpload(map);
+		reMap = commonFunc.createResultCUD(inMap);
+		
+		return reMap;	
+		
+	}	
 	
 
 }

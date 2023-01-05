@@ -7,89 +7,91 @@
 
     <select id="LALM0111_selList" resultType="hashMap">
         SELECT
-              na_bzplc                                     -- 경제통합사업장코드
-            , fhs_id_no || '-' || farm_amnno as fhs_id_no  -- 농가식별번호
-            , fhs_id_no as sra_fhs_id_no                   -- 농가식별번호
-            , farm_amnno                                   -- 농장관리번호
-            , farm_id_no                                   -- 농장식별번호
-            , na_trpl_c                                    -- 경제통합거래처코드
-            , CASE WHEN #{ss_security} = '1' THEN FTSNM
-                   WHEN LENGTH(FTSNM) = 2 THEN SUBSTR(FTSNM,1,1) || '*' 
-                   WHEN LENGTH(FTSNM) = 3 THEN SUBSTR(FTSNM,1,1) || '*'  || SUBSTR(FTSNM,3,1) 
-                   WHEN LENGTH(FTSNM) = 4 THEN SUBSTR(FTSNM,1,1) || '**' || SUBSTR(FTSNM,4,1)  
-                   WHEN LENGTH(FTSNM) = 5 THEN SUBSTR(FTSNM,1,2) || '**' || SUBSTR(FTSNM,5,1)
-                   WHEN LENGTH(FTSNM) > 5 THEN SUBSTR(FTSNM,1,2) || '**' || SUBSTR(FTSNM,5,1)  END AS FTSNM  /* 농가명                                */
-            , zip                                          -- 우편번호
-            , dongup                                       -- 동이상주소
-            , CASE WHEN #{ss_security} = '1' THEN DONGBW
-                   ELSE  RPAD(' ', length(dongbw), '*') END as dongbw                                       -- 동이하주소
-            , CASE WHEN #{ss_security} = '1' THEN trim(OHSE_TELNO)
-                   WHEN LENGTH(REPLACE(trim(OHSE_TELNO),'-','')) = 9  THEN SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),1,2) || '-' || '***' || '-' || SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),6,4)  
-                   WHEN LENGTH(REPLACE(trim(OHSE_TELNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),1,2) = '02' 
-                                                                             THEN SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),7,4)  
-                                                                             ELSE SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),7,4)  END) 
-                   WHEN LENGTH(REPLACE(trim(OHSE_TELNO),'-','')) = 11 or LENGTH(REPLACE(trim(OHSE_TELNO),'-','')) = 12  THEN SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),8,4)
-                   WHEN LENGTH(REPLACE(trim(OHSE_TELNO),'-','')) <![CDATA[<]]> 9 THEN '***-' || SUBSTR(REPLACE(trim(OHSE_TELNO),'-',''),4,4)                                                                               
+              a.na_bzplc                                     -- 경제통합사업장코드
+            , a.fhs_id_no || '-' || a.farm_amnno as fhs_id_no  -- 농가식별번호
+            , a.fhs_id_no as sra_fhs_id_no                   -- 농가식별번호
+            , a.farm_amnno                                   -- 농장관리번호
+            , a.farm_id_no                                   -- 농장식별번호
+            , a.na_trpl_c                                    -- 경제통합거래처코드
+            , CASE WHEN #{ss_security} = '1' THEN a.FTSNM
+                   WHEN LENGTH(a.FTSNM) = 2 THEN SUBSTR(a.FTSNM,1,1) || '*' 
+                   WHEN LENGTH(a.FTSNM) = 3 THEN SUBSTR(a.FTSNM,1,1) || '*'  || SUBSTR(a.FTSNM,3,1) 
+                   WHEN LENGTH(a.FTSNM) = 4 THEN SUBSTR(a.FTSNM,1,1) || '**' || SUBSTR(a.FTSNM,4,1)  
+                   WHEN LENGTH(a.FTSNM) = 5 THEN SUBSTR(a.FTSNM,1,2) || '**' || SUBSTR(a.FTSNM,5,1)
+                   WHEN LENGTH(a.FTSNM) > 5 THEN SUBSTR(a.FTSNM,1,2) || '**' || SUBSTR(a.FTSNM,5,1)  END AS FTSNM  /* 농가명                                */
+            , a.zip                                          -- 우편번호
+            , a.dongup                                       -- 동이상주소
+            , CASE WHEN #{ss_security} = '1' THEN a.DONGBW
+                   ELSE  RPAD(' ', length(a.dongbw), '*') END as dongbw                                       -- 동이하주소
+            , CASE WHEN #{ss_security} = '1' THEN trim(a.OHSE_TELNO)
+                   WHEN LENGTH(REPLACE(trim(a.OHSE_TELNO),'-','')) = 9  THEN SUBSTR(REPLACE(trim(a.OHSE_TELNO),'-',''),1,2) || '-' || '***' || '-' || SUBSTR(REPLACE(trim(a.OHSE_TELNO),'-',''),6,4)  
+                   WHEN LENGTH(REPLACE(trim(a.OHSE_TELNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(trim(a.OHSE_TELNO),'-',''),1,2) = '02' 
+                                                                             THEN SUBSTR(REPLACE(trim(a.OHSE_TELNO),'-',''),1,2) || '-' || '****' || '-' || SUBSTR(REPLACE(trim(a.OHSE_TELNO),'-',''),7,4)  
+                                                                             ELSE SUBSTR(REPLACE(trim(a.OHSE_TELNO),'-',''),1,3) || '-' || '***' || '-' || SUBSTR(REPLACE(trim(a.OHSE_TELNO),'-',''),7,4)  END) 
+                   WHEN LENGTH(REPLACE(trim(a.OHSE_TELNO),'-','')) = 11 or LENGTH(REPLACE(trim(a.OHSE_TELNO),'-','')) = 12  THEN SUBSTR(REPLACE(trim(a.OHSE_TELNO),'-',''),1,3) || '-' || '****' || '-' || SUBSTR(REPLACE(trim(a.OHSE_TELNO),'-',''),8,4)
+                   WHEN LENGTH(REPLACE(trim(a.OHSE_TELNO),'-','')) <![CDATA[<]]> 9 THEN '***-' || SUBSTR(REPLACE(trim(a.OHSE_TELNO),'-',''),4,4)                                                                               
                    END AS OHSE_TELNO  /* 농가 집전화번호      */
-            , CASE WHEN #{ss_security} = '1' THEN CUS_MPNO
-                   WHEN LENGTH(REPLACE(RTRIM(CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),1,2) || '-***-' || SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),6,4)  
-                   WHEN LENGTH(REPLACE(RTRIM(CUS_MPNO),'-','')) = 10 THEN 
-                  (CASE WHEN SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),1,2) = '02' 
-                        THEN SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),7,4)
-                   ELSE SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),7,4)  END) 
-                   WHEN LENGTH(REPLACE(RTRIM(CUS_MPNO),'-','')) IN (11,12) THEN SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),1,3) || '-****-' || SUBSTR(REPLACE(RTRIM(CUS_MPNO),'-',''),8,4)                                             
+            , CASE WHEN #{ss_security} = '1' THEN a.CUS_MPNO
+                   WHEN LENGTH(REPLACE(RTRIM(a.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(a.CUS_MPNO),'-',''),1,2) || '-***-' || SUBSTR(REPLACE(RTRIM(a.CUS_MPNO),'-',''),6,4)  
+                   WHEN LENGTH(REPLACE(RTRIM(a.CUS_MPNO),'-','')) = 10 THEN 
+                  (CASE WHEN SUBSTR(REPLACE(RTRIM(a.CUS_MPNO),'-',''),1,2) = '02' 
+                        THEN SUBSTR(REPLACE(RTRIM(a.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(a.CUS_MPNO),'-',''),7,4)
+                   ELSE SUBSTR(REPLACE(RTRIM(a.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(a.CUS_MPNO),'-',''),7,4)  END) 
+                   WHEN LENGTH(REPLACE(RTRIM(a.CUS_MPNO),'-','')) IN (11,12) THEN SUBSTR(REPLACE(RTRIM(a.CUS_MPNO),'-',''),1,3) || '-****-' || SUBSTR(REPLACE(RTRIM(a.CUS_MPNO),'-',''),8,4)                                             
               END AS CUS_MPNO                                    /* 출하주 핸드폰번호                     */
-            , maco_yn                                      -- 조합원여부
-            , rmk_cntn                                     -- 비고내용
-            , jrdwo_dsc                                    -- 관내외구분
-            , del_yn                                       -- 삭제여부
-            , hdwk_rg_yn                                   -- 수작업여부
-            , anw_yn                                       -- 한우종합여부
-            , SRA_FED_SPY_YN                               -- 사료사용여부
-            , case when (sra_farm_acno = '' or sra_farm_acno is null) then
-                       case when LENGTH(new_sra_farm_acno) = 12 then SUBSTR(new_sra_farm_acno,1,8) ||'****'
-                            when LENGTH(new_sra_farm_acno) = 13 then SUBSTR(new_sra_farm_acno,1,9) ||'****'
-                            when LENGTH(new_sra_farm_acno) = 14 then SUBSTR(new_sra_farm_acno,1,10) ||'****'
-                            when LENGTH(new_sra_farm_acno) = 15 then SUBSTR(new_sra_farm_acno,1,11) ||'****'
-                            when LENGTH(new_sra_farm_acno) = 16 then SUBSTR(new_sra_farm_acno,1,12) ||'****'
-                            when LENGTH(new_sra_farm_acno) = 17 then SUBSTR(new_sra_farm_acno,1,13) ||'****'
-                            when LENGTH(new_sra_farm_acno) = 18 then SUBSTR(new_sra_farm_acno,1,14) ||'****'
-                       else new_sra_farm_acno end
+            , a.maco_yn                                      -- 조합원여부
+            , a.rmk_cntn                                     -- 비고내용
+            , a.jrdwo_dsc                                    -- 관내외구분
+            , a.del_yn                                       -- 삭제여부
+            , a.hdwk_rg_yn                                   -- 수작업여부
+            , a.anw_yn                                       -- 한우종합여부
+            , a.SRA_FED_SPY_YN                               -- 사료사용여부
+            , case when (a.sra_farm_acno = '' or a.sra_farm_acno is null) then
+                       case when LENGTH(a.new_sra_farm_acno) = 12 then SUBSTR(a.new_sra_farm_acno,1,8) ||'****'
+                            when LENGTH(a.new_sra_farm_acno) = 13 then SUBSTR(a.new_sra_farm_acno,1,9) ||'****'
+                            when LENGTH(a.new_sra_farm_acno) = 14 then SUBSTR(a.new_sra_farm_acno,1,10) ||'****'
+                            when LENGTH(a.new_sra_farm_acno) = 15 then SUBSTR(a.new_sra_farm_acno,1,11) ||'****'
+                            when LENGTH(a.new_sra_farm_acno) = 16 then SUBSTR(a.new_sra_farm_acno,1,12) ||'****'
+                            when LENGTH(a.new_sra_farm_acno) = 17 then SUBSTR(a.new_sra_farm_acno,1,13) ||'****'
+                            when LENGTH(a.new_sra_farm_acno) = 18 then SUBSTR(a.new_sra_farm_acno,1,14) ||'****'
+                       else a.new_sra_farm_acno end
                    else
-                       case when LENGTH(sra_farm_acno) = 12 then SUBSTR(sra_farm_acno,1,8) ||'****'
-                            when LENGTH(sra_farm_acno) = 13 then SUBSTR(sra_farm_acno,1,9) ||'****'
-                            when LENGTH(sra_farm_acno) = 14 then SUBSTR(sra_farm_acno,1,10) ||'****'
-                            when LENGTH(sra_farm_acno) = 15 then SUBSTR(sra_farm_acno,1,11) ||'****'
-                            when LENGTH(sra_farm_acno) = 16 then SUBSTR(sra_farm_acno,1,12) ||'****'
-                            when LENGTH(sra_farm_acno) = 17 then SUBSTR(sra_farm_acno,1,13) ||'****'
-                            when LENGTH(sra_farm_acno) = 18 then SUBSTR(sra_farm_acno,1,14) ||'****'
-                       else sra_farm_acno end
+                       case when LENGTH(a.sra_farm_acno) = 12 then SUBSTR(a.sra_farm_acno,1,8) ||'****'
+                            when LENGTH(a.sra_farm_acno) = 13 then SUBSTR(a.sra_farm_acno,1,9) ||'****'
+                            when LENGTH(a.sra_farm_acno) = 14 then SUBSTR(a.sra_farm_acno,1,10) ||'****'
+                            when LENGTH(a.sra_farm_acno) = 15 then SUBSTR(a.sra_farm_acno,1,11) ||'****'
+                            when LENGTH(a.sra_farm_acno) = 16 then SUBSTR(a.sra_farm_acno,1,12) ||'****'
+                            when LENGTH(a.sra_farm_acno) = 17 then SUBSTR(a.sra_farm_acno,1,13) ||'****'
+                            when LENGTH(a.sra_farm_acno) = 18 then SUBSTR(a.sra_farm_acno,1,14) ||'****'
+                       else a.sra_farm_acno end
                    end as sra_farm_acno
-            , case when (sra_farm_acno = '' or sra_farm_acno is null) then new_sra_farm_acno else sra_farm_acno end  as io_sra_farm_acno
-            , birth
-            , RTRIM(FTSNM)      as ORG_FTSNM
-            , RTRIM(OHSE_TELNO) as ORG_OHSE_TELNO
-            , RTRIM(CUS_MPNO)   as ORG_CUS_MPNO
-            , DONGBW            as ORG_DONGBW
-            , DEL_YN            as DEL_YN
-         FROM tb_la_is_mm_fhs
-        WHERE 1=1
-          AND ftsnm        like #{sh_ftsnm} || '%'
-          AND na_bzplc     = #{ss_na_bzplc}
-          AND (DEL_YN      = #{del_yn}
-           OR #{del_yn}     IS NULL)
+            , case when (a.sra_farm_acno = '' or a.sra_farm_acno is null) then a.new_sra_farm_acno else a.sra_farm_acno end  as io_sra_farm_acno
+            , a.birth
+            , RTRIM(a.FTSNM)      as ORG_FTSNM
+            , RTRIM(a.OHSE_TELNO) as ORG_OHSE_TELNO
+            , RTRIM(a.CUS_MPNO)   as ORG_CUS_MPNO
+            , a.DONGBW            as ORG_DONGBW
+            , a.DEL_YN            as DEL_YN
+            , a.MB_INTG_NO
+         FROM tb_la_is_mm_fhs a
+         left outer join tb_la_is_mm_mbintg b
+		   on ( a.mb_intg_no = b.mb_intg_no and b.mb_intg_gb = '02')
+        WHERE a.ftsnm like #{sh_ftsnm} || '%'
+          AND a.na_bzplc     = #{ss_na_bzplc}
+          AND (
+          		a.DEL_YN = #{del_yn}
+          		OR
+          		#{del_yn} IS NULL
+          	)
+          AND nvl(b.delacc_yn, '0') = '0'
+          AND nvl(b.dormacc_yn, '0') = '0'
           <if test='"1".equals(broker)'> 
-          	AND SUBSTR(fhs_id_no,1,1) IN ('T','N','S')
+          	AND SUBSTR(a.fhs_id_no,1,1) IN ('T','N','S')
           </if>
-        ORDER BY lschg_dtm DESC
-    </select>    
+        ORDER BY a.lschg_dtm DESC
+    </select>
     
     <insert id="LALM0111_insFarm">
-        <selectKey resultType="string" keyProperty="sra_fhs_id_no" order="BEFORE">        
-	    	SELECT 'S'|| LPAD(NVL(MAX(TO_NUMBER(SUBSTR(FHS_ID_NO,2,LENGTH(FHS_ID_NO)-1))),0)+1,6,0) sra_fhs_id_no
-			FROM TB_LA_IS_MM_FHS 
-			WHERE SUBSTR(FHS_ID_NO,1,1) IN ('S')
-    	</selectKey> 
         insert into tb_la_is_mm_fhs(
               na_bzplc
             , fhs_id_no
@@ -116,6 +118,7 @@
             , ls_cmeno
             , SRA_FED_SPY_YN
             , birth
+            , mb_intg_no
         )
         values (
               #{ss_na_bzplc}
@@ -143,6 +146,7 @@
             , #{ss_userid}
             , trim(#{sra_fed_spy_yn})
             , trim(#{birth})
+            , #{mb_intg_no}
         )
     </insert>
     
@@ -165,6 +169,7 @@
             , SRA_FED_SPY_YN    = #{sra_fed_spy_yn}
             , birth             = #{birth}
             , del_yn            = #{del_yn}
+            , mb_intg_no        = #{mb_intg_no}
         where na_bzplc          = #{ss_na_bzplc}
           and trim(fhs_id_no)   = trim(#{sra_fhs_id_no})
           and trim(farm_amnno)  = trim(#{farm_amnno})
@@ -207,9 +212,10 @@
 	        , TO_CHAR(a.fsrgmn_eno)                   as fsrgmn_eno
 	        , TO_CHAR(a.lschg_dtm,'YYYYMMDDHH24MISS') as lschg_dtm
 	        , TO_CHAR(a.ls_cmeno)                     as ls_cmeno
-	        , TO_CHAR(a.maco_yn)                      as maco_yn              
+	        , TO_CHAR(a.maco_yn)                      as maco_yn
 	        , TO_CHAR(b.brc)                          as brc
 	        , TO_CHAR(a.sra_farm_acno)                as sra_farm_acno
+	        , a.MB_INTG_NO
 	    from tb_la_is_mm_fhs   a
 	       , tb_la_is_mm_wmc   b
 	    where a.na_bzplc    = #{ss_na_bzplc}
@@ -218,7 +224,7 @@
 	      and trim(a.fhs_id_no)   = trim(#{fhs_id_no})
 	      and trim(a.farm_amnno)  = trim(#{farm_amnno})	      
           and trim(a.ftsnm) = trim(#{ftsnm})
-	      and substr(a.fhs_id_no,1,1) in ('T', 'N','S')
+	      and substr(a.fhs_id_no,1,1) in ('T', 'N', 'S')
     </select>
     
     <select id="LALM0111_selChkFhsCow" resultType="_int">
@@ -228,8 +234,7 @@
     </select>
     
     <delete id="LALM0111_delFhs">
-       UPDATE tb_la_is_mm_fhs SET
-       	DEL_YN = '1'
+       delete from tb_la_is_mm_fhs
 	    where na_bzplc   = #{ss_na_bzplc}                /* 경제통합사업장코드    */
 	      and trim(fhs_id_no)  = trim(#{sra_fhs_id_no})  /* 농가코드              */
 	      and trim(farm_amnno) = trim(#{farm_amnno})     /* 농장관리번호          */
@@ -266,12 +271,51 @@
             , RTRIM(CUS_MPNO)   as ORG_CUS_MPNO
             , DONGBW            as ORG_DONGBW
             , DEL_YN            as DEL_YN
+            , MB_INTG_NO
          FROM tb_la_is_mm_fhs
         WHERE fhs_id_no  = #{sra_fhs_id_no}
           AND farm_amnno = #{farm_amnno}
           AND na_bzplc   = #{ss_na_bzplc}
     </select>
-    
+
+	<!-- 수기 등록한 농가 중 동일한 이름, 생년월일, 휴대전화번호로 등록된 정보가 있는지 확인 -->
+	<select id="LALM0111_selFhsInfo" parameterType="hashMap" resultType="hashMap">
+		SELECT NA_BZPLC
+			 , FHS_ID_NO
+			 , FARM_AMNNO
+			 , FARM_ID_NO
+			 , NA_TRPL_C
+			 , FTSNM
+			 , ZIP
+			 , DONGUP
+			 , DONGBW
+			 , OHSE_TELNO
+			 , CUS_MPNO
+			 , MACO_YN
+			 , RMK_CNTN
+			 , JRDWO_DSC
+			 , DEL_YN
+			 , ANW_YN
+			 , HDWK_RG_YN
+			 , SRA_FARM_ACNO
+			 , NEW_SRA_FARM_ACNO
+			 , SRA_FED_SPY_YN
+			 , BIRTH
+			 , FSRG_DTM
+			 , FSRGMN_ENO
+			 , LSCHG_DTM
+			 , LS_CMENO
+			 , MB_INTG_NO
+			 , SMS_NO
+			 , SMS_YMD
+		  FROM TB_LA_IS_MM_FHS
+		 WHERE NA_BZPLC = #{ss_na_bzplc}
+		   AND REPLACE(TRIM(FTSNM),' ','') = REPLACE(TRIM(#{ftsnm}),' ','')
+		   AND REPLACE(TRIM(BIRTH),' ','') = REPLACE(TRIM(#{birth}),' ','')
+		   AND REGEXP_REPLACE(CUS_MPNO, '[^0-9]') = REGEXP_REPLACE(#{cus_mpno}, '[^0-9]')
+		   AND DEL_YN = '0'
+		   AND ANW_YN = '9'
+	</select>
 </mapper>
 
 

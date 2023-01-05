@@ -167,7 +167,7 @@ public class McaUtil {
 		        		}
 		        		
 		        	}
-		        }	        	
+		        }	     
 	        }	        
 		} catch (JSONException e) {
 			//log.debug("",e);
@@ -235,7 +235,7 @@ public class McaUtil {
 	        		HashMap<String,Object> nodeMap = new HashMap<String, Object>();
 	        		while(it.hasNext()) {
 	        			String key = (String) it.next();
-		        		nodeMap.put(key, jItem.get(key));			        			
+		        		nodeMap.put(key, jItem.get(key));
 	        		}
 	        		nodeList.add(nodeMap);
 		        }	        	
@@ -253,7 +253,7 @@ public class McaUtil {
         }
 		return nodeList;
 	}
-	
+    
 	public List<Map<String, Object>> LALM0215_selImgList(Map<String, Object> map) throws IOException {
 		List<Map<String, Object>> reList = new ArrayList<>();
 

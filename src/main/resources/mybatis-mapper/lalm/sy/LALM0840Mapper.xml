@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.sy.service.Impl.LALM0840Mapper">
+
+	<!-- 알림톡 템플릿 리스트 조회 -->
+	<select id="LALM0840_selList" parameterType="hashMap" resultType="hashMap">
+		SELECT NA_BZPLC														/* 경제통합사업장코드 */
+				, CODE																/* 템플릿 코드 */
+				, REG_NO															/* 등록 순번 */
+				, TALK_TITLE														/* 알림톡 제목 */
+				, TALK_CONTENT													/* 알림톡 내용 */
+				, FSRG_DTM														/* 최초등록일자 */
+				, FSRGMN_ENO														/* 최초등록자 개인번호 */
+				, LSCHG_DTM														/* 최종수정일자 */
+				, LS_CMENO														/* 최종수정자 개인번호 */
+		FROM TB_LA_IS_MM_MSG_TEMPLATE
+		WHERE 1=1
+			<if test = "search_code != null and search_code != ''">
+				AND CODE LIKE '%'||#{search_code}||'%'
+			</if>
+	</select>
+	
+	<!-- 알림톡 템플릿 상세 -->
+	<select id="LALM0840_selInfo" parameterType="hashMap" resultType="hashMap">
+		SELECT CODE																/* 템플릿 코드 */
+				, NA_BZPLC															/* 경제통합사업장코드 */
+				, REG_NO															/* 등록 순번 */
+				, TALK_TITLE														/* 알림톡 제목 */
+				, TALK_CONTENT													/* 알림톡 내용 */
+				, FSRG_DTM														/* 최초등록일자 */
+				, FSRGMN_ENO														/* 최초등록자 개인번호 */
+				, LSCHG_DTM														/* 최종수정일자 */
+				, LS_CMENO														/* 최종수정자 개인번호 */
+		FROM TB_LA_IS_MM_MSG_TEMPLATE
+		WHERE 1=1
+			<if test = "code != null and code != ''">
+				AND CODE LIKE '%'||#{code}||'%'
+			</if>
+			AND NA_BZPLC = '0000000000000'
+	</select>
+	
+	<!-- 알림톡 템플릿 저장 -->
+	<insert id="LALM0840_insMsgTalk" parameterType="hashMap">
+		<selectKey keyProperty="reg_no" resultType="int" order="BEFORE">
+			SELECT NVL(MAX(REG_NO) + 1, 1)
+			  FROM TB_LA_IS_MM_MSG_TEMPLATE
+			 WHERE NA_BZPLC = #{na_bzplc}
+			 		AND CODE = #{code}
+		</selectKey>
+		INSERT INTO TB_LA_IS_MM_MSG_TEMPLATE (
+			CODE																	/* 템플릿 코드 */
+			, NA_BZPLC															/* 경제통합사업장코드 */
+			, REG_NO															/* 등록 순번 */
+			, TALK_TITLE														/* 알림톡 제목 */
+			, TALK_CONTENT													/* 알림톡 내용 */
+			, FSRG_DTM														/* 최초등록일자 */
+			, FSRGMN_ENO														/* 최초등록자 개인번호 */
+			, LSCHG_DTM														/* 최종수정일자 */
+			, LS_CMENO														/* 최종수정자 개인번호 */
+		) VALUES (
+			TRIM(#{code})
+			, '0000000000000'
+			, #{reg_no}
+			, #{talk_title}
+			, #{talk_content}
+			, SYSDATE
+			, #{ss_userid}
+			, SYSDATE
+			, #{ss_userid}
+		)
+	</insert>
+	
+	<!-- 알림톡 템플릿 수정 -->
+	<update id="LALM0840_updMsgTalk" parameterType="hashMap">
+		UPDATE TB_LA_IS_MM_MSG_TEMPLATE
+		   SET TALK_TITLE			= #{talk_title}
+			, TALK_CONTENT		= #{talk_content}
+			, LSCHG_DTM			= SYSDATE
+			, LS_CMENO			= #{ss_userid}
+		 WHERE CODE				= TRIM(#{code})
+		 	AND NA_BZPLC        = '0000000000000'
+	</update>
+	
+	<!-- 알림톡 템플릿 삭제 -->
+	<delete id="LALM0840_delMsgTalk" parameterType="hashMap">
+		DELETE 
+			FROM TB_LA_IS_MM_MSG_TEMPLATE
+		WHERE CODE						= #{code}
+			AND NA_BZPLC               	= '0000000000000'
+	</delete>
+
+</mapper>

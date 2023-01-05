@@ -34,7 +34,7 @@ var mv_sqno_prc_dsc = "";
         fn_Init();
         
       	/******************************
-         * 하한가 낮추기
+         * 예정가 낮추기
          ******************************/
         $("#pb_BatPrice").on('click',function(e){
             e.preventDefault();
@@ -44,11 +44,12 @@ var mv_sqno_prc_dsc = "";
                 return obj.SEL_STS_DSC != "22";
             });
             if(tmpObject.length == 0){
-            	MessagePopup('OK','응찰하한가를 낮출 건이 없습니다.');
+            	MessagePopup('OK','예정가를 낮출 건이 없습니다.');
                 return;
             }
+            
             if($("#sbt_am").val() == 0) {
-            	MessagePopup('YESNO',"응찰하한가를 최초 응찰하한가로 변경합니다. 변경하시겠습니까?",function(res){
+            	MessagePopup('YESNO',"예정가를 최초 예정가로 변경합니다. 변경하시겠습니까?",function(res){
                     if(res){
                         var result        = null;
                                              
@@ -240,6 +241,17 @@ var mv_sqno_prc_dsc = "";
              return;
          }
          
+         var chkVaild = 0;
+         tmpObject.forEach((e,i)=>{
+        	 if(e.HDN_SEL_STS_DSC == '22' && e.CHG_RMK_CNTN == ''){
+            	 MessagePopup('OK','기낙찰된건의 변경사유를 입력해주시기 바랍니다.<br/>[경매번호 : '+e.AUC_PRG_SQ+']');
+        		 chkVaild++;
+            	 return;
+        	 }
+         });
+         if(chkVaild){
+        	 return;
+         }
          MessagePopup('YESNO',"저장 하시겠습니까?",function(res){
              if(res){
                  var result        = null;
@@ -277,14 +289,14 @@ var mv_sqno_prc_dsc = "";
         var searchResultColNames = ["","H사업장코드","H경매일자","H원표번호","H판매상태구분","H거래인","H참여자번호","H혈통금액","H출하수수료수기적용여부","H출하수수료수기등록","H판매수수료수기적용여부","H판매수수료수기등록"
 						            ,"H12개월이상여부","H12개월이상수수료","H번식우수수료구분코드","H사료미사용여부","H친자검사여부","H친자검사결과","H출하자조합원여부","H중도매인조합원여부"
 						            ,"H임신감정여부","H임신여부","H괴사감정여부","H괴사여부","H운송비지급여부","H제각여부","H축산생산자명"
-						        	,"경매번호", "경매대상구분", "출하주", "접수일", "수송자", "귀표번호", "최소하한가", "응찰하한가", "응찰하한가<br>변경횟수", "중량", "경매참가번호", "", "낙찰단가", "낙찰금액","진행상태","경매일자","원표번호","중개인번호","참가번호", "응찰하안가ex", "마감차수", "구분", "낮출금액", ""];        
+						        	,"경매번호", "경매대상구분", "출하주", "접수일", "수송자", "귀표번호", "최소 예정가", "예정가", "예정가<br>변경횟수", "중량", "경매참가번호", "", "낙찰단가", "낙찰금액","진행상태","변경사유", "응찰하안가ex", "마감차수", "구분", "낮출금액", ""];        
         var searchResultColModel = [
             						{name:"_STATUS_",               index:"_STATUS_"              , width:15,  align:'center'},
             						
             						{name:"NA_BZPLC",            index:"NA_BZPLC",            width:100, align:'center', hidden:true},
        	                         	{name:"OSLP_NO",             index:"OSLP_NO",             width:100, align:'center', hidden:true},
                                     {name:"AUC_DT",              index:"AUC_DT",              width:100, align:'center', hidden:true},
-                                    {name:"SEL_STS_DSC",         index:"SEL_STS_DSC",         width:100, align:'center', hidden:true},
+                                    {name:"HDN_SEL_STS_DSC",     index:"HDN_SEL_STS_DSC",         width:100, align:'center', hidden:true},
                                     {name:"TRMN_AMNNO",          index:"TRMN_AMNNO",          width:100, align:'center', hidden:true},
                                     {name:"LVST_AUC_PTC_MN_NO",  index:"LVST_AUC_PTC_MN_NO",  width:100, align:'center', hidden:true},
                                     {name:"BLOOD_AM",            index:"BLOOD_AM",            width:100, align:'center', hidden:true},
@@ -335,10 +347,12 @@ var mv_sqno_prc_dsc = "";
 	                                },
 						            {name:"SRA_SBID_AM"           , index:"SRA_SBID_AM"           , width:100, align:'right', formatter:'integer', formatoptions:{thousandsSeparator:','}},
 						            {name:"SEL_STS_DSC"           , index:"SEL_STS_DSC"           , width:100, align:'center', editable:true, edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SEL_STS_DSC", 1)}},
-						            {name:"AUC_DT"                , index:"AUC_DT"                , width:100, align:'center', hidden:true},
-						            {name:"OSLP_NO"               , index:"OSLP_NO"               , width:100, align:'center', hidden:true},
-						            {name:"TRMN_AMNNO"            , index:"TRMN_AMNNO"            , width:100, align:'center', hidden:true},
-						            {name:"LVST_AUC_PTC_MN_NO"    , index:"LVST_AUC_PTC_MN_NO"    , width:100, align:'center', hidden:true},
+						            {name:"CHG_RMK_CNTN"          , index:"CHG_RMK_CNTN"          , width:100, align:'center', editable:true,
+										editoptions:{
+											maxlength:"30"                                         
+										}
+						            },
+
 						            {name:"LOWS_SBID_LMT_AM_EX"   , index:"LOWS_SBID_LMT_AM_EX"   , width:100, align:'center', hidden:true},
 						            {name:"DDL_QCN"               , index:"DDL_QCN"               , width:100, align:'center', hidden:true},
 						            {name:"CHG_GBN"               , index:"CHG_GBN"               , width:100, align:'center', editable:true, edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AM_RTO_DSC", 1)}},
@@ -368,15 +382,15 @@ var mv_sqno_prc_dsc = "";
             cellsubmit:  "clientArray",
 			afterEditCell: function(rowid, cellname, value, iRow, iCol) {
                	$("#"+rowid+"_"+cellname).on('blur',function(e){
-               		$("#grd_MhSogCow").jqGrid("saveCell", iRow, iCol);
-               		
-               		if($("#grd_MhSogCow").jqGrid('getCell', rowid, '_STATUS_') == '+') {
-               			return;
-               		} else {
-               			if($(this).val() != value){
-               				$("#grd_MhSogCow").jqGrid('setCell', rowid, '_STATUS_', '*',GRID_MOD_BACKGROUND_COLOR);
-                        }
-                    }
+					$("#grd_MhSogCow").jqGrid("saveCell", iRow, iCol);
+					
+					if($("#grd_MhSogCow").jqGrid('getCell', rowid, '_STATUS_') == '+') {
+						return;
+					} else {
+						if($(this).val() != value){
+							$("#grd_MhSogCow").jqGrid('setCell', rowid, '_STATUS_', '*',GRID_MOD_BACKGROUND_COLOR);	
+						}
+					}
                	}).on('keydown',function(e) {
                		var code = e.keyCode || e.which;
                        if(code == 13) {
@@ -451,7 +465,7 @@ var mv_sqno_prc_dsc = "";
          	    } else if(cellname == 'SRA_SBID_UPR') {
             		if(parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR')) > 0 
             		&& parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR')) < parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'LOWS_SBID_LMT_AM_EX'))) {
-            			MessagePopup('OK','낙찰가가 하한가보다 작습니다.');
+            			MessagePopup('OK','낙찰가가 예정가보다 작습니다.');
             		}
             		
             	}
@@ -465,7 +479,7 @@ var mv_sqno_prc_dsc = "";
         
 	    $("#grd_MhSogCow").jqGrid("setGroupHeaders", {
 	    	useColSpanStyle:true,
-		    groupHeaders:[{startColumnName:"CHG_GBN", numberOfColumns: 3, titleText: '응찰하한가 낮출금액'}]
+		    groupHeaders:[{startColumnName:"CHG_GBN", numberOfColumns: 3, titleText: '예정가 낮출금액'}]
 	    });
 	    
 	  	//가로스크롤 있는경우 추가(마지막 컬럼 길이 조절)
@@ -508,9 +522,9 @@ var mv_sqno_prc_dsc = "";
         data['sra_mwmnnm']       = $("#grd_MhSogCow").jqGrid("getCell", rowid, 38);
   	    fn_CallMwmnnmNoPopup(data,flag,function(result){
          	if(result){
-  	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 38, result.SRA_MWMNNM);  
-         		$("#grd_MhSogCow").jqGrid("setCell", rowid, 45, result.TRMN_AMNNO);
-  	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 46, result.LVST_AUC_PTC_MN_NO); 
+  	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 'SRA_MWMNNM', result.SRA_MWMNNM);  
+         		$("#grd_MhSogCow").jqGrid("setCell", rowid, 'TRMN_AMNNO', result.TRMN_AMNNO);
+  	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 'LVST_AUC_PTC_MN_NO', result.LVST_AUC_PTC_MN_NO); 
 
           		$("#grd_MhSogCow").jqGrid('setCell', rowid, '_STATUS_', '*', GRID_MOD_BACKGROUND_COLOR);
          	}
@@ -524,29 +538,28 @@ var mv_sqno_prc_dsc = "";
 	    var gid = options.gid;
 	    var rowid = options.rowId;
 	    var colkey = options.colModel.name;
-	    return '<input style="margin-left:1px;" type="button" id="' + gid + '_' + rowid + '_' + colkey + '" ' + 'onclick="fn_chgAm(\'' + gid + '\',\'' + rowid + '\',\'' + colkey + '\')" value="응찰하한가낮추기" />';
+	    return '<input style="margin-left:1px;" type="button" id="' + gid + '_' + rowid + '_' + colkey + '" ' + 'onclick="fn_chgAm(\'' + gid + '\',\'' + rowid + '\',\'' + colkey + '\')" value="예정가낮추기" />';
 	} 
     
     /******************************
-     * 응찰하한가 낮추기
+     * 예정가 낮추기
      ******************************/
     function fn_chgAm(gid, rowid, colkey){
    	 	
-    	var rowData = $('#grd_MhSogCow').jqGrid('getRowData', rowid);
-   	 	
+    	var rowData = $('#grd_MhSogCow').jqGrid('getRowData', rowid);        
    	 	if(rowData.CHG_LOWS_SBID_LMT_AM == "0") {
-	   	 	MessagePopup('YESNO',"응찰하한가를 최초 응찰하한가로 변경합니다. 변경하시겠습니까?",function(res){
+	   	 	MessagePopup('YESNO',"예정가를 최초 예정가로 변경합니다. 변경하시겠습니까?",function(res){
 				if(res){
 					if(rowData.SEL_STS_DSC == "22") {
-						MessagePopup('OK','진행상태가 낙찰입니다. 낙찰상태에서는 응찰하한가 낮추기가 불가능 합니다.');
+						MessagePopup('OK','진행상태가 낙찰입니다. 낙찰상태에서는 예정가 낮추기가 불가능 합니다.');
 		                return;
 					}
-					// 최소하한가
+					// 최소예정가
 					var v_lows_sbid_lmt_am = rowData.FIR_LOWS_SBID_LMT_AM;
-					// 응찰하한가
+					// 예정가
 					rowData.LOWS_SBID_LMT_AM = v_lows_sbid_lmt_am;
 					
-					// 응찰하한가 변경횟수
+					// 예정가 변경횟수
 					if(!fn_isNull(rowData.LWPR_CHG_NT)) {
 						rowData.LWPR_CHG_NT = parseInt(rowData.LWPR_CHG_NT) + 1;
 					} else {
@@ -577,14 +590,14 @@ var mv_sqno_prc_dsc = "";
 			});
    	 	} else if(parseInt(rowData.CHG_LOWS_SBID_LMT_AM) > 0) {
    	 		if(parseInt(rowData.CHG_LOWS_SBID_LMT_AM) > 99990000) {
-	   	 		MessagePopup('OK','응찰하한가는 0 - 99990000 사이의 값을 입력하십시오.');
+	   	 		MessagePopup('OK','예정가는 0 - 99990000 사이의 값을 입력하십시오.');
 	            return;
    	 		}
 	   	 	if(rowData.SEL_STS_DSC == "22") {
-				MessagePopup('OK','진행상태가 낙찰입니다. 낙찰상태에서는 응찰하한가 낮추기가 불가능 합니다.');
+				MessagePopup('OK','진행상태가 낙찰입니다. 낙찰상태에서는 예정가 낮추기가 불가능 합니다.');
 	            return;
 			}
-	   		// 최소하한가
+	   		// 최소예정가
 			var v_lows_sbid_lmt_am = rowData.FIR_LOWS_SBID_LMT_AM;
 	   		
 	   		if(rowData.CHG_GBN == "1") {
@@ -593,9 +606,9 @@ var mv_sqno_prc_dsc = "";
 	   			v_lows_sbid_lmt_am = parseInt(rowData.FIR_LOWS_SBID_LMT_AM) - (parseInt(rowData.FIR_LOWS_SBID_LMT_AM) * parseInt(rowData.CHG_LOWS_SBID_LMT_AM) / 100);
 	   		}
 	   		
-			// 응찰하한가
+			// 예정가
 			rowData.LOWS_SBID_LMT_AM = v_lows_sbid_lmt_am;
-			// 응찰하한가 변경횟수
+			// 예정가 변경횟수
 			if(!fn_isNull(rowData.LWPR_CHG_NT)) {
 				rowData.LWPR_CHG_NT = parseInt(rowData.LWPR_CHG_NT) + 1;
 			} else {
@@ -724,7 +737,7 @@ var mv_sqno_prc_dsc = "";
                                 <td>
                                     <div class="cellBox">
                                         <div class="cell pl2" >
-                                            <button id="pb_BatPrice" class="tb_btn">응찰하한가낮추기</button>
+                                            <button id="pb_BatPrice" class="tb_btn">예정가 낮추기</button>
                                         </div>
                                     </div>
                                 </td>
@@ -742,7 +755,7 @@ var mv_sqno_prc_dsc = "";
                 </ul> 
                 
                 <div class="fl_R">   
-                    <label id="msg_Sbid" style="font-size:15px;color:blue;font: message-box;">※낮추기금액 입력시 '0'을 입력하면 최소하한가로 돌아갑니다.</label>
+                    <label id="msg_Sbid" style="font-size:15px;color:blue;font: message-box;">※낮추기금액 입력시 '0'을 입력하면 최소 예정가로 돌아갑니다.</label>
                 </div>  
             </div>
             

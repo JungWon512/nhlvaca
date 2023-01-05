@@ -23,10 +23,10 @@
 	 * 2. 입 력 변 수 : N/A
 	 * 3. 출 력 변 수 : N/A
 	 ------------------------------------------------------------------------------*/
+	 var wkGrpNm="";
 	$(document).ready(function(){ 
 			    		
-		var selDataObj = new Object();        
-		selDataObj['dsc'] = '1';
+		var selDataObj = new Object();
 		
 		//그룹코드 조회
 		var results = sendAjax(selDataObj, "/LALM0833_selGrpCode", "POST");        
@@ -38,13 +38,16 @@
         }else{      
             result = setDecrypt(results);
         }
-        
+        wkGrpNm="";
         //조회조건
         $("#wk_grp_c").empty().data('options');
         $("#wk_grp_c").append('<option value="">전체</option>');          
+        
         $.each(result, function(i){
-            $("#wk_grp_c").append('<option value=' + result[i].WK_GRP_C + '>' + result[i].WK_GRPNM + '</option>');
-        }); 
+            $("#wk_grp_c").append('<option value=' + result[i].WK_GRP_C + '>' + result[i].WK_GRPNM + '</option>');          
+            wkGrpNm+=result[i].WK_GRP_C+":"+result[i].WK_GRPNM+";";
+        });           
+        
         //사용자정보
         $("#de_wk_grp_c").empty().data('options');        
         $.each(result, function(i){
@@ -59,7 +62,20 @@
              this.blur();
              fn_CallGrpAddPopup(function(result){
                  if(result){
-                      ;
+                 }
+             });
+         }); 
+         
+         /******************************
+          * 사용자 검색
+          ******************************/
+         $("#pb_usrAdd").on('click',function(e){
+             e.preventDefault();
+             this.blur();
+             fn_CallUserAddPopup(function(result){
+            	 console.log(result);
+                 if(result){
+                     $('#de_usrid').val(result.USRID);
                  }
              });
          });
@@ -86,25 +102,44 @@
      * 2. 입 력 변 수 : N/A
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
-    function fn_Init(){        
-        //그리드 초기화
-        fn_CreateGrid();
-        //폼 초기화
-        fn_InitFrm('frm_Search');
-        fn_InitFrm('frm_Detail');
-        $( "#de_apl_st_dt" ).datepicker().datepicker("setDate", fn_getToday());
-        $( "#de_apl_ed_dt" ).datepicker().datepicker("setDate", fn_getToday());
-        
-    }
+     function fn_Init(){        
+         //그리드 초기화
+         fn_CreateGrid();
+         //폼 초기화
+         fn_InitFrm('frm_Search');
+         fn_InitFrm('frm_Detail');
+         $('#pb_usrAdd').show();
+         $('#de_usrid').attr('disabled',true);
+         
+         $( "#de_apl_st_dt" ).datepicker().datepicker("setDate", fn_getToday());
+         $( "#de_apl_ed_dt" ).datepicker().datepicker("setDate", fn_getToday());
+         
+     }    
+ 	
+     /*------------------------------------------------------------------------------
+      * 1. 함 수 명    : 추가 함수
+      * 2. 입 력 변 수 : N/A
+      * 3. 출 력 변 수 : N/A
+      ------------------------------------------------------------------------------*/
+     function fn_Insert(){
+         fn_InitFrm('frm_Detail');
+         $('#pb_usrAdd').show();
+         $('#de_usrid').attr('disabled',true);
+         $( "#de_apl_st_dt" ).datepicker().datepicker("setDate", fn_getToday());
+         $( "#de_apl_ed_dt" ).datepicker().datepicker("setDate", fn_getToday());
+         
+     }
     
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 조회 함수
      * 2. 입 력 변 수 : N/A
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
-    function fn_Search(){  
-    	 
+    function fn_Search(){
+
     	$("#grd_grpUsr").jqGrid("clearGridData", true);
+        $('#pb_usrAdd').show();
+        $('#de_usrid').attr('disabled',true);
     	fn_InitFrm('frm_Detail');
     	
         var results = sendAjaxFrm("frm_Search", "/LALM0833_selList", "POST");        
@@ -245,7 +280,7 @@
 
         var searchResultColNames = ["그룹코드", "그룹명", "그룹사용여부", "사용자아이디", "권한상태", "적용시작일자", "적용종료일자"];        
         var searchResultColModel = [
-                                     {name:"WK_GRP_C", index:"WK_GRP_C", width:20, align:'center', edittype:"select", formatter : "select", editoptions:{value:"001:관리자;002:일반사용자;003:산지주재원;"}},
+                                     {name:"WK_GRP_C", index:"WK_GRP_C", width:20, align:'center', edittype:"select", formatter : "select", editoptions:{value:wkGrpNm}},
                                      {name:"WK_GRPNM", index:"WK_GRPNM", width:20, align:'center'},
                                      {name:"UYN",      index:"UYN",      width:20, align:'center', hidden : true},
                                      {name:"USRID",    index:"USRID",    width:20, align:'center'},
@@ -276,6 +311,8 @@
                 $("#de_apl_sts_dsc").val(sel_data.APL_STS_DSC);
                 $("#de_apl_st_dt").val(fn_toDate(sel_data.APL_ST_DT));
                 $("#de_apl_ed_dt").val(fn_toDate(sel_data.APL_ED_DT));
+                $('#de_usrid').attr('disabled',true);
+                $('#pb_usrAdd').hide();
            },
         });
         
@@ -366,7 +403,8 @@
 	                            <tr>
 	                                <th scope="row"><span class="tb_dot">사용자아이디</span></th>
 	                                <td>
-	                                    <input type="text" id="de_usrid">
+	                                    <input type="text" id="de_usrid" style="width:80%;">
+                   						<button class="tb_btn" id="pb_usrAdd">검색</button>
 	                                </td>
 	                            </tr>
 	                            <tr>

@@ -17,26 +17,22 @@ public class LALM0213ServiceImpl implements LALM0213Service{
 
 	@Override
 	public List<Map<String, Object>> LALM0213_selList(Map<String, Object> map) throws Exception {
-		
 		List<Map<String, Object>> list = null;
 		list = lalm0213Mapper.LALM0213_selList(map);
 		return list;
-		
 	}
 	
 	@Override
 	public List<Map<String, Object>> LALM0213_selSraList(Map<String, Object> map) throws Exception {
-		
 		List<Map<String, Object>> list = null;
 		list = lalm0213Mapper.LALM0213_selSraList(map);
 		return list;
-		
 	}
 	
 	@Override
 	public List<Map<String, Object>> LALM0213_selBadTrmn(Map<String, Object> map) throws Exception {
 		
-		List<Map<String, Object>> list = null;		
+		List<Map<String, Object>> list = null;
 		list = lalm0213Mapper.LALM0213_selBadTrmn(map);
 		return list;
 		
@@ -44,38 +40,30 @@ public class LALM0213ServiceImpl implements LALM0213Service{
 	
 	@Override
 	public List<Map<String, Object>> LALM0213_selBadCheck(Map<String, Object> map) throws Exception {
-		
-		List<Map<String, Object>> list = null;		
+		List<Map<String, Object>> list = null;
 		list = lalm0213Mapper.LALM0213_selBadCheck(map);
 		return list;
-		
 	}
 	
 	@Override
 	public List<Map<String, Object>> LALM0213_selTrmnAmnNo(Map<String, Object> map) throws Exception {
-		
-		List<Map<String, Object>> list = null;		
+		List<Map<String, Object>> list = null;
 		list = lalm0213Mapper.LALM0213_selTrmnAmnNo(map);
 		return list;
-		
 	}
 	
 	@Override
 	public List<Map<String, Object>> LALM0213_selAucPtcMnNo(Map<String, Object> map) throws Exception {
-		
-		List<Map<String, Object>> list = null;		
+		List<Map<String, Object>> list = null;
 		list = lalm0213Mapper.LALM0213_selAucPtcMnNo(map);
 		return list;
-		
 	}
 	
 	@Override
 	public List<Map<String, Object>> LALM0213_selSraCount(Map<String, Object> map) throws Exception {
-		
-		List<Map<String, Object>> list = null;		
+		List<Map<String, Object>> list = null;
 		list = lalm0213Mapper.LALM0213_selSraCount(map);
 		return list;
-		
 	}
 	
 	@Override
@@ -83,7 +71,7 @@ public class LALM0213ServiceImpl implements LALM0213Service{
 		
 		Map<String, Object> reMap = new HashMap<String, Object>();
 		int insertNum = 0;
-		String hd_auc_obj_dsc = (String)map.get("hd_auc_obj_dsc");
+		/* String hd_auc_obj_dsc = (String)map.get("hd_auc_obj_dsc");
 		String cb_auc_obj_dsc1 = (String)map.get("cb_auc_obj_dsc1");
 		String cb_auc_obj_dsc2 = (String)map.get("cb_auc_obj_dsc2");
 		String cb_auc_obj_dsc3 = (String)map.get("cb_auc_obj_dsc3");
@@ -136,35 +124,30 @@ public class LALM0213ServiceImpl implements LALM0213Service{
 				int insMartNo = 0;
 				insMartNo = lalm0213Mapper.LALM0213_insMartPgm(map);
 				reMap.put("insMartNo", insMartNo);
-			}			
-		}
+			}
+		}*/
+		insertNum = lalm0213Mapper.LALM0213_insAllPgm(map);
+		reMap.put("insertNum", insertNum);
 		
 		return reMap;
 	}
 	
 	@Override
 	public Map<String, Object> LALM0213_updPgm(Map<String, Object> map) throws Exception {
-		
-		Map<String, Object> reMap = new HashMap<String, Object>();		
+		Map<String, Object> reMap = new HashMap<String, Object>();
 		int updateNum = 0;
-		
-		updateNum = lalm0213Mapper.LALM0213_updPgm(map);		
+		updateNum = lalm0213Mapper.LALM0213_updPgm(map);
 		reMap.put("updateNum", updateNum);
-		
 		return reMap;
 	}
 	
 	@Override
 	public Map<String, Object> LALM0213_delPgm(Map<String, Object> map) throws Exception {
-		
-		Map<String, Object> reMap = new HashMap<String, Object>();		
+		Map<String, Object> reMap = new HashMap<String, Object>();
 		int deleteNum = 0;
-		
-		deleteNum = lalm0213Mapper.LALM0213_delPgm(map);		
+		deleteNum = lalm0213Mapper.LALM0213_delAllPgm(map);
 		reMap.put("deleteNum", deleteNum);
-		
 		return reMap;
 	}
-
 
 }

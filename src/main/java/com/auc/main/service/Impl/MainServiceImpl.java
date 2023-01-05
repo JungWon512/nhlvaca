@@ -125,4 +125,16 @@ public class MainServiceImpl implements MainService{
 		return reMap;
 	}
 
+
+	@Override
+	public List<Map<String, Object>> MainSecApply_selList(Map<String, Object> map) throws Exception {
+		return mainMapper.MainSecApply_selList(map);
+	}
+	
+	@Override
+	public List<Map<String, Object>> selectNaUserList(Map<String, Object> map) throws Exception{		
+		List<Map<String, Object>> list = mainMapper.selectNaUserList(map);
+		return list;		
+	}
+
 }

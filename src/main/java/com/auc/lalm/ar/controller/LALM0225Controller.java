@@ -43,11 +43,24 @@ public class LALM0225Controller {
 	@ResponseBody
 	@RequestMapping(value="/LALM0225_selList", method=RequestMethod.POST)
 	public Map<String, Object> LALM0225_selList(ResolverMap rMap) throws Exception{
-		
 		Map<String, Object> map = convertConfig.conMap(rMap);
 		List<Map<String, Object>> reList = lalm0225Service.LALM0225_selList(map);
 		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-		
+		return reMap;
+	}
+
+	/**
+	 * 출장우 접수 -> 출장우 등록 전환
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/LALM0225_insSogCow", method = RequestMethod.POST)
+	public Map<String, Object> LALM0225_insSogCow(ResolverMap rMap) throws Exception {
+		Map<String, Object> map		= convertConfig.conMapWithoutXxs(rMap);
+		Map<String, Object> inMap	= lalm0225Service.LALM0225_insSogCow(map);
+		Map<String, Object> reMap	= commonFunc.createResultCUD(inMap);
 		return reMap;
 	}
 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.sy.service.Impl.LALM0838Mapper">
+	
+	 <select id="LALM0838_selList" resultType="hashMap">
+		SELECT
+			A.NA_BZPLC
+			, B.CLNTNM
+			, A.OPR_DT
+			, A.SRA_OPR_SQNO
+			, A.PGID
+			, A.SRCH_CND_CNTRN
+			, A.INQ_CN
+			, A.BTN_TPC
+			, A.OPTR_ID_ENO
+			, A.MGR_APV_EMP_ENO
+			, A.LS_OPR_DTM
+			, A.APVRQR_RSNCTT
+			, A.IPADR
+			, A.MGR_APV_SQNO
+			, A.APDFL_IMG_CNTN
+			, TO_CHAR(A.FSRG_DTM,'YYYY-MM-DD HH:MI:SS') FSRG_DTM
+			, A.FSRGMN_ENO
+			, TO_CHAR(A.LSCHG_DTM,'YYYY-MM-DD HH:MI:SS') LSCHG_DTM
+			, A.LS_CMENO		
+		FROM TB_LA_IS_BI_PSN_INF A 
+		INNER JOIN TB_LA_IS_BM_BZLOC B ON A.NA_BZPLC = B.NA_BZPLC
+		WHERE 1=1
+		AND OPR_DT = #{opr_dt}
+		<if test ="na_bzplc != null and na_bzplc != ''">
+			AND A.NA_BZPLC = #{na_bzplc}
+		</if>
+		<if test ="pgid != null and pgid != ''">
+			AND A.PGID LIKE '%'|| #{pgid} || '%'
+		</if>
+		ORDER BY A.OPR_DT, A.FSRG_DTM
+	</select>	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -161,15 +161,6 @@
 	        	 console.log(decResult);
       			 fn_CreateGrid(decResult);
 	         }
-
-	     	//$('#grd_MmInsSogCow').jqGrid('getDataIDs').forEach((rowid)=>{	     	
-			//	var p_sra_indv_amnno = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'SRA_INDV_AMNNO');
-			//	if(!fn_isNull(p_sra_indv_amnno)) {
-			//		fn_CallIndvInfSrch(p_sra_indv_amnno,rowid);
-			//		fn_FtsnmModify(p_sra_indv_amnno,rowid);
-			//	}
-	    	//	//fn_popSraIndvAmnnoTest(rowid);
-			//});
     	});
     	$('#auc_obj_dsc').change(()=>{
             fn_CreateGrid();
@@ -212,7 +203,7 @@
         	tempRow.NCSS_YN = '0';
         	tempRow.DNA_YN = '3';
         	tempRow.DNA_YN_CHK = '0';
-        	tempRow.SRA_INDV_AMNNO = '410';
+        	tempRow.SRA_INDV_AMNNO = '';
         	
         	tempRow.VACN_DT = '';
         	tempRow.BOVINE_DT = '';
@@ -351,7 +342,7 @@
     
     function fn_popFstNm(rowid){
     	//$('#grd_MmInsSogCow').editCell(0,3,false);
-    	var ftsnm = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'FTSNM'); 
+    	var ftsnm = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'FTSNM');
 		if(!fn_isNull(ftsnm)) {
         	//fn_CallFtsnmPopup(true);
      		var data = new Object();
@@ -370,32 +361,38 @@
                  }
              });
         }
+		
+		if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_SRA_INDV') == '1' && $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '1'){
+	        $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '*');
+		}else{
+	        $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
+		}
     }
     
     function fn_popSraIndvAmnno(rowid){
     	//$('#grd_MmInsSogCow').editCell(0,5,false);
 		var p_sra_indv_amnno = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'SRA_INDV_AMNNO');
 		var mcow_sra_indv_amnno = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'MCOW_SRA_INDV_AMNNO');
-		
-		if(fn_isNull(p_sra_indv_amnno)) {
-			MessagePopup('OK','귀표번호를 입력하세요.');
-			return;		 
-		} else {
-			 fn_CallIndvInfSrch(p_sra_indv_amnno,rowid);
-		}
 
-		fn_FtsnmModify(p_sra_indv_amnno,rowid);
+		if(fn_isNull(p_sra_indv_amnno)){
+			MessagePopup("OK", '귀표번호를 입력해주세요.');
+			return;
+		}else if(p_sra_indv_amnno.length < '15') {
+			MessagePopup("OK", '귀표번호 15자리모두 입력해주시기 바랍니다.');
+			return;			
+		}
+				
+		fn_CallIndvInfSrch(p_sra_indv_amnno,rowid);
 		//// 브루셀라검사 조회
         fn_CallBrclIspSrch(p_sra_indv_amnno,rowid);
-		//// EPD
-        //fn_CallGeneBredrInfSrch(p_sra_indv_amnno,rowid);
-		//// 어미소 EPD
-        //if(!fn_isNull(mcow_sra_indv_amnno)){
-        //	fn_CallGeneBredrInfSrch(mcow_sra_indv_amnno,rowid,true);
-        //}
+		// EPD
+        fn_CallGeneBredrInfSrch(p_sra_indv_amnno,rowid);
+		// 어미소 EPD
+        if(!fn_isNull(mcow_sra_indv_amnno)){
+        	fn_CallGeneBredrInfSrch(mcow_sra_indv_amnno,rowid,true);
+        }
 		// 친자확인
-        //fn_CallLsPtntInfSrch(p_sra_indv_amnno,rowid);
-		
+        fn_CallLsPtntInfSrch(p_sra_indv_amnno,rowid);
     }
 	
   	//**************************************
@@ -440,45 +437,20 @@
         var data =  new Object;	        
         data["sra_indv_amnno"] = p_sra_indv_amnno;
         
-        fn_CallIndvInfHstPopup(data, checkBoolean, function(result){
+        fn_CallIndvInfHstPopupForExcel(data, checkBoolean, function(result){
         	if(result){
-        		if(chkBool == true) {
-        			 var results = sendAjax(result, "/LALM0222P_updReturnValue", "POST");
-        	         var returnVal;
-        	         
-        	         if(results.status != RETURN_SUCCESS) {
-        	             showErrorMessage(results);
-						 $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 0);
-        	             return;
-        	         } else {
-         	        	returnVal = setDecrypt(results);
-        	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 1);
+  	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 1);
 
-    	        		if(!fn_isNull(returnVal[0].SRA_INDV_AMNNO)) {    	        			
-    	        			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_INDV_AMNNO', returnVal[0].SRA_INDV_AMNNO);
-    	        		}
-
-    	        		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM', returnVal[0].FTSNM);        
-    	        		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO', returnVal[0].FHS_ID_NO);        
-    	        		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO', returnVal[0].FARM_AMNNO);     
-    	        		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_PDMNM', fn_xxsDecode(returnVal[0].FTSNM));        
-    	        		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_PD_RGNNM', fn_xxsDecode(returnVal[0].DONGUP));
-
-    	        		//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SOG_NA_TRPL_C', fn_xxsDecode(returnVal[0].NA_TRPL_C));    	        		
-        	         }
-        		} else {
-    	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 1);
-
-	        		if(!fn_isNull(result.SRA_INDV_AMNNO)) {    	        			
-	        			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_INDV_AMNNO', result.SRA_INDV_AMNNO);
-	        		}
-
-	        		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM', result.FTSNM);        
-	        		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO', result.FHS_ID_NO);        
-	        		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO', result.FARM_AMNNO);     
-	        		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_PDMNM', fn_xxsDecode(result.FTSNM));        
-	        		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_PD_RGNNM', fn_xxsDecode(result.DONGUP));
-        		}
+	       		if(!fn_isNull(result.SRA_INDV_AMNNO)) {    	        			
+	       			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_INDV_AMNNO', result.SRA_INDV_AMNNO);
+	       		}
+	
+	       		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM', result.FTSNM);        
+	       		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO', result.FHS_ID_NO);        
+	       		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO', result.FARM_AMNNO);     
+	       		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_PDMNM', fn_xxsDecode(result.FTSNM));        
+	       		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_PD_RGNNM', fn_xxsDecode(result.DONGUP));
+	       		fn_CallIndvInfSrchSet(p_sra_indv_amnno,rowid);
         	}else{
 				$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 0);        		
         	}
@@ -512,8 +484,8 @@
        			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_PD_RGNNM', fn_xxsDecode(result.DONGUP));
 
        			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'MCOW_SRA_INDV_AMNNO', result.MCOW_SRA_INDV_AMNNO);
-                fn_CallIndvInfSrchSet(p_sra_indv_amnno,rowid);
 	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 1);
+                fn_CallIndvInfSrchSet(p_sra_indv_amnno,rowid);
 	        	
              }
         });
@@ -540,7 +512,7 @@
        			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_PD_RGNNM', fn_xxsDecode(resultFhsIdNo[0].DONGUP));      			
         		                
              	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 1);
-                fn_FtsnmModify(p_sra_indv_amnno,rowid);
+                //fn_FtsnmModify(p_sra_indv_amnno,rowid);
         	}else if(resultFhsIdNo.length > 1){
         	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO');
         	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO');
@@ -554,7 +526,15 @@
              	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 0);
         		
         	}
-        }         
+        }
+
+		
+		if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_SRA_INDV') == '1' && $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '1'){
+	        $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '*');
+		}else{
+	        $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
+		}        
+		fn_FtsnmModify(p_sra_indv_amnno,rowid);
  	}
     
   	//**************************************
@@ -568,7 +548,7 @@
     	if(p_sra_indv_amnno.replace("-", "").length != 15) {return false;}
 
         srchData["trace_no"]     = p_sra_indv_amnno;
-        srchData["option_no"]    = "7";
+        //srchData["option_no"]    = "7";
         
         var results = sendAjax(srchData, "/LALM0899_selRestApi", "POST");        
         var result;
@@ -633,34 +613,34 @@
             result = setDecrypt(results);
             // 본인 : re_product_1 어미 : re_product_11(십의자리 1추가)
            	if(!isNaN(parseFloat(result.GENE_BREDR_VAL2))) {
-                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'1', parseFloat(result.GENE_BREDR_VAL2));
+                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'1', parseFloat(result.GENE_BREDR_VAL2));
            	} else {
-                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'1');
+                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'1');
            	}
-            $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'1_1', $.trim(result.GENE_EVL_RZT_DSC2));
+            $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'1_1', $.trim(result.GENE_EVL_RZT_DSC2));
 
             if(!isNaN(parseFloat(result.GENE_BREDR_VAL3))) {
-                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'2', parseFloat(result.GENE_BREDR_VAL3));
+                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'2', parseFloat(result.GENE_BREDR_VAL3));
            	} else {
-                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'2');
+                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'2');
            	}
-            $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'2_1', $.trim(result.GENE_EVL_RZT_DSC3));
+            $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'2_1', $.trim(result.GENE_EVL_RZT_DSC3));
               
 
             if(!isNaN(parseFloat(result.GENE_BREDR_VAL4))) {
-                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'3', parseFloat(result.GENE_BREDR_VAL4));
+                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'3', parseFloat(result.GENE_BREDR_VAL4));
            	} else {
-                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'3');
+                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'3');
            	}
-            $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'3_1', $.trim(result.GENE_EVL_RZT_DSC4));
+            $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'3_1', $.trim(result.GENE_EVL_RZT_DSC4));
               
 
             if(!isNaN(parseFloat(result.GENE_BREDR_VAL5))) {
-                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'4', parseFloat(result.GENE_BREDR_VAL5));
+                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'4', parseFloat(result.GENE_BREDR_VAL5));
            	} else {
-                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'4');
+                $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'4');
            	}
-            $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcow?'1':'')+'4_1', $.trim(result.GENE_EVL_RZT_DSC5));
+            $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_'+(mcowGubun?'1':'')+'4_1', $.trim(result.GENE_EVL_RZT_DSC5));
         }
     }
     
@@ -750,7 +730,7 @@
         	data = [];
         }
         
-        var searchResultColNames = ["* 경매대상","* 개체관리번호","","* 농가<br/>식별번호","* 농장<br/>관리번호","* 농가명","","* 경매번호","자가운송여부","운송비","출자금","사료공급금액"
+        var searchResultColNames = ["","* 경매대상","* 개체관리번호","","* 농가<br/>식별번호","* 농장<br/>관리번호","* 농가명","","* 경매번호","자가운송여부","운송비","출자금","사료공급금액"
         	                        ,"당일접수비용","구제역 접종일자","구제역 검사결과","우결핵 접종일자","우결핵 백신차수", "브루셀라<br>검사일자","브루셀라 검사결과 코드","브루셀라검사증<br>확인여부","제각여부", "12개월이상여부","12개월이상<br>수수료","* 임신구분","인공수정일자","인공수정증명서<br>제출여부"
         	                        ,"수정KPN","인심개월수","* 임신감정여부","임신여부","괴사감정여부","괴사여부","친자확인결과","친자검사여부","비고","생산자명","생산지역명"
         	                        ,"어미소귀표번호"
@@ -761,15 +741,16 @@
         	                        ,"",""];
         
         var searchResultColModel = [
+        							 {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},
                                      {name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:70,  align:'center', sortable : false, editable:false, edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)} , editrules:{required:true}},
-                                     {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:120, align:'center', sortable : false, editable:true , formatter:'integer' , formatoptions:{thousandsSeparator:''}, editoptions:{maxlength:"15"}},
+                                     {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:120, align:'center', sortable : false, editable:true , editoptions:{maxlength:"15"}},
                                      {name:"BTN_SRA_INDV_AMNNO",   index:"BTN_SRA_INDV_AMNNO",   width:45,  align:'center', sortable : false, formatter :gridSchboxFormatSraIndvAmnno},
                                      {name:"FHS_ID_NO",            index:"FHS_ID_NO",            width:80,  align:'center', sortable : false },
                                      {name:"FARM_AMNNO",           index:"FARM_AMNNO",           width:80,  align:'center', sortable : false },
                                      {name:"FTSNM",                index:"FTSNM",                width:80,  align:'center', sortable : false, editable:true },
                                      {name:"BTN_FTSNM",            index:"BTN_FTSNM",            width:45,  align:'center', sortable : false, formatter :gridSchboxFormat},
                                      {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:100, align:'left'  , sortable : false, editable:true , formatter:'integer', formatoptions:{thousandsSeparator:''}},
-                                     {name:"TRPCS_PY_YN",          index:"TRPCS_PY_YN",          width:100, align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value:'0:부;1:여'}},
+                                     {name:"TRPCS_PY_YN",          index:"TRPCS_PY_YN",          width:100, align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"SRA_TRPCS",            index:"SRA_TRPCS",            width:90,  align:'center', sortable : false, editable:true , formatter:'integer'},
                                      {name:"SRA_PYIVA",            index:"SRA_PYIVA",            width:90,  align:'center', sortable : false, editable:true , formatter:'integer'},
                                      {name:"SRA_FED_SPY_AM",       index:"SRA_FED_SPY_AM",       width:70,  align:'center', sortable : false, editable:true , formatter:'integer'},                                     
@@ -780,21 +761,21 @@
                                      {name:"VACN_ORDER",           index:"VACN_ORDER",                width:80,  align:'center', sortable : false, editable:true },
                                      {name:"BRCL_ISP_DT",          index:"BRCL_ISP_DT",          width:90,  align:'left'  , sortable : false, editable:true ,formatter:'gridDateFormat'},
                                      {name:"BRCL_ISP_RZT_C",       index:"BRCL_ISP_RZT_C",       width:90,  align:'left'  , sortable : false, hidden : true},
-                                     {name:"BRCL_ISP_CTFW_SMT_YN", index:"BRCL_ISP_CTFW_SMT_YN", width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value:'0:부;1:여'}  },
-                                     {name:"RMHN_YN",              index:"RMHN_YN",              width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value:'0:부;1:여'}  },
-                                     {name:"MT12_OVR_YN",          index:"MT12_OVR_YN",          width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value:'0:부;1:여'}  },
+                                     {name:"BRCL_ISP_CTFW_SMT_YN", index:"BRCL_ISP_CTFW_SMT_YN", width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}  },
+                                     {name:"RMHN_YN",              index:"RMHN_YN",              width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}  },
+                                     {name:"MT12_OVR_YN",          index:"MT12_OVR_YN",          width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}  },
                                      {name:"MT12_OVR_FEE",         index:"MT12_OVR_FEE",         width:90,  align:'left'  , sortable : false, editable:true , formatter:'integer'  },
                                      {name:"PPGCOW_FEE_DSC",       index:"PPGCOW_FEE_DSC",       width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("PPGCOW_FEE_DSC",1)}  },
                                      {name:"AFISM_MOD_DT",         index:"AFISM_MOD_DT",         width:90,  align:'left'  , sortable : false, editable:true , formatter:'gridDateFormat'},
-                                     {name:"AFISM_MOD_CTFW_SMT_YN",index:"AFISM_MOD_CTFW_SMT_YN",width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: '0:부;1:여' }  },
+                                     {name:"AFISM_MOD_CTFW_SMT_YN",index:"AFISM_MOD_CTFW_SMT_YN",width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
                                      {name:"MOD_KPN",              index:"MOD_KPN",              width:90,  align:'left'  , sortable : false, editable:true   },
                                      {name:"PRNY_MTCN",            index:"PRNY_MTCN",            width:90,  align:'left'  , sortable : false, editable:true , formatter:'integer' },
-                                     {name:"PRNY_JUG_YN",          index:"PRNY_JUG_YN",          width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: '0:부;1:여' }  },
-                                     {name:"PRNY_YN",              index:"PRNY_YN",              width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: '0:부;1:여' }  },
-                                     {name:"NCSS_JUG_YN",          index:"NCSS_JUG_YN",          width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: '0:부;1:여' }  },
-                                     {name:"NCSS_YN",              index:"NCSS_YN",              width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: '0:부;1:여' }  },
+                                     {name:"PRNY_JUG_YN",          index:"PRNY_JUG_YN",          width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
+                                     {name:"PRNY_YN",              index:"PRNY_YN",              width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
+                                     {name:"NCSS_JUG_YN",          index:"NCSS_JUG_YN",          width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
+                                     {name:"NCSS_YN",              index:"NCSS_YN",              width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
                                      {name:"DNA_YN",               index:"DNA_YN",               width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: '3:정보없음;1:일치;2:완전불일치;4:부불일치;5:모불일치;6:부or모불일치' }  },
-                                     {name:"DNA_YN_CHK",           index:"DNA_YN_CHK",           width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: '0:부;1:여' }  },
+                                     {name:"DNA_YN_CHK",           index:"DNA_YN_CHK",           width:90,  align:'left'  , sortable : false, editable:true , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
                                      {name:"RMK_CNTN",             index:"RMK_CNTN",             width:90,  align:'left'  , sortable : false, editable:true   },
                                      {name:"SRA_PDMNM",            index:"SRA_PDMNM",            width:90,  align:'left'  , sortable : false, editable:true },
                                      {name:"SRA_PD_RGNNM",         index:"SRA_PD_RGNNM",         width:90,  align:'left'  , sortable : false, editable:true },
@@ -838,7 +819,7 @@
             colNames: searchResultColNames,
             colModel: searchResultColModel,
             afterRestoreCell  : function(rowid, value, iRow, iCol){
-            	 var colModel = $("#grd_MmInsSogCow").jqGrid("getGridParam", "colModel");            	
+            	var colModel = $("#grd_MmInsSogCow").jqGrid("getGridParam", "colModel");            	
             	cellname = colModel[iCol].name;
             	if(cellname =='TRPCS_PY_YN'){
             		var trpcs_py_yn = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'TRPCS_PY_YN');
@@ -856,7 +837,7 @@
             	if(cellname =='SRA_INDV_AMNNO'){
      	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 0);
      	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 0);
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM');
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM');
      	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
      	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO' );
             		fn_popSraIndvAmnno(rowid);
@@ -879,17 +860,26 @@
             	if(cellname =='SRA_INDV_AMNNO'){
      	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 0);
      	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 0);
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM');
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM');
      	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
      	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO' );
             		fn_popSraIndvAmnno(rowid);
             	}
             },
             afterEditCell : function(rowid, cellname, value, iRow, iCol){
+                $("select[id='"+iRow+"_"+cellname+"']").on('blur',function(e){
+                    $("#grd_MmInsSogCow").jqGrid("saveCell", rowid, iCol);
+                });
                 $("input[id='"+iRow+"_"+cellname+"']").on('blur',function(e){
                     $("#grd_MmInsSogCow").jqGrid("saveCell", rowid, iCol);
                 }).on('focusout',function(e){
                     $("#grd_MmInsSogCow").jqGrid("saveCell", rowid, iCol);
+                }).on("input", function(){
+                	$(this).val($(this).val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1'));
+                }).on("focus",function(){
+                	if($(this).val() == 0){
+                		$(this).val(null) ;
+                	}
                 }).on('keydown',function(e){
                 	if(cellname =='SRA_TRPCS'){
                         //e.preventDefault();
@@ -898,19 +888,7 @@
                 			$(this).val('');
                             //$("#grd_MmInsSogCow").jqGrid("saveCell", rowid, iCol);
                 		}
-                	}              
-                    var code = e.keyCode || e.which;
-                    if(code == 13){
-                    	if(cellname == 'FTSNM') {
-                            e.preventDefault();                            
-                            //$("#grd_MmInsSogCow").jqGrid("saveCell", rowid, iCol);
-                            //fn_popFstNm(rowid,'FTSNM');
-                        }if(cellname == 'SRA_INDV_AMNNO') {
-                            e.preventDefault();                            
-                            //$("#grd_MmInsSogCow").jqGrid("saveCell", rowid, iCol);
-                            //fn_popSraIndvAmnno(rowid);                            
-                        }
-                    }
+                	}
                 });
             }
         });

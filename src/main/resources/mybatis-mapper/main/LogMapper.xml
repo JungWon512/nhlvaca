@@ -351,5 +351,74 @@
             and trmn_amnno             = #{trmn_amnno}
     </insert>
     
+    <insert id="insGrpLog">
+    	<selectKey keyProperty="grp_log_sq" resultType="int" order="BEFORE">
+    		SELECT NVL(MAX(GRP_LOG_SQ),0) +1 FROM TB_LA_IS_MM_GRP_LOG
+    	</selectKey>
+    	INSERT INTO TB_LA_IS_MM_GRP_LOG(
+			GRP_LOG_SQ
+			, WK_GRP_C
+			, WK_GRPNM
+			, UYN
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, CHG_RMK_CNTN
+			, CHG_DTM
+			, GRP_USR_ID
+		)
+		SELECT 
+			#{grp_log_sq}
+			,WK_GRP_C
+			,WK_GRPNM
+			,UYN
+			,FSRG_DTM
+			,FSRGMN_ENO
+			,LSCHG_DTM
+			,LS_CMENO
+			,#{chg_rmk_cntn}
+			,SYSDATE
+			,(SELECT LISTAGG(USRID||'['||APL_STS_DSC||']',', ') WITHIN GROUP (ORDER BY USRID,APL_STS_DSC) FROM TB_LA_IS_MM_GRP_USR WHERE GRP_C=WK_GRP_C)
+		FROM TB_LA_IS_MM_GRP
+		WHERE WK_GRP_C = #{wk_grp_c}
+    </insert>
+    
+    
+    <insert id="insGrpUsrLog">
+    	<selectKey keyProperty="grp_log_sq" resultType="int" order="BEFORE">
+    		SELECT NVL(MAX(GRP_USR_LOG_SQ),0) +1 FROM TB_LA_IS_MM_GRP_USR_LOG
+    	</selectKey>
+    	INSERT INTO TB_LA_IS_MM_GRP_USR_LOG(
+    		GRP_USR_LOG_SQ              
+			, GRP_C                     
+			, USRID                     
+			, APL_STS_DSC               
+			, APL_ST_DT                 
+			, APL_ED_DT                 
+			, FSRG_DTM                  
+			, FSRGMN_ENO                
+			, LSCHG_DTM                 
+			, LS_CMENO                  
+			, CHG_RMK_CNTN              
+			, CHG_DTM                   
+		)                               
+		SELECT 
+			#{grp_log_sq}        
+			, GRP_C        
+			, USRID
+			, APL_STS_DSC
+			, APL_ST_DT
+			, APL_ED_DT
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			,#{chg_rmk_cntn}
+			,SYSDATE
+		FROM TB_LA_IS_MM_GRP_USR
+		WHERE GRP_C = #{wk_grp_c}
+		AND USRID = #{grp_usrid}
+    </insert>
 
 </mapper>

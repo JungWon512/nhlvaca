@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.sy.service.Impl.LALM0837Mapper">
+	
+	 <select id="LALM0837_selList" resultType="hashMap">
+		SELECT  
+			GRP_LOG_SQ
+			, WK_GRP_C
+			, WK_GRPNM
+			, GRP_USR_ID
+			, UYN
+			, TO_CHAR(CHG_DTM,'YYYY-MM-DD HH:MI:SS') CHG_DTM
+			, CHG_RMK_CNTN
+			, TO_CHAR(FSRG_DTM,'YYYY-MM-DD HH:MI:SS') FSRG_DTM
+			, FSRGMN_ENO
+			, TO_CHAR(LSCHG_DTM,'YYYY-MM-DD HH:MI:SS') LSCHG_DTM 
+			, LS_CMENO
+		FROM TB_LA_IS_MM_GRP_LOG
+		WHERE 1=1
+		AND TO_CHAR(CHG_DTM,'YYYYMMDD') BETWEEN #{st_dt} AND #{ed_dt}
+		<![CDATA[AND ROWNUM < 1000]]>
+		ORDER BY CHG_DTM
+	</select>	
+	
+	 <select id="LALM0837_selUsrList" resultType="hashMap">
+		SELECT  
+			GRP_USR_LOG_SQ
+			, GRP_C
+			, USRID
+			, APL_STS_DSC
+			, APL_ST_DT
+			, APL_ED_DT
+			, TO_CHAR(CHG_DTM,'YYYY-MM-DD HH:MI:SS') CHG_DTM
+			, CHG_RMK_CNTN
+			, TO_CHAR(FSRG_DTM,'YYYY-MM-DD HH:MI:SS') FSRG_DTM
+			, FSRGMN_ENO
+			, TO_CHAR(LSCHG_DTM,'YYYY-MM-DD HH:MI:SS') LSCHG_DTM 
+			, LS_CMENO			
+		FROM TB_LA_IS_MM_GRP_USR_LOG
+		WHERE 1=1
+		AND TO_CHAR(CHG_DTM,'YYYYMMDD') BETWEEN #{st_dt} AND #{ed_dt}
+		<if test ="apl_sts_dsc != null and apl_sts_dsc != ''">
+			AND APL_STS_DSC = #{apl_sts_dsc}
+		</if>
+		<if test ="usrid != null and usrid != ''">
+			AND USRID LIKE '%'|| #{usrid} || '%' 
+		</if>
+		<if test ="grp_c != null and grp_c != ''">
+			AND GRP_C = #{grp_c} 
+		</if>
+		ORDER BY CHG_DTM
+		
+	</select>	
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

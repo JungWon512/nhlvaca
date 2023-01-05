@@ -18,6 +18,7 @@ import com.auc.lalm.bs.service.LALM0111Service;
 import com.auc.mca.McaUtil;
 
 @RestController
+@SuppressWarnings({"unchecked", "unused"})
 public class LALM0111Controller {
 	
 	private static Logger log = LoggerFactory.getLogger(LALM0111Controller.class);
@@ -35,8 +36,8 @@ public class LALM0111Controller {
 	@RequestMapping(value="/LALM0111_selList", method=RequestMethod.POST)
 	public Map<String, Object> LALM0111_selList(ResolverMap rMap) throws Exception{	
 		Map<String, Object> map          = convertConfig.conMap(rMap);
-		List<Map<String, Object>> reList = lalm0111Service.LALM0111_selList(map);				
-		Map<String, Object> reMap        = commonFunc.createResultSetListData(reList); 			
+		List<Map<String, Object>> reList = lalm0111Service.LALM0111_selList(map);
+		Map<String, Object> reMap        = commonFunc.createResultSetListData(reList);
 		return reMap;
 	}	
 	
@@ -44,8 +45,8 @@ public class LALM0111Controller {
 	@RequestMapping(value="/LALM0111_selDetail", method=RequestMethod.POST)
 	public Map<String, Object> LALM0111_selDetail(ResolverMap rMap) throws Exception{	
 		Map<String, Object> map    = convertConfig.conMap(rMap);
-		Map<String, Object> selMap = lalm0111Service.LALM0111_selDetail(map);				
-		Map<String, Object> reMap  = commonFunc.createResultSetMapData(selMap); 			
+		Map<String, Object> selMap = lalm0111Service.LALM0111_selDetail(map);
+		Map<String, Object> reMap  = commonFunc.createResultSetMapData(selMap);
 		return reMap;
 	}	
 
@@ -55,8 +56,8 @@ public class LALM0111Controller {
 	public Map<String, Object> LALM0111_insFarm(ResolverMap rMap) throws Exception{	
 		Map<String, Object> map   = convertConfig.conMap(rMap);
 		Map<String, Object> inMap = lalm0111Service.LALM0111_insFarm(map);
-		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);		
-		return reMap;			
+		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
+		return reMap;
 	}
 	
 	@ResponseBody
@@ -64,8 +65,8 @@ public class LALM0111Controller {
 	public Map<String, Object> LALM0111_updFarm(ResolverMap rMap) throws Exception{	
 		Map<String, Object> map   = convertConfig.conMap(rMap);
 		Map<String, Object> inMap = lalm0111Service.LALM0111_updFarm(map);
-		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);		
-		return reMap;			
+		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
+		return reMap;
 	}
 	
 	@ResponseBody
@@ -76,7 +77,7 @@ public class LALM0111Controller {
 		Map<String, Object> mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), selMap);
 		Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");
 		Map<String, Object> reMap = commonFunc.createResultSetMapData(dataMap);
-		return reMap;			
+		return reMap;
 	}
 
 	@ResponseBody
@@ -84,8 +85,8 @@ public class LALM0111Controller {
 	public Map<String, Object> LALM0111_delFhs(ResolverMap rMap) throws Exception{	
 		Map<String, Object> map   = convertConfig.conMap(rMap);
 		Map<String, Object> inMap = lalm0111Service.LALM0111_delFhs(map);
-		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);		
-		return reMap;			
+		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
+		return reMap;
 	}
 	
 	

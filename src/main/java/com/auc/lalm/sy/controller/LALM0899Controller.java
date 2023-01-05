@@ -1,45 +1,30 @@
 package com.auc.lalm.sy.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import com.auc.common.config.CommonFunc;
 import com.auc.common.config.ConvertConfig;
 import com.auc.common.exception.CusException;
 import com.auc.common.exception.ErrorCode;
+import com.auc.common.vo.JwtUser;
 import com.auc.common.vo.ResolverMap;
 import com.auc.lalm.sy.service.LALM0899Service;
 import com.auc.mca.McaUtil;
-import com.auc.mca.TradeMcaMsgDataController;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 
 @RestController
 public class LALM0899Controller {
@@ -128,12 +113,16 @@ public class LALM0899Controller {
 			reMap = commonFunc.createResultSetMapData(dataMap);
 			return reMap;
 		//개채정보 수신
-		}else if("1400".equals((String)map.get("ctgrm_cd"))) {
+		}else if("1400".equals((String)map.get("ctgrm_cd")) || "4600".equals((String)map.get("ctgrm_cd")) ) {
 			mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), map);
 			List<Map<String, Object>> jsonList = (List<Map<String, Object>>) mcaMap.get("jsonList");
 			int insertNum = 0;
 			if(jsonList != null && jsonList.size() > 0) {
-				insertNum = lalm0899Service.LALM0899_insMca1400(jsonList, map);
+				if("4600".equals((String)map.get("ctgrm_cd"))) {
+					insertNum = lalm0899Service.LALM0899_insMca4600(jsonList, map);					
+				}else {
+					insertNum = lalm0899Service.LALM0899_insMca1400(jsonList, map);					
+				}				
 			}
 		//수송자정보 수신
 		}else if("1500".equals((String)map.get("ctgrm_cd"))) {
@@ -235,8 +224,7 @@ public class LALM0899Controller {
 			Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");
 			reMap = commonFunc.createResultSetMapData(dataMap);
 			return reMap;
-	    //개체이력정보 수신
-		}else if("2200".equals((String)map.get("ctgrm_cd"))) {			
+		}else if("2200".equals((String)map.get("ctgrm_cd")) || "4700".equals((String)map.get("ctgrm_cd"))) {			
 			mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), map);
 			Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");
 			dataMap = commonFunc.createResultSetMapData(dataMap); 			
@@ -313,6 +301,7 @@ public class LALM0899Controller {
 				//전송여부
 				msgMap = convertConfig.changeKeyUpper(msgMap);				
 				msgMap.put("TMS_YN", dataMap.get("RZTC"));
+				msgMap.put("TMS_TYPE", "01");
 				
 				msgInsCnt += lalm0899Service.LALM0899_insMca3100(msgMap);
 				
@@ -452,6 +441,66 @@ public class LALM0899Controller {
 			Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");
 			dataMap = commonFunc.createResultSetMapData(dataMap); 			
 			return dataMap;
+		}else if("4900".equals((String)map.get("ctgrm_cd"))) {
+			mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), map);
+			Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");
+			List<Map<String, Object>> rpt_data = (List<Map<String, Object>>) dataMap.get("RPT_DATA");
+			List<Map<String, Object>> dataList = null;			
+			if(rpt_data != null && !rpt_data.isEmpty()) {
+				dataList = (List<Map<String, Object>>) dataMap.get("RPT_DATA");
+			}else {
+				dataList = new ArrayList<Map<String, Object>>();
+			}			
+			reMap = commonFunc.createResultSetListData(dataList);
+			return reMap;			
+		// 카카오 알림톡 전송
+		}else if("5100".equals((String)map.get("ctgrm_cd"))) {
+			int msgInsCnt = 0;
+			List<Map<String, Object>> msgList = (List<Map<String, Object>>) map.get("rpt_data");
+			for(int i = 0; i < msgList.size(); i++) {
+				Map<String, Object> msgMap = msgList.get(i);				
+				Map<String, Object> tempMap = lalm0899Service.LALM0899_selMca5100AlarmTalkId(msgMap);
+				// IO_TGRM_KEY (SEQ - 전문키 YYMMDD + 연번4자리)
+				msgMap.put("IO_TGRM_KEY", tempMap.get("IO_TGRM_KEY"));
+				// RLNO (사용자 사번)
+				msgMap.put("RLNO", map.get("ss_userid"));
+				// IO_TIT (타이틀 미사용 "" 고정)
+				msgMap.put("IO_TIT","");
+				// fail-back 필요 파라메터(알람톡 실패시 LMS로 발송)
+				// FBK_TIT (타이틀 미사용 "" 고정)
+				msgMap.put("FBK_TIT","");
+				// fail-back 사용여부 (Y 고정)
+				msgMap.put("FBK_UYN", "Y");
+				// fail-back 사용여부 (SMS : 3, LMS : 7)
+				msgMap.put("FBK_MSG_DSC","7");
+				// IO_ATGR_ITN_TGRM_LEN (UMS_FWDG_CNTN의 바이트 수)
+				msgMap.put("IO_ATGR_ITN_TGRM_LEN", msgMap.getOrDefault("ums_fwdg_cntn","").toString().getBytes().length);
+				mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), msgMap);
+				Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");	
+				//전송여부
+				msgMap = convertConfig.changeKeyUpper(msgMap);				
+				msgMap.put("TMS_YN", dataMap.get("RZTC"));
+				msgMap.put("TMS_TYPE", "02");
+				
+				msgInsCnt += lalm0899Service.LALM0899_insMca3100(msgMap);
+			}
+			Map<String, Object> cntMap = new HashMap<String, Object>();
+			cntMap.put("resultCnt", msgInsCnt);
+			reMap = commonFunc.createResultSetMapData(cntMap); 			
+			return reMap;
+		}else if("5200".equals((String)map.get("ctgrm_cd")) || "5300".equals((String)map.get("ctgrm_cd")) 
+				|| "5400".equals((String)map.get("ctgrm_cd")) || "5500".equals((String)map.get("ctgrm_cd")) || "5600".equals((String)map.get("ctgrm_cd"))) {
+			//대시보드용
+			mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), map);
+			Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");
+			List<Map<String, Object>> rpt_data = (List<Map<String, Object>>) dataMap.get("RPT_DATA");
+			List<Map<String, Object>> dataList = null;			
+			if(rpt_data != null && !rpt_data.isEmpty()) {
+				dataList = (List<Map<String, Object>>) dataMap.get("RPT_DATA");
+			}else {
+				dataList = new ArrayList<Map<String, Object>>();
+			}
+			reMap = commonFunc.createResultSetListData(dataList); 	
 		}else {
 			mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), map);
 		}
@@ -462,16 +511,14 @@ public class LALM0899Controller {
 	
 
 	@ResponseBody
-	@RequestMapping(value="/LALM0899_selRestApi2", method=RequestMethod.POST)
-    public Map<String, Object> LALM0899_selRestApi2(ResolverMap rMap) throws Exception {//IOException, SAXException, ParserConfigurationException
+	@RequestMapping(value="/LALM0899_selRestApi", method=RequestMethod.POST)
+    public Map<String, Object> LALM0899_selRestApi(ResolverMap rMap) throws Exception {//IOException, SAXException, ParserConfigurationException
 		
 		Map<String, Object> map          = convertConfig.conMap(rMap);
 		Map<String, Object> nodeMap      = new HashMap<String, Object>();
 		
 		nodeMap = mcaUtil.getOpenDataApi(map);
-		if(nodeMap == null) {
-			throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
-		}
+		
 		Map<String, Object> reMap = commonFunc.createResultSetMapData(nodeMap); 	
         return reMap;
     }
@@ -489,103 +536,17 @@ public class LALM0899Controller {
         return reMap;
     }
 	
-	
-	@ResponseBody
-	@RequestMapping(value="/LALM0899_selRestApi", method=RequestMethod.POST)
-    public Map<String, Object> LALM0899_selRestApi(ResolverMap rMap) throws Exception {//IOException, SAXException, ParserConfigurationException
-		
-		Map<String, Object> map          = convertConfig.conMap(rMap);
-		Map<String, Object> nodeMap      = null;
-		
-		String sendUrl = "http://data.ekape.or.kr/openapi-data/service/user/animalTrace/traceNoSearch";
-		sendUrl += "?serviceKey=" + "7vHI8ukF3BjfpQW8MPs9KtxNwzonZYSbYq6MVPIKshJNeQHkLqxsqd1ru5btfLgIFuLRCzCLJDLYkHp%2FvI6y0A%3D%3D";
-		sendUrl += "&traceNo=" + map.get("trace_no");//  "002125769192";
-		sendUrl += "&optionNo=" + map.get("option_no");//"7"; 브루셀라
-		log.debug("sendUrl: " + sendUrl);
-		StringBuilder urlBuilder = new StringBuilder(sendUrl);
-        URL url = new URL(urlBuilder.toString());
-        HttpURLConnection conn = null;
-				
-		try {
-			
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setConnectTimeout(1000);
-			conn.setReadTimeout(1000);
-	        conn.setRequestMethod("GET");
-	        conn.setRequestProperty("Content-type", "application/json");
-	        log.debug("Response code: " + conn.getResponseCode());
-	        BufferedReader rd = null;
-	        
-	        if(conn.getResponseCode() >= 200 && conn.getResponseCode() <=300 ) {
-				rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			}else {
-				rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-			}
-	        
-	        StringBuilder sb = new StringBuilder();
-	        String line;
-	        while ((line = rd.readLine()) != null) {
-	            sb.append(line);
-	        }
-	        rd.close();
-	        conn.disconnect();
-	        log.debug(sb.toString());
-	        
-	        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance(); 
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder(); 
-			
-			String parsingUrl = url.toString();
-			Document doc = dBuilder.parse(parsingUrl);
-			
-			// Tree 구조 node 로 변환
-			doc.getDocumentElement().normalize();
-			
-			// root tag 값 확인
-			log.debug("Root element : " + doc.getDocumentElement().getNodeName());
-			
-			// 파싱할 데이터 tag 의 리스트 수
-			NodeList nList = doc.getElementsByTagName("item"); // <item> 태그요소
-			log.debug("파싱할 리스트 수 : " +  nList.getLength());
-	        
-			nodeMap = new HashMap<String, Object>();
-			
-			for(int i = 0; i < nList.getLength(); i++) {
-				Node nNode = nList.item(i); // <item> i 의 값을 nNode 에 넣는다.
-				//브루셀라
-				Element eElement = (Element)nNode;
-
-				nodeMap.put("insepctDt", getTagValue("inspectDt",eElement));					// 브루셀라 검사일
-				nodeMap.put("inspectYn", getTagValue("inspectYn",eElement));					// 브루셀라 접종 유무
-				nodeMap.put("tbcInspectYmd", getTagValue("tbcInspectYmd",eElement));			// 결핵 검사일
-				nodeMap.put("tbcInspectRsltNm", getTagValue("tbcInspectRsltNm",eElement));		// 결핵 검사결과
-				nodeMap.put("injectionYmd", getTagValue("injectionYmd",eElement));				// 구제역 백신접종일
-				nodeMap.put("vaccineorder", getTagValue("vaccineorder",eElement));				// 구제역 백신접종 차수
-				nodeMap.put("injectionDayCnt", getTagValue("injectionDayCnt",eElement));		// 구제역 백신접종경과일
-			}
-			
-		} catch (RuntimeException e) {
-			throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
-        } catch (Exception e) {
-        	throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
-        } finally {
-            if (conn!= null) conn.disconnect();
-        }
-		
-		Map<String, Object> reMap = commonFunc.createResultSetMapData(nodeMap);
-        return reMap;
-    }
-	
     //*tag 값의 정보를 가져오는 메소드
 	private static String getTagValue(String tag, Element eElement) {
-		String rtnString = "";
-		NodeList list = eElement.getChildNodes();
-		for (int i = 0; i < list.getLength(); i++) {
-			Node node = list.item(i);
-			if (tag.equals(node.getNodeName())) {
-				return node.getTextContent();
-			}
+		
+		NodeList nList = eElement.getElementsByTagName(tag).item(0).getChildNodes();
+		Node nValue = (Node)nList.item(0);
+		
+		if(nValue == null) {
+			return null;
 		}
-		return rtnString;
+		return nValue.getNodeValue();
+		
 	}
 	
 }

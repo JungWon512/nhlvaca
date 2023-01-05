@@ -95,7 +95,7 @@
         }
         
         var searchResultColNames = ["경매대상", "경매번호", "귀표번호<br>(4자리)", "귀표번호"
-                                  , "성별", "응찰하한가","낙찰가","낙찰단위", "낙찰가", "낙찰번호<br>(참가번호)", "낙찰자", "농가명"
+                                  , "성별", "예정가","낙찰가","낙찰단위", "낙찰가", "낙찰번호<br>(참가번호)", "낙찰자", "농가명"
                                   , "농가주소", "농가핸드폰번호"];        
         var searchResultColModel = [
                                      {name:"AUC_OBJ_DSC",               index:"AUC_OBJ_DSC",              width:70, align:'center',edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
@@ -148,7 +148,7 @@
        TitleData.title = "";
        
         
-       if(na_bzplc == '8808990687094'){    // 영주:8808990687094  테스트: 8808990643625
+       if(na_bzplc == '8808990643625'){    // 영주:8808990687094  테스트: 8808990643625
     	   ReportPopup('LALM0318R0',TitleData, 'grd_MhSogCow', 'V');
     	
        }else{

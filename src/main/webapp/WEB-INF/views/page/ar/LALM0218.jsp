@@ -104,6 +104,7 @@
     	 
     	var srchData = new Object();
     	srchData["ctgrm_cd"]     = '3100';
+    	srchData["tms_type"]     = '01';
         srchData["auc_obj_dsc"]  = $("#auc_obj_dsc").val();
         srchData["auc_dt"]       = fn_dateToData($("#auc_dt").val());
         srchData["obj_gbn"]      = $("#obj_gbn").val();
@@ -159,6 +160,7 @@
     	    	
     	var srchData = new Object();
         srchData["ctgrm_cd"]     = '3100';
+        srchData["tms_type"]     = '01';
         srchData["auc_obj_dsc"]  = $("#auc_obj_dsc").val();
         srchData["auc_dt"]       = fn_dateToData($("#auc_dt").val());
         srchData["obj_gbn"]      = $("#obj_gbn").val();

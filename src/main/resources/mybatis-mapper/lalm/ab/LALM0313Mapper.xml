@@ -58,6 +58,7 @@
                 , ATDR_DTM                         /* 응찰일시                            */
                 , MMO_INP_YN                       /* 수기입력여부                        */
                 , TMS_YN                           /* 전송여부                            */
+                , AUC_PRG_SQ
             )
             VALUES (
                   #{ss_na_bzplc}                /* 경제통합사업장코드                  */
@@ -78,6 +79,7 @@
                 , SYSTIMESTAMP                     /* 응찰일시                            */
                 , '1'                              /* 수기입력여부                        */
                 , '0'                              /* 전송여부                            */
+                , #{auc_prg_sq}
             )         
     </insert>    
     

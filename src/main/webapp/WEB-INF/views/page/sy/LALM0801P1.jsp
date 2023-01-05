@@ -289,7 +289,9 @@
                     });
                     return;
                                 
-                }
+                },complete:function(data){
+                	   localStorage.setItem("nhlvaca_token", getCookie('token'));
+    			}
             });
             
         	$("#apdfl_id").val(cntn_result.apdfl_id);     	
@@ -383,7 +385,7 @@
     	    xhr.setRequestHeader("Content-Type",  "application/json; charset=UTF-8");
     	                         
     	    xhr.onload = function(e){
-    	           
+           	   localStorage.setItem("nhlvaca_token", getCookie('token'));
     	        var filename =  $("#apdfl_id").val();
     	        var disposition = xhr.getResponseHeader('Content-Disposition');
     	        if(disposition && disposition.indexOf("attachment") !== -1){

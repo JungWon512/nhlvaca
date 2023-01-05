@@ -219,7 +219,7 @@
 	            rowNoValue = data.length;
 	        }
 	        
-	        var searchResultColNames = ["", "경매대상", "경매번호", "귀표번호", "생년월일", "성별", "KPN", "계대", "산차", "어미귀표번호", "어미구분", "중량", "응찰하한가", "코드", "번호", "성명", "", "입찰가", "경매일자", "원표번호"];      
+	        var searchResultColNames = ["", "경매대상", "경매번호", "귀표번호", "생년월일", "성별", "KPN", "계대", "산차", "어미귀표번호", "어미구분", "중량", "예정가", "코드", "번호", "성명", "", "입찰가", "경매일자", "원표번호"];      
 	        var searchResultColModel = [	
 	        							{name:"_STATUS_",                 index:"_STATUS_",                  width:5,  align:'center'},
 	            						{name:"AUC_OBJ_DSC",              index:"AUC_OBJ_DSC",               width:30, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},

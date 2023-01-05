@@ -18,10 +18,9 @@ public class JwtUserDetailsService implements UserDetailsService{
 	
 	@Autowired
 	MainMapper mainMapper;
-	
 	@Autowired
 	PasswordEncoder passwordEncoder;
-
+	   
 	@Value("${spring.profiles.service-name:nhlva}")
 	private String serviceName;
 
@@ -79,6 +78,20 @@ public class JwtUserDetailsService implements UserDetailsService{
 		else {
 			chkPw = mainMapper.selChkPw(usrid, user_pw);
 		}
+		return chkPw;
+	}
+
+	public int updRefreshToken(Map<String, Object> map) throws Exception {
+	    return mainMapper.updRefreshToken(map);
+	}
+
+	public int delUser(Map<String, String> loginMap) {
+	    return mainMapper.delUser(loginMap);
+	}
+
+	public int selChkPw(Map<String, Object> map) {
+		int chkPw = 0;
+		chkPw = mainMapper.selChkPw(map);
 		return chkPw;
 	}
 

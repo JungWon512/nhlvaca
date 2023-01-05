@@ -661,7 +661,7 @@ var na_bzplc = App_na_bzplc;
         		 TitleData.am_dsc = parent.envList[0]["NBFCT_AUC_ATDR_UNT_AMC"];
         	 }
             
-            var grid4 = fnSetGridData('grd_MhSogCow4');
+            var grid4 = fnSetGridData('grd_MhSogCow4');        	
              
              // 번식우
              if($("#auc_obj_dsc").val() == "3") {
@@ -691,7 +691,25 @@ var na_bzplc = App_na_bzplc;
             			 
             		 // ★전주김제: 8808990656441 전주김제 김제지점: 8808990766485
             		 } else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485') {
-            			 ReportPopup('LALM0216R3_63',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+   	            		 grid4 = grid4.map((o,i)=>{	
+               				if(o.MTCN4 !='0'){
+   								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';	            					
+               				}else{
+               					o.MTCN = o.MTCN+'개월';	            					
+               				}
+   							if(o.CALF_SRA_INDV_AMNNO){
+   								var tempSraNo = o.CALF_SRA_INDV_AMNNO.substr(3);
+   								o.CALF_SRA_INDV_AMNNO = tempSraNo.substr(0,3)+'-'+tempSraNo.substr(3);									
+   							}
+   							if(o.RG_DSC == '미등록우'){
+   								o.RG_DSC = '';
+   							}
+   							if(o.MCOW_DSC == '미등록우'){
+   								o.MCOW_DSC = '';
+   							}
+   							return o;
+   						}); 
+						ReportPopup('LALM0216R3_63',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★진천: 8808990656502
             		 } else if(na_bzplc == '8808990656502') {
@@ -958,9 +976,12 @@ var na_bzplc = App_na_bzplc;
             	 
             	 } else if($("#prto_tpc_4").is(":checked")) {
             		 // ★함평: 8808990656601 영암: 8808990689760
-              		 if(na_bzplc == '8808990656601' || na_bzplc == '8808990689760') {
+            		 //|| na_bzplc == '8808990689760'
+              		 if(na_bzplc == '8808990656601' ) {
               			 ReportPopup('LALM0216R3_49',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-              			 
+                	 // ★영암축협: 8808990689760
+            		 }else if(na_bzplc == '8808990689760'){
+             			ReportPopup('LALM0216R3_20',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               		 // ★영광축협: 8808990811710 테스트: 8808990643625
               		 } else if(na_bzplc == '8808990811710') {
               			 ReportPopup('LALM0216R3_81',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -974,8 +995,9 @@ var na_bzplc = App_na_bzplc;
              			 ReportPopup('LALM0216R3_96',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		// ★순정축협(순창): 8808990656960
              		 }  else if(na_bzplc == '8808990656960') {
-             			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
-             		 } else {
+             			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             		
+             		 }else {
               			 ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
               		 }
@@ -1126,8 +1148,27 @@ var na_bzplc = App_na_bzplc;
              			 
              		 // ★전주김제: 8808990656441 전주김제 김제지점: 8808990766485 
              		 } else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485') {
-             			 ReportPopup('LALM0216R3_58',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-             			 
+	   	            		 grid4 = grid4.map((o,i)=>{	
+	               				if(o.MTCN4 !='0'){
+	   								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';	            					
+	               				}else{
+	               					o.MTCN = o.MTCN+'개월';	            					
+	               				}
+	   							if(o.CALF_SRA_INDV_AMNNO){
+	   								var tempSraNo = o.CALF_SRA_INDV_AMNNO.substr(3);
+	   								o.CALF_SRA_INDV_AMNNO = tempSraNo.substr(0,3)+'-'+tempSraNo.substr(3);									
+	   							}
+	   							if(o.RG_DSC == '미등록우'){
+	   								o.RG_DSC = '';
+	   							}
+	   							if(o.MCOW_DSC == '미등록우'){
+	   								o.MCOW_DSC = '';
+	   							}
+	   							return o;
+	   						}); 
+	   	            		ReportPopup('LALM0216R3_58',TitleData, grid4, 'V');               //V:세로 , H:가로  , T :콘솔로그
+	               			 
+	               		 
              		 // ★익산: 8808990227283
              		 } else if(na_bzplc == '8808990227283') {
              			 ReportPopup('LALM0216R3_59',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1157,7 +1198,7 @@ var na_bzplc = App_na_bzplc;
              			 ReportPopup('LALM0216R3_75',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★함안: 8808990656946 의령 8808990656199 테스트: 8808990643625
-             		 } else if(na_bzplc == '8808990656946' || na_bzplc == '8808990656199') {
+             		 } else if(na_bzplc == '8808990656946' || na_bzplc == '8808990656199' ) {
              			 ReportPopup('LALM0216R3_84',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★남원: 8808990227207
@@ -1285,6 +1326,15 @@ var na_bzplc = App_na_bzplc;
              		 
              		 // ★창녕 8808990656274
              		 } else if(na_bzplc == '8808990656274') {
+             			grid4 = grid4.map((o,i)=>{	
+							if(o.MTCN4 !='0'){
+								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';								
+							}else{
+								o.MTCN = '('+o.MTCN+'개월)';
+							}
+							return o;
+						 }); 
+             			 
              			ReportPopup('LALM0216R3_102',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 } else {
@@ -1365,7 +1415,7 @@ var na_bzplc = App_na_bzplc;
         var searchResultColNames = ["H낙찰자","H인공수정표","H부KPN","H임신일수","H큰소구분","H수송자","H동이상주소","H낙찰가","H수송자","H낙찰자","H귀표번호","H어미귀표번호","경매<br>번호", "경매대상", "귀표번호", "생년월일"
                                   , "월령", "성별", "계대", "등록번호", "등록구분", "제각여부"
                                   , "KPN번호", "어미귀표번호","산차","중량","주소","성명","휴대폰"
-                                  ,"응찰하한가","브루셀라<br>검사일자","예방접종일자","우결핵<br>검사일자"
+                                  ,"예정가","브루셀라<br>검사일자","예방접종일자","우결핵<br>검사일자"
                                   ,"임신감정<br>여부","임신여부","인공수정일자","임신<br>개월수"
                                   ,"수정KPN","(송)귀표번호","(송)생년월일","(송)성별","(송)월령"
                                   ,"비고","친자검사여부","송아지구분","친자검사결과","어미등록구분"];        
@@ -1474,7 +1524,7 @@ var na_bzplc = App_na_bzplc;
         	if(gridDatatemp[i].SRA_INDV_AMNNO != 0){
         		tot_sra_indv_amnno++;
         	}
-        	//하한가등록두수        	
+        	//예정가등록두수        	
         	if(gridDatatemp[i].LOWS_SBID_LMT_AM != 0){
         		tot_lows_sbid_lmt_am++;
         	} 
@@ -1496,7 +1546,7 @@ var na_bzplc = App_na_bzplc;
 		  	       [//입력 컬럼 , 입력값, COLSPAN, 타입{String/Integer/Number}
                        ["AUC_PRG_SQ"           ,"총두수"                ,2 ,"String" ]
                       ,["SRA_INDV_AMNNO12"	   ,tot_sra_indv_amnno	  ,1 ,"Integer"] 
-                      ,["BIRTH"                ,"하한가등록두수"          ,2 ,"String"] 
+                      ,["BIRTH"                ,"예정가등록두수"          ,2 ,"String"] 
                       ,["INDV_SEX_C"           ,tot_lows_sbid_lmt_am  ,1 ,"Integer"] 
                       ,["SRA_INDV_PASG_QCN"    ,"중량등록두수"            ,3 ,"String"] 
                       ,["RMHN_YN"              ,tot_cow_sog_wt         ,1 ,"Integer"] 
@@ -1519,10 +1569,10 @@ var na_bzplc = App_na_bzplc;
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["비고","임신개월수","수정kpn번호","운송비지급여부","큰소구분","축산낙찰금액","참가번호","낙찰자명","운송기사명","응찰하한가","하한가 단위 "
+        var searchResultColNames = ["비고","임신개월수","수정kpn번호","운송비지급여부","큰소구분","축산낙찰금액","참가번호","낙찰자명","운송기사명","예정가","예정가 단위 "
         						  ,"경매<br>번호", "경매대상", "주소", "성명"
                                   , "전화번호", "귀표번호", "생년월일", "산차", "어미구분", "계대"
-                                  , "제각여부", "KPN번호","성별","중량","응찰하한가","월령","친자검사여부"
+                                  , "제각여부", "KPN번호","성별","중량","예정가","월령","친자검사여부"
                                   ,"친자검사결과","송아지구분","난소적출여부","송아지축산개체관리번호","송아지개체성별코드","송아지출하중량","송아지생년월일","등록구분코드"];        
         var searchResultColModel = [
         							  
@@ -1621,7 +1671,7 @@ var na_bzplc = App_na_bzplc;
         	if(gridDatatemp[i].SRA_INDV_AMNNO != 0){
         		tot_sra_indv_amnno++;
         	}
-        	//하한가등록두수
+        	//예정가등록두수
         	
         	if(gridDatatemp[i].LOWS_SBID_LMT_AM != 0){
         		tot_lows_sbid_lmt_am++;
@@ -1645,7 +1695,7 @@ var na_bzplc = App_na_bzplc;
 
 		             ["AUC_PRG_SQ"           ,"총두수"                 ,2 ,"String"]
 		  	        ,["DONG"	               ,tot_sra_indv_amnno	   ,1 ,"Integer"] 
-		  	        ,["FTSNM"                  ,"하한가등록두수"           ,2 ,"String"] 
+		  	        ,["FTSNM"                  ,"예정가등록두수"           ,2 ,"String"] 
 		  	        ,["SRA_INDV_AMNNO12"       ,tot_lows_sbid_lmt_am   ,1 ,"Integer"] 
 		  	        ,["BIRTH"                  ,"중량등록두수"            ,3 ,"String"] 
 		  	        ,["SRA_INDV_PASG_QCN"      ,tot_cow_sog_wt         ,1 ,"Integer"] 
@@ -1670,9 +1720,9 @@ var na_bzplc = App_na_bzplc;
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["송아지축산개체관리번호","송아지개체성별코드","송아지출하중량","송아지생년월일","h비고내용","h임신개월수","h수정kpn번호","월령","휴대폰번호","낙찰가","H큰소구분","H수송자","H귀표번호","경매<br>번호", "경매대상", "주소", "성명"
+        var searchResultColNames = ["송아지축산개체관리번호","송아지개체성별코드","송아지출하중량","송아지생년월일","h비고내용","h임신개월수","h수정kpn번호","월령","휴대폰번호","H큰소구분","H수송자","H귀표번호","경매<br>번호", "경매대상", "주소", "성명"
                                   , "귀표번호", "생년월일", "산차", "어미구분", "계대", "제각여부"
-                                  , "KPN번호", "성별","중량","응찰하한가","낙찰가","수송자","낙찰자"
+                                  , "KPN번호", "성별","중량","예정가","낙찰단가","낙찰가","수송자","낙찰자"
                                   ,"낙찰자<br>전화번호","참가<br>번호","어미귀표번호","친자검사여부"
                                   ,"송아지구분","친자검사결과","등록구분코드"];        
         var searchResultColModel = [
@@ -1686,7 +1736,7 @@ var na_bzplc = App_na_bzplc;
       							  	 {name:"MOD_KPN_NO",                index:"MOD_KPN_NO",               width:55,  align:'center'  ,hidden:true},
       							  	 {name:"MTCN",                      index:"MTCN",                     width:55,  align:'center'  ,hidden:true},
       							  	 {name:"CUS_MPNO",                  index:"CUS_MPNO",                 width:55,  align:'center'  ,hidden:true},
-      							  	 {name:"SRA_SBID_UPR",              index:"SRA_SBID_UPR",             width:55,  align:'center'  ,hidden:true},
+//       							  	 {name:"SRA_SBID_UPR",              index:"SRA_SBID_UPR",             width:55,  align:'center'  ,hidden:true},
         	                         {name:"PPGCOW_FEE_DSC",            index:"PPGCOW_FEE_DSC",           width:55,  align:'center'  ,hidden:true},
         	                         {name:"TRPCS_PY_YN",               index:"TRPCS_PY_YN",              width:55,  align:'center'  ,hidden:true},
         	                         {name:"SRA_INDV_AMNNO",            index:"SRA_INDV_AMNNO",           width:55,  align:'center'  ,hidden:true},
@@ -1704,6 +1754,7 @@ var na_bzplc = App_na_bzplc;
                                      {name:"INDV_SEX_C",                index:"INDV_SEX_C",               width:40,  align:'center'  , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
                                      {name:"COW_SOG_WT",                index:"COW_SOG_WT",               width:70,  align:'right'   , formatter:'interger', formatoptions:{decimalPlaces:2,thousandsSeparator:','}},
                                      {name:"LOWS_SBID_LMT_AM",          index:"LOWS_SBID_LMT_AM",         width:85,  align:'right'   , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"SRA_SBID_UPR",               index:"SRA_SBID_UPR",            width:85,  align:'right'   , formatter:'currency', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"SRA_SBID_AM",               index:"SRA_SBID_AM",              width:85,  align:'right'   , formatter:'currency', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"VHC_DRV_CAFFNM",            index:"VHC_DRV_CAFFNM",           width:85,  align:'center' },
                                      {name:"SRA_MWMNNM",                index:"SRA_MWMNNM",               width:80,  align:'center' },
@@ -1792,7 +1843,7 @@ var na_bzplc = App_na_bzplc;
 		  	       [//입력 컬럼 , 입력값, COLSPAN, 타입{String/Integer/Number}
                        ["AUC_PRG_SQ"            ,"총두수"                 ,1 ,"String" ]
                       ,["AUC_OBJ_DSC"           ,tot_sra_indv_amnno	    ,1 ,"Integer"] 
-                      ,["DONG"                  ,"하한가등록두수"            ,1 ,"String"] 
+                      ,["DONG"                  ,"예정가등록두수"            ,1 ,"String"] 
                       ,["FTSNM"                 ,tot_lows_sbid_lmt_am    ,1 ,"Integer"] 
                       ,["SRA_INDV_AMNNO"        ,"중량등록두수"             ,1 ,"String"] 
                       ,["BIRTH"                 ,tot_cow_sog_wt          ,1 ,"Integer"]  
@@ -1816,7 +1867,7 @@ var na_bzplc = App_na_bzplc;
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["일수(월령)","H사업장코드","H브랜드","H낙찰가격","H경매일자","H낙찰자","H낙찰가격","H인공수정일","H송아지축산개체관리번호","H송아지개체성별코드","H송아지출하중량","H송아지생년월일","H송아지KPN번호","H송아지월령","H구제역예방접종일","H임신개월수","H브루셀라검사일","H낙찰가","H하한가","H단가단위"
+        var searchResultColNames = ["일수(월령)","H사업장코드","H브랜드","H낙찰가격","H경매일자","H낙찰자","H낙찰가격","H인공수정일","H송아지축산개체관리번호","H송아지개체성별코드","H송아지출하중량","H송아지생년월일","H송아지KPN번호","H송아지월령","H구제역예방접종일","H임신개월수","H브루셀라검사일","H낙찰가","H예정가","H단가단위"
 
 								   ,"H유전능력 냉도체중","H유전능력 냉도체중 등급","H유전능력 배최장근단면적","H유전능력 배최장근단면적 등급","H등지방두께","H등지방두께 등급","H유전능력 근내지방도","H유전능력 근내지방도 등급"
 								   ,"H유전능력 냉도체중-모개체","H유전능력 냉도체중등급-모개체","H유전능력 배최장근단면적-모개체","H유전능력 배최장근단면적 등급-모개체","H유전능력 등지방두께-모개체","H유전능력 등지방두께 등급-모개체","H유전능력 근내지방도-모개체","H유전능력 근내지방도 등급-모개체"
@@ -1826,7 +1877,7 @@ var na_bzplc = App_na_bzplc;
         							
          		 				   ,"경매<br>번호", "경매대상", "성명", "귀표번호"
                                    , "생년월일", "산차", "어미구분", "계대", "제각여부", "KPN번호"
-                                   , "성별", "중량","응찰하한가","주소","전화번호","휴대폰","비고"
+                                   , "성별", "중량","예정가","주소","전화번호","휴대폰","비고"
                                    ,"어미귀표번호","등록구분","월령","월령"
                                    ,"수정KPN","친자검사여부","친자검사결과","우결핵<br>검사일자"
                                    ,"고능력여부","송아지구분","전이용사료여부"];        
@@ -1996,7 +2047,7 @@ var na_bzplc = App_na_bzplc;
 		  	       [//입력 컬럼 , 입력값, COLSPAN, 타입{String/Integer/Number}
                        ["AUC_PRG_SQ"              ,"총두수"                  ,1 ,"String" ]
                       ,["AUC_OBJ_DSC"             ,tot_sra_indv_amnno 	   ,1 ,"Integer"] 
-                      ,["FTSNM"                   ,"하한가등록두수"            ,2 ,"String"] 
+                      ,["FTSNM"                   ,"예정가등록두수"            ,2 ,"String"] 
                       ,["BIRTH"                   ,tot_lows_sbid_lmt_am    ,1 ,"Integer"] 
                       ,["MATIME"                  ,"중량등록두수"              ,2 ,"String"] 
                       ,["SRA_INDV_PASG_QCN"       ,tot_cow_sog_wt          ,1 ,"Integer"] 
@@ -2015,11 +2066,8 @@ var na_bzplc = App_na_bzplc;
     
         gridSaveRow(frmId);
         var colModel    = $('#'+frmId).jqGrid('getGridParam', 'colModel');
-        var gridData    = $('#'+frmId).jqGrid('getGridParam', 'data');
-                        
-		var result = new Array();
-		var index = 0;
-		        
+        var gridData    = $('#'+frmId).jqGrid('getGridParam', 'data');        
+		var result = new Array();        
         if (gridData.length == 0) {
            MessagePopup("OK", '조회된 데이터가 없습니다.');
            return result;
@@ -2035,7 +2083,7 @@ var na_bzplc = App_na_bzplc;
 		       });
 		   }
 		}
-		
+		var index = 0;
 		$('#'+frmId).getRowData().forEach((o,i)=>{
 			if(o.SRA_INDV_PASG_QCN == '0'){
 				o.SRA_INDV_PASG_QCN = '';
