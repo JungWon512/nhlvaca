@@ -69,7 +69,6 @@ public class JwtUserDetailsService implements UserDetailsService{
 	}
 
 	public int selChkPw(String usrid, String user_pw) {
-		System.out.println("serviceName : " + serviceName);
 		int chkPw = 0;
 		if ("tibero".equals(serviceName)) {
 			Map<String, Object> pwMap = mainMapper.selChkPwTibero(usrid, user_pw);

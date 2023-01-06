@@ -53,4 +53,12 @@ public interface LALM0215Service {
 	
 	Map<String, Object> LALM0215_delImgList(Map<String, Object> map) throws Exception;
 
+	/**
+	 * 출장우 이미지 저장 
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
+	Map<String, Object> LALM0215_insImgPgm(Map<String, Object> rMap) throws Exception;
+
 }

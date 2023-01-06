@@ -1848,7 +1848,7 @@
     						
     						if(result.status == RETURN_SUCCESS){
     							if($("#uploadImg").val() != ""){
-    	                    		if (fileUpload() == true){
+    	                    		if (fn_UploadImage(setDecrypt(result)) == true){
     									MessagePopup("OK", "저장되었습니다.",function(res){
     					            		mv_RunMode = 3;
     										mv_auc_dt = $("#auc_dt").val();
@@ -1899,7 +1899,7 @@
     						
     						if(result.status == RETURN_SUCCESS){
     							if($("#uploadImg").val() != ""){
-    	                    		if (fileUpload() == true){
+    	                    		if (fn_UploadImage() == true){
     									MessagePopup("OK", "저장되었습니다.",function(res){
     										mv_RunMode = 3;
     										mv_auc_dt = $("#auc_dt").val();
@@ -4189,18 +4189,15 @@
 	}
 	
 	//**************************************
- 	//function  : getImageFiles(이미지 등록) 
- 	//paramater : event
- 	// result   : N/A
+	// function  : getImageFiles(이미지 등록) 
+	// paramater : event
+	// result   : N/A
 	//**************************************
 	function getImageFiles(e){
 		const uploadFiles = [];
 		const files = e.currentTarget.files;
 		const fileImg = $("ul#imagePreview li");
 		const imagePreview = document.querySelector("#imagePreview");
-		
-		console.log("등록할 이미지의 수:" + [...files].length);
-		console.log("등록된 이미지의 수:" + fileImg.length);
 		
 		// 파일 갯수 처리
 		if ([...files].length > 8 || [...files].length + fileImg.length > 8) {
@@ -4223,8 +4220,6 @@
 				const reader = new FileReader();
 				reader.onload = (e) => {
 					const preview = createElement(e, file);
-// 					imageList.appendChild(preview);
-// 					imagePreview.append(preview);
 					$("#imagePreview").append(preview);
 				};
 				reader.readAsDataURL(file);
@@ -4232,43 +4227,77 @@
 		});
 	}
 	
+	//**************************************
+	// function  : createElement(이미지 미리보기) 
+	// paramater : event, file
+	// result   : N/A
+	//**************************************
 	function createElement(e, file) {
 		let sHtml = "";
 		sHtml += '<li id="'+ file.name + '_' + file.size +'" style="display:inline-block;width:200px;height:200px;">';
-		sHtml += '	<div id="fileDiv"><button type="button" class="tb_btn delIndvImg">파일삭제</button>';
+		sHtml += '	<div class="fileDiv"><button type="button" class="tb_btn delIndvImg">파일삭제</button>';
 		sHtml += '	<span style="" class="fileName_'+ e.target.result +'">'+ file.name +'</span></div>';
-		sHtml += '	<img src="'+ e.target.result +'" data-file="'+ file.name +'"';
+		sHtml += '	<img src="'+ e.target.result +'" data-file="'+ file.name +'" />';
 		sHtml += '</li>';
-
 		return sHtml;
 	}
 	
-	 function fileUpload() {
-        var result;
-        var formData = new FormData($("#frm_MhSogCow")[0]);
+	function fn_UploadImage(data) {
 
-        $.ajax({
-             url: "/LALM0215_updImg",
-             type: "POST",
-             enctype:"multipart/form-data",
-             processData:false,
-             contentType:false,
-             data: formData,
-             async: false,
-             headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
-             success:function(data) {    
-             	cntn_result = setDecrypt(data);         
-             },
-             error:function(request){   
-             	MessagePopup("OK", "서버 수행중 오류가 발생하였습니다.",function(res){
-                 });
-                 return;
-                             
-             }
-         });
-        
-        return result; 
-    }
+		var result;
+		var sendData = new Object();
+		sendData["na_bzplc"] = localStorage.getItem("nhlvaca_na_bzplc");
+		sendData["auc_dt"] = fn_dateToData($("#auc_dt").val());
+		sendData["auc_obj_dsc"] = $("#auc_obj_dsc").val()
+		sendData["oslp_no"] = fn_isNull(data) ? $("#oslp_no").val() : data.rtnData;
+		sendData["led_sqno"] = "1";
+		sendData["sra_indv_amnno"] = "410" + $("#sra_indv_amnno").val();
+		
+		var files = [];
+		var fileList = $(".fileDiv").siblings("img");
+		$(fileList).each(function(){
+			files.push($(this).attr("src"));
+		});
+		
+		sendData["files"] = files;
+		console.log(sendData);
+		
+		var result = sendAjax(sendData, "/LALM0215_insImgPgm", "POST")
+		console.log(result);
+	}
+
+	//**************************************
+	// function  : fileUpload(이미지 저장) - 사용X
+	// paramater : event, file
+	// result   : N/A
+	//**************************************
+	function fileUpload() {
+		var result;
+		var formData = new FormData($("#frm_MhSogCow")[0]);
+		formData.append("na_bzplc", localStorage.getItem("nhlvaca_na_bzplc"));
+		formData.append("sra_indv_amnno", "410" + $("#sra_indv_amnno").val());
+
+		$.ajax({
+			url: "/LALM0215_insImgList",
+			type: "POST",
+			enctype:"multipart/form-data",
+			processData:false,
+			contentType:false,
+			data: formData,
+			async: false,
+			headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
+			success:function(data) {
+				cntn_result = setDecrypt(data);
+			},
+			error:function(request){   
+				MessagePopup("OK", "서버 수행중 오류가 발생하였습니다.",function(res){
+			    });
+			    return;
+			}
+		});
+		
+		return result; 
+	}
     
     ////////////////////////////////////////////////////////////////////////////////
     //  사용자 함수 종료
@@ -5596,7 +5625,7 @@
 	        	<br>
 	        	<div class="img_area">
 	        		<div style="display:none;">
-	       				<input type="file" id="uploadImg" name="flnm" class="uploadImg" accept="image/*" required multiple />
+	       				<input type="file" id="uploadImg" name="uploadImg" class="uploadImg" accept="image/*" required multiple />
 	        		</div>
 	        		<ul id="imagePreview" class="uploadImg"></ul>
 	        	</div>

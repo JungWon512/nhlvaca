@@ -79,12 +79,13 @@ public class JwtAuthenticationController {
 	LogService logService;
 	@Autowired
 	McaUtil mcaUtil;
-	
+	@Value("${spring.profiles.service-name:nhlva}")
+	private String serviceName;
 
 	@Value("${cript.key}")
-    private String key;
+	private String key;
 	@Value("${cript.iv}")
-    private String iv;
+	private String iv;
 		
 	@RequestMapping(value="/signIn", method=RequestMethod.POST)
 	public ResponseEntity<?> signIn(ResolverMap rMap, HttpServletRequest req, HttpServletResponse resp) throws Exception{
@@ -136,7 +137,7 @@ public class JwtAuthenticationController {
 			String apl_ed_dtm = "";
 			
 			//관리자 제외
-			if(!"001".equals(loginMap.get("GRP_C"))) {				
+			if(!"001".equals(loginMap.get("GRP_C")) && !"tibero".equals(serviceName)) {
 				secMap.put("eno", loginMap.get("USRID"));
 				secMap.put("na_bzplc", loginMap.get("NA_BZPLC"));
 				Map<String, Object> secreMap = (Map<String, Object>) mcaUtil.tradeMcaMsg("2800", secMap).get("jsonData");

@@ -1029,6 +1029,49 @@
               AND SRA_INDV_AMNNO        = #{re_indv_no}
               AND SRA_SRS_DSC           ='01'
     </update>
+    
+	<!-- 출장우 이미지 정보 삭제 -->
+	<delete id="LALM0215_delImgPgm" parameterType="hashMap">
+		DELETE TB_LA_IS_MM_COW_IMG
+		 WHERE NA_BZPLC = #{na_bzplc}
+		   AND AUC_DT = #{auc_dt}
+		   AND SRA_INDV_AMNNO = #{sra_indv_amnno}
+	</delete>
+	
+	<!-- 출장우 이미지 정보 저장 -->
+	<insert id="LALM0215_insImgPgm" parameterType="hashMap">
+		INSERT INTO TB_LA_IS_MM_COW_IMG (
+			NA_BZPLC
+			, AUC_OBJ_DSC
+			, AUC_DT
+			, OSLP_NO
+			, LED_SQNO
+			, SRA_INDV_AMNNO
+			, IMG_SQNO
+			, FILE_PATH
+			, FILE_NM
+			, FILE_EXT_NM
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+		) VALUES (
+			#{na_bzplc}
+			, #{auc_obj_dsc}
+			, #{auc_dt}
+			, #{oslp_no}
+			, #{led_sqno}
+			, #{sra_indv_amnno}
+			, #{img_sqno}
+			, #{file_path}
+			, #{file_nm}
+			, #{file_ext_nm}
+			 , SYSDATE
+			 , #{ss_userid}
+			 , SYSDATE
+			 , #{ss_userid}
+		)
+	</insert>
 </mapper>
 
 

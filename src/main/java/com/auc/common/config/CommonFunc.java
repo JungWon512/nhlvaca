@@ -205,23 +205,26 @@ public class CommonFunc {
 		}
 		else {
 			//service에서 insertNum, updateNum, deleteNum 값 put 해줌
-			if(map.containsKey("insertNum")) {				
+			if(map.containsKey("insertNum")) {
 				reMap.put("insertNum", map.get("insertNum"));
 				reMap.put("status", 200);
 				reMap.put("code", "C000");
 				reMap.put("message", "");
+				if (map.containsKey("rtnData")) reMap.put("rtnData", map.get("rtnData"));
 			}
 			if(map.containsKey("updateNum")) {
 				reMap.put("updateNum", map.get("updateNum"));
 				reMap.put("status", 200);
 				reMap.put("code", "C000");
 				reMap.put("message", "");
+				if (map.containsKey("rtnData")) reMap.put("rtnData", map.get("rtnData"));
 			}
 			if(map.containsKey("deleteNum")) {
 				reMap.put("deleteNum", map.get("deleteNum"));
 				reMap.put("status", 200);
 				reMap.put("code", "C000");
 				reMap.put("message", "");
+				if (map.containsKey("rtnData")) reMap.put("rtnData", map.get("rtnData"));
 			}
 			if(!map.containsKey("insertNum") && !map.containsKey("updateNum") && !map.containsKey("deleteNum")) {
 				reMap.put("status", 201);
