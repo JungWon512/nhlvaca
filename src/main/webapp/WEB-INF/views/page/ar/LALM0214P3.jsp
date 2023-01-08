@@ -964,10 +964,18 @@
     			//Object.keys(ExcelData).forEach((o)=>{
 				//    ExcelData[o] = ExcelData[o]??'';
 				//});
-    			ExcelList.push(ExcelData);
+    			
+    			if($('#auc_obj_dsc').val() == ExcelData['AUC_OBJ_DSC']) ExcelList.push(ExcelData);
     		}
     	});
-     	fn_CreateGrid(ExcelList);
+    	if(ExcelList.length > 0){
+    		fn_CreateGrid(ExcelList);
+    	}else{
+    		MessagePopup('OK','업로드 가능한 개체목록이 없습니다.');
+    		return;
+    	}
+    	
+     	
     }
 </script>
 </html>

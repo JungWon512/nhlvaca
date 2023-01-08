@@ -234,7 +234,9 @@
                             <tr>
                                 <th scope="row">수송자명</th>
                                 <td>
-                                    <input type="text" id="vhc_drv_caffnm">
+                                    <div class="cellBox">
+                                        <input type="text" id="vhc_drv_caffnm">
+                                    </div>
                                 </td>                                    
                             </tr>
                         </tbody>

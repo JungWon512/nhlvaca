@@ -794,6 +794,7 @@ window.addEventListener("contextmenu",function(event){
                                     	<option value="17">암송아지-고능력암송아지-고능력수송아지-수송아지 + 생년월일↓(어린순)</option>
                                     	<option value="18">접수일자 + 수/암 + 생년월일↓(어린순)</option>
                                     	<option value="19">'접수일자 + 수/암 + 생년월일↑</option>
+                                    	<option value="20">수/암 + 등록구분(등록우/미등록우) + 생년월일↓(어린순)</option>
                                     </select>
                                 </td> 
                                 <th scope="row">귀표번호</th>

@@ -1484,7 +1484,11 @@ function fn_CallIndvInfHstPopup(p_param,p_flg,callback){
 	    }
 		
 	    if(result != null && result["INQ_CN"] == 1){
-	  	    callback(result);
+	  	    //callback(result);
+	  	    p_param["unique_yn"] = "Y";
+	  	    parent.layerPopupPage(pgid, menu_id, p_param, result, 1300, 900,function(result){
+	          callback(result);
+	      	});
 	    } else {
 	  	    parent.layerPopupPage(pgid, menu_id, p_param, result, 1300, 900,function(result){
 	          callback(result);
@@ -1514,7 +1518,10 @@ function fn_CallIndvInfHstPopupForExcel(p_param,p_flg,callback){
 	    }else{      
 	        result = setDecrypt(resultData);
 		    if(result != null && result["INQ_CN"] == 1){
-		  	    callback(result);
+		  	    p_param["unique_yn"] = "Y";
+		  	    parent.layerPopupPage(pgid, menu_id, p_param, result, 1300, 900,function(result){
+		          callback(result);
+		      	});
 		    } else {
 		  	    parent.layerPopupPage(pgid, menu_id, p_param, result, 1300, 900,function(result){
 		          callback(result);

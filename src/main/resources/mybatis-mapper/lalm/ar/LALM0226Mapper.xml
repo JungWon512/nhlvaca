@@ -133,6 +133,9 @@
 		<if test="sch_fhs_id_no != null and sch_fhs_id_no != ''">
 		   AND A.FHS_ID_NO = #{sch_fhs_id_no}
 		</if>
+		<if test="sch_ftsnm != null and sch_ftsnm != ''">
+		   AND C.FTSNM LIKE '%' || #{sch_ftsnm} || '%'
+		</if>
 		<if test="usrnm != null and usrnm != ''">
 		   AND (
 				E.USRNM LIKE '%' || #{usrnm} || '%'

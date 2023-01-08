@@ -119,7 +119,7 @@
 		    ON ( A.NA_BZPLC = D.NA_BZPLC AND A.VHC_SHRT_C = D.VHC_SHRT_C )
 		 WHERE A.NA_BZPLC = #{ss_na_bzplc}
 		<if test="auc_obj_dsc != null and auc_obj_dsc != ''">
-		   AND A.AUC_OBJ_DSC = #{auc_obj_dsc}
+		   AND A.AUC_OBJ_DSC = DECODE(#{auc_obj_dsc},0,A.AUC_OBJ_DSC,#{auc_obj_dsc})
 		</if>
 		<if test="auc_dt_st != null and auc_dt_st != '' and auc_dt_en != null and auc_dt_en != ''">
 		   AND A.AUC_DT BETWEEN #{auc_dt_st} AND #{auc_dt_en}

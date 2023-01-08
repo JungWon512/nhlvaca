@@ -177,18 +177,16 @@ public class McaUtil {
 		        		}
 		        		
 		        	}
-		        }	     
+		        }	        	
 	        }	        
 		} catch (JSONException e) {
-			//log.debug("",e);
-			//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+			log.debug("openData 접종정보 연계 중 오류가 발생하였습니다.",e);
 			nodeMap = null;
         } catch (RuntimeException e) {
-			log.debug("",e);
-			//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+        	log.debug("openData 접종정보 연계 중 오류가 발생하였습니다.",e);
 			nodeMap = null;
         } catch (Exception e) {
-        	//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+        	log.debug("openData 접종정보 연계 중 오류가 발생하였습니다.",e);
 			nodeMap = null;
         } finally {
             if (conn!= null) conn.disconnect();
@@ -197,11 +195,13 @@ public class McaUtil {
 	}
 
 	public List<Map<String, Object>> getOpenDataApiCattleMove(Map<String, Object> map) throws CusException {
+		// TODO Auto-generated method stub
+
 		List<Map<String, Object>> nodeList      = new ArrayList<>();
 		String sendUrl = "http://data.ekape.or.kr/openapi-data/service/user/animalTrace/traceNoSearch";
 		sendUrl += "?serviceKey=" + "7vHI8ukF3BjfpQW8MPs9KtxNwzonZYSbYq6MVPIKshJNeQHkLqxsqd1ru5btfLgIFuLRCzCLJDLYkHp%2FvI6y0A%3D%3D";
-		sendUrl += "&traceNo=" + map.get("trace_no");//  "002125769192";
-		sendUrl += "&optionNo=2";
+		sendUrl += "&traceNo=" + map.get("trace_no");//  "410002125769192";
+		sendUrl += "&optionNo=2"; //"2"; 이동정보
 		
         HttpURLConnection conn = null;
 		log.debug("sendUrl: " + sendUrl);
@@ -245,17 +245,19 @@ public class McaUtil {
 	        			String key = (String) it.next();
 		        		nodeMap.put(key, jItem.get(key));
 	        		}
+	        		nodeMap.put("SRA_INDV_AMNNO", map.get("trace_no"));	
+	        		nodeMap.put("FARM_ADDR", nodeMap.get("farmAddr"));	
+	        		nodeMap.put("FARMER_NM", nodeMap.get("farmerNm"));	
+	        		nodeMap.put("REG_TYPE", nodeMap.get("regType"));	
+	        		nodeMap.put("REG_YMD", nodeMap.get("regYmd"));	
+	        		nodeMap.put("FARM_NO", nodeMap.get("farmNo"));	
 	        		nodeList.add(nodeMap);
 		        }	        	
 	        }	        
-		} catch (JSONException e) {
-			//log.debug("",e);
-			//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
-        } catch (RuntimeException e) {
-			log.debug("",e);
-			throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
-        } catch (Exception e) {
-        	throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+		}catch (Exception e) {
+        	log.debug("openData 이동정보 연계 중 오류가 발생하였습니다.",e);
+        	nodeList =null;
+        	//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
         } finally {
             if (conn!= null) conn.disconnect();
         }

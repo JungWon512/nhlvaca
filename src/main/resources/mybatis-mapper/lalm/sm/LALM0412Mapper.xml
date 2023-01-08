@@ -34,9 +34,10 @@
               WHEN LENGTH(sra_mwmnnm) = 3 THEN SUBSTR(sra_mwmnnm,1,1) || '*'  || SUBSTR(sra_mwmnnm,3,1) 
               WHEN LENGTH(sra_mwmnnm) = 4 THEN SUBSTR(sra_mwmnnm,1,1) || '**' || SUBSTR(sra_mwmnnm,4,1)  
               WHEN LENGTH(sra_mwmnnm) >= 5 THEN SUBSTR(sra_mwmnnm,1,2) || '**' || SUBSTR(sra_mwmnnm,5,1)  END AS SRA_MWMNNM  /* 축산중도매인명                        */
-			, frlno                      /* 실명번호                   */
+			, nvl(FRLNO,CUS_RLNO) frlno  /* 실명번호                   */
 			, zip                        /* 우편번호                   */
 			, dongup                     /* 동이상주소                 */
+			, DONGBW					 /* 동이하주소                 */
 			, ohse_telno                 /* 자택전화번호               */
 			, cus_mpno                   /* 고객휴대전화번호           */
 			, maco_yn                    /* 조합원여부                 */

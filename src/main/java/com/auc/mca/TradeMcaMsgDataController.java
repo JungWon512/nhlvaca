@@ -321,7 +321,7 @@ public class TradeMcaMsgDataController {
     	    data.append("\"NA_BZPLC\":\"" + padLeftBlank((String)paraMap.get("NA_BZPLC"),13)   + "\"");
         	data.append(",\"MPNO\":\""     + padLeftBlank((String)paraMap.get("CUS_MPNO"),11)  + "\"");
         	data.append(",\"USRNM\":\""    + padLeftBlank((String)paraMap.get("USRNM"),20)     + "\"");
-        	data.append(",\"MSG_CNTN\":\"" + padLeftBlank((String)paraMap.get("MSG_CNTN"),200) + "\"");
+        	data.append(",\"MSG_CNTN\":\"" + padLeftBlank((String)paraMap.get("MSG_CNTN"),4000) + "\"");
         	data.append("}");	
     		data.append("]");
         	

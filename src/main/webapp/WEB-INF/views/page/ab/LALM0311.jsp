@@ -75,6 +75,8 @@
         if(isMobile){
             $('#ch_rmk_cntn_title').hide();
             $('#ch_rmk_cntn').hide();
+            $('#ch_cow_wt').hide();
+            $('#ch_lows_sbid_am').hide();
              
         }
         
@@ -119,10 +121,38 @@
          * 비고저장 checkbox 이벤트
          ******************************/
         $("#ch_rmk_cntn").change(function() {
-        	if($("#ch_rmk_cntn").is(":checked") && $("#ch_modl_no").is(":checked")) {
-        		$("#ch_modl_no").prop("checked", false);
-        	}
         	if($("#ch_rmk_cntn").is(":checked")) {
+        		$("#ch_modl_no").prop("checked", false);
+        		$("#ch_cow_wt").prop("checked", false);
+        		$("#ch_lows_sbid_am").prop("checked", false);
+    			$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
+        	}else{
+        		$("#btn_allLowsSbidLmtAmMinus").attr("disabled", false);        		
+        	}
+    	});
+        
+        /******************************
+         * 예정가저장 checkbox 이벤트
+         ******************************/
+        $("#ch_lows_sbid_am").change(function() {        
+        	if($("#ch_lows_sbid_am").is(":checked")) {
+        		$("#ch_rmk_cntn").prop("checked", false);
+        		$("#ch_modl_no").prop("checked", false);
+        		$("#ch_cow_wt").prop("checked", false);
+    			$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
+        	}else{
+        		$("#btn_allLowsSbidLmtAmMinus").attr("disabled", false);        		
+        	}
+    	});
+        
+        /******************************
+         * 중량저장 checkbox 이벤트
+         ******************************/
+        $("#ch_cow_wt").change(function() {
+        	if($("#ch_cow_wt").is(":checked")) {
+        		$("#ch_rmk_cntn").prop("checked", false);
+        		$("#ch_modl_no").prop("checked", false);
+        		$("#ch_lows_sbid_am").prop("checked", false);
     			$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
         	}else{
         		$("#btn_allLowsSbidLmtAmMinus").attr("disabled", false);        		
@@ -133,12 +163,13 @@
          * 거치대번호 checkbox 이벤트
          ******************************/
         $("#ch_modl_no").change(function() {
-        	if($("#ch_rmk_cntn").is(":checked") && $("#ch_modl_no").is(":checked")) {
-        		$("#ch_rmk_cntn").prop("checked", false);
-        	}
         	if($("#ch_modl_no").is(":checked")) {
+        		$("#ch_rmk_cntn").prop("checked", false);
+        		$("#ch_cow_wt").prop("checked", false);
+        		$("#ch_lows_sbid_am").prop("checked", false);
     			$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
-        	}else{
+        	}
+        	else{
         		$("#btn_allLowsSbidLmtAmMinus").attr("disabled", false);        		
         	}
     	});
@@ -185,7 +216,8 @@
         fn_InitFrm('frm_Search');
         fn_DisableFrm('frm_Search', false);
         $("#fhs_id_no").attr("disabled", true);
-        $("#auc_dt").datepicker().datepicker("setDate", fn_getToday());
+        //$("#auc_dt").datepicker().datepicker("setDate", fn_getToday());
+        $("#auc_dt").datepicker().datepicker("setDate", "2023-01-05");
         $("#mainGrid").jqGrid("clearGridData", true);
         
         // 경매대상 초기화면 '송아지' 설정(세종공주: 8808990656588 경주: 8808990659008)
@@ -255,12 +287,14 @@
              srchData["nbfct_auc_atdr_unt_am"] = parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"];
              srchData["ppgcow_auc_atdr_unt_am"] = parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"];
                      
-             if($("#ch_rmk_cntn").is(":checked") && !$("#ch_modl_no").is(":checked")) {
+             if($("#ch_rmk_cntn").is(":checked")) {
                  result = sendAjax(srchData, "/LALM0311_updRmkPgm", "POST");
                  
-             } else if(!$("#ch_rmk_cntn").is(":checked") && $("#ch_modl_no").is(":checked")) {
-            	 result = sendAjax(srchData, "/LALM0311_updModlPgm", "POST");
-            	 
+             } else if($("#ch_modl_no").is(":checked")) {
+            	 result = sendAjax(srchData, "/LALM0311_updModlPgm", "POST");            	 
+             }else if($("#ch_cow_wt").is(":checked") || $("#ch_lows_sbid_am").is(":checked")) {
+            	 srchData["chk_save_type"] = $(".chk_save_type:checked").val(); 
+            	 result = sendAjax(srchData, "/LALM0311_updPgmOnlySave", "POST");            	 
              } else {
                  result = sendAjax(srchData, "/LALM0311_updPgm", "POST");
              }
@@ -295,8 +329,10 @@
             rowNoValue = data.length;
         }
         
-        if($("#ch_rmk_cntn").is(":checked")) {
-            $("#ch_rmk_cntn").val("1");
+        if($("#ch_rmk_cntn").is(":checked") || $("#ch_cow_wt").is(":checked") || $("#ch_lows_sbid_am").is(":checked")) {
+            $("#ch_rmk_cntn").val(($("#ch_rmk_cntn").is(":checked") ? "1" :"0"));
+            //$("#ch_cow_wt").val(($("#ch_cow_wt").is(":checked") ? "1" :"0"));
+            //$("#ch_lows_sbid_am").val(($("#ch_lows_sbid_am").is(":checked") ? "1" :"0"));
             /*                                    1          2        3         4         5       6         7         8           9                10        11     12         13 */
             var searchResultColNames = ["", "경매번호", "거치대번호", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량", "예정가"];        
             var searchResultColModel = [                         
@@ -311,13 +347,13 @@
                                          {name:"OSLP_NO",               index:"OSLP_NO",                width:10,  align:'center', hidden:true},
                                          {name:"LED_SQNO",              index:"LED_SQNO",               width:10,  align:'center', hidden:true},
                                          {name:"FIR_LOWS_SBID_LMT_AM",  index:"FIR_LOWS_SBID_LMT_AM",   width:10,  align:'center', hidden:true},
-                                         {name:"RMK_CNTN",              index:"RMK_CNTN",               width:200, align:'left', editable:true},
-                                         {name:"COW_SOG_WT",            index:"COW_SOG_WT",             width:70,  align:'right'},
-                                         {name:"LOWS_SBID_LMT_AM",      index:"LOWS_SBID_LMT_AM",       width:90,  align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                         {name:"RMK_CNTN",              index:"RMK_CNTN",               width:200, align:'left' , editable:$("#ch_rmk_cntn").is(":checked")},
+                                         {name:"COW_SOG_WT",            index:"COW_SOG_WT",             width:70,  align:'right', editable:$("#ch_cow_wt").is(":checked")},
+                                         {name:"LOWS_SBID_LMT_AM",      index:"LOWS_SBID_LMT_AM",       width:90,  align:'right', editable:$("#ch_lows_sbid_am").is(":checked")  ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                          
                                         ];        
         
-        } else if(!$("#ch_rmk_cntn").is(":checked") && $("#ch_modl_no").is(":checked")) {
+        } else if($("#ch_modl_no").is(":checked")) {
                 $("#ch_modl_no").val("1");
                 /*                                    1            2        3         4         5       6         7         8           9                10      11     12         13 */
                 var searchResultColNames = ["", "경매번호", "거치대번호(*)", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고", "중량", "예정가"];        
@@ -514,10 +550,16 @@
                                     <input disabled="disabled" type="text" id="fhs_id_no" style="width:150px;">
                                     <input type="text" id="ftsnm" style="width:150px;" maxlength="50">
                                     <button id="pb_search_ftsnm" class="tb_btn white srch"><i class="fa fa-search"></i></button>
-                                    <span id="ch_rmk_cntn_title">비고만저장</span>
-                                    <input type="checkbox" id="ch_rmk_cntn" name="ch_rmk_cntn" value="0">
-                                    <span id="ch_rmk_cntn_title">거치대변경</span>
-                                    <input type="checkbox" id="ch_modl_no" name="ch_modl_no" value="0">
+                                    
+                                    <label for="ch_rmk_cntn"><span id="ch_rmk_cntn_title">비고만저장</span></label>
+                                    <input type="checkbox" class="chk_save_type" id="ch_rmk_cntn" name="ch_rmk_cntn" value="0">                                    
+                                    <label for="ch_cow_wt"><span id="ch_cow_wt_title">중량만저장</span></label>
+                                    <input type="checkbox" class="chk_save_type" id="ch_cow_wt" name="ch_cow_wt" value="W">
+                                    <label for="ch_lows_sbid_am"><span id="ch_lows_sbid_am_title">예정가만저장</span></label>
+                                    <input type="checkbox" class="chk_save_type" id="ch_lows_sbid_am" name="ch_lows_sbid_am" value="L">
+                                    <label for="ch_modl_no"><span id="ch_rmk_cntn_title">거치대변경</span></label>
+                                    <input type="checkbox" class="chk_save_type" id="ch_modl_no" name="ch_modl_no" value="0">
+                                    
                                     <input type="hidden" id="calf_auc_atdr_unt_am">
                                     <input type="hidden" id="nbfct_auc_atdr_unt_am">
                                     <input type="hidden" id="ppgcow_auc_atdr_unt_am">

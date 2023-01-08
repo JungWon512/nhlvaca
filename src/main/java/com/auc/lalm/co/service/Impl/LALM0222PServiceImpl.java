@@ -145,7 +145,7 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 		}
 		
 		//20221031 : JJW 후대정보 저장
-		List<Map<String, Object>> postIndvList = (List<Map<String, Object>>) Demap.get("post_indv");
+		List<Map<String, Object>> postIndvList = (List<Map<String, Object>>) Demap.get("list_post_indv");
 
 		if(postIndvList != null && !postIndvList.isEmpty()) {
 			for(Map<String,Object> temp:postIndvList) {
@@ -158,7 +158,7 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 		}
 
 		//20221031 : JJW 개체 이동내역 저장
-		List<Map<String, Object>> cattleMoveList = (List<Map<String, Object>>) Demap.get("cattle_move");
+		List<Map<String, Object>> cattleMoveList = (List<Map<String, Object>>) Demap.get("list_cattle_move");
 		if(cattleMoveList != null && !cattleMoveList.isEmpty()) {
 			lalm0222PMapper.LALM0222P_delCattleMvInf(Demap);
 			for(Map<String,Object> temp:cattleMoveList) {

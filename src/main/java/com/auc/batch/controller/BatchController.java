@@ -14,6 +14,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.auc.batch.service.BatchService;
 import com.auc.common.util.StringUtils;
 import com.auc.common.vo.ResolverMap;
+import com.auc.mca.McaUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -39,6 +41,12 @@ public class BatchController {
 	
 	@Autowired 
 	BatchService batchService;
+	
+	@Autowired 
+	McaUtil mcaUtil;
+	
+	@Value("${server.type}")
+	private String serverType;
 	
 	/**
 	 * 중도매인, 출하주(농가) 휴면처리
@@ -232,10 +240,18 @@ public class BatchController {
 	/**
 	 * 배치 실패 시, 담당자에게 문자 전송 : 축경통 인터페이스 통해서 보내는 문자 확인 필요
 	 * @param reMap
+	 * @throws Exception 
 	 */
-	private void sendSmsBatchFail(Map<String, Object> reMap) {
-		// TODO Auto-generated method stub
-		
+	private void sendSmsBatchFail(Map<String, Object> reMap) throws Exception {
+		//추후 NA_BZPLC 가 확정되면 주석 해제할 예정
+//		if(!"local".equals(serverType)) {
+//			Map<String, Object> map = new HashMap<String, Object>();
+//			map.put("NA_BZPLC", "0000000000000");
+//			map.put("CUS_MPNO", "01049044857");
+//			map.put("USRNM", "정정원");
+//			map.put("MSG_CNTN", "[스마트가축시장-배치에러] "+reMap.get("batch_job_id") +" 배치에 에러 "+ reMap.get("failCnt") +" 건 발생하였습니다. 확인 부탁드립니다.");
+//			Map<String, Object> resultMap = mcaUtil.tradeMcaMsg("3100", map);
+//		}
 	}
 
 	/**
@@ -449,22 +465,20 @@ public class BatchController {
 					bizList = batchService.selBzLocAucYn(map);
 					
 					for(Map<String,Object> bizMap : bizList) {
-						error.append("s: 0010 : "+bizMap.get("NA_BZPLC"));
+						log.debug("S : BJ0010 : "+bizMap.get("NA_BZPLC"));
 						tempMap = batchService.batchDashBoardFor5300(map,bizMap);//경매차수
 						failCnt += (int) tempMap.get("failCnt");
 						succCnt += (int) tempMap.get("succCnt");
-						error.append("5300 INF : "+tempMap.get("error"));
 						
 						tempMap = batchService.batchDashBoardFor5200(map,bizMap);//출장우
 						failCnt += (int) tempMap.get("failCnt");
 						succCnt += (int) tempMap.get("succCnt");
-						error.append("5200 INF : "+tempMap.get("error"));
 						
 						tempMap = batchService.batchDashBoardFor5400(map,bizMap);//접수번호
 						failCnt += (int) tempMap.get("failCnt");
 						succCnt += (int) tempMap.get("succCnt");
-						error.append("5400 INF : "+tempMap.get("error"));
-						error.append("e : 0010  : "+bizMap.get("NA_BZPLC"));
+
+						log.debug("E : BJ0010 : "+bizMap.get("NA_BZPLC"));
 					}
 					
 					break;

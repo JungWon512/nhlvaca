@@ -202,9 +202,9 @@
                     <form id="frm_Search" name="frm_Search">
                     <table>
                         <colgroup>
-                            <col width="40">
-                            <col width="*">
-                            <col width="1200">
+                            <col width="50">
+								<col width="250">
+								<col width="*">
                         </colgroup>
                         <tbody>
                             <tr>

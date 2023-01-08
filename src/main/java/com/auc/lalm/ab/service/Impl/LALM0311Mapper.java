@@ -20,4 +20,6 @@ public interface LALM0311Mapper {
 	
 	int LALM0311_updPgm(Map<String, Object> map) throws Exception;
 
+	int LALM0311_updPgmOnlySave(Map<String, Object> tmpObject) throws Exception;
+
 }

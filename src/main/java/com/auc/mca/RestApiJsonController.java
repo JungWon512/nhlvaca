@@ -148,7 +148,7 @@ public class RestApiJsonController {
         int cnt = 0;
         
         if(jsonData.containsKey("IO_ROW_CNT")) {        	
-        	if("4600".equals(ctgrm_cd)) {
+        	if("4600".equals(ctgrm_cd) || "5200".equals(ctgrm_cd)) {
         		cnt  = Integer.valueOf((String)jsonData.getOrDefault("IO_ROW_CNT","0"));
         	}else {
             	cnt  = (int)(double)jsonData.get("IO_ROW_CNT");        		

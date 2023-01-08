@@ -402,6 +402,36 @@
 			this.blur();
 			fn_CallFtsnmPopup(false);
 		});
+		
+		/******************************
+		 * 출장우 접수 검색영역 출하주 검색 팝업 이벤트
+		 ******************************/
+		$("#pb_searchFhs").on("click", function(e){
+			e.preventDefault();
+			this.blur();
+			fn_CallFhsPopup(true);
+		});
+		
+		/******************************
+		 * 검색영역 출하주 keydown 이벤트
+		 * 엔터키 : 출하주 검색 팝업
+		 * backspace 또는 delete인 경우 검색영역 농가 코드 삭제
+		 ******************************/
+		$("#sch_ftsnm").keydown(function(e) {
+			// 엔터키인 경우
+			if(e.keyCode == 13) {
+				this.blur();
+				fn_CallFhsPopup(true);
+			}
+		});
+		
+		/******************************
+		 * 검색영역 출하주 변경 이벤트
+		 * 남은 글자 수가 0인 경우 검색영역 농가 코드 삭제
+		 ******************************/
+		$("#sch_ftsnm").on("propertychange change keyup paste input", function(e) {
+			$("#sch_fhs_id_no").val("");
+		});
 
 		/******************************
 		 * 출하주 변경 이벤트(키업)
@@ -1951,6 +1981,24 @@
 		});
 	}
 	
+	function fn_CallFhsPopup(p_param) {
+		var checkBoolean = p_param;
+		var data = new Object();
+		data['ftsnm'] = $("#sch_ftsnm").val();
+		if(!p_param) {
+			data = null;
+		}
+		fn_CallFtsnm0127Popup(data,checkBoolean,function(result) {
+			if(result){
+				$("#sch_fhs_id_no").val(result.FHS_ID_NO);
+				$("#farm_amnno").val(result.FARM_AMNNO);
+				$("#sch_ftsnm").val(fn_xxsDecode(result.FTSNM));
+			}
+		});
+	
+		
+	}
+	
 	//**************************************
 	// function  : fn_CallIndvInfSrch(개체정보검색 전 셋팅) 
 	// paramater : N/A
@@ -2480,9 +2528,6 @@
 			<div class="sec_table">
 				<div class="grayTable rsp_v">
 					<form id="frm_Search" name="frm_Search" autocomplete="off">
-						<input type="hidden" id="chg_del_yn" />
-						<input type="hidden" id="chg_pgid" />
-						<input type="hidden" id="chg_rmk_cntn" />
 						<table>
 							<colgroup>
 								<col width="100">
@@ -2528,15 +2573,15 @@
 									<td>
 										<div class="cellBox v_addr">
 											<div class="cell" style="width: 60px;">
-												<input disabled="disabled" type="text" id="sch_fhs_id_no" maxlength="10" />
+												<input type="text" id="sch_fhs_id_no" maxlength="10" readonly="readonly" />
 											</div>
 											<div class="cell pl2" style="width: 28px;">
-												<button id="pb_searchFhs" class="tb_btn white srch">
+												<button id="pb_searchFhs" class="tb_btn white srch" type="button">
 													<i class="fa fa-search"></i>
 												</button>
 											</div>
 											<div class="cell">
-												<input type="text" id="ftsnm" maxlength="30" />
+												<input type="text" id="sch_ftsnm" maxlength="30" />
 											</div>
 										</div>
 									</td>

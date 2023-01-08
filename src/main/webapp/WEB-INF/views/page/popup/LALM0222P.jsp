@@ -355,6 +355,7 @@
             fn_InitFrm('frm_Search');
             $("#sra_indv_amnno").val(pageInfo.param.sra_indv_amnno);
             fn_Search();
+            if(pageInfo.param?.unique_yn == 'Y')fn_Select();
             $("#sra_indv_amnno").focus();
         }else {
             fn_Init();
@@ -494,8 +495,15 @@
            //showErrorMessage(results,'NOTFOUND');
            return;
         }else{      
-        	result = setDecrypt(results);
-           fn_CreateGridSibIndv(result);
+			result = setDecrypt(results);
+			var sibResult = result.map((e,i)=>{
+	    		Object.keys(e).forEach((key)=>{
+	    			var temp = e[key];
+	    			e[key] = temp.trim()||''; 
+	    		});
+				return e;
+			});
+			fn_CreateGridSibIndv(sibResult);
         }
     }
   	//**************************************
@@ -539,7 +547,14 @@
            return;
         }else{      
         	result = setDecrypt(results);
-           fn_CreateGridPostIndv(result);
+			var postResult = result.map((e,i)=>{
+	    		Object.keys(e).forEach((key)=>{
+	    			var temp = e[key];
+	    			e[key] = temp.trim()||''; 
+	    		});
+				return e;
+			});
+           fn_CreateGridPostIndv(postResult);
         }
     }
     

@@ -215,6 +215,7 @@ public class BatchServiceImpl implements BatchService{
 		int deleteNum = 0;
 		int failCnt = 0;
 		int succCnt = 0; 
+		int selCnt = 30;
 		
 		//해당 조합의 최대 경매일수 조회(null일시 어떤값부를지는 미정)
 		Map<String,Object> tempMap = new HashMap<>();
@@ -222,58 +223,24 @@ public class BatchServiceImpl implements BatchService{
 		Map<String,Object> selMaxAucDt = batchMapper.selMaxAucDt(tempMap);
 		if(selMaxAucDt != null) tempMap.put("AUC_DT", selMaxAucDt.getOrDefault("AUC_DT","20220101"));
 		else tempMap.put("AUC_DT", "20220101");
-
-		//대시보드용 출장우 조회
-		try {
-			Map<String, Object> sogCowMcaMap = mcaUtil.tradeMcaMsg("5200", tempMap);
-			Map<String, Object> sogCowJson = (Map<String, Object>) sogCowMcaMap.get("jsonData");
-			List<Map<String, Object>> sogCowRptData = (List<Map<String, Object>>) sogCowJson.get("RPT_DATA");
-						
-			if(sogCowRptData != null && !sogCowRptData.isEmpty()) {
-				for(Map<String, Object> sogCowMap:sogCowRptData) {
-					try {
-						insertNum += batchMapper.insDashBoardSogCow(sogCowMap);
-						/*개체 추가할지 출장우 컬럼추가할지 미정
-						 * SRA_INDV_AMNNO FHS_ID_NO INDV_SEX_C FARM_AMNNO BIRTH MATIME SRA_INDV_PASG_QCN KPN_NO
-						 */
-						insertNum += batchMapper.insDashBoardIndv(sogCowMap);
-						succCnt++;
-					}catch(Exception e) {
-						log.error("message 5200inf Sql error ", e);
-						if("".equals(error.toString())) {
-							error.append(this.getExceptionErrorMessage(e));
-						}
-						failCnt++;
-					}
-				}
-			}
-		}catch(Exception e) {
-			log.error("message 5200 inf error ", e);
-			if("".equals(error.toString())) {
-				error.append(this.getExceptionErrorMessage(e));
-			}
-			failCnt++;
-		}
-		/*
+		
 		int sogCowMcaIdx = 1;
 		int sogCowTotCnt= 0;
-		tempMap.put("IN_REC_CN", "30");
+		tempMap.put("IN_REC_CN", selCnt+"");
 		while(true) {
 			try {
 				tempMap.put("IN_SQNO", sogCowMcaIdx+"");
 				Map<String, Object> sogCowMcaMap = mcaUtil.tradeMcaMsg("5200", tempMap);
 				Map<String, Object> sogCowJson = (Map<String, Object>) sogCowMcaMap.get("jsonData");
-				List<Map<String, Object>> sogCowRptData = (List<Map<String, Object>>) sogCowJson.get("RPT_DATA");
-				sogCowTotCnt = (int)sogCowJson.get("IO_ROW_CNT");
-				if(sogCowTotCnt == 0 || sogCowRptData == null || !sogCowRptData.isEmpty()) { 
+				List<Map<String, Object>> sogCowRptData = (List<Map<String, Object>>) sogCowJson.get("RPT_DATA");				
+				sogCowTotCnt = Integer.valueOf((String)sogCowJson.getOrDefault("IO_ROW_CNT","0"));
+				if(sogCowTotCnt == 0 || sogCowRptData == null || sogCowRptData.isEmpty()) { 
 					break;
 				}else {
 					for(Map<String, Object> sogCowMap:sogCowRptData) {
 						try {
 							insertNum += batchMapper.insDashBoardSogCow(sogCowMap);
 							//개체 추가할지 출장우 컬럼추가할지 미정
-							// SRA_INDV_AMNNO FHS_ID_NO INDV_SEX_C FARM_AMNNO BIRTH MATIME SRA_INDV_PASG_QCN KPN_NO
-							 
 							insertNum += batchMapper.insDashBoardIndv(sogCowMap);
 							succCnt++;
 						}catch(Exception e) {
@@ -293,12 +260,12 @@ public class BatchServiceImpl implements BatchService{
 				failCnt++;
 				break;
 			}
-			sogCowMcaIdx+=30;
 			if(sogCowMcaIdx > sogCowTotCnt) {
 				break;				
 			}
+			sogCowMcaIdx+=selCnt;
 		}
-		*/
+		
 		reMap.put("insertNum", insertNum);
 		reMap.put("deleteNum", deleteNum);
 		reMap.put("failCnt", failCnt);
@@ -329,12 +296,9 @@ public class BatchServiceImpl implements BatchService{
 		try {		
 			Map<String, Object> mcaMap = mcaUtil.tradeMcaMsg("5300", tempMap);
 			Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");
-			List<Map<String, Object>> rpt_data = (List<Map<String, Object>>) dataMap.get("RPT_DATA");
-			List<Map<String, Object>> aucQcnList = null;			
-			if(rpt_data != null && !rpt_data.isEmpty()) {
-				aucQcnList = (List<Map<String, Object>>) dataMap.get("RPT_DATA");
-					
-				for(Map<String, Object> aucQcnMap:aucQcnList) {
+			List<Map<String, Object>> aucQcnList = (List<Map<String, Object>>) dataMap.get("RPT_DATA");			
+			if(aucQcnList != null && !aucQcnList.isEmpty()) {					
+				for(Map<String, Object> aucQcnMap: aucQcnList) {
 					try {
 						//임시로 데이터 경매구분 단일로해서 등록
 						insertNum += batchMapper.insDashBoardAucQcn(aucQcnMap);
@@ -476,12 +440,12 @@ public class BatchServiceImpl implements BatchService{
 		deleteNum += batchMapper.delDashBoardSaveForTop(map);
 		insertNum += batchMapper.insDashBoardSaveForTop(map); 
 		succCnt++;
-		deleteNum += batchMapper.delDashBoardSaveForMkpr(map);
-		insertNum += batchMapper.insDashBoardSaveForMkpr(map); 
-		succCnt++;
-		deleteNum += batchMapper.delDashBoardSaveForAreaAvgMkpr(map);
-		insertNum += batchMapper.insDashBoardSaveForAreaAvgMkpr(map); 
-		succCnt++;
+		//deleteNum += batchMapper.delDashBoardSaveForMkpr(map);
+		//insertNum += batchMapper.insDashBoardSaveForMkpr(map); 
+		//succCnt++;
+		//deleteNum += batchMapper.delDashBoardSaveForAreaAvgMkpr(map);
+		//insertNum += batchMapper.insDashBoardSaveForAreaAvgMkpr(map); 
+		//succCnt++;
 		
 		reMap.put("insertNum", insertNum);
 		reMap.put("deleteNum", deleteNum);

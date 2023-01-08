@@ -29,6 +29,27 @@ public class LALM0919Controller {
 	LALM0919Service lalm0919Service;
 		
 	@ResponseBody
+	@RequestMapping(value="/LALM0919_selMhSogCowStaticsList", method=RequestMethod.POST)
+	public Map<String, Object> LALM0919_selMhSogCowStaticsList(ResolverMap rMap) throws Exception{				
+		Map<String, Object> map = convertConfig.conMap(rMap);
+		List<Map<String, Object>> outMap = lalm0919Service.LALM0919_selMhSogCowStaticsList(map);				
+		Map<String, Object> reMap = commonFunc.createResultSetListData(outMap); 	
+		
+		return reMap;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/LALM0919_selMhSogCowRowDataList", method=RequestMethod.POST)
+	public Map<String, Object> LALM0919_selMhSogCowRowDataList(ResolverMap rMap) throws Exception{				
+		Map<String, Object> map = convertConfig.conMap(rMap);
+		List<Map<String, Object>> outMap = lalm0919Service.LALM0919_selMhSogCowRowDataList(map);				
+		Map<String, Object> reMap = commonFunc.createResultSetListData(outMap); 	
+		
+		return reMap;
+	}
+	
+	@Deprecated
+	@ResponseBody
 	@RequestMapping(value="/LALM0919_selMhSogCowCntList", method=RequestMethod.POST)
 	public Map<String, Object> LALM0919_selMhSogCowCntList(ResolverMap rMap) throws Exception{				
 		Map<String, Object> map = convertConfig.conMap(rMap);
@@ -38,6 +59,7 @@ public class LALM0919Controller {
 		return reMap;
 	}
 	
+	@Deprecated
 	@ResponseBody
 	@RequestMapping(value="/LALM0919_selMhSogCowPriceList", method=RequestMethod.POST)
 	public Map<String, Object> LALM0919_selMhSogCowPriceList(ResolverMap rMap) throws Exception{				

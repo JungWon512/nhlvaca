@@ -108,17 +108,16 @@ var mv_sqno_prc_dsc = "";
             		MessagePopup('OK','응찰자 명을 입력하세요.');
                 }else {
                 	var data = new Object();
-                   data['auc_dt']           = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
-                   data['auc_obj_dsc']      = $("#auc_obj_dsc").val();
-                   data['sra_mwmnnm']       = $("#sra_mwmnnm").val();
-                   fn_CallMwmnnmNoPopup(data,true,function(result){
-	                     	if(result){
-	                             $("#trmn_amnno").val(result.TRMN_AMNNO);
-	                             $("#lvst_auc_ptc_mn_no").val(result.LVST_AUC_PTC_MN_NO);
-	                             $("#sra_mwmnnm").val(result.SRA_MWMNNM);
-	                             
-	                     	}
-	                     }); 
+					data['auc_dt']           = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
+					data['auc_obj_dsc']      = $("#auc_obj_dsc").val();
+					data['sra_mwmnnm']       = $("#sra_mwmnnm").val();
+					fn_CallMwmnnmNoPopup(data,true,function(result){
+						if(result){
+						     $("#trmn_amnno").val(result.TRMN_AMNNO);
+						     $("#lvst_auc_ptc_mn_no").val(result.LVST_AUC_PTC_MN_NO);
+						     $("#sra_mwmnnm").val(result.SRA_MWMNNM);	                             
+						}
+					}); 
                 }
              }else {
             	 $("#v_trmn_amnno").val('');
@@ -582,6 +581,7 @@ var mv_sqno_prc_dsc = "";
             		rowData.LOWS_SBID_LMT_AM_EX = lows_sbid_lmt_am_ex;
             		
 					$('#grd_MhSogCow').jqGrid('setRowData', rowid, rowData);
+					$("#grd_MhSogCow").jqGrid('setCell', rowid, '_STATUS_', '*',GRID_MOD_BACKGROUND_COLOR);
 					
 	    		} else {
 	    			MessagePopup('OK','취소되었습니다.');
@@ -630,6 +630,7 @@ var mv_sqno_prc_dsc = "";
     		rowData.LOWS_SBID_LMT_AM_EX = lows_sbid_lmt_am_ex;
     		
 			$('#grd_MhSogCow').jqGrid('setRowData', rowid, rowData);
+			$("#grd_MhSogCow").jqGrid('setCell', rowid, '_STATUS_', '*',GRID_MOD_BACKGROUND_COLOR);
    	 	}
 	}    
     
@@ -703,7 +704,7 @@ var mv_sqno_prc_dsc = "";
             
             <div class="tab_box clearfix">
                 <ul class="tab_list fl_L">
-                    <li><p class="dot_allow">응찰하안가 낮추기</p></li>
+                    <li><p class="dot_allow">응찰예정가 낮추기</p></li>
                 </ul>
             </div>
             

@@ -518,6 +518,9 @@ public class LALM0899Controller {
 		Map<String, Object> nodeMap      = new HashMap<String, Object>();
 		
 		nodeMap = mcaUtil.getOpenDataApi(map);
+		if(nodeMap == null) {
+			throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+		}
 		
 		Map<String, Object> reMap = commonFunc.createResultSetMapData(nodeMap); 	
         return reMap;
@@ -531,6 +534,9 @@ public class LALM0899Controller {
 		//Map<String, Object> nodeMap      = new HashMap<String, Object>();
 		
 		nodeList = mcaUtil.getOpenDataApiCattleMove(map);
+		if(nodeList == null) {
+			throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+		}
 		
 		Map<String, Object> reMap = commonFunc.createResultSetListData(nodeList); 	
         return reMap;

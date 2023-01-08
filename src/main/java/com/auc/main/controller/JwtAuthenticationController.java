@@ -83,9 +83,9 @@ public class JwtAuthenticationController {
 	private String serviceName;
 
 	@Value("${cript.key}")
-	private String key;
+    private String key;
 	@Value("${cript.iv}")
-	private String iv;
+    private String iv;
 		
 	@RequestMapping(value="/signIn", method=RequestMethod.POST)
 	public ResponseEntity<?> signIn(ResolverMap rMap, HttpServletRequest req, HttpServletResponse resp) throws Exception{
@@ -145,6 +145,14 @@ public class JwtAuthenticationController {
 				//재직여부가 1이 아니면 로그인하면안됨				
 				if(!"1".equals(secreMap.get("HDOF_YN"))) {
 					//로그인하면 안됨
+			        Map<String, Object> logMap = new HashMap<String, Object>();
+			        logMap.put("na_bzplc", loginMap.get("NA_BZPLC"));
+			        logMap.put("usrid", loginMap.get("USRID"));
+			        logMap.put("url_nm", "/signIn");
+			        logMap.put("pgid",   "퇴직자 접속시도");
+			        logMap.put("ipadr",  ip);
+			        logMap.put("data_prc_dsc", "D");			        
+			        logService.insUserLog(logMap);
 					throw new CusException(ErrorCode.CUSTOM_ERROR, "퇴직자입니다.");
 //					return ResponseEntity.ok(null);
 				}
@@ -166,8 +174,6 @@ public class JwtAuthenticationController {
 
 	        userDetails.setApl_ed_dtm("".equals(apl_ed_dtm) ? "19000101120000" : apl_ed_dtm);
 	        userDetails.setSecurity(security);
-//	        userDetails.setApl_ed_dtm("".equals(apl_ed_dtm) ? "99990101120000" : apl_ed_dtm);
-//	        userDetails.setSecurity("1");
 	        final String token = jwtTokenUtil.generateToken(userDetails);
 	        final String refreshToken = jwtTokenUtil.generateTokenRefresh(userDetails);
 	        

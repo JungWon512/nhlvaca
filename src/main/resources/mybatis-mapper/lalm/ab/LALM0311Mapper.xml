@@ -265,51 +265,105 @@
     ]]>
     </insert>
     
+    
     <update id="LALM0311_updPgm">
 	         UPDATE TB_LA_IS_MH_SOG_COW SET
 
-			<choose>
-				<when test='cow_sog_wt == "" or cow_sog_wt == null'>
-					COW_SOG_WT = 0													/* 우출하중량                             */
-				</when>
-				<otherwise>
-					COW_SOG_WT = #{cow_sog_wt}										/* 우출하중량                             */
-				</otherwise>
-			</choose>
-			
-			<choose>
-				<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "1"'>
-					, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}					/* 최초최저낙찰한도금액                   */
-				</when>
-				<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "2"'>
-					, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}					/* 최초최저낙찰한도금액                   */
-				</when>
-				<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "3"'>
-					, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}				/* 최초최저낙찰한도금액                   */
-				</when>
-				<otherwise>
-					, FIR_LOWS_SBID_LMT_AM = FIR_LOWS_SBID_LMT_AM					/* 최초최저낙찰한도금액                   */
-				</otherwise>
-			</choose>
-			
-			<choose>
-				<when test='auc_obj_dsc == "1"'>
-					, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}						/* 최저낙찰한도금액                       */
-				</when>
-				<when test='auc_obj_dsc == "2"'>
-					, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}					/* 최저낙찰한도금액                       */
-				</when>
-				<when test='auc_obj_dsc == "3"'>
-					, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}					/* 최저낙찰한도금액                       */
-				</when>
-				<otherwise>
-					, LOWS_SBID_LMT_AM = LOWS_SBID_LMT_AM							/* 최저낙찰한도금액                       */
-				</otherwise>
-			</choose>
+				<choose>
+					<when test='cow_sog_wt == "" or cow_sog_wt == null'>
+						COW_SOG_WT = 0													/* 우출하중량                             */
+					</when>
+					<otherwise>
+						COW_SOG_WT = #{cow_sog_wt}										/* 우출하중량                             */
+					</otherwise>
+				</choose>
+				
+				<choose>
+					<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "1"'>
+						, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}					/* 최초최저낙찰한도금액                   */
+					</when>
+					<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "2"'>
+						, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}					/* 최초최저낙찰한도금액                   */
+					</when>
+					<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "3"'>
+						, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}				/* 최초최저낙찰한도금액                   */
+					</when>
+					<otherwise>
+						, FIR_LOWS_SBID_LMT_AM = FIR_LOWS_SBID_LMT_AM					/* 최초최저낙찰한도금액                   */
+					</otherwise>
+				</choose>
+				
+				<choose>
+					<when test='auc_obj_dsc == "1"'>
+						, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}						/* 최저낙찰한도금액                       */
+					</when>
+					<when test='auc_obj_dsc == "2"'>
+						, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}					/* 최저낙찰한도금액                       */
+					</when>
+					<when test='auc_obj_dsc == "3"'>
+						, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}					/* 최저낙찰한도금액                       */
+					</when>
+					<otherwise>
+						, LOWS_SBID_LMT_AM = LOWS_SBID_LMT_AM							/* 최저낙찰한도금액                       */
+					</otherwise>
+				</choose>
 
 				, RMK_CNTN               = #{rmk_cntn}        						/* 비고내용                               */
 				, LSCHG_DTM              = SYSDATE
 			    , LS_CMENO               = #{ss_userid}
+			WHERE NA_BZPLC			= #{ss_na_bzplc}
+			  AND AUC_DT				= #{auc_dt}
+			  AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
+			  AND OSLP_NO			    = #{oslp_no}
+			  AND LED_SQNO            = '1'
+			  AND SEL_STS_DSC			= '11'
+			  AND DEL_YN				= '0'
+    </update>
+    
+    <update id="LALM0311_updPgmOnlySave">
+	         UPDATE TB_LA_IS_MH_SOG_COW SET
+				LSCHG_DTM              = SYSDATE
+			    , LS_CMENO               = #{ss_userid}
+				<if test='"W".equals(chk_save_type)'>
+					<choose>
+						<when test='cow_sog_wt == "" or cow_sog_wt == null'>
+							, COW_SOG_WT = 0													/* 우출하중량                             */
+						</when>
+						<otherwise>
+							, COW_SOG_WT = #{cow_sog_wt}										/* 우출하중량                             */
+						</otherwise>
+					</choose>
+				</if>
+				<if test='"L".equals(chk_save_type)'>
+					<choose>
+						<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "1"'>
+							, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}					/* 최초최저낙찰한도금액                   */
+						</when>
+						<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "2"'>
+							, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}					/* 최초최저낙찰한도금액                   */
+						</when>
+						<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "3"'>
+							, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}				/* 최초최저낙찰한도금액                   */
+						</when>
+						<otherwise>
+							, FIR_LOWS_SBID_LMT_AM = FIR_LOWS_SBID_LMT_AM					/* 최초최저낙찰한도금액                   */
+						</otherwise>
+					</choose>				
+					<choose>
+						<when test='auc_obj_dsc == "1"'>
+							, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}						/* 최저낙찰한도금액                       */
+						</when>
+						<when test='auc_obj_dsc == "2"'>
+							, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}					/* 최저낙찰한도금액                       */
+						</when>
+						<when test='auc_obj_dsc == "3"'>
+							, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}					/* 최저낙찰한도금액                       */
+						</when>
+						<otherwise>
+							, LOWS_SBID_LMT_AM = LOWS_SBID_LMT_AM							/* 최저낙찰한도금액                       */
+						</otherwise>
+					</choose>					
+				</if>
 			WHERE NA_BZPLC			= #{ss_na_bzplc}
 			  AND AUC_DT				= #{auc_dt}
 			  AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
