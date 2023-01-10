@@ -3955,12 +3955,12 @@
             } else {
             	$("#brcl_isp_rzt_c").val("0");
             }
-        	$("#brcl_isp_dt").val(fn_toDate(result["inspectDt"]+''));
+        	$("#brcl_isp_dt").val(fn_toDate($.trim(result["inspectDt"])));
         	
-        	$("#vacn_order").val(result["vaccineorder"]);        	
-        	$("#vacn_dt").val(fn_toDate(result["injectionYmd"]+''));
-        	$("#bovine_dt").val(fn_toDate(result["tbcInspectYmd"]+''));
-        	$("#bovine_rsltnm").val(result["tbcInspectRsltNm"]);
+        	$("#vacn_order").val($.trim(result["vaccineorder"]));        	
+        	$("#vacn_dt").val(fn_toDate($.trim(result["injectionYmd"])));
+        	$("#bovine_dt").val(fn_toDate($.trim(result["tbcInspectYmd"])));
+        	$("#bovine_rsltnm").val($.trim(result["tbcInspectRsltNm"]));
         }
     }
     
