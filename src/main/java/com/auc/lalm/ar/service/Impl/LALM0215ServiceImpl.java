@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.auc.lalm.ar.service.LALM0215Service;
 import com.auc.main.service.LogService;
@@ -13,6 +14,7 @@ import com.auc.main.service.Impl.LogMapper;
 import com.auc.mca.McaUtil;
 
 @Service("LALM0215Service")
+@SuppressWarnings({"unused", "unchecked"})
 public class LALM0215ServiceImpl implements LALM0215Service{
 
 	@Autowired
@@ -32,7 +34,6 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		List<Map<String, Object>> list = null;		
 		list = lalm0215Mapper.LALM0215_selList(map);
-		
 		return list;
 		
 	}
@@ -130,7 +131,6 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		List<Map<String, Object>> list = null;		
 		list = lalm0215Mapper.LALM0215_selMhCalf(map);
-		
 		return list;
 		
 	}
@@ -315,7 +315,7 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		int updateNum = 0;
 		int aucObjDscCnt = 0;
 		
-		String vOslpNO   	= "";
+		String vOslpNO	= "";
 		
 		// 원표번호 셋팅
 		list = lalm0215Mapper.LALM0215_selVoslpNo(map);
@@ -387,6 +387,7 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		reMap.put("insertNum", insertNum);
 		reMap.put("updateNum", updateNum);
+		reMap.put("rtnData", vOslpNO);
 		
 		return reMap;
 	}
@@ -497,16 +498,10 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		return reMap;
 	}
-	
-	
+
 	@Override
 	public List<Map<String, Object>> LALM0215_selImgList(Map<String, Object> map) throws Exception {
-		
-		List<Map<String, Object>> list = null;		
-		list = mcaUtil.LALM0215_selImgList(map);
-		
-		return list;
-		
+		return mcaUtil.LALM0215_selImgList(map);
 	}
 	
 	@Override
@@ -538,6 +533,35 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		reMap.put("deleteNum", deleteNum);
 		reMap.put("updateNum", updateNum);
 		
+		return reMap;
+	}
+
+	/**
+	 * 출장우 이미지 저장 
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public Map<String, Object> LALM0215_insImgPgm(Map<String, Object> rMap) throws Exception {
+		final Map<String, Object> reMap = new HashMap<String, Object>();
+		// 클라우드 업로드 후 성공한 리스트 가져오기
+		final List<Map<String, Object>> resList = mcaUtil.imgUploadPrc(rMap);
+		int insertNum = 0;
+		int imgSqno = 1;
+		if (ObjectUtils.isEmpty(resList)) {
+			reMap.put("inserNum", insertNum);
+			return reMap;
+		}
+		
+		lalm0215Mapper.LALM0215_delImgPgm(rMap);
+		for (Map<String, Object> res : resList) {
+			res.put("ss_eno", rMap.get("ss_eno"));
+			res.put("img_sqno", imgSqno++);
+			insertNum += lalm0215Mapper.LALM0215_insImgPgm(res);
+		}
+		
+		reMap.put("insertNum", insertNum);
 		return reMap;
 	}
 }

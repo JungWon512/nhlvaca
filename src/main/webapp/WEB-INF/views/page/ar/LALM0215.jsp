@@ -13,7 +13,14 @@
 <!-- Tell the browser to be responsive to screen width -->
  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 </head>
+<style>
+#fileDiv {
+	text-overflow:ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+}
 
+</style>
 
 <script type="text/javascript">
 /*------------------------------------------------------------------------------
@@ -68,6 +75,7 @@
 		$(".tab_content").hide();
         $(".tab_content:first").show();
         $("#tab2_text").hide();
+        $("#tab3_text").hide();
         fn_CreateCalfGrid();
         
         var $tabEvtT = $('.tab_box .tab_list li a');        
@@ -690,7 +698,7 @@
         });
     	
     	/******************************
-         * 응찰 하한가 변경 이벤트
+         * 응찰 예정가 변경 이벤트
          ******************************/
     	$("#lows_sbid_lmt_am_ex").on("change keyup paste", function(e){        	
             if(e.keyCode != 13) {
@@ -1009,34 +1017,6 @@
             	}
              }
        	});
-       	
-       	/******************************
-         * 이미지 저장 이벤트
-         ******************************/
-        $("#btnUpload").click(function() {
-    		fn_InsImgList();
-    	});
-    	
-    	/******************************
-         * 이미지 리스트 조회 이벤트
-         ******************************/
-        $("#btnSelImgList").click(function() {
-    		fn_selImgList();
-    	});
-    	
-    	/******************************
-         * 이미지 조회 이벤트
-         ******************************/
-        $("#btnSelImg").click(function() {
-    		fn_selImg();
-    	});
-    	
-    	/******************************
-         * 이미지 삭제 이벤트
-         ******************************/
-        $(document).on("click","p.btnDelete",function() {
-    		fn_DelImgList($(this).attr("id"));
-    	});
      	
      	/******************************
          * 낙찰가 금액 초기화 이벤트
@@ -1051,7 +1031,7 @@
 //         $("#sra_sbid_upr").blur(function(e) {
 //         	if(parseInt($("#sra_sbid_upr").val()) > 0 && (parseInt($("#sra_sbid_upr").val()) < parseInt($("#lows_sbid_lmt_am_ex").val()))) {
 //         		if (mv_flag == '1') return;
-//         		MessagePopup('YESNO',"낙찰가["+$("#lows_sbid_lmt_am_ex").val()+"]가 하한가보다 작습니다. 계속 진행하시겠습니까?",function(res){
+//         		MessagePopup('YESNO',"낙찰가["+$("#lows_sbid_lmt_am_ex").val()+"]가 예정가보다 작습니다. 계속 진행하시겠습니까?",function(res){
 //         			if(res) {
 //         				mv_flag = "1";
 //         			} else {
@@ -1100,6 +1080,33 @@
             }
 		});
 		
+		/******************************
+         * 이미지 일괄 삭제 이벤트
+         ******************************/
+    	$("#delAllImg").click(function(e) {
+    		e.preventDefault();
+    		
+    		$("#uploadImg").val("");
+    		$(".uploadImg").empty();
+    	});
+		
+		$(document).on("click",".delIndvImg", function(e){
+			e.preventDefault();
+			$(this).closest("div").parent("li").remove();
+		});
+
+		 /******************************
+         * 이미지 등록 이벤트
+         ******************************/
+         $("#addImg").click(function(e){
+        	e.preventDefault();
+ 	        $("#uploadImg").click();
+ 	    });
+         
+         $("#uploadImg").on("change", function(e){
+	        getImageFiles(e);
+	    });
+		
      	/******************************
          * 텝1번 클릭 이벤트
          ******************************/
@@ -1107,6 +1114,7 @@
     		e.preventDefault();
     		$("#tab1_text").show();
     		$("#tab2_text").hide();
+    		$("#tab3_text").hide();
         });
      	
     	/******************************
@@ -1116,7 +1124,33 @@
     		e.preventDefault();
     		$("#tab1_text").hide();
     		$("#tab2_text").show();
+    		$("#tab3_text").hide();
         });
+        
+        /******************************
+         * 텝3번 클릭 이벤트
+         ******************************/
+    	$("#pb_tab3").on('click',function(e){
+    		e.preventDefault();
+    		$("#tab1_text").hide();
+    		$("#tab2_text").hide();
+    		$("#tab3_text").show();
+        });
+
+    	/******************************
+         * 인공수정일자 변경 이벤트
+         ******************************/
+    	$("#afism_mod_dt").on('change',function(e) {
+    		var d1 = new Date($('#auc_dt').val());
+    		var d2 = new Date($(this).val());
+    		//console.log(d1.getMonth() - d2.getMonth() + (12*(d1.getFullYear() - d2.getFullYear())));
+    		var result = d1.getMonth() - d2.getMonth() + (12*(d1.getFullYear() - d2.getFullYear()));
+    		if(d1.getDate() - d2.getDate() < 0){
+    			result-=1;
+    		}
+    		result = result<0?0:result;
+    		$("#prny_mtcn").val(result+=1);
+    	});
 	});
     
     /*------------------------------------------------------------------------------
@@ -1129,10 +1163,11 @@
     	 $(".tab_content").hide();
          $(".tab_content:first").show();
          $("#tab2_text").hide();
+         $("#tab3_text").hide();
          
-		 $("#pb_tab2").removeClass('on');
 		 $("#pb_tab1").addClass('on');
-		 $("#pb_tab3").addClass('on');
+		 $("#pb_tab2").removeClass('on');
+		 $("#pb_tab3").removeClass('on');
     	
     	 if(mv_InitBoolean) {
     		 fn_Reset();
@@ -1256,7 +1291,7 @@
 			return;
     	}
 		if(parseInt(fn_delComma($("#lows_sbid_lmt_am").val())) > parseInt(resultAucQcn[0]["BASE_LMT_AM"])){
-			MessagePopup("OK", "하한가가 최고 응찰 한도금액을 초과 하였습니다.");
+			MessagePopup("OK", "예정가가 최고 응찰 한도금액을 초과 하였습니다.");
 			$("#lows_sbid_lmt_am_ex").focus();
 	        return;
 	    }
@@ -1308,12 +1343,12 @@
 			}
 
 			if(parseInt(fn_delComma($("#sra_sbid_upr").val())) < parseInt(fn_delComma($("#lows_sbid_lmt_am_ex").val()))) {
-				MessagePopup('OK','낙찰단가가 응찰하한가 보다 작습니다.');
+				MessagePopup('OK','낙찰단가가 예정가 보다 작습니다.');
 				return;
 			}
 
 			if($("#lows_sbid_lmt_am_ex").val() == "0") {
-				MessagePopup('OK','응찰하한가가 없습니다.');
+				MessagePopup('OK','예정가가 없습니다.');
 				return;
 			}
 		}
@@ -1343,515 +1378,574 @@
         		resultStsDsc = setDecrypt(resultStsDscs);
         		
         		if(resultStsDsc[0]["SEL_STS_DSC"] != $("#sel_sts_dsc").val()) {
+	       			if(resultStsDsc[0]["SEL_STS_DSC"] == '22'){
+	       			   var message = '<br/>낙찰상태 변경 사유를 입력하세요.<br/><br/><input id="input_rn" maxlength="30" style="padding: 4px 6px 2px 6px;width: 100%;line-height: 12px;border: 1px solid #d9d9d9;vertical-align: middle;background: #fff;outline: none;"/>';
+	       			   message += '<script type="text/javascript">';
+	       			   message += '	$(document).find(\'input[id=input_rn]\').focusout(function(e){';
+	       			   //message += '		$(\'#chg_rmk_cntn\').val($(this).val());';
+	       			   message += '		parent.inputRn=$(this).val();';
+	       			   message += '	});';
+	       			   message += '<';
+	       			   message += "/script>";
+	       			   saveMessage += message;  
+	       			   fn_SaveSogCow(saveMessage);
+	       			   parent.inputRn='';
+	       			   return;
+	         		}
             		saveMessage = "경매진행상태가 일치하지 않습니다. 그래도 저장하시겠습니까?";
-            	} 
+            	}
             }
     	}
+    	fn_SaveSogCow(saveMessage);
     	
-		MessagePopup('YESNO', saveMessage, function(res){
-			if(res){
-				// 수수료 조회
-				var tmpResult = fn_SelFee();
-				var i         = 0;
-				var v_upr     = "0";
-								
-				// 콤마 삭제
-				$("#sra_sbid_am").val(fn_delComma($("#sra_sbid_am").val()));
-				$("#lows_sbid_lmt_am").val(fn_delComma($("#lows_sbid_lmt_am").val()));
-				
-				//수수료 데이타 처리
-				if(fn_isNull(tmpResult)) {
-					MessagePopup('OK','수수료코드가 등록되어있지 않습니다.');
-					return;
-					
-				} else {
-					//송아지 혈통 수수료
-					if(fn_isNull($("#blood_am").val())) {
-						$("#blood_am").val("0");
-					}
-					
-					for(i=0; i < tmpResult.length; i++) {
-						tmpResult[i]["SRA_TR_FEE"] = "0";
-						v_upr = "0";
-						
-						if(tmpResult[i]["NA_FEE_C"] == "010" || tmpResult[i]["NA_FEE_C"] == "011") {
-							if($("#ppgcow_fee_dsc").val() == tmpResult[i]["PPGCOW_FEE_DSC"]) {
-								// 금액
-								if(tmpResult[i]["AM_RTO_DSC"] == "1") {
-									//출하자
-									if(tmpResult[i]["FEE_APL_OBJ_C"] == "1") {
-										// 조합원 구분
-										if($("#io_sogmn_maco_yn").val() == "1") {
-											v_upr = tmpResult[i]["MACO_FEE_UPR"];
-										} else {
-											v_upr = tmpResult[i]["NMACO_FEE_UPR"];
-										}
-									// 낙찰자
-									} else {
-										if($("#io_mwmn_maco_yn").val() == "1") {
-											v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) + parseInt($("#blood_am").val());
-										} else {
-											v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) + parseInt($("#blood_am").val());
-										}
-									}
-									// 낙찰, 불락
-									if((tmpResult[i]["SBID_YN"] == 1 && $("#sel_sts_dsc").val() == "22") || (tmpResult[i]["SBID_YN"] == 0 && $("#sel_sts_dsc").val() != "22")) {
-										tmpResult[i]["SRA_TR_FEE"] = v_upr;
-										
-										// 조합사료미사용수수료 : 출하수수료 = 출하수수료 + 사료미사용수수료
-										if(tmpResult[i]["NA_FEE_C"] == '010' && $("#sra_fed_spy_yn").val() == '0') {
-											if (isNaN(parseInt(parent.envList[0]["SRA_FED_SPY_YN_FEE"]))) {
-												parent.envList[0]["SRA_FED_SPY_YN_FEE"] = '0';
-											}
-											// 출하수수료 + 사료미사용수수료
-											tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["SRA_FED_SPY_YN_FEE"]); 
-											
-										}
-										// ★3. 합천축협 친자확인 수수료
-				                        // 2016.09.05 친자확인여부 수수료추가
-				                        // 2016.11.02 친자확인여부 수수료추가 1차수정으로로 원복
-				                        // 2017.01.06 합천사료사용 여: 친자감별수수료(0) 부: 친자감별수수료(10000)
-				                        // ★합천: 8808990656236  테스트: 8808990643625
-										if (App_na_bzplc == "8808990656236") {
-											// 출하자 DNA_YN_CHK : 친자검사여부(1:여 0:부)
-											if (tmpResult[i]["NA_FEE_C"] == '010' && $("#dna_yn_chk").val() == '1') {
-												// SRA_FED_SPY_YN : 사료미사용여부 (1:여 0:부)
-												if ($("#SRA_FED_SPY_YN").val() == "0" || fn_isNull($("#sra_fed_spy_yn").val())) {
-													// 출하수수료 = 출하수수료 + 친자검사여부 출하수수료(10000원)
-													tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["FEE_CHK_DNA_YN_FEE"]);
-												} else {
-													 // 출하수수료 + 친자검사여부 출하수수료(10000원) 지원해서 0원
-													 tmpResult[i]["SRA_TR_FEE"] = tmpResult[i]["SRA_TR_FEE"];
-												}
-											}
-											// 판매자 친자검사여부:여, 친자확인결과:여
-				                        	if (tmpResult[i]["NA_FEE_C"] == '011' && $("#dna_yn_chk").val() == '1' &&  $("#dna_yn").val() == "1" ) {
-				                        		// 판매수수료 = 판매수수료 + 친자검사여부 판매수수료(5000원)
-				                        		tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["SELFEE_CHK_DNA_YN_FEE"]);
-											}
-										}
-										
-				                        // ★4. 영주축협
-				                        //  2017.04.14 관내  등록우	 12개월이상: 25000
-				                        //                       12개월이하: 30000
-				                        //                 미등록우 12개월이상: 25000
-				                        //                       12개월이하: 20000
-				                        //             관외 	     12개월이상: 25000
-				                        //                       12개월이하: 20000
-				                        //  2022.04.05 12개월이상 송아지 수수료 : 15,000원 (낙찰자에게 부과)
-				                        //             혈통 송아지 친자검사여부에 따라 출하주와 낙찰자에게 각각 부과
-				                        // ★영주: 8808990687094 테스트: 8808990643625
-				                        if (App_na_bzplc == "8808990687094") {
-				                            if (tmpResult[i]["NA_FEE_C"] == '010' && $("#dna_yn_chk").val() == "1" ){
-				                            	// 출하수수료 + 친자검사여부 출하수수료(10000원)
-				                            	tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["FEE_CHK_DNA_YN_FEE"]);
-				                            }
-				                            // 12개월이상수수료 / 친자검사여부판매수수료 2017.06.20
-				                            
-				                            if (tmpResult[i]["NA_FEE_C"] == "011") {
-				                                if ($("#mt12_ovr_yn").val() == "1") {
-				                                	// 판매수수료 + 12개월이상 수수료 (5000원)
-				                                	tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt($("#mt12_ovr_fee").val());
-				                                } else if ($("#dna_yn_chk").val() == "1") {
-				                                	// 판매수수료 + 친자검사여부 판매수수료(10000원)
-				                                	tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["SELFEE_CHK_DNA_YN_FEE"]);
-				                                }
-				                            }
-				                        }
-				                        
-				                     	// ★4. 청양축협 수수료 2020.11.09
-				                     	// ★청양: 8808990657646 테스트: 8808990643625
-				                     	if (App_na_bzplc == "8808990657646") {
-				                     		if (tmpResult[i]["NA_FEE_C"] == '011') {
-				                     			if ($("#mt12_ovr_yn").val() == "1") {
-				                     				// 판매수수료 + 12개월이상 수수료
-				                     				tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt($("#mt12_ovr_fee").val());
-				                     			}
-				                     		}
-				                     	}
-				                     	// 구미축협
-				                        // ★구미: 8808990657615  테스트: 8808990643625
-				                     	if (App_na_bzplc == "8808990657615") {
-				                            // 출하자 DNA_YN_CHK : 친자검사여부(1:여 0:부)
-				                            if (tmpResult[i]["NA_FEE_C"] == "010" && $("#dna_yn_chk").val() == "1") {
-				                            	// 출하수수료 = 출하수수료 + 친자검사여부 출하수수료
-				                            	tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["FEE_CHK_DNA_YN_FEE"]);
-				                            }
-				                         	// 판매자 친자검사여부:여
-				                     		if (tmpResult[i]["NA_FEE_C"] == "011" && $("#dna_yn_chk").val() == "1") {
-				                                // 판매수수료 = 판매수수료 + 친자검사여부 판매수수료
-				                                tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["SELFEE_CHK_DNA_YN_FEE"]);
-				                            }
-				                        }
-				                     	
-				                     	// 출하/판매수수료 수기등록
-				                        // 출하수수료
-				                        if (tmpResult[i]["NA_FEE_C"] == "010" && $("#fee_chk_yn").val() == "1") {
-				                        	// 출하수수료 수기등록
-				                        	tmpResult[i]["SRA_TR_FEE"] = $("#fee_chk_yn_fee").val();
-				                        }
-				                     	// 판매수수료
-				                        if (tmpResult[i]["NA_FEE_C"] == "011" && $("#selfee_chk_yn").val() == "1") {
-				                        	// 판매수수료 수기등록
-				                        	tmpResult[i]["SRA_TR_FEE"] = $("#selfee_chk_yn_fee").val();
-				                        }
-									}
-								// 율
-								} else {
-									// 출하자
-									if(tmpResult[i]["FEE_APL_OBJ_C"] == "1") {
-										if($("#io_sogmn_maco_yn").val() == "1") {
-											v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100
-										} else {
-											v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100
-										}
-									// 낙찰자
-									} else {
-										if($("#io_mwmn_maco_yn").val() == "1") {
-											v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100
-										} else {
-											v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100
-										}
-									}
-									
-									// 낙찰
-									if(tmpResult[i]["SBID_YN"] == "1" && $("#sel_sts_dsc").val() == "22") {
-										if(tmpResult[i]["SGNO_PRC_DSC"] == "1") {
-											tmpResult[i]["SRA_TR_FEE"] = Math.floor(parseInt(v_upr));
-										} else if(tmpResult[i]["SGNO_PRC_DSC"] == "2") {
-											tmpResult[i]["SRA_TR_FEE"] = Math.ceil(parseInt(v_upr));
-										} else {
-											tmpResult[i]["SRA_TR_FEE"] = Math.round(parseInt(v_upr));
-										}
-									}
-									
-									// 춘천축협
-									// 1000단위미만 버림  춘천축협: 8808990656229
-									if(App_na_bzplc == "8808990656229") {
-										if(tmpResult[i]["NA_FEE_C"] == "010") {
-											tmpResult[i]["SRA_TR_FEE"] = Math.floor(parseInt(tmpResult[i]["SRA_TR_FEE"]) / 1000) * 1000;
-										}
-									}
-									
-									// ★5. 횡성축협 2017.12.14
-			                        // 친자사업: 출하수수료 + 친자확인출하수수료(10000)  ★횡성축협: 8808990656885 테스트: 8808990643625
-			                        // 출하/판매수수료 수기등록
-									if(tmpResult[i]["NA_FEE_C"] == "010" && $("#fee_chk_yn").val() == "1") {
-										// 출하수수료
-										tmpResult[i]["SRA_TR_FEE"] = $("#fee_chk_yn_fee").val();
-									} else if(tmpResult[i]["NA_FEE_C"] == "011" && $("#selfee_chk_yn").val() == "1") {
-										// 판매수수료
-										tmpResult[i]["SRA_TR_FEE"] = $("#selfee_chk_yn_fee").val();
-									}
-								}
-							}
-						} else {
-							var v_ppgcow_fee_dsc = fn_GetPpgcowFeeDsc(tmpResult[i]);
-							if(v_ppgcow_fee_dsc == tmpResult[i]["PPGCOW_FEE_DSC"]) {
-								// 금액
-								if(tmpResult[i]["AM_RTO_DSC"] == "1") {
-									// 출하자
-									if(tmpResult[i]["FEE_APL_OBJ_C"] == "1") {
-										// 고창부안 : 8808990657189, 장흥 : 8808990656533, 보성 : 8808990656267, 화순 : 8808990661315, 
-										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
-										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990661315" 
-										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-											// 임신감정료 / 진행상태:낙찰 / 임신여부:여
-											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "1") {
-												v_upr = 0;
-											} else if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
-												if($("#io_sogmn_maco_yn").val() == "1") {
-													v_upr = tmpResult[i]["MACO_FEE_UPR"];
-												} else {
-													v_upr = tmpResult[i]["NMACO_FEE_UPR"];
-												}
-											} else {
-												// 보성 : 8808990656267, 장흥 : 8808990656533, 영광 : 8808990811710, 장성 : 8808990817675
-												if(App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-													if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("#ncss_yn").val() == "1") {
-														if($("#io_sogmn_maco_yn").val() == "1") {
-															v_upr = tmpResult[i]["MACO_FEE_UPR"];
-														} else {
-															v_upr = tmpResult[i]["NMACO_FEE_UPR"];
-														}
-													} else if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("#ncss_yn").val() == "0") {
-														v_upr = 0;
-													} else if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "0" && $("#ncss_yn").val() == "0") {
-														v_upr = 0;
-													} else {
-														if($("#io_sogmn_maco_yn").val() == "1") {
-															v_upr = tmpResult[i]["MACO_FEE_UPR"];
-														} else {
-															v_upr = tmpResult[i]["NMACO_FEE_UPR"];
-														}
-														 
-													}
-												} else {
-													if($("#io_sogmn_maco_yn").val() == "1") {
-														v_upr = tmpResult[i]["MACO_FEE_UPR"];
-													} else {
-														v_upr = tmpResult[i]["NMACO_FEE_UPR"];
-													}
-												}
-											}
-										} else {
-											if($("#io_sogmn_maco_yn").val() == "1") {
-												v_upr = tmpResult[i]["MACO_FEE_UPR"];
-											} else {
-												v_upr = tmpResult[i]["NMACO_FEE_UPR"];
-											}
-										}
-									// 낙찰자
-									} else {
-										// 고창부안 : 8808990657189, 장흥 : 8808990656533, 보성 : 8808990656267, 화순 : 8808990661315, 
-										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
-										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990661315" 
-										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-											// 임신감정료 / 진행상태:낙찰 / 임신여부:부
-											if(tmpResult[i]["NA_FEE_C"] == '060' && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
-												v_upr = 0;
-											// 임신감정료 / 진행상태:낙찰 / 임신감정여부:부 / 임신여부:부
-											}else if (tmpResult[i]["NA_FEE_C"] == '060' && $("#sel_sts_dsc").val() == '22' && $("#prny_yn").val() == "1"){
-												if($("#io_mwmn_maco_yn").val() == "1") {
-                                                    v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    	function fn_SaveSogCow(saveMessage){
+        	
+    		MessagePopup('YESNO', saveMessage, function(res){
+    			if(res){    				
+    				// 수수료 조회
+    				var tmpResult = fn_SelFee();
+    				var i         = 0;
+    				var v_upr     = "0";
+    								
+    				// 콤마 삭제
+    				$("#sra_sbid_am").val(fn_delComma($("#sra_sbid_am").val()));
+    				$("#lows_sbid_lmt_am").val(fn_delComma($("#lows_sbid_lmt_am").val()));
+    				
+    				//수수료 데이타 처리
+    				if(fn_isNull(tmpResult)) {
+    					MessagePopup('OK','수수료코드가 등록되어있지 않습니다.');
+    					return;
+    					
+    				} else {
+    					//송아지 혈통 수수료
+    					if(fn_isNull($("#blood_am").val())) {
+    						$("#blood_am").val("0");
+    					}
+    					
+    					for(i=0; i < tmpResult.length; i++) {
+    						tmpResult[i]["SRA_TR_FEE"] = "0";
+    						v_upr = "0";
+    						
+    						if(tmpResult[i]["NA_FEE_C"] == "010" || tmpResult[i]["NA_FEE_C"] == "011") {
+    							if($("#ppgcow_fee_dsc").val() == tmpResult[i]["PPGCOW_FEE_DSC"]) {
+    								// 금액
+    								if(tmpResult[i]["AM_RTO_DSC"] == "1") {
+    									//출하자
+    									if(tmpResult[i]["FEE_APL_OBJ_C"] == "1") {
+    										// 조합원 구분
+    										if($("#io_sogmn_maco_yn").val() == "1") {
+    											v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    										} else {
+    											v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    										}
+    									// 낙찰자
+    									} else {
+    										if($("#io_mwmn_maco_yn").val() == "1") {
+    											v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) + parseInt($("#blood_am").val());
+    										} else {
+    											v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) + parseInt($("#blood_am").val());
+    										}
+    									}
+    									// 낙찰, 불락
+    									if((tmpResult[i]["SBID_YN"] == 1 && $("#sel_sts_dsc").val() == "22") || (tmpResult[i]["SBID_YN"] == 0 && $("#sel_sts_dsc").val() != "22")) {
+    										tmpResult[i]["SRA_TR_FEE"] = v_upr;
+    										
+    										// 조합사료미사용수수료 : 출하수수료 = 출하수수료 + 사료미사용수수료
+    										if(tmpResult[i]["NA_FEE_C"] == '010' && $("#sra_fed_spy_yn").val() == '0') {
+    											if (isNaN(parseInt(parent.envList[0]["SRA_FED_SPY_YN_FEE"]))) {
+    												parent.envList[0]["SRA_FED_SPY_YN_FEE"] = '0';
+    											}
+    											// 출하수수료 + 사료미사용수수료
+    											tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["SRA_FED_SPY_YN_FEE"]); 
+    											
+    										}
+    										// ★3. 합천축협 친자확인 수수료
+    				                        // 2016.09.05 친자확인여부 수수료추가
+    				                        // 2016.11.02 친자확인여부 수수료추가 1차수정으로로 원복
+    				                        // 2017.01.06 합천사료사용 여: 친자감별수수료(0) 부: 친자감별수수료(10000)
+    				                        // ★합천: 8808990656236  테스트: 8808990643625
+    										if (App_na_bzplc == "8808990656236") {
+    											// 출하자 DNA_YN_CHK : 친자검사여부(1:여 0:부)
+    											if (tmpResult[i]["NA_FEE_C"] == '010' && $("#dna_yn_chk").val() == '1') {
+    												// SRA_FED_SPY_YN : 사료미사용여부 (1:여 0:부)
+    												if ($("#SRA_FED_SPY_YN").val() == "0" || fn_isNull($("#sra_fed_spy_yn").val())) {
+    													// 출하수수료 = 출하수수료 + 친자검사여부 출하수수료(10000원)
+    													tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["FEE_CHK_DNA_YN_FEE"]);
+    												} else {
+    													 // 출하수수료 + 친자검사여부 출하수수료(10000원) 지원해서 0원
+    													 tmpResult[i]["SRA_TR_FEE"] = tmpResult[i]["SRA_TR_FEE"];
+    												}
+    											}
+    											// 판매자 친자검사여부:여, 친자확인결과:여
+    				                        	if (tmpResult[i]["NA_FEE_C"] == '011' && $("#dna_yn_chk").val() == '1' &&  $("#dna_yn").val() == "1" ) {
+    				                        		// 판매수수료 = 판매수수료 + 친자검사여부 판매수수료(5000원)
+    				                        		tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["SELFEE_CHK_DNA_YN_FEE"]);
+    											}
+    										}
+    										
+    				                        // ★4. 영주축협
+    				                        //  2017.04.14 관내  등록우	 12개월이상: 25000
+    				                        //                       12개월이하: 30000
+    				                        //                 미등록우 12개월이상: 25000
+    				                        //                       12개월이하: 20000
+    				                        //             관외 	     12개월이상: 25000
+    				                        //                       12개월이하: 20000
+    				                        //  2022.04.05 12개월이상 송아지 수수료 : 15,000원 (낙찰자에게 부과)
+    				                        //             혈통 송아지 친자검사여부에 따라 출하주와 낙찰자에게 각각 부과
+    				                        // ★영주: 8808990687094 테스트: 8808990643625
+    				                        if (App_na_bzplc == "8808990687094") {
+    				                            if (tmpResult[i]["NA_FEE_C"] == '010' && $("#dna_yn_chk").val() == "1" ){
+    				                            	// 출하수수료 + 친자검사여부 출하수수료(10000원)
+    				                            	tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["FEE_CHK_DNA_YN_FEE"]);
+    				                            }
+    				                            // 12개월이상수수료 / 친자검사여부판매수수료 2017.06.20
+    				                            
+    				                            if (tmpResult[i]["NA_FEE_C"] == "011") {
+    				                                if ($("#mt12_ovr_yn").val() == "1") {
+    				                                	// 판매수수료 + 12개월이상 수수료 (5000원)
+    				                                	tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt($("#mt12_ovr_fee").val());
+    				                                } else if ($("#dna_yn_chk").val() == "1") {
+    				                                	// 판매수수료 + 친자검사여부 판매수수료(10000원)
+    				                                	tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["SELFEE_CHK_DNA_YN_FEE"]);
+    				                                }
+    				                            }
+    				                        }
+    				                        
+    				                     	// ★4. 청양축협 수수료 2020.11.09
+    				                     	// ★청양: 8808990657646 테스트: 8808990643625
+    				                     	if (App_na_bzplc == "8808990657646") {
+    				                     		if (tmpResult[i]["NA_FEE_C"] == '011') {
+    				                     			if ($("#mt12_ovr_yn").val() == "1") {
+    				                     				// 판매수수료 + 12개월이상 수수료
+    				                     				tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt($("#mt12_ovr_fee").val());
+    				                     			}
+    				                     		}
+    				                     	}
+    				                     	// 구미축협
+    				                        // ★구미: 8808990657615  테스트: 8808990643625
+    				                     	if (App_na_bzplc == "8808990657615") {
+    				                            // 출하자 DNA_YN_CHK : 친자검사여부(1:여 0:부)
+    				                            if (tmpResult[i]["NA_FEE_C"] == "010" && $("#dna_yn_chk").val() == "1") {
+    				                            	// 출하수수료 = 출하수수료 + 친자검사여부 출하수수료
+    				                            	tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["FEE_CHK_DNA_YN_FEE"]);
+    				                            }
+    				                         	// 판매자 친자검사여부:여
+    				                     		if (tmpResult[i]["NA_FEE_C"] == "011" && $("#dna_yn_chk").val() == "1") {
+    				                                // 판매수수료 = 판매수수료 + 친자검사여부 판매수수료
+    				                                tmpResult[i]["SRA_TR_FEE"] = parseInt(tmpResult[i]["SRA_TR_FEE"]) + parseInt(parent.envList[0]["SELFEE_CHK_DNA_YN_FEE"]);
+    				                            }
+    				                        }
+    				                     	
+    				                     	// 출하/판매수수료 수기등록
+    				                        // 출하수수료
+    				                        if (tmpResult[i]["NA_FEE_C"] == "010" && $("#fee_chk_yn").val() == "1") {
+    				                        	// 출하수수료 수기등록
+    				                        	tmpResult[i]["SRA_TR_FEE"] = $("#fee_chk_yn_fee").val();
+    				                        }
+    				                     	// 판매수수료
+    				                        if (tmpResult[i]["NA_FEE_C"] == "011" && $("#selfee_chk_yn").val() == "1") {
+    				                        	// 판매수수료 수기등록
+    				                        	tmpResult[i]["SRA_TR_FEE"] = $("#selfee_chk_yn_fee").val();
+    				                        }
+    									}
+    								// 율
+    								} else {
+    									// 출하자
+    									if(tmpResult[i]["FEE_APL_OBJ_C"] == "1") {
+    										if($("#io_sogmn_maco_yn").val() == "1") {
+    											v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100
+    										} else {
+    											v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100
+    										}
+    									// 낙찰자
+    									} else {
+    										if($("#io_mwmn_maco_yn").val() == "1") {
+    											v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100
+    										} else {
+    											v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100
+    										}
+    									}
+    									
+    									// 낙찰
+    									if(tmpResult[i]["SBID_YN"] == "1" && $("#sel_sts_dsc").val() == "22") {
+    										if(tmpResult[i]["SGNO_PRC_DSC"] == "1") {
+    											tmpResult[i]["SRA_TR_FEE"] = Math.floor(parseInt(v_upr));
+    										} else if(tmpResult[i]["SGNO_PRC_DSC"] == "2") {
+    											tmpResult[i]["SRA_TR_FEE"] = Math.ceil(parseInt(v_upr));
+    										} else {
+    											tmpResult[i]["SRA_TR_FEE"] = Math.round(parseInt(v_upr));
+    										}
+    									}
+    									
+    									// 춘천축협
+    									// 1000단위미만 버림  춘천축협: 8808990656229
+    									if(App_na_bzplc == "8808990656229") {
+    										if(tmpResult[i]["NA_FEE_C"] == "010") {
+    											tmpResult[i]["SRA_TR_FEE"] = Math.floor(parseInt(tmpResult[i]["SRA_TR_FEE"]) / 1000) * 1000;
+    										}
+    									}
+    									
+    									// ★5. 횡성축협 2017.12.14
+    			                        // 친자사업: 출하수수료 + 친자확인출하수수료(10000)  ★횡성축협: 8808990656885 테스트: 8808990643625
+    			                        // 출하/판매수수료 수기등록
+    									if(tmpResult[i]["NA_FEE_C"] == "010" && $("#fee_chk_yn").val() == "1") {
+    										// 출하수수료
+    										tmpResult[i]["SRA_TR_FEE"] = $("#fee_chk_yn_fee").val();
+    									} else if(tmpResult[i]["NA_FEE_C"] == "011" && $("#selfee_chk_yn").val() == "1") {
+    										// 판매수수료
+    										tmpResult[i]["SRA_TR_FEE"] = $("#selfee_chk_yn_fee").val();
+    									}
+    								}
+    							}
+    						} else {
+    							var v_ppgcow_fee_dsc = fn_GetPpgcowFeeDsc(tmpResult[i]);
+    							if(v_ppgcow_fee_dsc == tmpResult[i]["PPGCOW_FEE_DSC"]) {
+    								// 금액
+    								if(tmpResult[i]["AM_RTO_DSC"] == "1") {
+    									// 출하자
+    									if(tmpResult[i]["FEE_APL_OBJ_C"] == "1") {
+    										// 고창부안 : 8808990657189, 장흥 : 8808990656533, 보성 : 8808990656267, 화순 : 8808990661315, 
+    										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
+    										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990661315" 
+    										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
+    											// 임신감정료 / 진행상태:낙찰 / 임신여부:여
+    											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "1") {
+    												v_upr = 0;
+    											} else if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
+    												if($("#io_sogmn_maco_yn").val() == "1") {
+    													v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    												} else {
+    													v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    												}
+    											} else {
+    												// 보성 : 8808990656267, 장흥 : 8808990656533, 영광 : 8808990811710, 장성 : 8808990817675
+    												if(App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
+    													if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("#ncss_yn").val() == "1") {
+    														if($("#io_sogmn_maco_yn").val() == "1") {
+    															v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    														} else {
+    															v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    														}
+    													} else if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("#ncss_yn").val() == "0") {
+    														v_upr = 0;
+    													} else if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "0" && $("#ncss_yn").val() == "0") {
+    														v_upr = 0;
+    													} else {
+    														if($("#io_sogmn_maco_yn").val() == "1") {
+    															v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    														} else {
+    															v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    														}
+    														 
+    													}
+    												} else {
+    													if($("#io_sogmn_maco_yn").val() == "1") {
+    														v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    													} else {
+    														v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    													}
+    												}
+    											}
+    										} else {
+    											if($("#io_sogmn_maco_yn").val() == "1") {
+    												v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    											} else {
+    												v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    											}
+    										}
+    									// 낙찰자
+    									} else {
+    										// 고창부안 : 8808990657189, 장흥 : 8808990656533, 보성 : 8808990656267, 화순 : 8808990661315, 
+    										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
+    										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990661315" 
+    										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
+    											// 임신감정료 / 진행상태:낙찰 / 임신여부:부
+    											if(tmpResult[i]["NA_FEE_C"] == '060' && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
+    												v_upr = 0;
+    											// 임신감정료 / 진행상태:낙찰 / 임신감정여부:부 / 임신여부:부
+    											}else if (tmpResult[i]["NA_FEE_C"] == '060' && $("#sel_sts_dsc").val() == '22' && $("#prny_yn").val() == "1"){
+    												if($("#io_mwmn_maco_yn").val() == "1") {
+                                                        v_upr = tmpResult[i]["MACO_FEE_UPR"];
+                                                    } else {
+                                                        v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+                                                    }
+    											} else {
+    												// 보성 : 8808990656267, 장흥 : 8808990656533, 영광 : 8808990811710, 장성 : 8808990817675
+    												if(App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
+    													if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("ncss_yn").val() == "0") {
+    														if($("#io_mwmn_maco_yn").val() == "1") {
+    															v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    														} else {
+    															v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    														}
+    													} else if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "0" && $("ncss_yn").val() == "0") {
+    														v_upr = 0;
+    													} else if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("ncss_yn").val() == "1") {
+    														v_upr = 0;
+    													} else {
+    														if($("#io_mwmn_maco_yn").val() == "1") {
+    															v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    														} else {
+    															v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    														}
+    													}
+    												} else {
+    													if($("#io_mwmn_maco_yn").val() =="1") {
+    														v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    													} else {
+    														v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    													}
+    												}
+    											}
+    										} else {
+    											if($("#io_mwmn_maco_yn").val() =="1") {
+    												v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    											} else {
+    												v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    											}
+    										}
+    									}
+    									// 낙찰, 불락
+    									if((tmpResult[i]["SBID_YN"] == "1" && $("#sel_sts_dsc").val() == "22") 
+    									|| (tmpResult[i]["SBID_YN"] == "0" && $("#sel_sts_dsc").val() != "22")) {
+    										tmpResult[i]["SRA_TR_FEE"] = v_upr;
+    									}
+    									//송장등록
+    									if($("#sel_sts_dsc").val() == "11") {
+    										tmpResult[i]["SRA_TR_FEE"] = 0;
+    									}
+    								// 율
+    								} else {
+    									// 출하자
+    									if(tmpResult[i]["FEE_APL_OBJ_C"] == "1") {
+    										// 고창부안 : 8808990657189, 장흥 : 8808990656533, 보성 : 8808990656267, 화순 : 8808990661315, 
+    										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
+    										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990661315" 
+    										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
+    											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() != "0") {
+    												v_upr = 0;
+    											} else {
+    												if($("#io_sogmn_maco_yn").val() == "1") {
+    													v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
+    												} else {
+    													v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
+    												}
+    											}
+    										}else {
+    											if($("#io_sogmn_maco_yn").val() == "1") {
+                                                    v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
                                                 } else {
-                                                    v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+                                                    v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
                                                 }
-											} else {
-												// 보성 : 8808990656267, 장흥 : 8808990656533, 영광 : 8808990811710, 장성 : 8808990817675
-												if(App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-													if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("ncss_yn").val() == "0") {
-														if($("#io_mwmn_maco_yn").val() == "1") {
-															v_upr = tmpResult[i]["MACO_FEE_UPR"];
-														} else {
-															v_upr = tmpResult[i]["NMACO_FEE_UPR"];
-														}
-													} else if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "0" && $("ncss_yn").val() == "0") {
-														v_upr = 0;
-													} else if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("ncss_yn").val() == "1") {
-														v_upr = 0;
-													} else {
-														if($("#io_mwmn_maco_yn").val() == "1") {
-															v_upr = tmpResult[i]["MACO_FEE_UPR"];
-														} else {
-															v_upr = tmpResult[i]["NMACO_FEE_UPR"];
-														}
-													}
-												} else {
-													if($("#io_mwmn_maco_yn").val() =="1") {
-														v_upr = tmpResult[i]["MACO_FEE_UPR"];
-													} else {
-														v_upr = tmpResult[i]["NMACO_FEE_UPR"];
-													}
-												}
-											}
-										} else {
-											if($("#io_mwmn_maco_yn").val() =="1") {
-												v_upr = tmpResult[i]["MACO_FEE_UPR"];
-											} else {
-												v_upr = tmpResult[i]["NMACO_FEE_UPR"];
-											}
-										}
-									}
-									// 낙찰, 불락
-									if((tmpResult[i]["SBID_YN"] == "1" && $("#sel_sts_dsc").val() == "22") 
-									|| (tmpResult[i]["SBID_YN"] == "0" && $("#sel_sts_dsc").val() != "22")) {
-										tmpResult[i]["SRA_TR_FEE"] = v_upr;
-									}
-									//송장등록
-									if($("#sel_sts_dsc").val() == "11") {
-										tmpResult[i]["SRA_TR_FEE"] = 0;
-									}
-								// 율
-								} else {
-									// 출하자
-									if(tmpResult[i]["FEE_APL_OBJ_C"] == "1") {
-										// 고창부안 : 8808990657189, 장흥 : 8808990656533, 보성 : 8808990656267, 화순 : 8808990661315, 
-										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
-										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990661315" 
-										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() != "0") {
-												v_upr = 0;
-											} else {
-												if($("#io_sogmn_maco_yn").val() == "1") {
-													v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
-												} else {
-													v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
-												}
-											}
-										}else {
-											if($("#io_sogmn_maco_yn").val() == "1") {
-                                                v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
-                                            } else {
-                                                v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
-                                            }
-										}
-									// 낙찰자
-									} else {
-										// 고창부안 : 8808990657189, 장흥 : 8808990656533, 보성 : 8808990656267, 화순 : 8808990661315, 
-										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
-										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990661315" 
-										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
-												v_upr = 0;
-											} else {
-												if($("#io_mwmn_maco_yn").val() == "1") {
-													v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
-												} else {
-													v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
-												}
-											}
-										}else {
-											if($("#io_mwmn_maco_yn").val() == "1") {
-                                                v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
-                                            } else {
-                                                v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
-                                            }
-										}
-									}
-									// 낙찰
-									if(tmpResult[i]["SBID_YN"] == "1" && $("#sel_sts_dsc").val() == "22") {
-										if(tmpResult[i]["SGNO_PRC_DSC"] == "1") {
-											tmpResult[i]["SRA_TR_FEE"] = Math.floor(parseInt(v_upr));
-										} else if(tmpResult[i]["SGNO_PRC_DSC"] == "2") {
-											tmpResult[i]["SRA_TR_FEE"] = Math.ceil(parseInt(v_upr));
-										} else {
-											tmpResult[i]["SRA_TR_FEE"] = Math.round(parseInt(v_upr));
-										}
-									}
-								}
-								// 괴사감정료
-								if(tmpResult[i]["NA_FEE_C"] == "050" && $("#ncss_jug_yn").val() == "0") tmpResult[i]["SRA_TR_FEE"] = 0;
-								// 임심감정료
-								if(tmpResult[i]["NA_FEE_C"] == "060" && $("#prny_jug_yn").val() == "0") tmpResult[i]["SRA_TR_FEE"] = 0;
-								// 제각수수료
-								if(tmpResult[i]["NA_FEE_C"] == "110" && $("#rmhn_yn").val() == "0") tmpResult[i]["SRA_TR_FEE"] = 0;
-								// 운송비
-								if(tmpResult[i]["NA_FEE_C"] == "040" && $("#trpcs_py_yn").val() == "1") tmpResult[i]["SRA_TR_FEE"] = 0;
-								
-								// 사고적립금 백운학일때 사고적립금 0 적용 - 청도축협
-								// ★청도: 8808990656571 테스트: 8808990643625
-				                if (App_na_bzplc == "8808990656571") {
-				                    if (tmpResult[i]["NA_FEE_C"] == "030" && $("#sra_pdmnm").val() == '백운학'){
-				                    	tmpResult[i]["SRA_TR_FEE"] = 0;   // 사고적립금 0 입력
-				                    }
-				                }
-							}
-						}
-					} // End For
-					
+    										}
+    									// 낙찰자
+    									} else {
+    										// 고창부안 : 8808990657189, 장흥 : 8808990656533, 보성 : 8808990656267, 화순 : 8808990661315, 
+    										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
+    										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990661315" 
+    										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
+    											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
+    												v_upr = 0;
+    											} else {
+    												if($("#io_mwmn_maco_yn").val() == "1") {
+    													v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
+    												} else {
+    													v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
+    												}
+    											}
+    										}else {
+    											if($("#io_mwmn_maco_yn").val() == "1") {
+                                                    v_upr = parseInt(tmpResult[i]["MACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
+                                                } else {
+                                                    v_upr = parseInt(tmpResult[i]["NMACO_FEE_UPR"]) * parseInt($("#sra_sbid_am").val()) / 100;
+                                                }
+    										}
+    									}
+    									// 낙찰
+    									if(tmpResult[i]["SBID_YN"] == "1" && $("#sel_sts_dsc").val() == "22") {
+    										if(tmpResult[i]["SGNO_PRC_DSC"] == "1") {
+    											tmpResult[i]["SRA_TR_FEE"] = Math.floor(parseInt(v_upr));
+    										} else if(tmpResult[i]["SGNO_PRC_DSC"] == "2") {
+    											tmpResult[i]["SRA_TR_FEE"] = Math.ceil(parseInt(v_upr));
+    										} else {
+    											tmpResult[i]["SRA_TR_FEE"] = Math.round(parseInt(v_upr));
+    										}
+    									}
+    								}
+    								// 괴사감정료
+    								if(tmpResult[i]["NA_FEE_C"] == "050" && $("#ncss_jug_yn").val() == "0") tmpResult[i]["SRA_TR_FEE"] = 0;
+    								// 임심감정료
+    								if(tmpResult[i]["NA_FEE_C"] == "060" && $("#prny_jug_yn").val() == "0") tmpResult[i]["SRA_TR_FEE"] = 0;
+    								// 제각수수료
+    								if(tmpResult[i]["NA_FEE_C"] == "110" && $("#rmhn_yn").val() == "0") tmpResult[i]["SRA_TR_FEE"] = 0;
+    								// 운송비
+    								if(tmpResult[i]["NA_FEE_C"] == "040" && $("#trpcs_py_yn").val() == "1") tmpResult[i]["SRA_TR_FEE"] = 0;
+    								
+    								// 사고적립금 백운학일때 사고적립금 0 적용 - 청도축협
+    								// ★청도: 8808990656571 테스트: 8808990643625
+    				                if (App_na_bzplc == "8808990656571") {
+    				                    if (tmpResult[i]["NA_FEE_C"] == "030" && $("#sra_pdmnm").val() == '백운학'){
+    				                    	tmpResult[i]["SRA_TR_FEE"] = 0;   // 사고적립금 0 입력
+    				                    }
+    				                }
+    							}
+    						}
+    					} // End For
+    					
 
-					if(fn_isNull($("#case_cow").val())) {
-						$("#case_cow").val("1");
-					}
-					// 추가운송비
-					if(fn_isNull($("#sra_trpcs").val())) {
-						$("#sra_trpcs").val("0");
-					}
-					// 출자금
-					if(fn_isNull($("#sra_pyiva").val())) {
-						$("#sra_pyiva").val("0");
-					}
-					// 사료대금
-					if(fn_isNull($("#sra_fed_spy_am").val())) {
-						$("#sra_fed_spy_am").val("0");
-					}
-					// 당일접수비
-					if(fn_isNull($("#td_rc_cst").val())) {
-						$("#td_rc_cst").val("0");
-					}
-					// 사료사용여부금액
-					if(fn_isNull($("#sra_fed_spy_yn_fee").val())) {
-						$("#sra_fed_spy_yn_fee").val("0");
-					}
-					// 출하수수료수기등록
-					if(fn_isNull($("#fee_chk_yn_fee").val())) {
-						$("#fee_chk_yn_fee").val("0");
-					}
-					// 판매수수료수기등록
-					if(fn_isNull($("#selfee_chk_yn_fee").val())) {
-						$("#selfee_chk_yn_fee").val("0");
-					}
-					
-					if(fn_isNull($("#cow_sog_wt").val())) {
-			 			$("#cow_sog_wt").val("0");
-			 		}
-					
-					if(fn_isNull($("#brcl_isp_rzt_c").val())) {
-			 			$("#brcl_isp_rzt_c").val("0");
-			 		}
-					
-					console.log("계산결과 > ", tmpResult);
-					
-					if(setRowStatus == "insert") {
-						$("#fir_lows_sbid_lmt_am").val($("#lows_sbid_lmt_am").val());
-						$("#chg_rmk_cntn").val("최초 저장 등록");
-						$("#chg_del_yn").val("0");
-						
-						srchData["frm_MhSogCow"] 	= setFrmToData("frm_MhSogCow");
-				     	srchData["calfGrid"] 		= calfArray;
-				     	srchData["grd_MhFee"] 		= tmpResult;
-				     	
-						result = sendAjax(srchData, "/LALM0215_insPgm", "POST");
-						
-						if(result.status == RETURN_SUCCESS){
-			            	MessagePopup("OK", "저장되었습니다.",function(res){
-			            		mv_RunMode = 3;
-								mv_auc_dt = $("#auc_dt").val();
-								mv_auc_obj_dsc = $("#auc_obj_dsc").val();
-								
-								if(fn_isNull($("gvno_bascd").val())) {
-									mv_gvno_bascd = 0;
-								} else {
-									mv_gvno_bascd = $("#gvno_bascd").val();
-								}
-								mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
-								
-								mv_InitBoolean = true;
-								fn_Init();
-			            	});
-			            } else {
-			            	showErrorMessage(result);
-			                return;
-			            }
-					} else if(setRowStatus == "update") {
-						$("#fir_lows_sbid_lmt_am").val($("#lows_sbid_lmt_am").val());
-						$("#chg_rmk_cntn").val("수정로그");
-						$("#chg_del_yn").val("0");
-						srchData["frm_MhSogCow"] 	= setFrmToData("frm_MhSogCow");
-				     	srchData["calfGrid"] 		= calfArray;
-				     	srchData["grd_MhFee"] 		= tmpResult;
-						
-						result = sendAjax(srchData, "/LALM0215_updPgm", "POST");
-						
-						if(result.status == RETURN_SUCCESS){
-							MessagePopup("OK", "저장되었습니다.",function(res){
-								mv_RunMode = 3;
-								mv_auc_dt = $("#auc_dt").val();
-								mv_auc_obj_dsc = $("#auc_obj_dsc").val();
-								
-								if(fn_isNull($("gvno_bascd").val())) {
-									mv_gvno_bascd = 0;
-								} else {
-									mv_gvno_bascd = $("#gvno_bascd").val();
-								}
-								mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
-								
-								mv_InitBoolean = true;
-								fn_Init();
-							});
-			            } else {
-			            	showErrorMessage(result);
-			                return;
-			            }
-					}
-				}
-				
-			} else {    			
-				MessagePopup('OK','취소되었습니다.');
-				return;
-			}
-		});
+    					if(fn_isNull($("#case_cow").val())) {
+    						$("#case_cow").val("1");
+    					}
+    					// 추가운송비
+    					if(fn_isNull($("#sra_trpcs").val())) {
+    						$("#sra_trpcs").val("0");
+    					}
+    					// 출자금
+    					if(fn_isNull($("#sra_pyiva").val())) {
+    						$("#sra_pyiva").val("0");
+    					}
+    					// 사료대금
+    					if(fn_isNull($("#sra_fed_spy_am").val())) {
+    						$("#sra_fed_spy_am").val("0");
+    					}
+    					// 당일접수비
+    					if(fn_isNull($("#td_rc_cst").val())) {
+    						$("#td_rc_cst").val("0");
+    					}
+    					// 사료사용여부금액
+    					if(fn_isNull($("#sra_fed_spy_yn_fee").val())) {
+    						$("#sra_fed_spy_yn_fee").val("0");
+    					}
+    					// 출하수수료수기등록
+    					if(fn_isNull($("#fee_chk_yn_fee").val())) {
+    						$("#fee_chk_yn_fee").val("0");
+    					}
+    					// 판매수수료수기등록
+    					if(fn_isNull($("#selfee_chk_yn_fee").val())) {
+    						$("#selfee_chk_yn_fee").val("0");
+    					}
+    					
+    					if(fn_isNull($("#cow_sog_wt").val())) {
+    			 			$("#cow_sog_wt").val("0");
+    			 		}
+    					
+    					if(fn_isNull($("#brcl_isp_rzt_c").val())) {
+    			 			$("#brcl_isp_rzt_c").val("0");
+    			 		}
+    					
+    					console.log("계산결과 > ", tmpResult);
+    					
+    					if(setRowStatus == "insert") {
+    						$("#fir_lows_sbid_lmt_am").val($("#lows_sbid_lmt_am").val());
+    						$("#chg_rmk_cntn").val("최초 저장 등록");
+    						$("#chg_del_yn").val("0");
+    						
+    						srchData["frm_MhSogCow"] 	= setFrmToData("frm_MhSogCow");
+    				     	srchData["calfGrid"] 		= calfArray;
+    				     	srchData["grd_MhFee"] 		= tmpResult;
+    				     	
+    						result = sendAjax(srchData, "/LALM0215_insPgm", "POST");
+    						
+    						if(result.status == RETURN_SUCCESS){
+    							if($("#uploadImg").val() != ""){
+    	                    		if (fn_UploadImage(setDecrypt(result)) == true){
+    									MessagePopup("OK", "저장되었습니다.",function(res){
+    					            		mv_RunMode = 3;
+    										mv_auc_dt = $("#auc_dt").val();
+    										mv_auc_obj_dsc = $("#auc_obj_dsc").val();
+    										
+    										if(fn_isNull($("gvno_bascd").val())) {
+    											mv_gvno_bascd = 0;
+    										} else {
+    											mv_gvno_bascd = $("#gvno_bascd").val();
+    										}
+    										mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
+    										
+    										mv_InitBoolean = true;
+    										fn_Init();
+    					            	});
+    								} 
+    							} else {
+    								MessagePopup("OK", "저장되었습니다.",function(res){
+    				            		mv_RunMode = 3;
+    									mv_auc_dt = $("#auc_dt").val();
+    									mv_auc_obj_dsc = $("#auc_obj_dsc").val();
+    									
+    									if(fn_isNull($("gvno_bascd").val())) {
+    										mv_gvno_bascd = 0;
+    									} else {
+    										mv_gvno_bascd = $("#gvno_bascd").val();
+    									}
+    									mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
+    									
+    									mv_InitBoolean = true;
+    									fn_Init();
+    				            	});
+    							}
+    			            } else {
+    			            	showErrorMessage(result);
+    			                return;
+    			            }
+    					} else if(setRowStatus == "update") {
+    						$("#fir_lows_sbid_lmt_am").val($("#lows_sbid_lmt_am").val());
+    						$("#chg_rmk_cntn").val("수정로그");
+    	    				$('#chg_rmk_cntn').val($('#chg_rmk_cntn').val()+' 상태변경 사유 :'+parent.inputRn);
+    						$("#chg_del_yn").val("0");
+    						srchData["frm_MhSogCow"] 	= setFrmToData("frm_MhSogCow");
+    				     	srchData["calfGrid"] 		= calfArray;
+    				     	srchData["grd_MhFee"] 		= tmpResult;
+    						
+    						result = sendAjax(srchData, "/LALM0215_updPgm", "POST");
+    						
+    						if(result.status == RETURN_SUCCESS){
+    							if($("#uploadImg").val() != ""){
+    	                    		if (fn_UploadImage() == true){
+    									MessagePopup("OK", "저장되었습니다.",function(res){
+    										mv_RunMode = 3;
+    										mv_auc_dt = $("#auc_dt").val();
+    										mv_auc_obj_dsc = $("#auc_obj_dsc").val();
+    										
+    										if(fn_isNull($("gvno_bascd").val())) {
+    											mv_gvno_bascd = 0;
+    										} else {
+    											mv_gvno_bascd = $("#gvno_bascd").val();
+    										}
+    										mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
+    										
+    										mv_InitBoolean = true;
+    										fn_Init();
+    									});
+                        			}
+    							} else {
+    								MessagePopup("OK", "저장되었습니다.",function(res){
+    									mv_RunMode = 3;
+    									mv_auc_dt = $("#auc_dt").val();
+    									mv_auc_obj_dsc = $("#auc_obj_dsc").val();
+    									
+    									if(fn_isNull($("gvno_bascd").val())) {
+    										mv_gvno_bascd = 0;
+    									} else {
+    										mv_gvno_bascd = $("#gvno_bascd").val();
+    									}
+    									mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
+    									
+    									mv_InitBoolean = true;
+    									fn_Init();
+    								});
+    							}
+    			            } else {
+    			            	showErrorMessage(result);
+    			                return;
+    			            }
+    					}
+    				}
+    				
+    			} else {    			
+    				MessagePopup('OK','취소되었습니다.');
+    				return;
+    			}
+    		});    		
+    	}
     	
 		
     }
@@ -1924,7 +2018,7 @@
 				}
 				
 				if(parseInt(fn_delComma($("#lows_sbid_lmt_am").val())) > parseInt($("#base_lmt_am").val())) {
-					MessagePopup('OK','하한가가 최고 응찰 한도금액을 초과 하였습니다.(최고응찰한도금액:'+$("#base_lmt_am").val()+'원');
+					MessagePopup('OK','예정가가 최고 응찰 한도금액을 초과 하였습니다.(최고응찰한도금액:'+$("#base_lmt_am").val()+'원');
 					$("#lows_sbid_lmt_am_ex").focus();
 					return;
 				}
@@ -1967,12 +2061,12 @@
 						}
 					}
 					if(parseInt($("#sra_sbid_upr").val()) < parseInt($("#lows_sbid_lmt_am_ex").val())) {
-						MessagePopup('OK','낙찰단가가 하한가 보다 작습니다');
+						MessagePopup('OK','낙찰단가가 예정가 보다 작습니다');
 						$("#sra_sbid_upr").focus();
 						return;
 					}
 					if($("#lows_sbid_lmt_am_ex").val() == "0") {
-						MessagePopup('OK','응찰하한가가 없습니다');
+						MessagePopup('OK','예정가가 없습니다');
 						$("#lows_sbid_lmt_am_ex").focus();
 						return;
 					}
@@ -2440,106 +2534,53 @@
         
         fn_CallIndvInfHstPopup(data, checkBoolean, function(result){
         	if(result){
-        		if(chkBool == true) {
-        			 var results = sendAjax(result, "/LALM0222P_updReturnValue", "POST");
-        	         var returnVal;
-        	         
-        	         if(results.status != RETURN_SUCCESS) {
-        	             showErrorMessage(results);
-        	             return;
-
-        	         } else {
-        	        	 returnVal = setDecrypt(results);
-        	        	 $("#sra_srs_dsc").val(returnVal[0].SRA_SRS_DSC);
-        	        		
-        	        		if(!fn_isNull(returnVal[0].SRA_INDV_AMNNO)) {
-        	        			$("#sra_indv_amnno").val(returnVal[0].SRA_INDV_AMNNO.substr(3, 12));
-        	        		}
-        	        		
-        	        		$("#fhs_id_no").val(returnVal[0].FHS_ID_NO);
-        	        		$("#farm_amnno").val(returnVal[0].FARM_AMNNO);
-        	        		$("#ftsnm").val(fn_xxsDecode(returnVal[0].FTSNM));
-        	        		
-        	        		if(!fn_isNull(returnVal[0].CUS_MPNO)) {
-        	                	$("#ohse_telno").val(returnVal[0].CUS_MPNO);
-        	                } else {
-        	                	$("#ohse_telno").val(returnVal[0].OHSE_TELNO);
-        	                }
-        	        		
-        	        		if(!fn_isNull(returnVal[0].ZIP)) {
-        	        			$("#zip").val(returnVal[0].ZIP.substr(0, 3) + "-" + returnVal[0].ZIP.substr(3, 3));
-        	        		}
-        	        		
-        	        		$("#dongup").val(fn_xxsDecode(returnVal[0].DONGUP));
-        	        		$("#dongbw").val(fn_xxsDecode(returnVal[0].DONGBW));
-        	        		$("#sra_pdmnm").val(fn_xxsDecode(returnVal[0].FTSNM));
-        	        		$("#sra_pd_rgnnm").val(fn_xxsDecode(returnVal[0].DONGUP));
-        	        		$("#sog_na_trpl_c").val(returnVal[0].NA_TRPL_C);
-        	        		$("#indv_sex_c").val(returnVal[0].INDV_SEX_C);
-        	        		$("#birth").val(fn_toDate(returnVal[0].BIRTH));
-        	        		$("#indv_id_no").val(returnVal[0].INDV_ID_NO);
-        	        		$("#sra_indv_brdsra_rg_no").val(returnVal[0].SRA_INDV_BRDSRA_RG_NO);
-        	        		$("#rg_dsc").val(returnVal[0].RG_DSC);
-        	        		$("#kpn_no").val(returnVal[0].KPN_NO);
-        	        		$("#mcow_dsc").val(returnVal[0].MCOW_DSC);
-        	        		$("#mcow_sra_indv_amnno").val(returnVal[0].MCOW_SRA_INDV_AMNNO);
-        	        		
-        	        		if(!fn_isNull(returnVal[0].MATIME)) {
-        	        			$("#matime").val(parseInt(returnVal[0].MATIME));
-        	        		}
-        	        		
-        	        		if(!fn_isNull(returnVal[0].SRA_INDV_PASG_QCN)) {
-        	        			$("#sra_indv_pasg_qcn").val(parseInt(returnVal[0].SRA_INDV_PASG_QCN));
-        	        		}
-        	        		
-        	        		$("#io_sogmn_maco_yn").val(returnVal[0].MACO_YN);
-        	        		$("#sra_farm_acno").val(returnVal[0].SRA_FARM_ACNO);
-        	         }
-        		} else {
-        			$("#sra_srs_dsc").val(result.SRA_SRS_DSC);
-            		
-            		if(!fn_isNull(result.SRA_INDV_AMNNO)) {
-            			$("#sra_indv_amnno").val(result.SRA_INDV_AMNNO.substr(3, 12));
-            		}
-            		
-            		$("#fhs_id_no").val(result.FHS_ID_NO);
-            		$("#farm_amnno").val(result.FARM_AMNNO);
-            		$("#ftsnm").val(fn_xxsDecode(result.FTSNM));
-            		
-            		if(!fn_isNull(result.CUS_MPNO)) {
-                    	$("#ohse_telno").val(result.CUS_MPNO);
-                    } else {
-                    	$("#ohse_telno").val(result.OHSE_TELNO);
-                    }
-            		
-            		if(!fn_isNull(result.ZIP)) {
-            			$("#zip").val(result.ZIP.substr(0, 3) + "-" + result.ZIP.substr(3, 3));
-            		}
-            		
-            		$("#dongup").val(fn_xxsDecode(result.DONGUP));
-            		$("#dongbw").val(fn_xxsDecode(result.DONGBW));
-            		$("#sra_pdmnm").val(fn_xxsDecode(result.FTSNM));
-            		$("#sra_pd_rgnnm").val(fn_xxsDecode(result.DONGUP));
-            		$("#sog_na_trpl_c").val(result.NA_TRPL_C);
-            		$("#indv_sex_c").val(result.INDV_SEX_C);
-            		$("#birth").val(fn_toDate(result.BIRTH));
-            		$("#indv_id_no").val(result.INDV_ID_NO);
-            		$("#sra_indv_brdsra_rg_no").val(result.SRA_INDV_BRDSRA_RG_NO);
-            		$("#rg_dsc").val(result.RG_DSC);
-            		$("#kpn_no").val(result.KPN_NO);
-            		$("#mcow_dsc").val(result.MCOW_DSC);
-            		$("#mcow_sra_indv_amnno").val(result.MCOW_SRA_INDV_AMNNO);
-            		
-            		if(!fn_isNull(result.MATIME)) {
-            			$("#matime").val(parseInt(result.MATIME));
-            		}
-            		
-            		if(!fn_isNull(result.SRA_INDV_PASG_QCN)) {
-            			$("#sra_indv_pasg_qcn").val(parseInt(result.SRA_INDV_PASG_QCN));
-            		}
-            		
-            		$("#io_sogmn_maco_yn").val(result.MACO_YN);
-            		$("#sra_farm_acno").val(result.SRA_FARM_ACNO);
+       			$("#sra_srs_dsc").val(result.SRA_SRS_DSC);
+           		
+           		if(!fn_isNull(result.SRA_INDV_AMNNO)) {
+           			$("#sra_indv_amnno").val(result.SRA_INDV_AMNNO.substr(3, 12));
+           		}
+           		
+           		$("#fhs_id_no").val(result.FHS_ID_NO);
+           		$("#farm_amnno").val(result.FARM_AMNNO);
+           		$("#ftsnm").val(fn_xxsDecode(result.FTSNM));
+           		
+           		if(!fn_isNull(result.CUS_MPNO)) {
+                   	$("#ohse_telno").val(result.CUS_MPNO);
+                   } else {
+                   	$("#ohse_telno").val(result.OHSE_TELNO);
+                   }
+           		
+           		if(!fn_isNull(result.ZIP)) {
+           			$("#zip").val(result.ZIP.substr(0, 3) + "-" + result.ZIP.substr(3, 3));
+           		}
+           		
+           		$("#dongup").val(fn_xxsDecode(result.DONGUP));
+           		$("#dongbw").val(fn_xxsDecode(result.DONGBW));
+           		$("#sra_pdmnm").val(fn_xxsDecode(result.FTSNM));
+           		$("#sra_pd_rgnnm").val(fn_xxsDecode(result.DONGUP));
+           		$("#sog_na_trpl_c").val(result.NA_TRPL_C);
+           		$("#indv_sex_c").val(result.INDV_SEX_C);
+           		$("#birth").val(fn_toDate(result.BIRTH));
+           		$("#indv_id_no").val(result.INDV_ID_NO);
+           		$("#sra_indv_brdsra_rg_no").val(result.SRA_INDV_BRDSRA_RG_NO);
+           		$("#rg_dsc").val(result.RG_DSC);
+           		$("#kpn_no").val(result.KPN_NO);
+           		$("#mcow_dsc").val(result.MCOW_DSC);
+           		$("#mcow_sra_indv_amnno").val(result.MCOW_SRA_INDV_AMNNO);
+           		
+           		if(!fn_isNull(result.MATIME)) {
+           			$("#matime").val(parseInt(result.MATIME));
+           		}
+           		
+           		if(!fn_isNull(result.SRA_INDV_PASG_QCN)) {
+           			$("#sra_indv_pasg_qcn").val(parseInt(result.SRA_INDV_PASG_QCN));
+           		}
+           		
+           		$("#io_sogmn_maco_yn").val(result.MACO_YN);
+           		$("#sra_farm_acno").val(result.SRA_FARM_ACNO);
+        		if(fn_isDate(result.PTUR_PLA_DT) && $('#auc_dt').val().replace('-','') < result.PTUR_PLA_DT.replace('-','')){        			
+            		$('#ppgcow_fee_dsc').val('1').change();
+            		$('#afism_mod_dt').val(result.PTUR_PLA_DT).focusout().change();
         		}
         		
         		fn_FtsnmModify();
@@ -2583,7 +2624,7 @@
 		$("#chk_continue").show();
 		
 		fn_InitSet();
-		console.log($("#chack_on").is(":checked"));
+		
 		if ($("#chack_on").is(":checked")) {
 			$("#auc_prg_sq").focus().select();
 		}
@@ -2615,7 +2656,7 @@
     	$("#pb_Indvfhs").hide();
     	$("#emp_auc_prg_sq").val("");
     	$("#calfGrid").jqGrid("clearGridData", true);
-    	
+
     	if(pageInfos.param != null) {
         	$("#chk_AucNoChg").hide();
         	$("#pb_Indvfhs").hide();
@@ -2648,7 +2689,7 @@
         	// 실행모드 설정 (Window.mv_RunMode = '1':최초로딩, '2':조회, '3':저장/삭제, '4':기타설정)
         	mv_RunMode = 1;
         }
-    	
+
 		if(mv_RunMode == 1) {
 			$("#sra_indv_amnno").attr("disabled", false);
 			$("#pb_sra_indv_amnno").attr("disabled", false);
@@ -2702,7 +2743,8 @@
 		    mv_flg = "";
 		    
 			// 경매대상 관련 초기 셋팅
-		    fn_AucOnjDscModify("init");
+			var flag = fn_isDate(mv_auc_dt) ? "" : "init";
+		    fn_AucOnjDscModify(flag);
 			
 		    if(fn_isNull($("#auc_dt").val())) {
 		    	$("#auc_dt").focus();
@@ -3156,6 +3198,10 @@
  		$("#re_product_14").val(result[0]["RE_PRODUCT_14"]);
  		$("#re_product_14_1").val(result[0]["RE_PRODUCT_14_1"]);
  		
+
+ 		$("#bdln_val").val(result[0]["BDLN_VAL"]);
+ 		$("#bdht_val").val(result[0]["BDHT_VAL"]);
+ 		
  		// -------------------- 히든 정보 -------------------- //
  		$("#oslp_no").val(result[0]["OSLP_NO"]);
  		$("#led_sqno").val(result[0]["LED_SQNO"]);
@@ -3216,160 +3262,6 @@
                  return;
              }
     	 }        
-    }
-    
-    //**************************************
- 	//function  : fn_SelImgList(이미지 리스트 조회) 
- 	//paramater : N/A 
- 	// result   : N/A
- 	//**************************************
-    function fn_selImgList() {
-		 var results = sendAjaxFrm("frm_MhSogCow", "/LALM0215_selImgList", "POST");
-		 var result;
-
-	     if(results.status == RETURN_SUCCESS){
-	     	result = setDecrypt(results);
-	     	
-	     	$('.list-area > ul li').remove();
-	     	
-	     	var sHtml = "";
-	     	
-	     	for (item of result) {
-		     	sHtml += '<li>';
-		     	sHtml += '	<span class="fileNm">파일명 : '+ item.fileNm +'</span>';
-		     	sHtml += '	<span class="fileSize">파일사이즈 : '+ item.fileSize +'</span>';
-		     	sHtml += '	<span class="fileExt">확장자명 : '+ item.fileExt +'</span>';		     	
-		     	sHtml += '	<p class="btnDelete" id="'+item.fileNm+'" style="display:inline-block;cursor: pointer;color:grey;">파일삭제</p>';
-		     	sHtml += '</li>';		     			     	
-	        }
-	        
-    		$('.list-area > ul').append(sHtml);
-	     }else {
-	         showErrorMessage(results);
-	         mv_InitBoolean = true;
-			 fn_Init();
-			 $("#btn_Delete").attr("disabled", true);
-	         return;
-	     }
-    	     
-    }
-    
-    //**************************************
- 	//function  : fn_InsImgList(이미지 저장) 
- 	//paramater : N/A 
- 	// result   : N/A
- 	//**************************************
-    function fn_InsImgList() {
-		 //폼데이터 전송           
-        var result;
-        
-        var formData = new FormData($("#frm_MhSogCow")[0]);
-        // 사업장코드
-        formData.append("na_bzplc", App_na_bzplc);
-        // 개체번호
-        formData.append("sra_indv_amnno", "410" + $("#sra_indv_amnno").val());
-        $.ajax({
-            url: "/LALM0215_insImgList",
-            type: "POST",
-            enctype:"multipart/form-data",
-            processData:false,
-            contentType:false,
-            data: formData,
-            async: false,
-            headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
-            success:function(data) {    
-            	result = true;            
-            },
-            error:function(request){            
-                result = false;
-                            
-            }
-        }); 
-        
-        return result; 
-    	     
-    }
-    
-    //**************************************
- 	//function  : fn_selImg(이미지 조회) 
- 	//paramater : N/A 
- 	// result   : N/A
- 	//**************************************
-    function fn_selImg(imgId) {
-		 //폼데이터 전송           
-		var encrypt = setEncrypt(setFrmToData('frm_MhSogCow'));
-		
-		var params = new Object();
-		params['imgId'] = '433b5d89-b8e0-4701-a23d-ba27dc8bbe0e';
-		
-   		//var results = sendAjax(params, "/LALM0215_selImg", "POST");
-       	//var result;
-       	//
-       	//if(results.status != RETURN_SUCCESS){
-		//	showErrorMessage(results);
-		//	return;
-		//}
-		//else{
-		//	result = setDecrypt(results);
-		//	if (result != null) {
-		//		$('#preview-image').prop('src',data.data);
-		//	}
-		//}
-        //   
-         $.ajax({
-                url: '/LALM0215_selImg',
-                type: 'POST',
-                async: false,
-                headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
-                success:function(data) {  
-	                var img = setDecrypt(data.data);    
-	                  
-	                if(data2 != null){
-                		$('#preview-image').prop('src',img.data);
-	                }                                    
-                },
-                error:function(response){
-                	MessagePopup("OK", "이미지를 다운로드하지 못하였습니다.");
-                    return;
-                }
-            }); 
-    	     
-    }
-    
-    //**************************************
- 	//function  : fn_DelImgList(이미지 삭제) 
- 	//paramater : N/A 
- 	// result   : N/A
- 	//**************************************
-    function fn_DelImgList(imgId) {
-    	if (imgId == null || imgId == '') {
-    		MessagePopup("OK", "삭제할 이미지가 없습니다.");
-			return;
-    	}
-    	
-    	// [TO-DO] imgId Array에 push(전체삭제 및 체크삭제 처리)
-    	let imgarray = new Array();
-    	
-    	imgarray.push(imgId);
-    	
-    	var data = new Object();
-    	data["imgarray"] = imgarray;
-    	data["imgid"] = imgId;
-    	
-   		var results = sendAjax(data, "/LALM0215_delImgList", "POST");
-       	var result;
-           
-         if(results.status == RETURN_SUCCESS){
-            fn_selImgList();
-            
-         }else {
-             showErrorMessage(results);
-             mv_InitBoolean = true;
-    		 fn_Init();
-    		 $("#btn_Delete").attr("disabled", true);
-             return;
-         }
-    	     
     }
  	
   	//**************************************
@@ -4067,37 +3959,6 @@
     }
     
   	//**************************************
-	//function  : fn_CallCattleMove(소 이력정보 조회) 
-	//paramater : N/A
-	// result   : N/A
-	//**************************************
-    function fn_CallCattleMove() {
-    	var srchData = new Object();
-    	var P_sra_indv_amnno = "";
-    	
-    	if($("#sra_indv_amnno").val().replace("-", "").length == 12) {
-        	P_sra_indv_amnno = $("#hed_indv_no").val() + $("#sra_indv_amnno").val().replace("-", "");
-		} else {
-			MessagePopup('OK','귀표번호를 확인하세요.',null,function(){
-                $("#sra_indv_amnno").focus();
-            });
-			return;
-		}
-
-        srchData["trace_no"]     = P_sra_indv_amnno;
-        
-        var results = sendAjax(srchData, "/LALM0899_selRestApiCattleMove", "POST");        
-        var result;
-        
-        if(results.status != RETURN_SUCCESS) {
-        	$("#brcl_isp_rzt_c").val("9");
-            return;
-        } else {
-            result = setDecrypt(results);
-            console.log(result);
-        }
-    }
-  	//**************************************
 	//function  : fn_CallLsPtntInfSrch(축산연구원 친자확인 조회 인터페이스) 
 	//paramater : N/A
 	// result   : N/A
@@ -4326,7 +4187,117 @@
 	    	return p_str;
 	    }
 	}
-    
+	
+	//**************************************
+	// function  : getImageFiles(이미지 등록) 
+	// paramater : event
+	// result   : N/A
+	//**************************************
+	function getImageFiles(e){
+		const uploadFiles = [];
+		const files = e.currentTarget.files;
+		const fileImg = $("ul#imagePreview li");
+		const imagePreview = document.querySelector("#imagePreview");
+		
+		// 파일 갯수 처리
+		if ([...files].length > 8 || [...files].length + fileImg.length > 8) {
+			MessagePopup('OK','이미지는 최대 8개까지 등록 가능합니다.');
+			$("#uploadImg").val("");
+			return;
+		}
+		
+		// 파일 형식 체크
+		[...files].forEach(file => {
+			if (!file.type.match("image/.*")) {
+				MessagePopup('OK','이미지 형식 파일만 등록할 수 있습니다.');
+				$("#uploadImg").val("");
+				return;
+			}
+			
+			// 이미지 미리보기 처리
+			if ([...files].length < 9 || [...files].length + fileImg.length < 9) {
+				uploadFiles.push(file);
+				const reader = new FileReader();
+				reader.onload = (e) => {
+					const preview = createElement(e, file);
+					$("#imagePreview").append(preview);
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+	}
+	
+	//**************************************
+	// function  : createElement(이미지 미리보기) 
+	// paramater : event, file
+	// result   : N/A
+	//**************************************
+	function createElement(e, file) {
+		let sHtml = "";
+		sHtml += '<li id="'+ file.name + '_' + file.size +'" style="display:inline-block;width:200px;height:200px;">';
+		sHtml += '	<div class="fileDiv"><button type="button" class="tb_btn delIndvImg">파일삭제</button>';
+		sHtml += '	<span style="" class="fileName_'+ e.target.result +'">'+ file.name +'</span></div>';
+		sHtml += '	<img src="'+ e.target.result +'" data-file="'+ file.name +'" />';
+		sHtml += '</li>';
+		return sHtml;
+	}
+	
+	function fn_UploadImage(data) {
+
+		var result;
+		var sendData = new Object();
+		sendData["na_bzplc"] = localStorage.getItem("nhlvaca_na_bzplc");
+		sendData["auc_dt"] = fn_dateToData($("#auc_dt").val());
+		sendData["auc_obj_dsc"] = $("#auc_obj_dsc").val()
+		sendData["oslp_no"] = fn_isNull(data) ? $("#oslp_no").val() : data.rtnData;
+		sendData["led_sqno"] = "1";
+		sendData["sra_indv_amnno"] = "410" + $("#sra_indv_amnno").val();
+		
+		var files = [];
+		var fileList = $(".fileDiv").siblings("img");
+		$(fileList).each(function(){
+			files.push($(this).attr("src"));
+		});
+		
+		sendData["files"] = files;
+		console.log(sendData);
+		
+		var result = sendAjax(sendData, "/LALM0215_insImgPgm", "POST")
+		console.log(result);
+	}
+
+	//**************************************
+	// function  : fileUpload(이미지 저장) - 사용X
+	// paramater : event, file
+	// result   : N/A
+	//**************************************
+	function fileUpload() {
+		var result;
+		var formData = new FormData($("#frm_MhSogCow")[0]);
+		formData.append("na_bzplc", localStorage.getItem("nhlvaca_na_bzplc"));
+		formData.append("sra_indv_amnno", "410" + $("#sra_indv_amnno").val());
+
+		$.ajax({
+			url: "/LALM0215_insImgList",
+			type: "POST",
+			enctype:"multipart/form-data",
+			processData:false,
+			contentType:false,
+			data: formData,
+			async: false,
+			headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
+			success:function(data) {
+				cntn_result = setDecrypt(data);
+			},
+			error:function(request){   
+				MessagePopup("OK", "서버 수행중 오류가 발생하였습니다.",function(res){
+			    });
+			    return;
+			}
+		});
+		
+		return result; 
+	}
     
     ////////////////////////////////////////////////////////////////////////////////
     //  사용자 함수 종료
@@ -4951,6 +4922,10 @@
                     <button class="tb_btn" id="pb_plusRow">행추가</button>
                     <button class="tb_btn" id="pb_minusRow">행삭제</button>
                 </div>
+                
+                <div class="fl_R" id="tab3_text"><!--  //버튼 모두 우측정렬 -->   
+                    <label id="msg_Sbid" style="color: red;font: message-box;">이미지는 최대 8개까지 등록가능합니다.</label>
+                </div>
 			</div>
              
             <!-- //tab_box e -->
@@ -5295,52 +5270,41 @@
 	                            	<td>
 	                                    <input type="text" class="number" id="cow_sog_wt" maxlength="8">
 	                                </td>
-	                            	<th scope="row"><span>응찰하한가</span></th>
-	                            	<td colspan=2>
+	                            	<th scope="row"><span>예정가</span></th>
+	                            	<td colspan=1>
 	                            		<input type="text" class="number" id="lows_sbid_lmt_am_ex" maxlength="8">
 	                            	</td>
-	                            	<td colspan=2>
+	                            	<td colspan=1>
 	                            		<input type="text" disabled="disabled" class="number" id="lows_sbid_lmt_am">
 	                            	</td>
-	                            	<td colspan=2>
+	                            	<th scope="row"><span>체장</span></th>
+	                            	<td colspan=1>
+	                            		<input type="text" class="number" id="bdln_val">
 	                            	</td>
-	                            	<th scope="row" colspan=2><span>예방접종일</span></th>
-	                            	<td colspan=2>
-	                            		<div class="cellBox">
-	                                        <div class="cell"><input type="text" class="date" id="vacn_dt" style="font-weight:bold;"></div>                                        
-	                                    </div>
+	                            	<th scope="row"><span>체고</span></th>
+	                            	<td colspan=1>
+	                            		<input type="text" class="number" id="bdht_val">
 	                            	</td>
-	                            	<th scope="row" colspan=2><span>수의사</span></th>
+	                            	<th scope="row" colspan=1><span>수의사</span></th>
 	                            	<td colspan=2>
 	                            		<select id="lvst_mkt_trpl_amnno"></select>
 	                            	</td>
+	                            	<td colspan=6></td>
 	                            </tr>
-	                        
+	                            	                        
 	                        	<tr>
-	                            	<th scope="row"><span>브루셀라검사일</span></th>
-	                            	<td>
-	                            		<div class="cellBox">
-	                                        <div class="cell"><input type="text" class="date" id="brcl_isp_dt" style="font-weight:bold;"></div>                                        
-	                                    </div>
-	                            	</td>
-	                            	<th scope="row" colspan=2><span>브루셀라검사증제출여부</span></th>
-	                            	<td>
-	                            		<input type="checkbox" id="brcl_isp_ctfw_smt_yn" name="brcl_isp_ctfw_smt_yn" value="0">
-	                            		<label id="brcl_isp_ctfw_smt_yn_text" for="brcl_isp_ctfw_smt_yn"> 부</label>
-	                            		<input type="hidden" class="number" id="brcl_isp_rzt_c" maxlength="1">
-	                            	</td>
 	                            	<th scope="row"><span>제각여부</span></th>
 	                            	<td>
 	                            		<input type="checkbox" id="rmhn_yn" name="rmhn_yn" value="0">
 	                            		<label id="rmhn_yn_text" for="rmhn_yn"> 부</label>
 	                            	</td>
 	                            	<th scope="row"><span>난소적출여부</span></th>
-	                            	<td>
+	                            	<td colspan='2'>
 	                            		<input type="checkbox" id="spay_yn" name="spay_yn" value="0">
 	                            		<label id="spay_yn_text" for="spay_yn"> 부</label>
 	                            	</td>
 	                            	<th scope="row"><span>친자확인결과</span></th>
-	                            	<td>
+	                            	<td colspan='1'>
 	                            		<select id="dna_yn">
 	                                    	<option value="3">정보없음</option>
 	                                    	<option value="1">일치</option>
@@ -5350,34 +5314,70 @@
 	                                    	<option value="6">부or모불일치</option>
 	                            		</select>
 	                            	</td>
-	                            	<th scope="row"><span>친자검사여부</span></th>
+	                            	<th scope="row"><span>친자<br/>검사여부</span></th>
 	                            	<td>
 	                            		<input type="checkbox" id="dna_yn_chk" name="dna_yn_chk" value="0">
 	                            		<label id="dna_yn_chk_text" for="dna_yn_chk"> 부</label>
 	                            	</td>
-	                            	<th scope="row" colspan=2><span>응찰하한가변경횟수</span></th>
+	                            	<th scope="row" colspan=1><span>예정가<br/>변경횟수</span></th>
 	                            	<td colspan=2>
 	                            		<input disabled="disabled" type="text" id="lwpr_chg_nt">
 	                            	</td>
+	                            	<td colspan=6></td>
+	                            </tr>	                            	                            
+	                            
+	                            <tr>
+	                            	<th scope="row"><span>브루셀라검사일</span></th>
+	                            	<td>
+	                            		<div class="cellBox">
+	                                        <div class="cell"><input type="text" class="date" id="brcl_isp_dt" style="font-weight:bold;"></div>                                        
+	                                    </div>
+	                            	</td>
+	                            	<th scope="row" colspan=><span>브루셀라<br/>검사증제출여부</span></th>
+	                            	<td colspan='2'>
+	                            		<input type="checkbox" id="brcl_isp_ctfw_smt_yn" name="brcl_isp_ctfw_smt_yn" value="0">
+	                            		<label id="brcl_isp_ctfw_smt_yn_text" for="brcl_isp_ctfw_smt_yn"> 부</label>
+	                            		<input type="hidden" class="number" id="brcl_isp_rzt_c" maxlength="1">
+	                            	</td>
+	                            	<th scope="row" colspan=1><span>구제역 접종차수</span></th>
+	                            	<td colspan=1>
+                           				<input type="text" id="vacn_order" name="vacn_order" value=""></input>
+	                            	</td>
+	                            	<th scope="row" colspan=1><span>구제역<br/>예방접종일</span></th>
+	                            	<td colspan=2>
+	                            		<div class="cellBox">
+	                                        <div class="cell"><input type="text" class="date" id="vacn_dt" style="font-weight:bold;"></div>                                        
+	                                    </div>
+	                            	</td>
+	                        		<th scope="row"><span>우결핵<br/>검사일</span></th>
+	                        		<td colspan=2>
+	                            		<div class="cellBox">
+	                                        <div class="cell"><input type="text" class="date" id="bovine_dt"></div>                                        
+	                                    </div>
+	                            	</td>
+	                            	<td colspan=2>
+                           				<input type="text" id="bovine_rsltnm" name="bovine_rsltnm" value=""></input>
+	                            	</td>
+	                            	<td colspan=3></td>
 	                            </tr>
 	                            
 	                            <tr>
 	                            	<th scope="row"><span>비고</span></th>
-	                            	<td colspan=5>
+	                            	<td colspan=4>
 	                            		<input type="text" id="rmk_cntn">
 	                            	</td>
 	                            	<th scope="row"><span>구분</span></th>
-	                            	<td colspan=2>
+	                            	<td colspan=3>
 	                            		<select id="case_cow"></select>
 	                            	</td>
-	                            	<th scope="row" colspan=2><span>출하수수료 수기등록</span></th>
+	                            	<th scope="row" colspan=1><span>출하수수료<br> 수기등록</span></th>
 	                            	<td colspan=2>
 	                            		<input type="checkbox" id="fee_chk_yn" name="fee_chk_yn" value="0">
 	                            		<label id="fee_chk_yn_text" for="fee_chk_yn"> 부</label>
 	                            		<input disabled="disabled" type="text" id="fee_chk_yn_fee" style="width:70px" value="0">
 	                            	</td>
-	                            	<th scope="row" colspan=2><span>판매수수료 수기등록</span></th>
-	                            	<td colspan=2>
+	                            	<th scope="row" colspan=1><span>판매수수료<br> 수기등록</span></th>
+	                            	<td colspan=5>
 	                            		<input type="checkbox" id="selfee_chk_yn" name="selfee_chk_yn" value="0">
 	                            		<label id="selfee_chk_yn_text" for="selfee_chk_yn"> 부</label>
 	                            		<input disabled="disabled" type="text" id="selfee_chk_yn_fee" style="width:70px" value="0">
@@ -5450,17 +5450,16 @@
 	                        		<td colspan=3>
 	                            		<input type="text" class="number" id="mt12_ovr_fee" maxlength="8">
 	                            	</td>
-	                            	<td colspan=11></td>
+	                            	<td colspan=12></td>
 	                        	</tr>
 	                        </tbody>
 	                        
 	                        <tbody id="thirdBody">
 	                        	<tr>
-	                        		<th scope="row"><span>우결핵 검사일</span></th>
+	                        		<th scope="row"><span>고능력 여부</span></th>
 	                        		<td>
-	                            		<div class="cellBox">
-	                                        <div class="cell"><input type="text" class="date" id="bovine_dt"></div>                                        
-	                                    </div>
+	                            		<input type="checkbox" id="epd_yn" name="epd_yn" value="0">
+	                            		<label id="epd_yn_text" for="ncss_yn"> 부</label>
 	                            	</td>
 	                        		<th scope="row"><span>유전능력(EPD)</span></th>
 	                        		<th scope="row"><span>냉도체중</span></th>
@@ -5507,11 +5506,7 @@
 	                                    	<option value="D">D</option>		                                    	
 	                            		</select>
 	                            	</td>
-	                        		<th scope="row"><span>고능력 여부</span></th>
-	                        		<td>
-	                            		<input type="checkbox" id="epd_yn" name="epd_yn" value="0">
-	                            		<label id="epd_yn_text" for="ncss_yn"> 부</label>
-	                            	</td>
+	                            	<td colspan=3></td>
 	                        	</tr>
 	                        	
 	                        	<tr>
@@ -5565,7 +5560,7 @@
 	                                    	<option value="D">D</option>		                                    	
 	                            		</select>
 	                            	</td>
-	                            	<td colspan=2></td>
+	                            	<td colspan=3></td>
 	                        	</tr>
 	                        </tbody>
 	                        
@@ -5621,23 +5616,24 @@
                 </table>
 	        </div>
 	        <div id="tab3" class="tab_content">
-	        	<div class="btn_area">
-	        		<input type="file" id="uploadImg" name="uploadImg">
-	        		<button type="button" class="tb_btn" id="btnSelImgList">이미지 리스트 조회</button>
-	        		<button type="button" class="tb_btn" id="btnUpload">이미지 추가</button>
-	        		<button type="button" class="tb_btn" id="btnSelImg">이미지 조회</button>
-	        		<button type="button" class="tb_btn" id="btnAllDelete">이미지 삭제</button>
+	        	<section class="content">
+        		<div class="btn_area">
+	        		<button type="button" class="tb_btn" id="addImg">파일 추가</button>
+	        		<button type="button" class="tb_btn" id="delAllImg">파일 일괄 삭제</button>
 	        	</div>
-	        	<div class="list-area">
-	        		<ul style="border:1px solid grey; width:100%;"></ul>
+	        	<br>
+	        	<br>
+	        	<div class="img_area">
+	        		<div style="display:none;">
+	       				<input type="file" id="uploadImg" name="uploadImg" class="uploadImg" accept="image/*" required multiple />
+	        		</div>
+	        		<ul id="imagePreview" class="uploadImg"></ul>
 	        	</div>
-	        	<div id="imageView">
-			       <img id="preview-image" />
-		  		</div>
+	        	</section>
 	        </div>
             </form>
             
-            <form id="frm_emp" style="display:none">
+            <form id="frm_emp" style="display:none;">
             	<div>
             		<table>
             			<tr>

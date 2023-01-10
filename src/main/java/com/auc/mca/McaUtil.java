@@ -1,11 +1,14 @@
 package com.auc.mca;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.SdkClientException;
@@ -31,10 +35,16 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.AccessControlList;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.BucketCrossOriginConfiguration;
+import com.amazonaws.services.s3.model.CORSRule;
+import com.amazonaws.services.s3.model.GroupGrantee;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.Permission;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
@@ -170,15 +180,13 @@ public class McaUtil {
 		        }	        	
 	        }	        
 		} catch (JSONException e) {
-			//log.debug("",e);
-			//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+			log.debug("openData 접종정보 연계 중 오류가 발생하였습니다.",e);
 			nodeMap = null;
         } catch (RuntimeException e) {
-			log.debug("",e);
-			//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+        	log.debug("openData 접종정보 연계 중 오류가 발생하였습니다.",e);
 			nodeMap = null;
         } catch (Exception e) {
-        	//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+        	log.debug("openData 접종정보 연계 중 오류가 발생하였습니다.",e);
 			nodeMap = null;
         } finally {
             if (conn!= null) conn.disconnect();
@@ -192,8 +200,8 @@ public class McaUtil {
 		List<Map<String, Object>> nodeList      = new ArrayList<>();
 		String sendUrl = "http://data.ekape.or.kr/openapi-data/service/user/animalTrace/traceNoSearch";
 		sendUrl += "?serviceKey=" + "7vHI8ukF3BjfpQW8MPs9KtxNwzonZYSbYq6MVPIKshJNeQHkLqxsqd1ru5btfLgIFuLRCzCLJDLYkHp%2FvI6y0A%3D%3D";
-		sendUrl += "&traceNo=" + map.get("trace_no");//  "002125769192";
-		sendUrl += "&optionNo=2";
+		sendUrl += "&traceNo=" + map.get("trace_no");//  "410002125769192";
+		sendUrl += "&optionNo=2"; //"2"; 이동정보
 		
         HttpURLConnection conn = null;
 		log.debug("sendUrl: " + sendUrl);
@@ -235,62 +243,65 @@ public class McaUtil {
 	        		HashMap<String,Object> nodeMap = new HashMap<String, Object>();
 	        		while(it.hasNext()) {
 	        			String key = (String) it.next();
-		        		nodeMap.put(key, jItem.get(key));			        			
+		        		nodeMap.put(key, jItem.get(key));
 	        		}
+	        		nodeMap.put("SRA_INDV_AMNNO", map.get("trace_no"));	
+	        		nodeMap.put("FARM_ADDR", nodeMap.get("farmAddr"));	
+	        		nodeMap.put("FARMER_NM", nodeMap.get("farmerNm"));	
+	        		nodeMap.put("REG_TYPE", nodeMap.get("regType"));	
+	        		nodeMap.put("REG_YMD", nodeMap.get("regYmd"));	
+	        		nodeMap.put("FARM_NO", nodeMap.get("farmNo"));	
 	        		nodeList.add(nodeMap);
 		        }	        	
 	        }	        
-		} catch (JSONException e) {
-			//log.debug("",e);
-			//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
-        } catch (RuntimeException e) {
-			log.debug("",e);
-			throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
-        } catch (Exception e) {
-        	throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+		}catch (Exception e) {
+        	log.debug("openData 이동정보 연계 중 오류가 발생하였습니다.",e);
+        	nodeList =null;
+        	//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
         } finally {
             if (conn!= null) conn.disconnect();
         }
 		return nodeList;
 	}
-	
+    
 	public List<Map<String, Object>> LALM0215_selImgList(Map<String, Object> map) throws IOException {
 		List<Map<String, Object>> reList = new ArrayList<>();
 
 		// S3 client
 		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-		    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-		    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-		    .build();
+												 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+												 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+												 .build();
 
 		// top level folders and files in the bucket
 		try {
-		    ListObjectsRequest listObjectsRequest = new ListObjectsRequest()
-		        .withBucketName(bucketName)
-		        .withDelimiter("/")
-		        .withMaxKeys(300);
+			ListObjectsRequest listObjectsRequest = new ListObjectsRequest().withBucketName(bucketName)
+																			.withDelimiter("/")
+																			.withMaxKeys(300);
 
-		    ObjectListing objectListing = s3.listObjects(listObjectsRequest);
+			ObjectListing objectListing = s3.listObjects(listObjectsRequest);
 
-		    for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-		    	Map<String, Object> reMap = new HashMap<>();
-			    S3Object s3Object = s3.getObject(bucketName, objectSummary.getKey());
-			    S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
-			    byte[] sourceBytes = IOUtils.toByteArray(s3ObjectInputStream);
-			    reMap.put("fileNm", objectSummary.getKey()); 
-			    reMap.put("fileSize", objectSummary.getSize()); 
-			    reMap.put("fileExt", objectSummary.getKey().substring(objectSummary.getKey().lastIndexOf(".")+1)); 
-			    reMap.put("fileImg","data:image/png;base64," + Base64.encodeAsString(sourceBytes)); 
-			    
-			    s3ObjectInputStream.close();
-			    reList.add(reMap);
-		    }
-		} catch (AmazonS3Exception e) {
-		    e.printStackTrace();
-		} catch(SdkClientException e) {
-		    e.printStackTrace();
+			for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+				Map<String, Object> reMap = new HashMap<>();
+				S3Object s3Object = s3.getObject(bucketName, objectSummary.getKey());
+				S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
+				byte[] sourceBytes = IOUtils.toByteArray(s3ObjectInputStream);
+				reMap.put("fileNm", objectSummary.getKey()); 
+				reMap.put("fileSize", objectSummary.getSize()); 
+				reMap.put("fileExt", objectSummary.getKey().substring(objectSummary.getKey().lastIndexOf(".")+1)); 
+				reMap.put("fileImg","data:image/png;base64," + Base64.encodeAsString(sourceBytes)); 
+
+				s3ObjectInputStream.close();
+				reList.add(reMap);
+			}
+			
 		}
-		
+		catch (AmazonS3Exception e) {
+			e.printStackTrace();
+		}
+		catch(SdkClientException e) {
+			e.printStackTrace();
+		}
 		
 		return reList;
 	}
@@ -300,97 +311,208 @@ public class McaUtil {
 
 		// S3 client
 		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-		    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-		    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-		    .build();
+												 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+												 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+												 .build();
 
 		String objectName = "433b5d89-b8e0-4701-a23d-ba27dc8bbe0e" + ".png";
-//		String objectName = map.get("imgid").toString();
 
 		// download object
 		try {
-		    S3Object s3Object = s3.getObject(bucketName, objectName);
-		    S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
-		    
-		    byte[] sourceBytes = IOUtils.toByteArray(s3ObjectInputStream);
-
-		    reMap.put("data","data:image/png;base64," + Base64.encodeAsString(sourceBytes)); 
-
-		    s3ObjectInputStream.close();
-		} catch (AmazonS3Exception e) {
-		    e.printStackTrace();
-		} catch(SdkClientException e) {
-		    e.printStackTrace();
-		} catch(IOException e) {
-		    e.printStackTrace();
+			S3Object s3Object = s3.getObject(bucketName, objectName);
+			S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
+			
+			byte[] sourceBytes = IOUtils.toByteArray(s3ObjectInputStream);
+	
+			reMap.put("data","data:image/png;base64," + Base64.encodeAsString(sourceBytes)); 
+	
+			s3ObjectInputStream.close();
+		}
+		catch (AmazonS3Exception e) {
+			e.printStackTrace();
+		}
+		catch(SdkClientException e) {
+			e.printStackTrace();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
 		}
 		
 		return reMap;
 	}
 	
+	/**
+	 * MultipartFile 이미지 네이버 클라우드 업로드 
+	 * @param paramMap
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> LALM0215_insImgList(Map<String, Object> paramMap) {
-		Map<String, Object> reMap = new HashMap<>();
+		final Map<String, Object> reMap = new HashMap<>();
 		try {
-		// S3 client
-		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-		    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-		    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-		    .build();
-		
-		// create folder(if) empty folder)
-		String folderName = paramMap.get("na_bzplc") + "/" + paramMap.get("sra_indv_amnno") + "/";
-		MultipartFile file = (MultipartFile) paramMap.get("file");
-		
-		ObjectMetadata objectMetadata = new ObjectMetadata();
-		objectMetadata.setContentType(MediaType.IMAGE_PNG_VALUE);
-		objectMetadata.setContentLength(file.getBytes().length);
-		System.out.format("Folder %s has been created.\n", folderName);
+			// S3 client
+			final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+													 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+													 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+													 .build();
+			
+			// ACL 설정 : 파일마다 읽기 권한을 설정
+			final AccessControlList accessControlList = new AccessControlList();
+			accessControlList.grantPermission(GroupGrantee.AllUsers, Permission.Read);
+			
+			// CORS 설정 : 이미지 업로드 페이지에서 이미지 url로 fetch 후 canvas 형태로 append 하는 형식이기 때문에 CORS 세팅이 필요
+			final List<CORSRule.AllowedMethods> methodRule = Arrays.asList(CORSRule.AllowedMethods.PUT, CORSRule.AllowedMethods.GET, CORSRule.AllowedMethods.POST);
+			final CORSRule rule = new CORSRule().withId("CORSRule")
+												.withAllowedMethods(methodRule)
+												.withAllowedHeaders(Arrays.asList(new String[] { "*" }))
+												.withAllowedOrigins(Arrays.asList(new String[] { "*" }))
+												.withMaxAgeSeconds(3000);
+	
+			final List<CORSRule> rules = Arrays.asList(rule);
+	
+			s3.setBucketCrossOriginConfiguration(bucketName, new BucketCrossOriginConfiguration().withRules(rules));
+			
+			final String folderName = paramMap.get("na_bzplc") + "/" + paramMap.get("sra_indv_amnno") + "/";
+			List<MultipartFile> files = (List<MultipartFile>)paramMap.get("files");
+			
+			for (MultipartFile file : files) {
+				// upload parameter file
+				String objectName = UUID.randomUUID().toString() + ".png";
+				
+				ObjectMetadata objectMetadata = new ObjectMetadata();
+				objectMetadata.setContentType(MediaType.IMAGE_PNG_VALUE);
+				objectMetadata.setContentLength(file.getBytes().length);
+				PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folderName + objectName, file.getInputStream(), objectMetadata);
+				putObjectRequest.setAccessControlList(accessControlList);
+				
+				s3.putObject(putObjectRequest);
+			}
 
-		// upload parameter file
-		String objectName = UUID.randomUUID().toString() + ".png";
-		
-		s3.putObject(bucketName, objectName, file.getInputStream(), objectMetadata);
-		
-	    System.out.format("Object %s has been created.\n", objectName);
-	    
-	    this.LALM0215_selImgList(reMap);
-		} catch (AmazonS3Exception e) {
-		    e.printStackTrace();
-		} catch(SdkClientException e) {
-		    e.printStackTrace();
-		} catch(IOException e) {
-		    e.printStackTrace();
+//			this.LALM0215_selImgList(reMap);
+		}
+		catch (AmazonS3Exception e) {
+			e.printStackTrace();
+		}
+		catch(SdkClientException e) {
+			e.printStackTrace();
+		}
+		catch(IOException e) {
+			e.printStackTrace();
 		}
 		
 		return reMap;
 	}
+	
 	
 	public Map<String, Object> LALM0215_delImgList(Map<String, Object> map) {
 		Map<String, Object> reMap = new HashMap<>();
 		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-		    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-		    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-		    .build();
+												 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+												 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+												 .build();
 
-//		String[] keyArr = (String[]) map.get("imgarray");
 		String key = map.get("imgid").toString();
-		// delete object
 		try {
-//			if (keyArr.length > 0) {
-//				for (String key : keyArr) {
-					s3.deleteObject(bucketName, key);
-//				}
-				this.LALM0215_selImgList(reMap);								
-//			}
+			s3.deleteObject(bucketName, key);
 		
 		} catch (AmazonS3Exception e) {
 		    e.printStackTrace();
 		} catch(SdkClientException e) {
 		    e.printStackTrace();
-		} catch(IOException e) {
-		    e.printStackTrace();
 		}
+		
 		return reMap;
 	}
-    
+	
+	/**
+	 * Base64 인코딩 이미지 클라우드 업로드
+	 * @param map
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> imgUploadPrc(Map<String, Object> map) {
+		final List<Map<String, Object>> rtnList = new ArrayList<Map<String, Object>>();
+		
+		// S3 client
+		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+												 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+												 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+												 .build();
+		
+		// ACL 설정 : 파일마다 읽기 권한을 설정
+		final AccessControlList accessControlList = new AccessControlList();
+		accessControlList.grantPermission(GroupGrantee.AllUsers, Permission.Read);
+		
+		// CORS 설정 : 이미지 업로드 페이지에서 이미지 url로 fetch 후 canvas 형태로 append 하는 형식이기 때문에 CORS 세팅이 필요
+		final List<CORSRule.AllowedMethods> methodRule = Arrays.asList(CORSRule.AllowedMethods.PUT, CORSRule.AllowedMethods.GET, CORSRule.AllowedMethods.POST);
+		final CORSRule rule = new CORSRule().withId("CORSRule")
+											.withAllowedMethods(methodRule)
+											.withAllowedHeaders(Arrays.asList(new String[] { "*" }))
+											.withAllowedOrigins(Arrays.asList(new String[] { "*" }))
+											.withMaxAgeSeconds(3000);
+
+		final List<CORSRule> rules = Arrays.asList(rule);
+
+		s3.setBucketCrossOriginConfiguration(bucketName, new BucketCrossOriginConfiguration().withRules(rules));
+		
+		final String naBzplc = map.get("na_bzplc").toString();
+		final String aucDt = map.get("auc_dt").toString();
+		final String sraIndvAmnno = map.get("sra_indv_amnno").toString();
+		final String filePath = naBzplc + "/" + sraIndvAmnno + "/";
+		final String fileExtNm = ".png";
+		
+		final List<String> files = (List<String>)map.get("files");
+		
+		if (ObjectUtils.isEmpty(files)) return null;
+		
+		for (String file : files) {
+			boolean isSuccess = true;
+			String fileNm = "";
+
+			// origin 파일이 없는 경우 or 값이 data:image로 시작하지 않는 경우 pass
+			if (ObjectUtils.isEmpty(file)
+			|| !file.startsWith("data:image")) continue;
+
+			fileNm = UUID.randomUUID().toString();
+
+			String[] base64Arr = file.split(",");
+			byte[] imgByte = Base64.decode(base64Arr[1]);
+			InputStream bis = new ByteArrayInputStream(imgByte);
+
+			ObjectMetadata bjectMetadata = new ObjectMetadata();
+			bjectMetadata.setContentLength(imgByte.length);
+			bjectMetadata.setContentType(MediaType.IMAGE_PNG_VALUE);
+			PutObjectRequest oriPutObjectRequest = new PutObjectRequest(bucketName, filePath + fileNm + fileExtNm, bis, bjectMetadata);
+
+			try {
+				oriPutObjectRequest.setAccessControlList(accessControlList);
+				s3.putObject(oriPutObjectRequest);
+			}
+			catch (AmazonS3Exception e) {
+				e.printStackTrace();
+				isSuccess = false;
+			}
+			catch(SdkClientException e) {
+				e.printStackTrace();
+				isSuccess = false;
+			}
+			
+			if (isSuccess) {
+				Map<String, Object> rtn = new HashMap<String, Object>();
+				rtn.put("na_bzplc", naBzplc);
+				rtn.put("auc_dt", aucDt);
+				rtn.put("auc_obj_dsc", map.get("auc_obj_dsc"));
+				rtn.put("oslp_no", map.get("oslp_no"));
+				rtn.put("led_sqno", map.get("led_sqno"));
+				rtn.put("sra_indv_amnno", sraIndvAmnno);
+				rtn.put("file_path", filePath);
+				rtn.put("file_nm", fileNm);
+				rtn.put("file_ext_nm", fileExtNm);
+				rtnList.add(rtn);
+			}
+		}
+		
+		return rtnList;
+	}
+
 }
