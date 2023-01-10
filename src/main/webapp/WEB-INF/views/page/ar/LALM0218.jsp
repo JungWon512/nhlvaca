@@ -98,11 +98,6 @@
             MessagePopup('OK','메세지 종류를 선택하세요.');
             return;
     	}
-    	
-    	if($('#msg_plus').val().length > 40){
-            MessagePopup('OK','추가문구는 40자 이하로 입력해주세요.');
-            return;
-    	}
     	        
     	if($('#msg_plus').val().length > 40){
             MessagePopup('OK','추가문구는 40자 이하로 입력해주세요.');

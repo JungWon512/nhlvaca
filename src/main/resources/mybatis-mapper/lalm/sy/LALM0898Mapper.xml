@@ -86,7 +86,7 @@
 			, 'TEST0000'
 			, SYSDATE
 			, 'TEST0000'
-			, TO_CHAR(SYSDATE,'YYYYMMDD') DDL_QCN				
+			, '' DDL_QCN
 		FROM TB_LA_IS_MH_AUC_STN
 		WHERE NA_BZPLC = #{ss_na_bzplc}
 		AND AUC_DT = #{ori_auc_dt}
@@ -123,9 +123,9 @@
 			, BASE_LMT_AM
 			, CUT_AM
 			, SGNO_PRC_DSC
-			, DDL_YN
-			, TMS_YN
-			, DEL_YN
+			, '0' DDL_YN
+			, '0' TMS_YN
+			, '0' DEL_YN
 			, MALE_KG
 			, FEMALE_KG
 			, TT_SCR

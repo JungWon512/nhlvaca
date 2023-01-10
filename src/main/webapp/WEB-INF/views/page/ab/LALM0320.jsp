@@ -132,7 +132,6 @@
         var results = sendAjaxFrm("frm_Search", "/LALM0320_selList", "POST");        
         var result;
         
-        $("#mainGrid").jqGrid("clearGridData", true);
         if(results.status != RETURN_SUCCESS){
         	$("#pb_btnReSearch").html("적용");
         	clearInterval(timer);
@@ -184,8 +183,13 @@
     //  그리드 함수 시작
     ////////////////////////////////////////////////////////////////////////////////
     //그리드 생성
-    function fn_CreateGrid(data){              
+    function fn_CreateGrid(data){     
         
+    	var scrollPositionT	= $("#mainGrid").closest(".ui-jqgrid-bdiv").scrollTop();
+    	var scrollPositionL	= $("#mainGrid").closest(".ui-jqgrid-bdiv").scrollLeft();
+    	var selectId		= $("#mainGrid").jqGrid("getGridParam", "selrow");         
+
+        $("#mainGrid").jqGrid("clearGridData", true);
         var rowNoValue = 0;     
         if(data != null){
             rowNoValue = data.length;
@@ -226,10 +230,19 @@
             rownumWidth: 30,
             colNames: searchResultColNames,
             colModel: searchResultColModel,
-            onSelectRow: function(rowid, status, e){
-               
-                
-           },
+			onSelectRow: function(rowid, status, e){
+			    
+			     
+			},
+			gridComplete : function() {
+            	$("#mainGrid").closest(".ui-jqgrid-bdiv").scrollTop(scrollPositionT);
+            	$("#mainGrid").closest(".ui-jqgrid-bdiv").scrollLeft(scrollPositionL);
+				if (selectId != null) {
+	            	if (selectId != null) {
+	            		$("#mainGrid").jqGrid('setSelection',selectId,false);
+	            	}
+				}
+			}
         });
         
     }
