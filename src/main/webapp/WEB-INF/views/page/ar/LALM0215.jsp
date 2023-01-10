@@ -3955,6 +3955,12 @@
             } else {
             	$("#brcl_isp_rzt_c").val("0");
             }
+        	$("#brcl_isp_dt").val(fn_toDate(result["inspectDt"]+''));
+        	
+        	$("#vacn_order").val(result["vaccineorder"]);        	
+        	$("#vacn_dt").val(fn_toDate(result["injectionYmd"]+''));
+        	$("#bovine_dt").val(fn_toDate(result["tbcInspectYmd"]+''));
+        	$("#bovine_rsltnm").val(result["tbcInspectRsltNm"]);
         }
     }
     
