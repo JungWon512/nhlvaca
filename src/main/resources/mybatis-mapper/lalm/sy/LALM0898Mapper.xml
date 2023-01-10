@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.sy.service.Impl.LALM0898Mapper">
+    
+    <delete id="LALM0898_delAucDataStn">
+        DELETE FROM TB_LA_IS_MH_AUC_STN
+        WHERE NA_BZPLC    = #{ss_na_bzplc}
+        AND AUC_DT   = #{cpy_auc_dt}
+        AND FSRGMN_ENO = 'TEST0000'
+    </delete>
+    <delete id="LALM0898_delAucDataStnLog">
+        DELETE FROM TB_LA_IS_MH_AUC_STN_LOG
+        WHERE NA_BZPLC    = #{ss_na_bzplc}
+        AND AUC_DT   = #{cpy_auc_dt}
+        AND FSRGMN_ENO = 'TEST0000'
+    </delete>
+    
+    <delete id="LALM0898_delAucDataQcn">
+        DELETE FROM TB_LA_IS_MH_AUC_QCN
+         WHERE NA_BZPLC    = #{ss_na_bzplc}
+         AND AUC_DT   = #{cpy_auc_dt}
+         AND FSRGMN_ENO = 'TEST0000'
+    </delete>
+    
+    <delete id="LALM0898_delAucDataSogCow">
+        DELETE FROM TB_LA_IS_MH_SOG_COW
+        WHERE NA_BZPLC    = #{ss_na_bzplc}
+        AND AUC_DT   = #{cpy_auc_dt}
+        AND FSRGMN_ENO = 'TEST0000'
+    </delete>
+    
+    <delete id="LALM0898_delAucDataSogCowLog">
+        DELETE FROM TB_LA_IS_MH_SOG_COW_LOG
+        WHERE NA_BZPLC    = #{ss_na_bzplc}
+        AND AUC_DT   = #{cpy_auc_dt}
+        AND FSRGMN_ENO = 'TEST0000'
+    </delete>
+    
+    <delete id="LALM0898_delAucDataAtdrLog">
+        DELETE FROM TB_LA_IS_MH_ATDR_LOG
+        WHERE NA_BZPLC    = #{ss_na_bzplc}
+        AND AUC_DT   = #{cpy_auc_dt}
+    </delete>
+    
+    <delete id="LALM0898_delAucDataAucEntr">
+        DELETE FROM TB_LA_IS_MH_AUC_ENTR
+        WHERE NA_BZPLC    = #{ss_na_bzplc}
+        AND AUC_DT   = #{cpy_auc_dt}
+    </delete>
+    
+    <delete id="LALM0898_delAucDataFeeImps">
+        DELETE FROM TB_LA_IS_MH_FEE_IMPS
+        WHERE NA_BZPLC    = #{ss_na_bzplc}
+        AND AUC_DT   = #{cpy_auc_dt}
+    </delete>
+    
+    <insert id="LALM0898_insAucDataStn">
+	    INSERT INTO TB_LA_IS_MH_AUC_STN(
+			NA_BZPLC
+			, AUC_OBJ_DSC
+			, AUC_DT
+			, RG_SQNO
+			, ST_AUC_NO
+			, ED_AUC_NO
+			, SEL_STS_DSC
+			, DEL_YN
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, DDL_QCN
+		)
+		SELECT 
+			NA_BZPLC
+			, AUC_OBJ_DSC
+			, #{cpy_auc_dt}
+			, RG_SQNO
+			, ST_AUC_NO
+			, ED_AUC_NO
+			, '11' SEL_STS_DSC
+			, DEL_YN
+			, SYSDATE
+			, 'TEST0000'
+			, SYSDATE
+			, 'TEST0000'
+			, TO_CHAR(SYSDATE,'YYYYMMDD') DDL_QCN				
+		FROM TB_LA_IS_MH_AUC_STN
+		WHERE NA_BZPLC = #{ss_na_bzplc}
+		AND AUC_DT = #{ori_auc_dt}
+    </insert>
+    
+    <insert id="LALM0898_insAucDataQcn">
+	    INSERT INTO TB_LA_IS_MH_AUC_QCN(
+			NA_BZPLC
+			, AUC_OBJ_DSC
+			, AUC_DT
+			, QCN
+			, BASE_LMT_AM
+			, CUT_AM
+			, SGNO_PRC_DSC
+			, DDL_YN
+			, TMS_YN
+			, DEL_YN
+			, MALE_KG
+			, FEMALE_KG
+			, TT_SCR
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, AUC_DSC
+			, AUC_INFMSG
+			, COMMIT_YN
+		)
+		SELECT 
+			NA_BZPLC
+			, AUC_OBJ_DSC
+			, #{cpy_auc_dt}
+			, QCN +1
+			, BASE_LMT_AM
+			, CUT_AM
+			, SGNO_PRC_DSC
+			, DDL_YN
+			, TMS_YN
+			, DEL_YN
+			, MALE_KG
+			, FEMALE_KG
+			, TT_SCR
+			, SYSDATE
+			, 'TEST0000'
+			, SYSDATE
+			, 'TEST0000'
+			, AUC_DSC
+			, AUC_INFMSG
+			, COMMIT_YN					
+		FROM TB_LA_IS_MH_AUC_QCN
+		WHERE NA_BZPLC = #{ss_na_bzplc}
+		AND AUC_DT = #{ori_auc_dt}
+    </insert>
+    
+    <insert id="LALM0898_insAucDataSogCow">
+	    INSERT INTO TB_LA_IS_MH_SOG_COW(
+			NA_BZPLC
+			, AUC_OBJ_DSC
+			, AUC_DT
+			, OSLP_NO
+			, LED_SQNO
+			, FHS_ID_NO
+			, FARM_AMNNO
+			, SOG_NA_TRPL_C
+			, VHC_SHRT_C
+			, RC_DT
+			, TRMN_AMNNO
+			, LVST_AUC_PTC_MN_NO
+			, SRA_INDV_AMNNO
+			, SRA_SRS_DSC
+			, COW_SOG_WT
+			, FIR_LOWS_SBID_LMT_AM
+			, LOWS_SBID_LMT_AM
+			, SRA_SBID_AM
+			, SRA_SBID_UPR
+			, SEL_STS_DSC
+			, BRCL_ISP_CTFW_SMT_YN
+			, BRCL_ISP_DT
+			, LWPR_CHG_NT
+			, VACN_DT
+			, LVST_MKT_TRPL_AMNNO
+			, MT12_OVR_YN
+			, PPGCOW_FEE_DSC
+			, PRNY_JUG_YN
+			, PRNY_YN
+			, NCSS_JUG_YN
+			, NCSS_YN
+			, TRPCS_PY_YN
+			, SRA_TRPCS
+			, SRA_PYIVA
+			, SRA_FED_SPY_AM
+			, TD_RC_CST
+			, MT12_OVR_FEE
+			, AFISM_MOD_DT
+			, PRNY_MTCN
+			, AFISM_MOD_CTFW_SMT_YN
+			, RMHN_YN
+			, SRA_PDMNM
+			, SRA_PD_RGNNM
+			, RMK_CNTN
+			, AUC_PRG_SQ
+			, TMS_YN
+			, DEL_YN
+			, AUC_YN
+			, MOD_KPN_NO
+			, DDL_QCN
+			, SOGMN_C
+			, FEE_CHK_YN
+			, SELFEE_CHK_YN
+			, FEE_CHK_YN_FEE
+			, SELFEE_CHK_YN_FEE
+			, BLOOD_AM
+			, DNA_YN
+			, BRANDNM
+			, PDA_ID
+			, DNA_YN_CHK
+			, BOVINE_DT
+			, RE_PRODUCT_1
+			, RE_PRODUCT_1_1
+			, RE_PRODUCT_2
+			, RE_PRODUCT_2_1
+			, RE_PRODUCT_3
+			, RE_PRODUCT_3_1
+			, RE_PRODUCT_4
+			, RE_PRODUCT_4_1
+			, EPD_YN
+			, RE_PRODUCT_11
+			, RE_PRODUCT_11_1
+			, RE_PRODUCT_12
+			, RE_PRODUCT_12_1
+			, RE_PRODUCT_13
+			, RE_PRODUCT_13_1
+			, RE_PRODUCT_14
+			, RE_PRODUCT_14_1
+			, SPAY_YN
+			, CASE_COW
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, FED_SPY_YN
+			, AMNNO
+			, MODL_NO
+			, BRCL_ISP_RZT_C
+			, BDLN_VAL
+			, BDHT_VAL
+			, VACN_ORDER
+			, BOVINE_RSLTNM
+			, DNA_SAMPLED_YN
+		)
+		SELECT 
+			NA_BZPLC
+			, AUC_OBJ_DSC
+			, #{cpy_auc_dt}
+			, OSLP_NO
+			, LED_SQNO
+			, FHS_ID_NO
+			, FARM_AMNNO
+			, SOG_NA_TRPL_C
+			, VHC_SHRT_C
+			, RC_DT
+			, ''
+			, ''
+			, SRA_INDV_AMNNO
+			, SRA_SRS_DSC
+			, COW_SOG_WT
+			, FIR_LOWS_SBID_LMT_AM
+			, LOWS_SBID_LMT_AM
+			, '0' SRA_SBID_AM
+			, '0' SRA_SBID_UPR
+			, '11' SEL_STS_DSC
+			, BRCL_ISP_CTFW_SMT_YN
+			, BRCL_ISP_DT
+			, LWPR_CHG_NT
+			, VACN_DT
+			, LVST_MKT_TRPL_AMNNO
+			, MT12_OVR_YN
+			, PPGCOW_FEE_DSC
+			, PRNY_JUG_YN
+			, PRNY_YN
+			, NCSS_JUG_YN
+			, NCSS_YN
+			, TRPCS_PY_YN
+			, SRA_TRPCS
+			, SRA_PYIVA
+			, SRA_FED_SPY_AM
+			, TD_RC_CST
+			, MT12_OVR_FEE
+			, AFISM_MOD_DT
+			, PRNY_MTCN
+			, AFISM_MOD_CTFW_SMT_YN
+			, RMHN_YN
+			, SRA_PDMNM
+			, SRA_PD_RGNNM
+			, RMK_CNTN
+			, AUC_PRG_SQ
+			, TMS_YN
+			, DEL_YN
+			, AUC_YN
+			, MOD_KPN_NO
+			, '' DDL_QCN
+			, SOGMN_C
+			, FEE_CHK_YN
+			, SELFEE_CHK_YN
+			, FEE_CHK_YN_FEE
+			, SELFEE_CHK_YN_FEE
+			, BLOOD_AM
+			, DNA_YN
+			, BRANDNM
+			, PDA_ID
+			, DNA_YN_CHK
+			, BOVINE_DT
+			, RE_PRODUCT_1
+			, RE_PRODUCT_1_1
+			, RE_PRODUCT_2
+			, RE_PRODUCT_2_1
+			, RE_PRODUCT_3
+			, RE_PRODUCT_3_1
+			, RE_PRODUCT_4
+			, RE_PRODUCT_4_1
+			, EPD_YN
+			, RE_PRODUCT_11
+			, RE_PRODUCT_11_1
+			, RE_PRODUCT_12
+			, RE_PRODUCT_12_1
+			, RE_PRODUCT_13
+			, RE_PRODUCT_13_1
+			, RE_PRODUCT_14
+			, RE_PRODUCT_14_1
+			, SPAY_YN
+			, CASE_COW
+			, SYSDATE
+			, 'TEST0000'
+			, SYSDATE
+			, 'TEST0000'
+			, FED_SPY_YN
+			, '' AMNNO
+			, MODL_NO
+			, BRCL_ISP_RZT_C
+			, BDLN_VAL
+			, BDHT_VAL
+			, VACN_ORDER
+			, BOVINE_RSLTNM
+			, DNA_SAMPLED_YN
+		FROM TB_LA_IS_MH_SOG_COW
+		WHERE NA_BZPLC = #{ss_na_bzplc}
+		AND AUC_DT = #{ori_auc_dt}
+    </insert>
+    
+    <update id ="LALM0898_updateAucSogCowInit">
+    	UPDATE TB_LA_IS_MH_SOG_COW SET
+    		TRMN_AMNNO = ''
+    		, AMNNO = ''
+    		, LVST_AUC_PTC_MN_NO = ''
+    		, SEL_STS_DSC = '11'
+    		, SRA_SBID_AM = 0
+    		, SRA_SBID_UPR = 0
+    		, DDL_QCN = ''
+			, LSCHG_DTM = SYSDATE
+			, LS_CMENO = 'TEST0000'
+		WHERE NA_BZPLC = #{ss_na_bzplc}
+		AND AUC_DT = #{cpy_auc_dt}
+        AND FSRGMN_ENO = 'TEST0000'
+    </update>
+    
+    <update id ="LALM0898_updateAucStnInit">
+    	UPDATE TB_LA_IS_MH_AUC_STN SET
+    		DDL_QCN = ''
+    		, SEL_STS_DSC = '11'
+			, LSCHG_DTM = SYSDATE
+			, LS_CMENO = 'TEST0000'
+		WHERE NA_BZPLC = #{ss_na_bzplc}
+		AND AUC_DT = #{cpy_auc_dt}
+        AND FSRGMN_ENO = 'TEST0000'
+    </update>
+    
+    <select id="LALM0898_selAucData" resultType="_int">
+    	SELECT SUM(CNT) CNT FROM(
+	        SELECT COUNT(*) AS CNT
+	        FROM TB_LA_IS_MH_SOG_COW
+	        WHERE NA_BZPLC        = #{ss_na_bzplc}
+	        AND AUC_DT          = #{cpy_auc_dt}
+	        UNION ALL
+	        SELECT COUNT(*) AS CNT
+	        FROM TB_LA_IS_MH_AUC_QCN
+	        WHERE NA_BZPLC        = #{ss_na_bzplc}
+	        AND AUC_DT          = #{cpy_auc_dt}
+    	)    	         
+    </select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

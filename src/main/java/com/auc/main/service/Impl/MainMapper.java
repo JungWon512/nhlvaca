@@ -51,4 +51,19 @@ public interface MainMapper {
 	
 	Map<String, Object> selChkPwTibero(String usrid, String user_pw);
 
+	int updRefreshToken(Map<String, Object> map) throws Exception;
+
+	int delUser(Map<String, String> loginMap);
+
+	List<Map<String, Object>> MainSecApply_selList(Map<String, Object> map);
+
+	List<Map<String, Object>> selectNaUserList(Map<String, Object> map) throws Exception;
+
+	int selChkPw(Map<String, Object> map);
+
+	
+
+	
+	
+
 }

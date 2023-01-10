@@ -142,7 +142,7 @@
             rowNoValue = data.length;
         }
         
-         var searchResultColNames = ["경매번호", "경매대상", "귀표번호", "응찰하한가", "응찰금액", "참여자번호", "중도매인명", "응찰시간"];        
+         var searchResultColNames = ["경매번호", "경매대상", "귀표번호", "예정가", "응찰금액", "참여자번호", "중도매인명", "응찰시간"];        
         var searchResultColModel = [
 						             {name:"AUC_PRG_SQ"			, index:"AUC_PRG_SQ"		, width:80,  align:'center'},
                                      {name:"AUC_OBJ_DSC"		, index:"AUC_OBJ_DSC"		, width:80,  align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},

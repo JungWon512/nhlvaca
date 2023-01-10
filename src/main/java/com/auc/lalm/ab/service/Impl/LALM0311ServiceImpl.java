@@ -107,6 +107,39 @@ public class LALM0311ServiceImpl implements LALM0311Service{
 		
 		return reMap;
 	}
+	
+	@Override
+	public Map<String, Object> LALM0311_updPgmOnlySave(Map<String, Object> map) throws Exception{
+		
+		Object tmpChangeData              = map.get("changedata");
+		String calf_auc_atdr_unt_am    	  = map.get("calf_auc_atdr_unt_am").toString();
+		String nbfct_auc_atdr_unt_am      = map.get("nbfct_auc_atdr_unt_am").toString();
+		String ppgcow_auc_atdr_unt_am     = map.get("ppgcow_auc_atdr_unt_am").toString();
+		String chk_save_type     = map.getOrDefault("chk_save_type","").toString();
+		
+		List<Map<String, Object>> tmpList = (List<Map<String, Object>>)tmpChangeData;
+		Map<String, Object> reMap         = new HashMap<String, Object>();
+		Map<String, Object> tmpObject     = null;
+		
+		int updateNum = 0;
+		int insLogNum = 0;
+		
+		for(int i = 0; i < tmpList.size(); i ++) {
+			tmpObject = null;
+			tmpObject = (Map<String, Object>)tmpList.get(i);
+			
+			tmpObject.put("chk_save_type", chk_save_type);
+			tmpObject.put("calf_auc_atdr_unt_am", calf_auc_atdr_unt_am);
+			tmpObject.put("nbfct_auc_atdr_unt_am", nbfct_auc_atdr_unt_am);
+			tmpObject.put("ppgcow_auc_atdr_unt_am", ppgcow_auc_atdr_unt_am);
+
+			insLogNum += lalm0311Mapper.LALM0311_insLogPgm(tmpObject);
+			updateNum += lalm0311Mapper.LALM0311_updPgmOnlySave(tmpObject);		
+			reMap.put("updateNum", updateNum);
+		}
+		
+		return reMap;		
+	}
 
 
 }

@@ -4,11 +4,12 @@
 <mapper namespace="com.auc.lalm.co.service.Impl.LALM0125PMapper">
 
     <select id="LALM0125P_selList" resultType="hashMap">
+    	/*LALM0125PMapper.LALM0125P_selList_20221122 수정*/
 	    SELECT
 	         A.TRMN_AMNNO
 	        ,A.MWMN_NA_TRPL_C
 	        ,A.SRA_MWMNNM
-	        ,A.FRLNO
+	        ,A.CUS_RLNO
 	        ,A.ZIP
 	        ,A.DONGUP
 	        ,A.DONGBW
@@ -21,13 +22,20 @@
 	        ,A.DEL_YN
 	        ,A.RMK_CNTN
 	        ,A.SMS_NO
-	        , CASE
-	            WHEN B.TRMN_AMNNO IS NULL THEN '0'
-	            ELSE '1' END   AS BAD_TRMN_AMNNO
+            ,A.MB_INTG_NO 
+	        ,CASE 
+	        	WHEN B.TRMN_AMNNO IS NULL THEN '0'
+	            ELSE '1' 
+             END  BAD_TRMN_AMNNO		/*해당 조합에 불량회원으로 등록되어 있는지 여부*/
+            ,NVL(B.AUC_PART_LIMIT_YN, '1') AS AUC_PART_LIMIT_YN    /*해당 조합에서 경매참여제한으로 등록되어 있는지 여부 (1:참여가능, 0:참여불가능)*/
 	    FROM TB_LA_IS_MM_MWMN A
-	     LEFT OUTER JOIN TB_LA_IS_MH_BAD_TRMN B
-	          ON  A.SRA_MWMNNM = B.SRA_MWMNNM
-	          AND A.FRLNO      = B.FRLNO
+		    LEFT OUTER JOIN TB_LA_IS_MM_BLACKLIST B
+		    ON(  A.NA_BZPLC = B.NA_BZPLC
+		    	AND A.TRMN_AMNNO = B.TRMN_AMNNO
+		    	AND A.MB_INTG_NO      = B.MB_INTG_NO
+		    	AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN B.REG_DATE AND B.LIMIT_DATE
+		    	AND B.DEL_YN = '0'
+	        )
 	    WHERE A.NA_BZPLC = #{ss_na_bzplc}
 	       AND A.DEL_YN   = '0'
 	       <if test='v_trmn_amnno == "1"'>
@@ -36,7 +44,7 @@
 	       </if>	
 	       <if test='v_trmn_amnno == "2"'>
 		       AND A.SRA_MWMNNM LIKE '%' || #{sra_mwmnnm}  || '%' 
-	       </if>		       
+	       </if>	
     </select>    
 </mapper>
 

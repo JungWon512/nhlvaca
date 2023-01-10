@@ -28,11 +28,19 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 		// TODO Auto-generated method stub
 		String exception = (String)request.getAttribute("exception");
 		
+		
 		/*토큰이 없을경우*/
 		if(exception == null) {
 			setResponse(request,response,ErrorCode.NOT_LOGIN);
 			return;
 		}
+
+		/*세션이 없을경우*/
+		if(exception.equals(ErrorCode.EXPIERD_SESSION.getCode())) {
+			setResponse(request,response,ErrorCode.EXPIERD_SESSION);
+			return;
+		}
+		
 		
 		/*토큰이 만료된 경우 */
 		if(exception.equals(ErrorCode.EXPIERD_TOKEN.getCode())) {

@@ -108,6 +108,7 @@
 	    fn_SogYearSearch();	
 		fn_MonQcnSearch();
 		fn_MainNoticeSearch();
+		fn_MainSecApplySearch();
 		
 		//바로가기
 	    $('.mainList > ul > li > a').on('click',function(){
@@ -129,10 +130,21 @@
             parent.layerPopupPage(pgid, menu_id, data, null, 1000, 600);
 
         }); 
-        $('.more_bg > a').on('click',function(){ 
+        $('.more_bg > a.notice_more').on('click',function(){ 
             var v_pgid = 'LALM0901';
             fn_OpenMenu(v_pgid, null);
-
+        });
+        
+        $('.more_bg > a.apply_more').on('click',function(){ 
+            var data = new Object();
+			data["flag_secaply"] = "Y";
+			fn_OpenMenu('LALM0117',data);
+        });
+        
+        $('.sec_aply_item').on('click',function(){ 
+            var data = new Object();
+			data["flag_secaply"] = "Y";
+			fn_OpenMenu('LALM0117',data);
         });
 	}); 
 	
@@ -171,17 +183,16 @@
         srchData["na_bzplc"] = '0000000000000';
         var results = sendAjax(srchData, "/MainNotice_selList", "POST");        
         var result;
+        var noticeItem = [];
         
         if(results.status != RETURN_SUCCESS){
-            showErrorMessage(results,'NOTFOUND');
-            return;
+        	noticeItem.push('<li>등록된 공지사항이 없습니다.</li>');
         }else{
-       		$('.imgBox').hide();
        		$(".main_notice").show();
             result = setDecrypt(results);
             
             $.each(result, function(i){
-            	var noticeItem = '<li><a href="javascript:;" bbrd_sqno="'
+            	noticeItem.push('<li><a href="javascript:;" bbrd_sqno="'
             	                + result[i].BBRD_SQNO
             	                + '"'
                                 + (result[i].FIX_YN == '1' ? ' class="red_txt"' : '')
@@ -191,11 +202,11 @@
             	               	+ result[i].USRNM 
             	               	+'] '
             	               	+ result[i].BBRD_TINM 
-            	               	+ '</a></li>';
-            	$(".notice_list").append(noticeItem);
-                
+            	               	+ '</a></li>');
             });
         }      
+        
+        $(".notice_list").append(noticeItem.join(""));
     }   
     
     /*------------------------------------------------------------------------------
@@ -223,6 +234,37 @@
     	});
                 
     }     
+    
+    /*------------------------------------------------------------------------------
+     * 1. 함 수 명    : 이용해지 신청 회원 조회 함수
+     * 2. 입 력 변 수 : N/A
+     * 3. 출 력 변 수 : N/A
+     ------------------------------------------------------------------------------*/
+    function fn_MainSecApplySearch(){
+        var srchData = new Object();
+        srchData["na_bzplc"] = App_na_bzplc;
+        var results = sendAjax(srchData, "/MainSecApply_selList", "POST");        
+        var result;
+        var userItem = [];
+        
+        if(results.status != RETURN_SUCCESS){
+        	userItem.push('<li>');
+        	userItem.push('이용해지 신청기록이 없습니다.');
+        	userItem.push('</li>');
+        }else{
+            result = setDecrypt(results);
+            
+            $.each(result, function(i){
+            	userItem.push('<li>');
+            	userItem.push('		<a href="javascript:;" class="sec_aply_item">');
+            	userItem.push('			<span class="secReceDtm">[' + result[i].SEC_RECE_DTM+ ']</span>');
+            	userItem.push('			[' + result[i].SRA_MWMNNM +'] '+ result[i].SEC_REASON);
+            	userItem.push('		</a>');
+            	userItem.push('</li>');
+            });
+        }      
+        $(".secAply_list").append(userItem.join(""));
+    }   
     
     //그리드 생성
     function fn_CreateGrid(data){              
@@ -378,9 +420,7 @@
                         </canvas>
                     </div>
                     <div class="noticeSec LastnoticeSec">
-                       <div class="imgBox">
-                       </div>
-                       <div class="main_notice" style="display:none;">
+                       <div class="main_notice">
                             <dl>
                                 <dt>공지사항</dt>
                                 <dd>
@@ -391,6 +431,19 @@
                             <span class="more_bg"><a href="javascript:;" class="notice_more"><img src="/images/common/more.png" alt=""></a></span>
                         </div>
                     </div>
+                    <div class="noticeSec LastnoticeSec">
+                       <div class="main_secAplyUser">
+                            <dl>
+                                <dt>이용해지 신청회원</dt>
+                                <dd>
+                                    <ul class="secAply_list">
+                                    </ul>
+                                </dd>
+                            </dl>
+                            <span class="more_bg"><a href="javascript:;" class="apply_more"><img src="/images/common/more.png" alt=""></a></span>
+                        </div>
+                    </div>
+                    
                     </div>
                 </div>
             </div>

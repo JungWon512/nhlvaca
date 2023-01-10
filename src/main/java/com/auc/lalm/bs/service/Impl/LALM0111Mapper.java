@@ -22,5 +22,12 @@ public interface LALM0111Mapper {
 
 	Map<String, Object> LALM0111_selDetail(Map<String, Object> map) throws Exception;
 
+	/**
+	 * 동일한 이름, 생년월일, 전화번호로 신규 등록은 못하도록 체크
+	 * @param map
+	 * @return
+	 */
+	Map<String, Object> LALM0111_selFhsInfo(Map<String, Object> map);
+
 
 }

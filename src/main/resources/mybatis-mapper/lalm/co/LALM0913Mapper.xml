@@ -18,16 +18,15 @@
     </select>
     
     <select id="LALM0913_selUser" resultType="hashMap">
-    <![CDATA[
         SELECT COUNT(*) AS USER_CNT
           FROM TB_LA_IS_MM_USR
          WHERE usrid          = #{usrid}
-         
-    ]]>
+          <if test="ss_na_bzplc == '8808990656441' or ss_na_bzplc == '8808990766485'">
+          	AND NA_BZPLC = #{ss_na_bzplc}
+          </if>
     </select>
     
     <insert id="LALM0913_insUser">
-    <![CDATA[
          INSERT INTO TB_LA_IS_MM_USR(
                  NA_BZPLC                           /* 경제통합사업장코드       */
                , USRID                              /* 사용자아이디             */
@@ -47,7 +46,14 @@
                , #{usrid}                           /* 사용자아이디             */
                , #{usrnm}                           /* 사용자명                 */
                , #{mpno}                            /* 사용자휴대번호           */
-               , Damo.ENC_B64('KEY1', #{pw})        /* 비밀번호                 */
+           <choose>
+             <when test="serviceName != null and serviceName != ''">
+               , #{pw}
+             </when>
+             <otherwise>
+	           , Damo.ENC_B64('KEY1', #{pw})        /* 비밀번호                 */
+             </otherwise>
+           </choose>
                , #{usrid}                           /* 사용자개인번호           */
                , TO_CHAR(SYSDATE,'YYYYMMDD')        /* 비밀번호변경일자         */
                , 0                                  /* 비밀번호오류횟수         */
@@ -57,7 +63,6 @@
                , #{ss_userid}                       /* 최종변경자개인번호       */
                , NVL(#{strg_yn}, '0')               /* 사용권한(1:등록, 0:조회) */
         )         
-    ]]>
     </insert>
     
     <update id="LALM0913_updUser">
@@ -68,7 +73,7 @@
              , STRG_YN   = NVL(#{strg_yn}, '0')   /* 사용권한(1:등록, 0:조회) */
              , LSCHG_DTM = SYSDATE                /* 최종변경일시             */
              , LS_CMENO  = #{ss_userid}           /* 최종변경자개인번호       */
-         WHERE NA_BZPLC       = #{ss_na_bzplc} 
+         WHERE 1=1
            AND usrid          = #{usrid}
          
     ]]>

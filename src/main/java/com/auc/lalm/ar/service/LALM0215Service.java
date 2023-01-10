@@ -3,8 +3,6 @@ package com.auc.lalm.ar.service;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public interface LALM0215Service {
 
 	List<Map<String, Object>> LALM0215_selList(Map<String, Object> map) throws Exception;
@@ -46,7 +44,7 @@ public interface LALM0215Service {
 	Map<String, Object> LALM0215_updPgm(Map<String, Object> map) throws Exception;
 	
 	Map<String, Object> LALM0215_updAucChange(Map<String, Object> map) throws Exception;
-
+	
 	List<Map<String, Object>> LALM0215_selImgList(Map<String, Object> map) throws Exception;
 	
 	Map<String, Object> LALM0215_selImg(Map<String, Object> map) throws Exception;
@@ -54,5 +52,13 @@ public interface LALM0215Service {
 	Map<String, Object> LALM0215_insImgList(Map<String, Object> map) throws Exception;
 	
 	Map<String, Object> LALM0215_delImgList(Map<String, Object> map) throws Exception;
+
+	/**
+	 * 출장우 이미지 저장 
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
+	Map<String, Object> LALM0215_insImgPgm(Map<String, Object> rMap) throws Exception;
 
 }

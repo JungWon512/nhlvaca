@@ -191,6 +191,7 @@
 				               then Replace(substr(a.cus_rlno,1,6),'-','')
 				               else Replace(a.cus_rlno,'-','')
 				          end as cus_rlno
+				        , a.mb_intg_no 		/*통합회원번호*/
 				    from  tb_la_is_mm_mwmn a
 				         ,tb_la_is_mh_auc_entr b
 				    where a.na_bzplc    = #{ss_na_bzplc}
@@ -576,6 +577,8 @@
 				,FSRGMN_ENO
 				,TO_CHAR(LSCHG_DTM, 'YYYYMMDDHH24MISS') AS LSCHG_DTM
 				,LS_CMENO
+				,NVL(BDLN_VAL,'') BDLN_VAL
+				,NVL(BDHT_VAL,'') BDHT_VAL
 			FROM TB_LA_IS_MH_SOG_COW
 		   WHERE NA_BZPLC = #{ss_na_bzplc}
 		     AND AUC_OBJ_DSC in ('1', '2', '3')
@@ -785,7 +788,8 @@
 		            FSRG_DTM,
 		            FSRGMN_ENO,
 		            LSCHG_DTM,
-		            LS_CMENO
+		            LS_CMENO,
+		            TMS_TYPE
 		            )
 			VALUES(
 			        #{NA_BZPLC},
@@ -805,7 +809,8 @@
 			        SYSDATE,
 			        #{SS_USERID},
 			        SYSDATE,
-			        #{SS_USERID}
+			        #{SS_USERID},
+			        #{TMS_TYPE}
 			)
     </insert>
     
@@ -880,6 +885,7 @@
 			  and  d.auc_obj_dsc(+)      = #{auc_obj_dsc}
               and  d.dpamn_dsc(+)        = '1'
               and  d.sel_sts_dsc(+)      = '01'
+           	  and  d.tms_type(+)		= #{tms_type}
 		    order by a.trmn_amnno
     </select>
     
@@ -962,6 +968,7 @@
           and  d.auc_obj_dsc(+)      = #{auc_obj_dsc}
           and  d.dpamn_dsc(+)        = '1'
           and  d.sel_sts_dsc(+)      = '02'
+          and  d.tms_type(+)				= #{tms_type}
 		order by a.trmn_amnno
     </select>
     
@@ -1058,6 +1065,7 @@
           and  e.auc_obj_dsc(+)      = #{auc_obj_dsc}
           and  e.dpamn_dsc(+)        = '1'
           and  e.sel_sts_dsc(+)      = '03'
+       	  and  e.tms_type	(+)		= #{tms_type}
 	    order by a.trmn_amnno
     </select>
     
@@ -1119,6 +1127,7 @@
           and  f.auc_obj_dsc(+)     = #{auc_obj_dsc}
           and  f.dpamn_dsc(+)       = '2'
           and  f.sel_sts_dsc(+)     = '01'
+          and  f.tms_type(+)			= #{tms_type}
 		order by a.auc_prg_sq
     </select>
     
@@ -1224,6 +1233,7 @@
           and  f.auc_obj_dsc(+)      = #{auc_obj_dsc}
           and  f.dpamn_dsc(+)        = '2'
           and  f.sel_sts_dsc(+)      = '02'
+		  and  f.tms_type(+)			= #{tms_type}
 	    order by a.auc_prg_sq
     </select>
     
@@ -1339,6 +1349,7 @@
 	      and a.sel_sts_dsc          = '22'                   /* 판매상태구분코드            */
 	      and a.del_yn               = '0'
 	      and a.led_sqno             = 1
+		  and f.tms_type(+)			= #{tms_type}
 	    order by TO_NUMBER(a.lvst_auc_ptc_mn_no) , a.auc_prg_sq
     </select>
     
@@ -1405,6 +1416,7 @@
 	       and g.auc_obj_dsc(+)      = #{auc_obj_dsc}
 	       and g.dpamn_dsc(+)        = '2'
 	       and g.sel_sts_dsc(+)      = '01'
+		   and g.tms_type(+)			= #{tms_type}
 	    )b
 	    GROUP BY na_bzplc, replace( cus_mpno,'-',''), name, fhs_id_no,TMS_YN, SMS_FWDG_DT, SMS_FWDG_SQNO
 			   , TRMN_AMNNO
@@ -1658,6 +1670,7 @@
                                then Replace(substr(a.cus_rlno,1,6),'-','')
                                else Replace(a.cus_rlno,'-','')
                           end as cus_rlno
+                        , a.mb_intg_no 		/*통합회원번호*/  
                     from  tb_la_is_mm_mwmn a
                     where a.na_bzplc    = #{ss_na_bzplc}
                     order by a.trmn_amnno
@@ -1673,6 +1686,7 @@
 		     , ATTC_NO
 		  FROM TB_LA_IS_MM_USR
 		 WHERE usrid = #{usrid}
+		 AND ROWNUM = 1
     </select>
     
     <delete id="LALM0899_delMca2500">
@@ -1747,18 +1761,76 @@
          where na_bzplc = #{ss_na_bzplc}
     </delete>
     
+    
+    <insert id="LALM0899_insMca4600">
+		insert into tb_la_is_mm_indv(
+			NA_BZPLC                                            /* 경제통합사업장코드                  */
+		    , SRA_INDV_AMNNO                                      /* 축산개체관리번호                    */
+		    , SRA_SRS_DSC                                         /* 축산축종구분코드                    */
+		    , FHS_ID_NO                                           /* 농가식별번호                        */
+		    , FARM_AMNNO                                          /* 농장관리번호                        */
+		    , BIRTH                                               /* 생년월일                            */
+		    , MCOW_DSC                                            /* 어미구분코드                        */
+		    , KPN_NO                                              /* KPN번호                             */
+		    , INDV_SEX_C                                          /* 개체성별코드                        */
+		    , MCOW_SRA_INDV_AMNNO                                 /* 어미소축산개체관리번호              */
+		    , MATIME                                              /* 산차                                */
+		    , SRA_INDV_PASG_QCN                                   /* 축산개체계대차수                    */
+		    , INDV_ID_NO                                          /* 개체식별번호                        */
+		    , SRA_INDV_BRDSRA_RG_NO                               /* 축산개체종축등록번호                */
+		    , RG_DSC                                              /* 등록구분코드                        */
+		    , ANW_YN                                              /* 한우종합등록여부                    */
+		    , FSRG_DTM                                            /* 최초등록일시                        */
+		    , FSRGMN_ENO                                          /* 최초등록자개인번호                  */
+		    , LSCHG_DTM                                           /* 최종변경일시                        */
+		    , LS_CMENO                                            /* 최종변경자개인번호                  */
+			, MIF_FCOW_SRA_INDV_EART_NO                           /*아비소축산개체관리번호   */    
+			, GRFA_SRA_KPN_NO                                     /*조부 KPN            */
+			, GRFA_SRA_INDV_EART_NO                               /*조부축산개체관리번호     */   
+			, GRMO_SRA_INDV_EART_NO                               /*조모축산개체관리번호     */   
+			, MTGRFA_SRA_KPN_NO                                   /*외조부KPN            */
+			, MTGRFA_SRA_INDV_EART_NO                             /*외조부축산개체관리번호   */    
+			, MTGRMO_SRA_INDV_EART_NO                             /*외조모축산개체관리번호   */    
+		  )values(
+			#{ss_na_bzplc}                                   /* 경제통합사업장코드                  */
+			, nvl(trim(#{SRA_INDV_AMNNO}),'')                                /* 축산개체관리번호                    */
+			, nvl(trim(#{SRA_SRS_DSC}),'')                                   /* 축산축종구분코드                    */
+			, nvl(trim(#{FHS_ID_NO}),'')                                     /* 농가식별번호                        */
+			, nvl(trim(#{FARM_AMNNO}),'')                                    /* 농장관리번호                        */
+			, nvl(trim(#{BIRTH}),'')                                         /* 생년월일                            */
+			, nvl(trim(#{MCOW_DSC}),'')                                      /* 어미구분코드                        */
+			, nvl(trim(#{KPN_NO}),'')                                        /* KPN번호                             */
+			, nvl(trim(#{INDV_SEX_C}),'')                                    /* 개체성별코드                        */
+			, nvl(trim(#{MCOW_SRA_INDV_AMNNO}),'')                           /* 어미소축산개체관리번호              */
+			, CASE WHEN nvl(trim(#{MATIME}),'') = '' THEN 0
+			       ELSE to_number(nvl(trim(#{MATIME}),''))
+			  END                                              /* 산차                                */
+			, nvl(trim(#{SRA_INDV_PASG_QCN}),'')                              /* 축산개체계대차수                    */
+			, nvl(trim(#{INDV_ID_NO}),'')                                     /* 개체식별번호                        */
+			, nvl(trim(#{SRA_INDV_BRDSRA_RG_NO}),'')                          /* 축산개체종축등록번호                */
+			, nvl(trim(#{RG_DSC}),'')                                         /* 등록구분코드                        */
+			, nvl(trim(#{ANW_YN}),'')                                         /* 한우종합등록여부                    */
+			, SYSDATE                                          /* 최초등록일시                        */
+			, #{ss_userid}                                     /* 최초등록자개인번호                  */
+			, SYSDATE                                          /* 최종변경일시                        */
+			, #{ss_userid}                                     /* 최종변경자개인번호                  */
+			, nvl(trim(#{MIF_FCOW_SRA_INDV_EART_NO}),'')         /*아비소축산개체관리번호   */
+			, nvl(trim(#{GRFA_SRA_KPN_NO}),'')                   /*조부 KPN            */
+			, nvl(trim(#{GRFA_SRA_INDV_EART_NO}),'')             /*조부축산개체관리번호     */
+			, nvl(trim(#{GRMO_SRA_INDV_EART_NO}),'')             /*조모축산개체관리번호     */
+			, nvl(trim(#{MTGRFA_SRA_KPN_NO}),'')                 /*외조부KPN            */
+			, nvl(trim(#{MTGRFA_SRA_INDV_EART_NO}),'')           /*외조부축산개체관리번호   */
+			, nvl(trim(#{MTGRMO_SRA_INDV_EART_NO}),'')           /*외조모축산개체관리번호   */
+		  )
+    </insert>   
+    
+    <select id="LALM0899_selMca5100AlarmTalkId" resultType="HashMap">
+    	SELECT TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(COUNT(*) + 1, 4, 0) AS IO_TGRM_KEY
+    			, TO_CHAR(SYSDATE, 'YYYYMMDD') AS SMS_FWDG_DT
+    	FROM TB_LA_IS_MM_SMS
+    	WHERE 1=1
+    		AND TMS_TYPE = '02'
+    		AND SMS_FWDG_DT = TO_CHAR(SYSDATE, 'YYYYMMDD')
+    </select>
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
-
 

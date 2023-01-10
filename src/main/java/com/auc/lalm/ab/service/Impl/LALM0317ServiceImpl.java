@@ -47,10 +47,10 @@ public class LALM0317ServiceImpl implements LALM0317Service{
 		for(int i = 0; i< list.size();i++) {
 			detailMap = (Map<String, Object>)list.get(i);
 			detailMap.put("chg_pgid", "[LM0317]");
-			detailMap.put("chg_rmk_cntn", "응찰하한가변경[복구]");
+			detailMap.put("chg_rmk_cntn", "예정가 변경[복구]");
 			//프로그램 DB 저장
 			insertNum = insertNum + logService.insSogCowLog(detailMap);	
-			//하한가 변경
+			//예정가 변경
 			detailMap.put("am_rto_dsc", frmMap.get("am_rto_dsc"));
 			detailMap.put("sbt_am", frmMap.get("sbt_am"));
 			detailMap.put("sbt_pmr", frmMap.get("sbt_pmr"));
@@ -80,10 +80,10 @@ public class LALM0317ServiceImpl implements LALM0317Service{
 		for(int i = 0; i< list.size();i++) {
 			detailMap = (Map<String, Object>)list.get(i);
 			detailMap.put("chg_pgid", "[LM0317]");
-			detailMap.put("chg_rmk_cntn", "응찰하한가변경[변경]");
+			detailMap.put("chg_rmk_cntn", "예정가 변경[변경]");
 			//프로그램 DB 저장
 			insertNum = insertNum + logService.insSogCowLog(detailMap);	
-			//하한가 변경
+			//예정가 변경
 			detailMap.put("am_rto_dsc", frmMap.get("am_rto_dsc"));
 			detailMap.put("sbt_am", frmMap.get("sbt_am"));
 			detailMap.put("sbt_pmr", frmMap.get("sbt_pmr"));
@@ -114,12 +114,12 @@ public class LALM0317ServiceImpl implements LALM0317Service{
 		int updateNum = 0;
 		for(int i = 0; i< list.size();i++) {
 			detailMap = (Map<String, Object>)list.get(i);
-			detailMap.put("chg_pgid", "[LM0317]");
-			detailMap.put("chg_rmk_cntn", "경매내역변경[저장]");
-			//프로그램 DB 저장
-			insertNum = insertNum + logService.insSogCowLog(detailMap);
+			detailMap.put("chg_pgid", "[LM0317]");			
+			detailMap.put("chg_rmk_cntn", "경매내역변경[저장] "+detailMap.get("chg_rmk_cntn"));
 			//경매데이터 수정(낙찰)
 			updateNum = updateNum + lalm0317Mapper.LALM0317_updConti(detailMap);
+			//출장우 log 저장
+			insertNum = insertNum + logService.insSogCowLog(detailMap);
 			grd_MhSogCow.add(detailMap);
 		}
 		insertNum = insertNum + commonService.Common_insFeeImps(grd_MhSogCow);

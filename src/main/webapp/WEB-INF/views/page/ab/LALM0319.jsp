@@ -101,7 +101,7 @@ var na_bzplc = App_na_bzplc;
         }
         
         var searchResultColNames = ["경매대상", "경매번호", "귀표번호", "생년월일", "성별", "KPN번호", "산차", "계대", "중량", "어미구분",
-        						    "경매일자", "원표번호", "원장일련번호", "거래인관리번호", "경매참여자번호", "판매상태구분코드", "삭제여부", "최초최저낙찰한도금액", "축산낙찰금액", "축산축종구분", "응찰하한가"];        
+        						    "경매일자", "원표번호", "원장일련번호", "거래인관리번호", "경매참여자번호", "판매상태구분코드", "삭제여부", "최초최저낙찰한도금액", "축산낙찰금액", "축산축종구분", "예정가"];        
         var searchResultColModel = [
 						            {name:"AUC_OBJ_DSC"           ,index:"AUC_OBJ_DSC"           ,width:50, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
 						            {name:"AUC_PRG_SQ"            ,index:"AUC_PRG_SQ"            ,width:50, align:'center'},

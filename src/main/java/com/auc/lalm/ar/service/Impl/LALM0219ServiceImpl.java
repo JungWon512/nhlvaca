@@ -59,7 +59,31 @@ public class LALM0219ServiceImpl implements LALM0219Service{
 		return reMap;
 	}	
 
-	
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> LALM0219P1_updExcelUpload(Map<String, Object> map) throws Exception{
+		Map<String, Object> reMap         = new HashMap<String, Object>();		
+		int updateNum = 0;
+		
+		List<Map<String, Object>> list = (List<Map<String, Object>>) map.get("grid_data");
+		String aucDt = (String) map.get("auc_dt");
+		String ss_na_bzplc = (String) map.get("ss_na_bzplc");
+		
+		
+		for(Map<String, Object> tmp : list) {
+			String auc_obj_dsc = (String) tmp.get("auc_obj_dsc");
+			tmp.put("ss_na_bzplc", ss_na_bzplc);
+			tmp.put("auc_dt", aucDt);
+			tmp.put("auc_obj_dsc", "송아지".equals(auc_obj_dsc)?"1":("비육우".equals(auc_obj_dsc)?"2":"3"));
+			
+			updateNum += lalm0219Mapper.LALM0219P1_updExcelUpload(tmp);
+		}
+		reMap.put("updateNum", updateNum);
+		
+		return reMap;
+		
+	}
 
 	
 }

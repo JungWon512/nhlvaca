@@ -6,11 +6,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.auc.common.exception.CusException;
 import com.auc.common.exception.ErrorCode;
+import com.auc.common.filter.JwtRequestFilter;
 import com.auc.lalm.ar.service.LALM0214P3Service;
 import com.auc.lalm.co.service.Impl.LALM0221PMapper;
 import com.auc.lalm.co.service.Impl.LALM0222PMapper;
@@ -20,6 +23,7 @@ import com.auc.mca.McaUtil;
 
 @Service("LALM0214P3Service")
 public class LALM0214P3ServiceImpl implements LALM0214P3Service{
+	private static Logger log = LoggerFactory.getLogger(LALM0214P3ServiceImpl.class);
 	@Autowired
 	LogService logService;	
 	@Autowired
@@ -37,6 +41,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 	@Autowired
 	McaUtil mcaUtil;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Map<String, Object>> LALM0214P3_insFhs(Map<String, Object> params) throws Exception{
 		List<Map<String, Object>> reList = new ArrayList<Map<String, Object>>();
@@ -72,7 +77,6 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 		int updateNum = 0;
 		
 		for(Map<String, Object> map : list) {
-			List<Map<String, Object>> amnnolist = null;
 			map.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
 			map.put("ss_userid", inMap.get("ss_userid"));
 			map.put("auc_dt", inMap.get("auc_dt"));
@@ -184,7 +188,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				//인터페이스 
 				try {
 					map.put("sra_indv_amnno", map.get("sra_indv_amnno"));
-					Map<String, Object> infIndvMap = mcaUtil.tradeMcaMsg("2200", map);
+					Map<String, Object> infIndvMap = mcaUtil.tradeMcaMsg("4700", map);
 					Map<String, Object> dataMap = (Map<String, Object>) infIndvMap.get("jsonData");
 					Map<String, Object> Demap = new HashMap<String, Object>();
 
@@ -207,7 +211,6 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						if(!Demap.get("sra_farm_amn_atel").equals("") || !Demap.get("sra_farm_amn_htel").equals("") || !Demap.get("sra_farm_amn_stel").equals("")) {
 							tmpTelno = Demap.get("sra_farm_amn_atel") + "-" + Demap.get("sra_farm_amn_htel") + "-" + Demap.get("sra_farm_amn_stel");
 						}
-						// TODO :: 축경통에 농가 휴대전화 번호가 없는 경우 농가 관리에서 휴대전화를 입력해도 개체정보 조회시(LALM0222P) 축경통게 등록된 정보로 덮어 씌우기 때문에 덮어 씌우지 않도록 수정필요
 						if(!Demap.get("sra_fhs_rep_mpsvno").equals("") || !Demap.get("sra_fhs_rep_mphno").equals("") || !Demap.get("sra_fhs_rep_mpsqno").equals("")) {
 							tmpMpno = Demap.get("sra_fhs_rep_mpsvno") + "-" + Demap.get("sra_fhs_rep_mphno") + "-" + Demap.get("sra_fhs_rep_mpsqno");
 						}
@@ -254,6 +257,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 					}
 								
 				}catch(Exception e) {
+					log.debug("개체 인터페이스[4700] 연동중 error..",e);
 					result.put("CHK_IF_SRA_INDV", "0");		
 					result.put("CHK_IF_FHS", "0");
 				}
@@ -263,15 +267,58 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 			/* 개체,농가 정보 정상적으로 저장/수정되었을경우에만 적용 */
 			if("1".equals(result.get("CHK_IF_FHS")) && "1".equals(result.get("CHK_IF_SRA_INDV"))) {
 				/* s: 수정KPN */
-//				Map<String, Object> infModKpnMap = mcaUtil.tradeMcaMsg("2900", result);
-//				Map<String, Object> infModKpnJsonData = (Map<String, Object>) infModKpnMap.get("jsonData");		
-//				result.put("MOD_KPN_NO", infModKpnJsonData.getOrDefault("SRA_KPN_NO","").toString().trim());
+				try {
+					Map<String, Object> infModKpnMap = mcaUtil.tradeMcaMsg("2900", result);
+					Map<String, Object> infModKpnJsonData = (Map<String, Object>) infModKpnMap.get("jsonData");		
+					result.put("MOD_KPN_NO", infModKpnJsonData.getOrDefault("SRA_KPN_NO","").toString().trim());					
+				}catch (Exception e) {
+					log.debug("수정 KPN[2900] 연동중 error..",e);
+					result.put("MOD_KPN_NO", "");
+				}
 				/* e: 수정KPN */			
+
+				/* s: 분만정보 */
+				try {
+					
+					Map<String, Object> infBhPturMap = mcaUtil.tradeMcaMsg("2300", result);
+					Map<String, Object> infBhPturJsonData = (Map<String, Object>) infBhPturMap.get("jsonData");		
+					//TO-DO : 분만정보 INSERT
+				}catch (Exception e) {
+					log.debug("분만정보[2300] 연동중 error..",e);
+				}
+				/* e: 분만정보 */
+
+				/* s: 후대정보 */
+				try {
+					Map<String, Object> infPostIndvMap = mcaUtil.tradeMcaMsg("4900", result);
+					Map<String, Object> infPostIndvJsonData = (Map<String, Object>) infPostIndvMap.get("jsonData");
+					//TO-DO : 후대정보 INSERT
+				}catch (Exception e) {
+					log.debug("후대정보 [4900] 연동중 error..",e);
+				}
+				/* e: 후대정보 */
+
+				/* s: 형매정보 */
+				try {
+					Map<String, Object> infSipIndvMap = mcaUtil.tradeMcaMsg("4900", result);
+					Map<String, Object> infSipIndvJsonData = (Map<String, Object>) infSipIndvMap.get("jsonData");
+					//TO-DO : 형매정보 INSERT
+				}catch (Exception e) {
+					log.debug("형매정보 [4900] 연동중 error..",e);
+				}
+				/* e: 형매정보 */
+
+				/* s: OPEN API 연동 */
+				Map<String, Object> temp = new HashMap<String, Object>();
+				temp.put("trace_no", result.get("SRA_INDV_AMNNO"));
+				/* s: 이동정보 */
+
+				List<Map<String, Object>> moveList = mcaUtil.getOpenDataApiCattleMove(temp);
+				//TO-DO : 이동정보 INSERT
+				/* e: 이동정보 */
 				
 
-				Map<String, Object> temp = new HashMap<String, Object>();
 				/* s: 브루셀라 연동 */
-				temp.put("trace_no", result.get("SRA_INDV_AMNNO"));
 				Map<String, Object> infAnimalTraceMap = mcaUtil.getOpenDataApi(temp);    
 				if(infAnimalTraceMap != null && !infAnimalTraceMap.isEmpty()) {
 		        	String inspectDt = infAnimalTraceMap.getOrDefault("inspectDt","").toString().trim();
@@ -290,13 +337,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 					result.put("BOVINE_DT", tbcInspctYmd);
 					
 					result.put("BOVINE_RSLTNM", infAnimalTraceMap.getOrDefault("tbcInspctRsltNm","").toString().trim());
-					/**
-					 * TO DO : 구제역 데이터 추가필요
-			           injectiondayCnt	구제역 백신접종 경과일
-			           injectionYmd		구제역 백신접종일
-			           vaccineorder		구제역 백신접종 차수
-					 */
-//					result.put("injectiondayCnt", infAnimalTraceMap.getOrDefault("injectiondayCnt","").toString().trim());
+					
+					//result.put("injectiondayCnt", infAnimalTraceMap.getOrDefault("injectiondayCnt","").toString().trim());
 					result.put("VACN_DT", infAnimalTraceMap.getOrDefault("injectionYmd","").toString().trim());
 					result.put("VACN_ORDER", infAnimalTraceMap.getOrDefault("vaccineorder","").toString().trim());
 				}else {
@@ -311,42 +353,50 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				/* e: 브루셀라 연동 */
 
 				/* s: EPD 연동 */
-				//temp.put("rc_na_trpl_c", "8808990768700");
-				//temp.put("indv_id_no", map.get("SRA_INDV_AMNNO"));
-				//Map<String, Object> infEpdMap = mcaUtil.tradeMcaMsg("4200", temp);
-				//Map<String, Object> infEpdJsonData = (Map<String, Object>) infEpdMap.get("jsonData");		
-				//if(infEpdJsonData != null) {
-				//	result.put("RE_PRODUCT_1", infModKpnJsonData.getOrDefault("GENE_BREDR_VAL2","").toString().trim());
-				//	result.put("RE_PRODUCT_2", infModKpnJsonData.getOrDefault("GENE_BREDR_VAL3","").toString().trim());
-				//	result.put("RE_PRODUCT_3", infModKpnJsonData.getOrDefault("GENE_BREDR_VAL4","").toString().trim());
-				//	result.put("RE_PRODUCT_4", infModKpnJsonData.getOrDefault("GENE_BREDR_VAL5","").toString().trim());
-				//	result.put("RE_PRODUCT_1_1", infModKpnJsonData.getOrDefault("GENE_EVL_RZT_DSC2","").toString().trim());
-				//	result.put("RE_PRODUCT_2_1", infModKpnJsonData.getOrDefault("GENE_EVL_RZT_DSC3","").toString().trim());
-				//	result.put("RE_PRODUCT_3_1", infModKpnJsonData.getOrDefault("GENE_EVL_RZT_DSC4","").toString().trim());
-				//	result.put("RE_PRODUCT_4_1", infModKpnJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());					
-				//}
-				//
-				///* e: EPD 연동 */
-                //
-				///* s: EPD(모) 연동 */
-				//if(!"".equals(map.get("MCOW_SRA_INDV_AMNNO"))) {
-				//	temp.put("indv_id_no", map.get("MCOW_SRA_INDV_AMNNO"));
-				//	Map<String, Object> infMEpdMap = mcaUtil.tradeMcaMsg("4200", map);
-				//	Map<String, Object> infMEpdJsonData = (Map<String, Object>) infMEpdMap.get("jsonData");			
-				//	if(infEpdJsonData != null) {
-				//		result.put("RE_PRODUCT_11", infModKpnJsonData.getOrDefault("GENE_BREDR_VAL2","").toString().trim());
-				//		result.put("RE_PRODUCT_12", infModKpnJsonData.getOrDefault("GENE_BREDR_VAL3","").toString().trim());
-				//		result.put("RE_PRODUCT_13", infModKpnJsonData.getOrDefault("GENE_BREDR_VAL4","").toString().trim());
-				//		result.put("RE_PRODUCT_14", infModKpnJsonData.getOrDefault("GENE_BREDR_VAL5","").toString().trim());
-				//		result.put("RE_PRODUCT_11_1", infModKpnJsonData.getOrDefault("GENE_EVL_RZT_DSC2","").toString().trim());
-				//		result.put("RE_PRODUCT_12_1", infModKpnJsonData.getOrDefault("GENE_EVL_RZT_DSC3","").toString().trim());
-				//		result.put("RE_PRODUCT_13_1", infModKpnJsonData.getOrDefault("GENE_EVL_RZT_DSC4","").toString().trim());
-				//		result.put("RE_PRODUCT_14_1", infModKpnJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());						
-				//	}
-				//}
-				/* e: EPD(모) 연동 */			
-				reList.add(result);
+				try {
+					temp.put("rc_na_trpl_c", "8808990768700");	//축산연구원
+					temp.put("indv_id_no", map.get("SRA_INDV_AMNNO"));
+					Map<String, Object> infEpdMap = mcaUtil.tradeMcaMsg("4200", temp);
+					Map<String, Object> infEpdJsonData = (Map<String, Object>) infEpdMap.get("jsonData");		
+					if(infEpdJsonData != null) {
+						result.put("RE_PRODUCT_1", infEpdJsonData.getOrDefault("GENE_BREDR_VAL2","").toString().trim());
+						result.put("RE_PRODUCT_2", infEpdJsonData.getOrDefault("GENE_BREDR_VAL3","").toString().trim());
+						result.put("RE_PRODUCT_3", infEpdJsonData.getOrDefault("GENE_BREDR_VAL4","").toString().trim());
+						result.put("RE_PRODUCT_4", infEpdJsonData.getOrDefault("GENE_BREDR_VAL5","").toString().trim());
+						result.put("RE_PRODUCT_1_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC2","").toString().trim());
+						result.put("RE_PRODUCT_2_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC3","").toString().trim());
+						result.put("RE_PRODUCT_3_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC4","").toString().trim());
+						result.put("RE_PRODUCT_4_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());					
+					}					
+				}catch (Exception e) {
+					log.debug("유전개체[4200] 연동중 error..",e);
+				}
+				
+				/* e: EPD 연동 */
+                
+				/* s: EPD(모) 연동 */
+				if(!"".equals(map.get("MCOW_SRA_INDV_AMNNO"))) {
+					try {
+						temp.put("indv_id_no", map.get("MCOW_SRA_INDV_AMNNO"));
+						Map<String, Object> infMEpdMap = mcaUtil.tradeMcaMsg("4200", map);
+						Map<String, Object> infMEpdJsonData = (Map<String, Object>) infMEpdMap.get("jsonData");			
+						if(infMEpdMap != null) {
+							result.put("RE_PRODUCT_11", infMEpdJsonData.getOrDefault("GENE_BREDR_VAL2","").toString().trim());
+							result.put("RE_PRODUCT_12", infMEpdJsonData.getOrDefault("GENE_BREDR_VAL3","").toString().trim());
+							result.put("RE_PRODUCT_13", infMEpdJsonData.getOrDefault("GENE_BREDR_VAL4","").toString().trim());
+							result.put("RE_PRODUCT_14", infMEpdJsonData.getOrDefault("GENE_BREDR_VAL5","").toString().trim());
+							result.put("RE_PRODUCT_11_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC2","").toString().trim());
+							result.put("RE_PRODUCT_12_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC3","").toString().trim());
+							result.put("RE_PRODUCT_13_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC4","").toString().trim());
+							result.put("RE_PRODUCT_14_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());						
+						}						
+					}catch (Exception e) {
+						log.debug("모 유전개체[4200] 연동중 error..",e);
+					}
+				}
+				/* e: EPD(모) 연동 */
 			}
+			reList.add(result);
 		}
 		
 		reMap.put("resultList", reList);

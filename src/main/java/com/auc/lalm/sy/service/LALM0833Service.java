@@ -20,6 +20,8 @@ public interface LALM0833Service {
 	Map<String, Object> LALM0833_delGrpList(Map<String, Object> map) throws Exception;
 
 	Map<String, Object> LALM0833_updGrpList(Map<String, Object> map) throws Exception;
+
+	List<Map<String, Object>> LALM0833_selUsrList(Map<String, Object> map) throws Exception;
 	
 
 }

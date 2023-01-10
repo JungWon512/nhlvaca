@@ -223,12 +223,6 @@
         	});
             return;
         }
-    	if(fn_isNull($( "#auc_infmsg" ).val())) {
-        	MessagePopup('OK','경매안내문구를 입력해주세요.',function(){
-        		$( "#auc_infmsg" ).focus();
-        	});
-            return;
-        }
         if(fn_isNull($( "#auc_dt" ).val())){
         	MessagePopup('OK','경매일자를 선택하세요.',function(){
         		$( "#auc_dt" ).focus();
@@ -760,7 +754,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row">경매안내문구<strong class="req_dot">*</strong></th>
+                                <th scope="row">경매안내문구</th>
                                 <td>
                                     <input type="text" class="input_auc" id="auc_infmsg" maxlength="30">
                                 </td>

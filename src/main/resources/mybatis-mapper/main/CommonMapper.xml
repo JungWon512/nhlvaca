@@ -200,7 +200,7 @@
 		<selectKey keyProperty="sra_opr_sqno" resultType="int" order="BEFORE">
 			SELECT NVL(MAX(SRA_OPR_SQNO)+1,1) AS SRA_OPR_SQNO
 			  FROM TB_LA_IS_BI_PSN_INF
-			  WHERE NA_BZPLC = #{ss_na_bzplc}
+			  WHERE NA_BZPLC = NVL(#{ss_na_bzplc},TRIM(LPAD('0',13,'0')))
 			  AND OPR_DT = TO_CHAR(SYSDATE,'YYYYMMDD')
 		</selectKey>
         insert into TB_LA_IS_BI_PSN_INF (
@@ -216,23 +216,23 @@
 			, FSRG_DTM 
 			, FSRGMN_ENO
         )values(
-			#{ss_na_bzplc}
+			NVL(#{ss_na_bzplc},TRIM(LPAD('0',13,'0')))
 			, TO_CHAR(SYSDATE,'YYYYMMDD')
 			, #{sra_opr_sqno} 
 			, #{pgid}
 			, #{srch_cnd_cntrn} 
-			, #{inq_cn} 
+			, NVL(#{inq_cn},'0') 
 			, #{btn_tpc}   
 			, #{apvrqr_rsnctt} 
 			, #{ipadr}  
 			, SYSDATE 
-			, #{ss_userid}
+			, NVL(#{ss_userid},'SYSTEM')
         )
     </insert>
     
 	<!-- ************************************************ 개체 등록/수정 관련 [s] ************************************************ -->
 	<!-- 개체 정보 조회 -->
-	<select id="common_selAmnno" parameterType="hashMap" resultType="hashMap">
+	<select id="common_selAmnno" resultType="hashMap">
 		SELECT SRA_INDV_AMNNO
 		  FROM TB_LA_IS_MM_INDV
 		 WHERE NA_BZPLC				= #{ss_na_bzplc}					/* 경제통합사업장코드 */
@@ -348,4 +348,324 @@
 		   AND SRA_SRS_DSC           ='01'
 	</update>
 	<!-- ************************************************ 개체 등록/수정 관련 [e] ************************************************ -->
+	
+	<!-- *************************************************** 통합회원 관련 [s] *************************************************** -->
+	<!-- 통합회원정보 조회 -->
+	<select id="Common_selMbintgInfo" parameterType="hashMap" resultType="hashMap">
+		SELECT MB_INTG_NO
+			 , MB_INTG_NM
+			 , MB_RLNO
+			 , OHSE_TELNO
+			 , MB_MPNO
+			 , DORMACC_YN
+			 , DORMACC_DT
+			 , DELACC_YN
+			 , DELACC_DT
+			 , MB_INTG_DT
+			 , TMS_YN
+			 , FNCON_DTM
+			 , FSRG_DTM
+			 , FSRGMN_ENO
+			 , LSCHG_DTM
+			 , LS_CMENO
+			 , MB_INTG_GB
+			 , DORMDUE_DT
+		  FROM TB_LA_IS_MM_MBINTG
+		 WHERE MB_INTG_GB = #{mb_intg_gb}
+		   AND REPLACE(TRIM(MB_INTG_NM),' ','') = REPLACE(TRIM(DECODE(#{mb_intg_gb}, '01', #{sra_mwmnnm}, #{ftsnm})),' ','')
+		   AND REPLACE(TRIM(MB_RLNO),' ','') = DECODE(#{mb_intg_gb}, '01', REGEXP_REPLACE(#{cus_rlno}, '[^0-9]'), REGEXP_REPLACE(#{birth}, '[^0-9]'))
+		   AND REGEXP_REPLACE(MB_MPNO, '[^0-9]') = REGEXP_REPLACE(#{cus_mpno}, '[^0-9]')
+	</select>
+	
+	<!-- 농가 식별번호와 농장관리번호로 통합회원코드 조회 -->
+	<select id="Common_selFhsMbintgInfo" parameterType="hashMap" resultType="hashMap">
+		SELECT FHS_ID_NO
+			 , MIN(MB_INTG_NO) AS MB_INTG_NO
+		  FROM TB_LA_IS_MM_FHS A
+		 WHERE FHS_ID_NO = TRIM(#{sra_fhs_id_no})
+		   AND FARM_AMNNO = TRIM(#{farm_amnno})
+		 GROUP BY FHS_ID_NO
+	</select>
+	
+	<!-- 휴면회원정보 조회 -->
+	<select id="Common_selDormMbintgInfo" parameterType="hashMap" resultType="hashMap">
+		SELECT A.MB_INTG_NO
+			 , A.DORM_DT
+			 , A.MB_INTG_NM
+			 , A.MB_RLNO
+			 , A.OHSE_TELNO
+			 , A.MB_MPNO
+		<choose>
+		<when test='"01".equals(mb_intg_gb)'>
+			 , (SELECT COUNT(*) FROM TB_LA_IS_MM_MWMN C WHERE C.MB_INTG_NO = A.MB_INTG_NO AND C.NA_BZPLC = #{ss_na_bzplc} AND C.DEL_YN = '0') AS CUR_DORM_CNT
+		</when>
+		<otherwise>
+			 , (SELECT COUNT(*) FROM TB_LA_IS_MM_FHS  C WHERE C.MB_INTG_NO = A.MB_INTG_NO AND C.NA_BZPLC = #{ss_na_bzplc} AND C.DEL_YN = '0') AS CUR_DORM_CNT
+		</otherwise>
+		</choose>
+		  FROM TB_LA_IS_BK_DORM_MBINTG A
+		 INNER JOIN TB_LA_IS_MM_MBINTG B
+			ON (
+				A.MB_INTG_NO = B.MB_INTG_NO
+				AND
+				B.MB_INTG_GB = #{mb_intg_gb}
+			 )
+		<choose>
+		<when test='"02".equals(mb_intg_gb) and "1".equals(anw_yn)'>
+		 WHERE A.MB_INTG_NO = (
+								SELECT MIN(MB_INTG_NO) AS MB_INTG_NO
+								  FROM TB_LA_IS_MM_FHS A
+								 WHERE FHS_ID_NO = TRIM(#{sra_fhs_id_no})
+							  )
+		</when>
+		<otherwise>
+		 WHERE REPLACE(TRIM(A.MB_INTG_NM),' ','') = REPLACE(TRIM(DECODE(#{mb_intg_gb}, '01', #{sra_mwmnnm}, #{ftsnm})),' ','')
+		   AND REPLACE(TRIM(A.MB_RLNO),' ','') = DECODE(#{mb_intg_gb}, '01', REGEXP_REPLACE(#{cus_rlno}, '[^0-9]'), REGEXP_REPLACE(#{birth}, '[^0-9]'))
+		   AND REGEXP_REPLACE(A.MB_MPNO, '[^0-9]') = REGEXP_REPLACE(#{cus_mpno}, '[^0-9]')
+		</otherwise>
+		</choose>
+	</select>
+	
+	<!-- 회원정보 저장 -->
+	<insert id="Common_insMbintgInfo" parameterType="hashMap">
+		<selectKey keyProperty="mb_intg_no" resultType="String" order="BEFORE">
+			SELECT NVL(MAX(MB_INTG_NO) + 1, 1)
+			  FROM TB_LA_IS_MM_MBINTG
+			 WHERE MB_INTG_GB = #{mb_intg_gb}
+		</selectKey>
+		INSERT INTO TB_LA_IS_MM_MBINTG (
+			MB_INTG_NO
+			, MB_INTG_NM
+			, MB_RLNO
+			, OHSE_TELNO
+			, MB_MPNO
+			, DORMACC_YN
+			, DORMACC_DT
+			, DELACC_YN
+			, DELACC_DT
+			, MB_INTG_DT
+			, TMS_YN
+			, FNCON_DTM
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, MB_INTG_GB
+			, DORMDUE_DT
+		)
+		VALUES (
+			#{mb_intg_no}
+			, DECODE(#{mb_intg_gb}, '01', #{sra_mwmnnm}, #{ftsnm})
+			, DECODE(#{mb_intg_gb}, '01', REGEXP_REPLACE(#{cus_rlno}, '[^0-9]'), REGEXP_REPLACE(#{birth}, '[^0-9]'))
+			, #{ohse_telno}
+			, #{cus_mpno}
+			, '0'
+			, NULL
+			, '0'
+			, NULL
+			, TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, '0'
+			, SYSDATE
+			, SYSDATE
+			, #{ss_eno}
+			, SYSDATE
+			, #{ss_eno}
+			, #{mb_intg_gb}
+			, TO_CHAR(SYSDATE + 365, 'YYYYMMDD')
+		)
+	</insert>
+	
+	<insert id="Common_insMbintgHisInfo" parameterType="hashMap">
+		INSERT INTO TB_LA_IS_MM_MBINTGHIS (
+			MB_INTG_NO
+			, MB_INTG_NM
+			, MB_RLNO
+			, OHSE_TELNO
+			, MB_MPNO
+			, DORMACC_YN
+			, DORMACC_DT
+			, DELACC_YN
+			, DELACC_DT
+			, MB_INTG_DT
+			, TMS_YN
+			, FNCON_DTM
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, MB_INTG_GB
+			, DORMDUE_DT
+		)
+		SELECT MB_INTG_NO
+			 , MB_INTG_NM
+			 , MB_RLNO
+			 , OHSE_TELNO
+			 , MB_MPNO
+			 , DORMACC_YN
+			 , DORMACC_DT
+			 , DELACC_YN
+			 , DELACC_DT
+			 , MB_INTG_DT
+			 , TMS_YN
+			 , FNCON_DTM
+			 , FSRG_DTM
+			 , FSRGMN_ENO
+			 , LSCHG_DTM
+			 , LS_CMENO
+			 , MB_INTG_GB
+			 , DORMDUE_DT
+		  FROM TB_LA_IS_MM_MBINTG
+		 WHERE MB_INTG_NO = #{mb_intg_no}
+	</insert>
+	
+	<!-- 휴면 처리된 데이터 복구 -->
+	<update id="Common_resMbintgInfo" parameterType="hashMap">
+		MERGE INTO TB_LA_IS_MM_MBINTG A
+		USING (
+			SELECT *
+			  FROM TB_LA_IS_BK_DORM_MBINTG
+			 WHERE MB_INTG_NO = #{mb_intg_no}
+		) B
+		   ON ( 
+				A.MB_INTG_NO = B.MB_INTG_NO
+				AND
+				A.MB_INTG_GB = #{mb_intg_gb}
+			 )
+		 WHEN MATCHED THEN UPDATE
+		  SET A.MB_INTG_NM = B.MB_INTG_NM
+			, A.MB_RLNO = B.MB_RLNO
+			, A.OHSE_TELNO = B.OHSE_TELNO
+			, A.MB_MPNO = B.MB_MPNO
+			, A.DORMACC_YN = '0'
+			, A.DORMACC_DT = NULL
+			, A.LSCHG_DTM = SYSDATE
+			, A.LS_CMENO = #{ss_eno}
+			, DORMDUE_DT = TO_CHAR(SYSDATE+365, 'YYYYMMDD')
+	</update>
+	
+	<!-- 통합회원 휴면 정보 삭제 -->
+	<delete id="Common_delDormMbintgInfo" parameterType="hashMap">
+		DELETE TB_LA_IS_BK_DORM_MBINTG
+		 WHERE MB_INTG_NO = #{mb_intg_no}
+	</delete>
+	
+	<!-- 중도매인 정보 복구 -->
+	<update id="Common_resMwmnInfo" parameterType="hashMap">
+		MERGE INTO TB_LA_IS_MM_MWMN A
+		USING (
+			SELECT *
+			  FROM TB_LA_IS_BK_DORM_MWMN
+			 WHERE MB_INTG_NO = #{mb_intg_no}
+		) B
+		   ON (
+				A.NA_BZPLC = B.NA_BZPLC
+				AND
+				A.TRMN_AMNNO = B.TRMN_AMNNO
+				AND
+				A.MB_INTG_NO = B.MB_INTG_NO
+			)
+		 WHEN MATCHED THEN UPDATE
+		  SET A.SRA_MWMNNM = B.SRA_MWMNNM
+			, A.FRLNO = B.FRLNO
+			, A.ZIP = B.ZIP
+			, A.DONGUP = B.DONGUP
+			, A.DONGBW = B.DONGBW
+			, A.OHSE_TELNO = B.OHSE_TELNO
+			, A.CUS_MPNO = B.CUS_MPNO
+			, A.CUS_RLNO = B.CUS_RLNO
+			, A.RMK_CNTN = B.RMK_CNTN
+			, A.LSCHG_DTM = SYSDATE
+			, A.LS_CMENO = #{ss_userid}
+	</update>
+	
+	<!-- 중도매인 이력 저장 -->
+	<update id="Common_insMiMwmnInfo" parameterType="hashMap">
+		INSERT INTO TB_LA_IS_MI_MWMN (
+			NA_BZPLC
+			, TRMN_AMNNO
+			, MWMN_NA_TRPL_C
+			, SRA_MWMNNM
+			, FRLNO
+			, ZIP
+			, DONGUP
+			, DONGBW
+			, OHSE_TELNO
+			, CUS_MPNO
+			, MACO_YN
+			, JRDWO_DSC
+			, PSN_INF_OFR_AGR_YN
+			, TMS_YN
+			, DEL_YN
+			, RMK_CNTN
+			, CUS_RLNO
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, SMS_NO
+			, SMS_YMD
+			, MB_INTG_NO
+		)
+		SELECT NA_BZPLC
+			 , TRMN_AMNNO
+			 , MWMN_NA_TRPL_C
+			 , SRA_MWMNNM
+			 , FRLNO
+			 , ZIP
+			 , DONGUP
+			 , DONGBW
+			 , OHSE_TELNO
+			 , CUS_MPNO
+			 , MACO_YN
+			 , JRDWO_DSC
+			 , PSN_INF_OFR_AGR_YN
+			 , TMS_YN
+			 , DEL_YN
+			 , RMK_CNTN
+			 , CUS_RLNO
+			 , FSRG_DTM
+			 , FSRGMN_ENO
+			 , LSCHG_DTM
+			 , LS_CMENO
+			 , SMS_NO
+			 , SMS_YMD
+			 , MB_INTG_NO
+		  FROM TB_LA_IS_MM_MWMN
+		 WHERE MB_INTG_NO = #{mb_intg_no}
+	</update>
+	
+	<!-- 출하주 정보 복구 -->
+	<update id="Common_resFhsInfo" parameterType="hashMap">
+		MERGE INTO TB_LA_IS_MM_FHS A
+		USING (
+			SELECT *
+			  FROM TB_LA_IS_BK_DORM_FHS
+			 WHERE MB_INTG_NO = #{mb_intg_no}
+		) B
+		   ON (
+				A.NA_BZPLC = B.NA_BZPLC
+				AND
+				A.FHS_ID_NO = B.FHS_ID_NO
+				AND
+				A.FARM_AMNNO = B.FARM_AMNNO
+				AND
+				A.MB_INTG_NO = B.MB_INTG_NO
+			)
+		 WHEN MATCHED THEN UPDATE
+		  SET A.NA_TRPL_C = B.NA_TRPL_C
+			, A.FTSNM = B.FTSNM
+			, A.ZIP = B.ZIP
+			, A.DONGUP = B.DONGUP
+			, A.DONGBW = B.DONGBW
+			, A.OHSE_TELNO = B.OHSE_TELNO
+			, A.CUS_MPNO = B.CUS_MPNO
+			, A.RMK_CNTN = B.RMK_CNTN
+			, A.SRA_FARM_ACNO = B.SRA_FARM_ACNO
+			, A.NEW_SRA_FARM_ACNO = B.NEW_SRA_FARM_ACNO
+			, A.BIRTH = B.BIRTH
+			, A.LSCHG_DTM = SYSDATE
+			, A.LS_CMENO = #{ss_userid}
+	</update>
+	
+	<!-- *************************************************** 통합회원 관련 [e] *************************************************** -->
 </mapper>

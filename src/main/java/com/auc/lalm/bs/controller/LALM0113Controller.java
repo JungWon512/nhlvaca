@@ -39,10 +39,10 @@ public class LALM0113Controller {
 	
 	@ResponseBody
 	@RequestMapping(value="/LALM0113_selDetail", method=RequestMethod.POST)
-	public Map<String, Object> LALM0113_selDetail(ResolverMap rMap) throws Exception{	
+	public Map<String, Object> LALM0113_selDetail(ResolverMap rMap) throws Exception{
 		Map<String, Object> map    = convertConfig.conMap(rMap);
-		Map<String, Object> selMap = lalm0113Service.LALM0113_selDetail(map);				
-		Map<String, Object> reMap  = commonFunc.createResultSetMapData(selMap);		
+		Map<String, Object> selMap = lalm0113Service.LALM0113_selDetail(map);
+		Map<String, Object> reMap  = commonFunc.createResultSetMapData(selMap);
 		return reMap;
 	}	
 	

@@ -118,6 +118,16 @@ window.addEventListener("contextmenu",function(event){
  	        }    		
      		
         });
+     	//엑셀 업로드
+     	$(document).on("click", "button[id='pb_btnExcelUpload']", function(e) {
+            e.preventDefault();
+            this.blur();
+            var pgid = 'LALM0219P1';
+            var menu_id = $("#menu_info").attr("menu_id");
+            parent.layerPopupPage(pgid, menu_id, {auc_dt:$('#auc_dt').val()}, null, 1000, 600,function(result){
+                fn_Search();
+            });
+        });
      	
         /******************************
          * 경매번호 수동변경 체크
@@ -167,7 +177,7 @@ window.addEventListener("contextmenu",function(event){
      		var selRowIds = $("#mainGrid").jqGrid("getGridParam", "selrow");
      		var getData = $("#mainGrid").jqGrid('getRowData');
      		
-     		$("#mainGrid").jqGrid("clearGridData", true);
+     		$("#mainGrid").jqGrid("clearGridData");
      		
              var rowid = 1;
              
@@ -195,7 +205,7 @@ window.addEventListener("contextmenu",function(event){
      		var rowid = 1;
      		
      		if(parseInt(selRowIds) > 1) {
-     			$("#mainGrid").jqGrid("clearGridData", true);
+     			$("#mainGrid").jqGrid("clearGridData");
          		
          		for (var i = 0, len = getData.length; i < len; i++) {
          			
@@ -225,25 +235,25 @@ window.addEventListener("contextmenu",function(event){
      		var getData = $("#mainGrid").jqGrid('getRowData');
      		var rowid = 1;
      		
-     		if(parseInt(selRowIds) > 0 && parseInt(getData.length)+1 > parseInt(selRowIds)) {
-     			$("#mainGrid").jqGrid("clearGridData", true);
+     		if(parseInt(selRowIds) > 0 && parseInt(getData.length) > parseInt(selRowIds)) {
+     			$("#mainGrid").jqGrid("clearGridData");
          		
          		for (var i = 0, len = getData.length; i < len; i++) {
          			
-         			if(selRowIds == i) {
-         				$("#mainGrid").jqGrid("addRowData", rowid, getData[selRowIds-1], 'last');
-         			} else if(selRowIds-1 == i) {
+         			if(selRowIds == rowid) {
          				$("#mainGrid").jqGrid("addRowData", rowid, getData[selRowIds], 'last');
+         			} else if(parseInt(selRowIds)+1 == rowid) {
+         				$("#mainGrid").jqGrid("addRowData", rowid, getData[selRowIds-1], 'last');
          			} else {
          				$("#mainGrid").jqGrid("addRowData", rowid, getData[i], 'last');
          			}
-         			
+
+         			$("#mainGrid").jqGrid("setCell", rowid, "AUC_PRG_SQ", "", "not-editable-cell");
          			rowid++;
-         			$("#mainGrid").jqGrid("setCell", i+1, "AUC_PRG_SQ", "", "not-editable-cell");
          		}
+         		var tmpRowIds = getData.length == parseInt(selRowIds) ? parseInt(selRowIds) : parseInt(selRowIds)+1;
+         		$("#mainGrid").jqGrid("setSelection", tmpRowIds, true);
      		}
-     		
-     		$("#mainGrid").jqGrid("setSelection", parseInt(selRowIds)+1, true);
      	 });
      	
      	 /******************************
@@ -257,7 +267,7 @@ window.addEventListener("contextmenu",function(event){
      		
              
              if(parseInt(selRowIds) > 0 && parseInt(selRowIds) < getData.length) {
-             	$("#mainGrid").jqGrid("clearGridData", true);
+             	$("#mainGrid").jqGrid("clearGridData");
              	var rowid = 1;
              	for (var i = 0, len = getData.length; i < len; i++) {
          			if(selRowIds != i+1) {
@@ -268,7 +278,7 @@ window.addEventListener("contextmenu",function(event){
          		}
          		
          		$("#mainGrid").jqGrid("addRowData", rowid, getData[selRowIds-1], 'last');
-         		$("#mainGrid").jqGrid("setCell", i+1, "AUC_PRG_SQ", "", "not-editable-cell");
+         		$("#mainGrid").jqGrid("setCell", rowid, "AUC_PRG_SQ", "", "not-editable-cell");
          		$("#mainGrid").jqGrid("resetSelection");
              }
              
@@ -350,7 +360,15 @@ window.addEventListener("contextmenu",function(event){
                 
     }
     
+    /*------------------------------------------------------------------------------
+     * 1. 함 수 명    : 엑셀 함수
+     * 2. 입 력 변 수 : N/A
+     * 3. 출 력 변 수 : N/A
+     ------------------------------------------------------------------------------*/
 
+    function fn_Excel(){
+		fn_ExcelDownlad('mainGrid', '경매순번설정');
+    } 
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 저장 함수
      * 2. 입 력 변 수 : N/A
@@ -380,7 +398,7 @@ window.addEventListener("contextmenu",function(event){
 	         if(res){
 	        	 if (App_na_bzplc == '8808990659008') {
 		        	 var tmpSaveObject = $.grep($("#mainGrid").jqGrid('getRowData'), function(obj){
-			        		return obj._STATUS_ == "*" || obj._STATUS_ == "+" ;
+			        		return obj._STATUS_ == "*" || obj._STATUS_ == "+" ; 
 			        	 });
 			             
 			             if(tmpSaveObject.length > 0) {
@@ -453,9 +471,9 @@ window.addEventListener("contextmenu",function(event){
         if(data != null){
             rowNoValue = data.length;
         }
-        	/*                               1         2      3        4       5           6         7        8     9      10     11      12          13         14        15    16          17        18       19         20   */
+        	/*                               1         2      3        4       5           6         7        8     9      10     11      12          13         14        15    16          17        18       19         20   ->  이게rowNoValue 인갑다. */
         	var searchResultColNames = [ "", "경매번호", "경매대상", "출하주", "생산자", "귀표번호", "등록우 구분", "생년월일","월령", "성별", "KPN", "계대", "산차", "어미귀표번호", "어미구분", "번식우구분", "주소", "고능력여부", "비고내용", "접수일자", "등록일시"
-						        		, "경매일자", "원장일련번호(경매=1)", "하한가", "중량", "원표번호"
+						        		, "경매일자", "원장일련번호(경매=1)", "예정가", "중량", "원표번호"
 						        		];        
 	        var searchResultColModel = [	
 	        	                        {name:"_STATUS_"      ,             index:"_STATUS_",                       width:10,  align:'center'},
@@ -644,7 +662,7 @@ window.addEventListener("contextmenu",function(event){
         var gridDatatemp = $('#mainGrid').getRowData();
 
         var tot_sra_indv_amnno        = 0; //총두수
-        var tot_lows_sbid_lmt_am 	  = 0; //하한가등록두수       
+        var tot_lows_sbid_lmt_am 	  = 0; //예정가등록두수       
         var tot_cow_sog_wt 		      = 0; //중량등록두수        
         var am_sra_indv_amnno 		  = 0; //암두수            	                                                    	     
         var su_sra_indv_amnno 		  = 0; //수 두수   
@@ -652,7 +670,7 @@ window.addEventListener("contextmenu",function(event){
         $.each(gridDatatemp,function(i){
         	//총두수
             tot_sra_indv_amnno++; 
-        	//하한가등록두수
+        	//예정가등록두수
         	if(gridDatatemp[i].LOWS_SBID_LMT_AM > 0 ){
         		tot_lows_sbid_lmt_am++;
         	}
@@ -676,7 +694,7 @@ window.addEventListener("contextmenu",function(event){
  	       [//입력 컬럼 , 입력값, COLSPAN, 타입{String/Integer/Number}
                 ["AUC_PRG_SQ"             ,"총 두 수"           	   ,1 ,"String" ]             
                ,["AUC_OBJ_DSC"            ,tot_sra_indv_amnno      ,1 ,"Integer"]               
-               ,["FTSNM"                  ,"하한가등록두수"  		   ,2 ,"String" ]               
+               ,["FTSNM"                  ,"예정가등록두수"  		   ,2 ,"String" ]               
                ,["SRA_INDV_AMNNO"         ,tot_lows_sbid_lmt_am    ,1 ,"Integer"]               
                ,["RG_DSC"                 ,"중량등록두수"			   ,1 ,"String"]               
                ,["BIRTH"                  ,tot_cow_sog_wt          ,1 ,"Integer"]               
@@ -776,6 +794,7 @@ window.addEventListener("contextmenu",function(event){
                                     	<option value="17">암송아지-고능력암송아지-고능력수송아지-수송아지 + 생년월일↓(어린순)</option>
                                     	<option value="18">접수일자 + 수/암 + 생년월일↓(어린순)</option>
                                     	<option value="19">'접수일자 + 수/암 + 생년월일↑</option>
+                                    	<option value="20">수/암 + 등록구분(등록우/미등록우) + 생년월일↓(어린순)</option>
                                     </select>
                                 </td> 
                                 <th scope="row">귀표번호</th>
@@ -823,6 +842,7 @@ window.addEventListener("contextmenu",function(event){
                 </ul> 
                 
                 <div class="fl_R"><!--  //버튼 모두 우측정렬 -->   
+                    <button class="tb_btn" id="pb_btnExcelUpload">엑셀 업로드</button>
                     <button class="tb_btn" id="pb_btnAucNoRe">경매번호 초기화</button>
                     <button class="tb_btn" id="pb_btnAucNoChg">경매번호 재설정</button>
                 </div> 

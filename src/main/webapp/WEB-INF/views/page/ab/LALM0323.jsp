@@ -36,14 +36,14 @@
             this.blur();
             if($('#am_rto_dsc').val() == '1'){
             	if($( "#sbt_am" ).val() <= 0) {
-                    MessagePopup('OK','응찰하한가금액을 0보다 크게 입력하세요.',function(){
+                    MessagePopup('OK','예정가금액을 0보다 크게 입력하세요.',function(){
                         $( "#sbt_am" ).focus();
                     });
                     return;
                 }
             }else {
             	if($( "#sbt_pmr" ).val() <= 0) {
-                    MessagePopup('OK','응찰하한가율을 0보다 크게 입력하세요.',function(){
+                    MessagePopup('OK','예정가율을 0보다 크게 입력하세요.',function(){
                         $( "#sbt_pmr" ).focus();
                     });
                     return;
@@ -53,7 +53,7 @@
                 return obj.AUC_PRG_C == "0" && obj.SEL_STS_DSC != "22";
             });
             if(tmpObject.length == 0){
-            	MessagePopup('OK','응찰하한가를 낮출 건이 없습니다.');
+            	MessagePopup('OK','예정가를 낮출 건이 없습니다.');
                 return;
             }
             
@@ -251,7 +251,7 @@
         	                       ,"H12개월이상여부","H12개월이상수수료","H번식우수수료구분코드","H사료미사용여부","H친자검사여부","H친자검사결과","H출하자조합원여부","H중도매인조합원여부"
         	                       ,"H임신감정여부","H임신여부","H괴사감정여부","H괴사여부","H운송비지급여부","H제각여부","H축산생산자명"
         	                       ,"경매번호","경매대상","귀표번호","생년월일","성별","계대","산차"
-        	                       ,"어미귀표번호","어미구분","중량","응찰하한가","응찰가","낙찰금액","낙찰차","상태"];        
+        	                       ,"어미귀표번호","어미구분","중량","예정가","응찰가","낙찰금액","낙찰차","상태"];        
         var searchResultColModel = [
         	                         {name:"NA_BZPLC",            index:"NA_BZPLC",            width:100, align:'center', hidden:true},
         	                         {name:"OSLP_NO",             index:"OSLP_NO",             width:100, align:'center', hidden:true},
@@ -459,7 +459,7 @@
                                 <td>
                                     <div class="cellBox">
                                         <div class="cell pl2" >
-                                            <button id="pb_BatPrice" class="tb_btn">응찰하한가낮추기</button>
+                                            <button id="pb_BatPrice" class="tb_btn">예정가 낮추기</button>
                                         </div>
                                     </div>
                                 </td>

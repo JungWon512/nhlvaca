@@ -30,6 +30,7 @@
           FROM TB_LA_IS_MM_USR
          WHERE USRID   = #{usrid}
            AND ATTC_NO = #{attc_no}  
+           AND ROWNUM = 1
     </select>
     
 </mapper>

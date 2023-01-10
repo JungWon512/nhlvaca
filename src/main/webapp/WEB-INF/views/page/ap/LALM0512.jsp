@@ -235,7 +235,7 @@
         }
         
         	/*                            1          2         3        4        5           6            7        8         9        10       11	   12	   13 		14			15      16 */
-        	var searchResultColNames = ["중도매인", "중도매인명", "주소", "휴대폰번호", "조합원", "중도매인<br>생년월일", "경매일자", "경매대상", "경매번호", "귀표번호", "성별", "등록번호", "중량", "응찰하한가", "낙찰단가", "낙찰가","H농가식별번호","H농가이름","H실명번호"];        
+        	var searchResultColNames = ["중도매인", "중도매인명", "주소", "휴대폰번호", "조합원", "중도매인<br>생년월일", "경매일자", "경매대상", "경매번호", "귀표번호", "성별", "등록번호", "중량", "예정가", "낙찰단가", "낙찰가","H농가식별번호","H농가이름","H실명번호"];        
 	        var searchResultColModel = [						 
 						                {name:"TRMN_AMNNO",     		index:"TRMN_AMNNO",     		width:30, align:'center'},
 						                {name:"SRA_MWMNNM",     		index:"SRA_MWMNNM",     		width:30, align:'center'},
@@ -347,7 +347,7 @@
              
              //
              /*                            1          2         3        4        5           6            7        8         9        10       11     12      13       14          15      16 */
-             var searchResultColNames = ["중도매인", "중도매인명", "주소", "휴대폰번호", "조합원", "중도매인<br>생년월일", "경매일자", "경매대상", "경매번호", "귀표번호", "성별", "등록번호", "중량", "응찰하한가", "낙찰단가", "낙찰가","H농가식별번호","H농가이름","H실명번호"];        
+             var searchResultColNames = ["중도매인", "중도매인명", "주소", "휴대폰번호", "조합원", "중도매인<br>생년월일", "경매일자", "경매대상", "경매번호", "귀표번호", "성별", "등록번호", "중량", "예정가", "낙찰단가", "낙찰가","H농가식별번호","H농가이름","H실명번호"];        
              var searchResultColModel = [                         
                                          {name:"TRMN_AMNNO",             index:"TRMN_AMNNO",             width:30, align:'center'},
                                          {name:"SRA_MWMNNM",             index:"SRA_MWMNNM",             width:30, align:'center'},

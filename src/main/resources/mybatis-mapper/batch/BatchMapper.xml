@@ -1,0 +1,1038 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.batch.service.Impl.BatchMapper">
+    <select id="selDormaccMmMbintgList" resultType="HashMap">
+		/*BatchMapper.selDormaccMmMbintgList_20221107_추가*/
+		SELECT MBT.MB_INTG_NO
+			, MBT.MB_INTG_NM
+			, MBT.MB_RLNO
+			, TRIM(MBT.OHSE_TELNO) AS OHSE_TELNO
+			, TRIM(MBT.MB_MPNO) AS MB_MPNO
+			, MBT.MB_INTG_GB
+		FROM TB_LA_IS_MM_MBINTG MBT
+		WHERE MBT.DORMACC_YN = '0'
+			AND MBT.DELACC_YN = '0'
+			<choose>
+				<when test="bat_act_dt != null and bat_act_dt != ''">
+			AND MBT.DORMDUE_DT = #{bat_act_dt}
+				</when>
+				<otherwise>
+			AND MBT.DORMDUE_DT <![CDATA[<=]]> TO_CHAR(SYSDATE - 1,'YYYYMMDD')
+				</otherwise>
+			</choose>
+		ORDER BY MBT.MB_INTG_NO ASC
+	</select>
+	
+	<insert id="insDormUserMbintgData">
+		/*BatchMapper.insDormUserMbintgData_20221107_추가*/
+		INSERT INTO TB_LA_IS_BK_DORM_MBINTG(
+			MB_INTG_NO
+			, DORM_DT
+			, MB_INTG_NM
+			, MB_RLNO
+			, OHSE_TELNO
+			, MB_MPNO
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, REST_DTM
+		)
+		SELECT MB_INTG_NO
+			, TO_CHAR(SYSDATE, 'YYYYMMDD') AS DORM_DT
+			, MB_INTG_NM
+			, MB_RLNO
+			, OHSE_TELNO
+			, MB_MPNO
+			, SYSDATE AS FSRG_DTM
+			, 'BATCH' AS FSRGMN_ENO
+			, SYSDATE AS LSCHG_DTM
+			, 'BATCH' AS LS_CMENO
+			, '' AS REST_DTM
+		FROM TB_LA_IS_MM_MBINTG
+		WHERE MB_INTG_NO = #{mb_intg_no}
+	</insert>
+	
+	<insert id="insDormUserMwmnData">
+		/*BatchMapper.insDormUserMwmnData_20221107_추가*/
+		INSERT INTO TB_LA_IS_BK_DORM_MWMN(
+			NA_BZPLC
+			, TRMN_AMNNO
+			, MWMN_NA_TRPL_C
+			, SRA_MWMNNM
+			, FRLNO
+			, ZIP
+			, DONGUP
+			, DONGBW
+			, OHSE_TELNO
+			, CUS_MPNO
+			, CUS_RLNO
+			, RMK_CNTN
+			, MB_INTG_NO
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+		)
+		SELECT NA_BZPLC
+			, TRMN_AMNNO
+			, MWMN_NA_TRPL_C
+			, SRA_MWMNNM
+			, FRLNO
+			, ZIP
+			, DONGUP
+			, DONGBW
+			, OHSE_TELNO
+			, CUS_MPNO
+			, CUS_RLNO
+			, RMK_CNTN
+			, MB_INTG_NO
+			, SYSDATE AS FSRG_DTM
+			, 'BATCH' AS FSRGMN_ENO
+			, SYSDATE AS LSCHG_DTM
+			, 'BATCH' AS LS_CMENO
+		FROM TB_LA_IS_MM_MWMN
+		WHERE MB_INTG_NO = #{mb_intg_no}
+	</insert>
+	
+	<insert id="insDormUserFhsData">
+		/*BatchMapper.insDormUserFhsData_20221107_추가*/
+		INSERT INTO TB_LA_IS_BK_DORM_FHS(
+			NA_BZPLC
+			, FHS_ID_NO
+			, FARM_AMNNO
+			, FARM_ID_NO
+			, NA_TRPL_C
+			, FTSNM
+			, ZIP
+			, DONGUP
+			, DONGBW
+			, OHSE_TELNO
+			, CUS_MPNO
+			, RMK_CNTN
+			, SRA_FARM_ACNO
+			, NEW_SRA_FARM_ACNO
+			, BIRTH
+			, MB_INTG_NO
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+		)
+		SELECT NA_BZPLC
+			, FHS_ID_NO
+			, FARM_AMNNO
+			, FARM_ID_NO
+			, NA_TRPL_C
+			, FTSNM
+			, ZIP
+			, DONGUP
+			, DONGBW
+			, OHSE_TELNO
+			, CUS_MPNO
+			, RMK_CNTN
+			, SRA_FARM_ACNO
+			, NEW_SRA_FARM_ACNO
+			, BIRTH
+			, MB_INTG_NO
+			, SYSDATE AS FSRG_DTM
+			, 'BATCH' AS FSRGMN_ENO
+			, SYSDATE AS LSCHG_DTM
+			, 'BATCH' AS LS_CMENO
+		FROM TB_LA_IS_MM_FHS
+		WHERE MB_INTG_NO = #{mb_intg_no}
+	</insert>
+	
+	<update id="updDormUserMbintgMasking">
+		/*BatchMapper.updDormUserMbintgMasking_20221107_추가*/
+		UPDATE TB_LA_IS_MM_MBINTG
+		SET MB_INTG_NM = '***'
+			, MB_RLNO = '***'
+			, OHSE_TELNO = '***'
+			, MB_MPNO = '***'
+			, DORMACC_YN = '1'
+			, DORMACC_DT = TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, LSCHG_DTM = SYSDATE
+			, LS_CMENO = 'BATCH'
+		WHERE MB_INTG_NO = #{mb_intg_no}
+	</update>
+	
+	<update id="updDormUserMwmnMasking">
+		/*BatchMapper.updDormUserMwmnMasking_20221107_추가*/
+		UPDATE TB_LA_IS_MM_MWMN
+		SET SRA_MWMNNM = '***'
+			, FRLNO = '***'
+			, ZIP = '***'
+			, DONGUP = '***'
+			, DONGBW = '***'
+			, OHSE_TELNO = '***'
+			, CUS_MPNO = '***'
+			, CUS_RLNO = '***'
+			, RMK_CNTN = '***'
+			, LSCHG_DTM = SYSDATE
+			, LS_CMENO = 'BATCH'
+		WHERE MB_INTG_NO = #{mb_intg_no}
+	</update>
+	
+	<update id="updDormUserFhsMasking">
+		/*BatchMapper.updDormUserFhsMasking_20221107_추가*/
+		UPDATE TB_LA_IS_MM_FHS
+		SET FTSNM = '***'
+			, ZIP = '***'
+			, DONGUP = '***'
+			, DONGBW = '***'
+			, OHSE_TELNO = '***'
+			, CUS_MPNO = '***'
+			, RMK_CNTN = '***'
+			, SRA_FARM_ACNO = '***'
+			, NEW_SRA_FARM_ACNO = '***'
+			, BIRTH = '***'
+			, LSCHG_DTM = SYSDATE
+			, LS_CMENO = 'BATCH'
+		WHERE MB_INTG_NO = #{mb_intg_no}
+	</update>
+	
+	<select id="getExecBatchCount" resultType="_int">
+		/*BatchMapper.getExecBatchCount_20221114_추가*/
+		SELECT COUNT(*)
+		FROM TB_LA_IS_MM_BATLOG
+		WHERE BAT_ID = #{batch_job_id}
+			<choose>
+				<when test='term_type == "D"'>
+				AND BAT_ST_DTM <![CDATA[>]]> TRUNC(SYSDATE, 'dd')
+				</when>
+				<when test='term_type == "M"'>
+				AND BAT_ST_DTM <![CDATA[>]]> ADD_MONTHS(SYSDATE, -1)
+				</when>
+				<when test='term_type == "Y"'>
+				AND BAT_ST_DTM <![CDATA[>]]> ADD_MONTHS(SYSDATE, -12)
+				</when>
+				<when test='term_type == "H"'>
+				AND BAT_ST_DTM <![CDATA[>]]> SYSDATE - 1/24 * #{term_num}
+				</when>
+				<when test='term_type == "M"'>
+				AND BAT_ST_DTM <![CDATA[>]]> SYSDATE - 1/24/60 * #{term_num}
+				</when>
+			</choose>
+	</select>
+	
+	<insert id="insBeforeBatchLog">
+		<selectKey keyProperty="bat_act_seq" resultType="int" order="BEFORE">
+			SELECT NVL(MAX(BAT_ACT_SEQ) + 1, 1) 
+			FROM TB_LA_IS_MM_BATLOG 
+			WHERE BAT_ID = #{batch_job_id}	
+				AND BAT_ACT_DT = TO_CHAR(SYSDATE, 'YYYYMMDD')
+		</selectKey>
+		INSERT INTO TB_LA_IS_MM_BATLOG(
+			BAT_ID
+			, BAT_ACT_DT
+			, BAT_ACT_SEQ
+			, BAT_ST_DTM
+			, BAT_ED_DTM
+			, BAT_SUC_YN
+			, BAT_RST_MSG
+			, FSRG_DTM
+			, FSRGMN_ENO
+		)
+		VALUES (
+			#{batch_job_id}
+			, TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, #{bat_act_seq}
+			, SYSDATE 
+			, ''
+			, #{bat_suc_yn}
+			, '' 
+			, SYSDATE
+			, 'SYSTEM'
+		)
+	</insert>
+	
+	<update id="updAfterBatchLog">
+		MERGE INTO TB_LA_IS_MM_BATLOG A
+		USING DUAL B
+		ON(A.BAT_ID = #{batch_job_id}
+			AND A.BAT_ACT_DT = TO_CHAR(SYSDATE, 'YYYYMMDD')
+			AND A.BAT_ACT_SEQ = #{bat_act_seq}
+		)
+		WHEN MATCHED THEN
+		UPDATE
+			SET 
+				BAT_ED_DTM = SYSDATE
+				, BAT_SUC_YN = #{bat_suc_yn}
+				, BAT_RST_MSG = #{message}
+		WHEN NOT MATCHED THEN		
+		INSERT (
+			BAT_ID
+			, BAT_ACT_DT
+			, BAT_ACT_SEQ
+			, BAT_ST_DTM
+			, BAT_ED_DTM
+			, BAT_SUC_YN
+			, BAT_RST_MSG
+			, FSRG_DTM
+			, FSRGMN_ENO
+		)
+		VALUES (
+			#{batch_job_id}
+			, TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, (SELECT NVL(MAX(BAT_ACT_SEQ) + 1, 1) 
+				FROM TB_LA_IS_MM_BATLOG 
+				WHERE BAT_ID = #{batch_job_id}	
+					AND BAT_ACT_DT = TO_CHAR(SYSDATE, 'YYYYMMDD')
+			  )
+			, SYSDATE 
+			, SYSDATE
+			, #{bat_suc_yn}
+			, #{message}
+			, SYSDATE
+			, 'SYSTEM'
+		)		
+	</update>
+	
+	<update id="insDashBoardAucQcn">		
+		MERGE INTO TB_LA_IS_MH_AUC_QCN A
+		USING DUAL B
+		ON(A.NA_BZPLC = TRIM(#{NA_BZPLC})
+			AND A.AUC_OBJ_DSC = TRIM(#{AUC_OBJ_DSC})
+			AND A.AUC_DT = TRIM(#{AUC_DT})
+		)
+		WHEN MATCHED THEN
+			UPDATE SET                       
+				QCN                         =  trim(#{QCN})                                      
+				, BASE_LMT_AM               =  trim(#{BASE_LMT_AM})                                
+				, CUT_AM                    =  trim(#{CUT_AM})                                     
+				, SGNO_PRC_DSC              =  trim(#{SGNO_PRC_DSC})                               
+				, DDL_YN                    =  trim(#{DDL_YN})                                     
+				, DEL_YN                    =  trim(#{DEL_YN})                                     
+				, TT_SCR					=  trim(#{TT_SCR})                                  
+				, AUC_DSC                   =  NVL(trim(#{AUC_DSC}),'1')                        
+				, LSCHG_DTM                 =  SYSDATE                                          
+				, LS_CMENO					=  'SYSTEM'                                         
+		WHEN NOT MATCHED THEN
+			INSERT(
+				NA_BZPLC                         
+				, AUC_OBJ_DSC	                 
+				, AUC_DT                         
+				, QCN                            
+				, BASE_LMT_AM                    
+				, CUT_AM                         
+				, SGNO_PRC_DSC                   
+				, DDL_YN                         
+				, DEL_YN                         
+				, TT_SCR						
+				, AUC_DSC
+				, FSRG_DTM
+				, FSRGMN_ENO
+				, LSCHG_DTM
+				, LS_CMENO
+			)
+			VALUES (
+				trim(#{NA_BZPLC})
+				, trim(#{AUC_OBJ_DSC})
+				, trim(#{AUC_DT})
+				, trim(#{QCN})
+				, trim(#{BASE_LMT_AM})
+				, trim(#{CUT_AM})
+				, trim(#{SGNO_PRC_DSC})
+				, trim(#{DDL_YN})
+				, trim(#{DEL_YN})
+				, trim(#{TT_SCR})
+				, NVL(trim(#{AUC_DSC}),'1')
+				, SYSDATE
+				, 'SYSTEM'
+				, SYSDATE
+				, 'SYSTEM'
+			)
+	</update>
+	
+	<update id="insDashBoardAucEntr">
+		MERGE INTO TB_LA_IS_MH_AUC_ENTR A
+		USING DUAL B
+		ON(A.NA_BZPLC = TRIM(#{NA_BZPLC})
+			AND A.AUC_OBJ_DSC = TRIM(#{AUC_OBJ_DSC})
+			AND A.AUC_DT = TRIM(#{AUC_DT})
+			AND A.LVST_AUC_PTC_MN_NO = TRIM(#{LVST_AUC_PTC_MN_NO}) 
+		)
+		WHEN MATCHED THEN
+			UPDATE SET           
+				TRMN_AMNNO           =  trim(#{TRMN_AMNNO})                               
+				, TR_DFN_YN          =  trim(#{TR_DFN_YN})                                  
+				, AUC_ENTR_GRN_AM    =  trim(#{AUC_ENTR_GRN_AM})                            
+				, RTRN_YN            =  trim(#{RTRN_YN})                                    
+				, DEL_YN             =  trim(#{DEL_YN})                              
+				, LSCHG_DTM          =  SYSDATE                                      
+				, LS_CMENO			 =  'SYSTEM'                                     
+		WHEN NOT MATCHED THEN
+			INSERT(
+				NA_BZPLC                         
+				, AUC_DT                           
+				, AUC_OBJ_DSC                      
+				, LVST_AUC_PTC_MN_NO               
+				, TRMN_AMNNO                       
+				, TR_DFN_YN                        
+				, AUC_ENTR_GRN_AM                  
+				, RTRN_YN                          
+				, DEL_YN
+				, FSRG_DTM
+				, FSRGMN_ENO
+			)
+			VALUES (
+				trim(#{NA_BZPLC})
+				, trim(#{AUC_DT})
+				, trim(#{AUC_OBJ_DSC})
+				, trim(#{LVST_AUC_PTC_MN_NO})
+				, trim(#{TRMN_AMNNO})
+				, trim(#{TR_DFN_YN})
+				, trim(#{AUC_ENTR_GRN_AM})                  
+				, trim(#{RTRN_YN})                          
+				, trim(#{DEL_YN})
+				, SYSDATE
+				, 'SYSTEM'
+			)
+	</update>
+	
+	
+	<update id="insDashBoardSogCow">
+		MERGE INTO TB_LA_IS_MH_SOG_COW A
+		USING DUAL B
+		ON(A.NA_BZPLC = TRIM(#{NA_BZPLC})
+			AND A.AUC_OBJ_DSC = TRIM(#{AUC_OBJ_DSC})
+			AND A.AUC_DT = TRIM(#{AUC_DT})
+			AND A.OSLP_NO = TRIM(#{OSLP_NO})
+			AND A.LED_SQNO = TRIM(#{LED_SQNO}) 
+		)
+		WHEN MATCHED THEN
+			UPDATE SET                  
+				FHS_ID_NO                           =  trim(#{FHS_ID_NO})                                        
+				, FARM_AMNNO                          =  trim(#{FARM_AMNNO})                                       
+				, SOG_NA_TRPL_C                       =  trim(#{SOG_NA_TRPL_C})                                    
+				, VHC_SHRT_C                          =  trim(#{VHC_SHRT_C})                                       
+				, RC_DT                               =  trim(#{RC_DT})                                            
+				, TRMN_AMNNO                          =  trim(#{TRMN_AMNNO})                                       
+				, LVST_AUC_PTC_MN_NO                  =  trim(#{LVST_AUC_PTC_MN_NO})                               
+				, SRA_INDV_AMNNO                      =  trim(#{SRA_INDV_AMNNO})                                   
+				, SRA_SRS_DSC                         =  trim(#{SRA_SRS_DSC})                                      
+				, COW_SOG_WT                          =  trim(#{COW_SOG_WT})                                       
+				, FIR_LOWS_SBID_LMT_AM                =  trim(#{FIR_LOWS_SBID_LMT_AM})                             
+				, LOWS_SBID_LMT_AM                    =  trim(#{LOWS_SBID_LMT_AM})                                 
+				, SRA_SBID_AM                         =  trim(#{SRA_SBID_AM})                                      
+				, SRA_SBID_UPR                        =  trim(#{SRA_SBID_UPR})                                     
+				, SEL_STS_DSC                         =  trim(#{SEL_STS_DSC})                                      
+				, BRCL_ISP_CTFW_SMT_YN                =  trim(#{BRCL_ISP_CTFW_SMT_YN})                             
+				, BRCL_ISP_DT                         =  trim(#{BRCL_ISP_DT})                                      
+				, LWPR_CHG_NT                         =  trim(#{LWPR_CHG_NT})                                      
+				, VACN_DT                             =  trim(#{VACN_DT})                                          
+				, LVST_MKT_TRPL_AMNNO                 =  trim(#{LVST_MKT_TRPL_AMNNO})                              
+				, MT12_OVR_YN                         =  trim(#{MT12_OVR_YN})                                      
+				, PPGCOW_FEE_DSC                      =  trim(#{PPGCOW_FEE_DSC})                                   
+				, PRNY_JUG_YN                         =  trim(#{PRNY_JUG_YN})                                      
+				, PRNY_YN                             =  trim(#{PRNY_YN})                                          
+				, NCSS_JUG_YN                         =  trim(#{NCSS_JUG_YN})                                      
+				, NCSS_YN                             =  trim(#{NCSS_YN})                                          
+				, TRPCS_PY_YN                         =  trim(#{TRPCS_PY_YN})                                      
+				, SRA_TRPCS                           =  trim(#{SRA_TRPCS})                                        
+				, SRA_PYIVA                           =  trim(#{SRA_PYIVA})                                        
+				, SRA_FED_SPY_AM                      =  trim(#{SRA_FED_SPY_AM})                                   
+				, TD_RC_CST                           =  trim(#{TD_RC_CST})                                        
+				, MT12_OVR_FEE                        =  trim(#{MT12_OVR_FEE})                                     
+				, AFISM_MOD_DT                        =  trim(#{AFISM_MOD_DT})                                     
+				, PRNY_MTCN                           =  trim(#{PRNY_MTCN})                                        
+				, AFISM_MOD_CTFW_SMT_YN               =  trim(#{AFISM_MOD_CTFW_SMT_YN})                            
+				, RMHN_YN                             =  trim(#{RMHN_YN})                                          
+				, SRA_PDMNM                           =  trim(#{SRA_PDMNM})                                        
+				, SRA_PD_RGNNM                        =  trim(#{SRA_PD_RGNNM})                                     
+				, RMK_CNTN                            =  trim(#{RMK_CNTN})                                         
+				, AUC_PRG_SQ                          =  trim(#{AUC_PRG_SQ})                                       
+				, BDLN_VAL                            =  trim(#{BDLN_VAL})                                         
+				, BDHT_VAL                            =  trim(#{BDHT_VAL})                                         
+				, LSCHG_DTM                           =  SYSDATE                                                   
+				, LS_CMENO		                  =  'SYSTEM'                                 
+		WHEN NOT MATCHED THEN
+			INSERT (
+				NA_BZPLC
+				, AUC_OBJ_DSC
+				, AUC_DT
+				, OSLP_NO
+				, LED_SQNO
+				, FHS_ID_NO
+				, FARM_AMNNO
+				, SOG_NA_TRPL_C
+				, VHC_SHRT_C
+				, RC_DT
+				, TRMN_AMNNO
+				, LVST_AUC_PTC_MN_NO
+				, SRA_INDV_AMNNO
+				, SRA_SRS_DSC
+				, COW_SOG_WT
+				, FIR_LOWS_SBID_LMT_AM
+				, LOWS_SBID_LMT_AM
+				, SRA_SBID_AM
+				, SRA_SBID_UPR
+				, SEL_STS_DSC
+				, BRCL_ISP_CTFW_SMT_YN
+				, BRCL_ISP_DT
+				, LWPR_CHG_NT
+				, VACN_DT
+				, LVST_MKT_TRPL_AMNNO
+				, MT12_OVR_YN
+				, PPGCOW_FEE_DSC
+				, PRNY_JUG_YN
+				, PRNY_YN
+				, NCSS_JUG_YN
+				, NCSS_YN
+				, TRPCS_PY_YN
+				, SRA_TRPCS
+				, SRA_PYIVA
+				, SRA_FED_SPY_AM
+				, TD_RC_CST
+				, MT12_OVR_FEE
+				, AFISM_MOD_DT
+				, PRNY_MTCN
+				, AFISM_MOD_CTFW_SMT_YN
+				, RMHN_YN
+				, SRA_PDMNM
+				, SRA_PD_RGNNM
+				, RMK_CNTN
+				, AUC_PRG_SQ
+				, BDLN_VAL
+				, BDHT_VAL
+				, FSRG_DTM
+				, FSRGMN_ENO
+				, LSCHG_DTM                                                    
+				, LS_CMENO	)
+			VALUES (
+				trim(#{NA_BZPLC})
+				, trim(#{AUC_OBJ_DSC})
+				, trim(#{AUC_DT})
+				, trim(#{OSLP_NO})
+				, trim(#{LED_SQNO})
+				, trim(#{FHS_ID_NO})
+				, trim(#{FARM_AMNNO})
+				, trim(#{SOG_NA_TRPL_C})
+				, trim(#{VHC_SHRT_C})
+				, trim(#{RC_DT})
+				, trim(#{TRMN_AMNNO})
+				, trim(#{LVST_AUC_PTC_MN_NO})
+				, trim(#{SRA_INDV_AMNNO})
+				, trim(#{SRA_SRS_DSC})
+				, trim(#{COW_SOG_WT})
+				, trim(#{FIR_LOWS_SBID_LMT_AM})
+				, trim(#{LOWS_SBID_LMT_AM})
+				, trim(#{SRA_SBID_AM})
+				, trim(#{SRA_SBID_UPR})
+				, trim(#{SEL_STS_DSC})
+				, trim(#{BRCL_ISP_CTFW_SMT_YN})
+				, trim(#{BRCL_ISP_DT})
+				, trim(#{LWPR_CHG_NT})
+				, trim(#{VACN_DT})
+				, trim(#{LVST_MKT_TRPL_AMNNO})
+				, trim(#{MT12_OVR_YN})
+				, trim(#{PPGCOW_FEE_DSC})
+				, trim(#{PRNY_JUG_YN})
+				, trim(#{PRNY_YN})
+				, trim(#{NCSS_JUG_YN})
+				, trim(#{NCSS_YN})
+				, trim(#{TRPCS_PY_YN})
+				, trim(#{SRA_TRPCS})
+				, trim(#{SRA_PYIVA})
+				, trim(#{SRA_FED_SPY_AM})
+				, trim(#{TD_RC_CST})
+				, trim(#{MT12_OVR_FEE})
+				, trim(#{AFISM_MOD_DT})
+				, trim(#{PRNY_MTCN})
+				, trim(#{AFISM_MOD_CTFW_SMT_YN})
+				, trim(#{RMHN_YN})
+				, trim(#{SRA_PDMNM})
+				, trim(#{SRA_PD_RGNNM})
+				, trim(#{RMK_CNTN})
+				, trim(#{AUC_PRG_SQ})
+				, trim(#{BDLN_VAL})
+				, trim(#{BDHT_VAL})
+				, SYSDATE
+				, 'SYSTEM'
+				, SYSDATE
+				, 'SYSTEM'
+			)
+	</update>
+	
+	<update id="insDashBoardIndv">
+		MERGE INTO TB_LA_IS_MM_INDV A
+		USING DUAL B
+		ON(A.NA_BZPLC = TRIM(#{NA_BZPLC})
+			AND A.SRA_INDV_AMNNO = TRIM(#{SRA_INDV_AMNNO})
+			AND A.SRA_SRS_DSC = '01' 
+		)
+		WHEN MATCHED THEN
+			UPDATE SET		
+				FHS_ID_NO              =  TRIM(#{FHS_ID_NO})                             
+				, FARM_AMNNO           =  TRIM(#{FARM_AMNNO})                            
+				, BIRTH                =  TRIM(#{BIRTH})                                 
+				, MCOW_DSC             =  TRIM(#{MCOW_DSC})                              
+				, KPN_NO               =  TRIM(#{KPN_NO})                                
+				, INDV_SEX_C           =  TRIM(#{INDV_SEX_C})                            
+				, MCOW_SRA_INDV_AMNNO  =  TRIM(#{MCOW_SRA_INDV_AMNNO})                   
+				, MATIME               =  TRIM(#{MATIME})                                
+				, SRA_INDV_PASG_QCN    =  TRIM(#{SRA_INDV_PASG_QCN})                     
+				, RG_DSC               =  TRIM(#{RG_DSC})                                
+				, LSCHG_DTM             =  TRIM(#{FSRG_DTM})                              
+				, LS_CMENO             =  TRIM(#{FSRGMN_ENO})                            
+		WHEN NOT MATCHED THEN
+			INSERT(
+				NA_BZPLC
+				, SRA_INDV_AMNNO
+				, SRA_SRS_DSC
+				, FHS_ID_NO
+				, FARM_AMNNO
+				, BIRTH
+				, MCOW_DSC
+				, KPN_NO
+				, INDV_SEX_C
+				, MCOW_SRA_INDV_AMNNO
+				, MATIME
+				, SRA_INDV_PASG_QCN
+				, RG_DSC
+				, FSRG_DTM
+				, FSRGMN_ENO
+				, LSCHG_DTM                                                    
+				, LS_CMENO
+			)VALUES(
+				TRIM(#{NA_BZPLC})
+				, TRIM(#{SRA_INDV_AMNNO})
+				, '01'
+				, TRIM(#{FHS_ID_NO})
+				, TRIM(#{FARM_AMNNO})
+				, TRIM(#{BIRTH})
+				, TRIM(#{MCOW_DSC})
+				, TRIM(#{KPN_NO})
+				, TRIM(#{INDV_SEX_C})
+				, TRIM(#{MCOW_SRA_INDV_AMNNO})
+				, TRIM(#{MATIME})
+				, TRIM(#{SRA_INDV_PASG_QCN})
+				, TRIM(#{RG_DSC})
+				, TRIM(#{FSRG_DTM})
+				, TRIM(#{FSRGMN_ENO})
+				, SYSDATE
+				, 'SYSTEM'
+			)
+	</update>
+	
+    <select id="selBzLocAucYn" resultType="HashMap">
+		/*BatchMapper.selBzLocAucYn_202212050 추가*/
+		SELECT 
+			NA_BZPLC
+			, NA_BZPLCNO
+			, NA_BZPLCLOC
+			, CLNTNM
+			, AREAORD
+			, AREANM
+			, AUC_DSC
+			, LAT
+			, LNG
+			, AUC_YN
+			, DEL_YN
+			, RMK_CNTN
+			, TEL_NO
+			, KKO_SVC_ID
+			, KKO_SVC_KEY
+			, KKO_SVC_CNT
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, NET_HOST
+			, NET_PORT
+			, WEB_PORT
+			, SMS_AUTH_YN
+			, SMS_BUFFER_2
+			, SMS_BUFFER_1
+			, LOCNM
+		FROM TB_LA_IS_BM_BZLOC
+		<if test='"N".equals(aucYn)'>
+			WHERE AUC_YN != '1'
+		</if>
+	</select>	
+	
+    <select id="selMaxAucDt" resultType="HashMap">
+		/*BatchMapper.selMaxAucDt_202212050 추가*/
+		SELECT 
+			NA_BZPLC
+			, MAX(AUC_DT) AUC_DT
+		FROM TB_LA_IS_MH_AUC_QCN
+		WHERE NA_BZPLC = #{NA_BZPLC}
+		AND <![CDATA[AUC_DT > '20220101']]> 
+		GROUP BY NA_BZPLC		
+	</select>
+	
+	<select id="selDormcPreUserMbintgList" resultType="HashMap">
+		/*BatchMapper.selDormcPreUserMbintgList_20221202_추가*/
+		SELECT MBT.MB_INTG_NO
+			, MBT.MB_INTG_NM
+			, MBT.MB_RLNO
+			, TRIM(MBT.OHSE_TELNO) AS OHSE_TELNO
+			, TRIM(MBT.MB_MPNO) AS MB_MPNO
+			, MBT.MB_INTG_GB
+			, TO_CHAR(TO_DATE(MBT.DORMDUE_DT, 'YYYYMMDD'), 'YYYY.MM.DD') AS DORMDUE_DT 
+		FROM TB_LA_IS_MM_MBINTG MBT
+		WHERE MBT.DORMACC_YN = '0'
+			AND MBT.DELACC_YN = '0'
+			<choose>
+				<when test="bat_act_dt != null and bat_act_dt != ''">
+			AND MBT.DORMDUE_DT = #{bat_act_dt}
+				</when>
+				<otherwise>
+			AND MBT.DORMDUE_DT = TO_CHAR(SYSDATE + 30,'YYYYMMDD')
+				</otherwise>
+			</choose>
+		ORDER BY MBT.MB_INTG_NO ASC
+	</select>
+	
+	<select id="selMaxAucNumPhoneInfo" resultType="HashMap">
+		/*BatchMapper.selMaxAucNumPhoneInfo_20221212_추가*/
+		SELECT NA_BZPLC
+			, TRMN_AMNNO
+			, CLNTNM
+			, TEL_NO
+			, ADJ_BRC
+		  FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY AUC_DT DESC) AS N_NUM
+				, A.NA_BZPLC
+				, A.TRMN_AMNNO
+				, A.AUC_DT
+				, BZ.CLNTNM
+				, BZ.TEL_NO
+				, WM.BRC AS ADJ_BRC
+			FROM TB_LA_IS_MH_AUC_ENTR A
+				INNER JOIN TB_LA_IS_MM_MWMN B
+				ON(A.NA_BZPLC = B.NA_BZPLC
+					AND A.TRMN_AMNNO = B.TRMN_AMNNO
+				)
+				INNER JOIN TB_LA_IS_BM_BZLOC BZ
+				ON(A.NA_BZPLC = BZ.NA_BZPLC)
+				INNER JOIN TB_LA_IS_MM_WMC WM
+				ON(A.NA_BZPLC = WM.NA_BZPLC)
+			WHERE B.MB_INTG_NO = #{MB_INTG_NO}
+		) 
+		WHERE N_NUM = 1
+	</select>
+	
+	<select id="selMaxSogCowPhoneInfo" resultType="HashMap">
+		/*BatchMapper.selMaxSogCowPhoneInfo_20221212_추가*/
+		SELECT NA_BZPLC
+			, TRMN_AMNNO
+			, CLNTNM
+			, TEL_NO
+			, ADJ_BRC
+		  FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY AUC_DT DESC) AS N_NUM
+				, A.NA_BZPLC
+				, A.FHS_ID_NO || '-' || A.FARM_AMNNO AS TRMN_AMNNO 
+				, A.AUC_DT
+				, BZ.CLNTNM
+				, BZ.TEL_NO
+				, WM.BRC AS ADJ_BRC
+			FROM TB_LA_IS_MH_SOG_COW A
+				INNER JOIN TB_LA_IS_MM_FHS B
+				ON(A.NA_BZPLC = B.NA_BZPLC
+					AND A.FHS_ID_NO = B.FHS_ID_NO
+					AND A.FARM_AMNNO = B.FARM_AMNNO
+				)
+				INNER JOIN TB_LA_IS_BM_BZLOC BZ
+				ON(B.NA_BZPLC = BZ.NA_BZPLC)
+				INNER JOIN TB_LA_IS_MM_WMC WM
+				ON(A.NA_BZPLC = WM.NA_BZPLC)
+			WHERE B.MB_INTG_NO = #{MB_INTG_NO}
+		) 
+		WHERE N_NUM = 1
+	</select>
+	
+	<delete id="delDashBoardSaveForTop">
+		DELETE FROM TB_LA_IS_MM_DB_BDPRTOP
+		WHERE CR_DT = TO_CHAR(SYSDATE,'YYYYMMDD')
+	</delete>
+	
+	<delete id="delDashBoardSaveForDay">
+		DELETE FROM TB_LA_IS_MM_DB_SUM
+		WHERE AUC_DT = TO_CHAR(SYSDATE-1,'YYYYMMDD')
+	</delete>
+	
+	
+	<sql id="selDashBoard">
+		<![CDATA[
+			SELECT
+				A.AUC_DT
+				, A.NA_BZPLC
+				, A.AUC_OBJ_DSC
+				, CASE WHEN B.INDV_SEX_C IN (1,4,6) THEN '1'
+				ELSE '2' END INDV_SEX_C
+				, CASE WHEN A.AUC_OBJ_DSC = 1 THEN 
+					CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, b.BIRTH)) +1 <= 5 THEN '01'
+						 WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, b.BIRTH)) +1 <= 7 THEN '02'
+						 WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, b.BIRTH)) +1 >= 8 THEN '03'
+						 ELSE '00' 
+					 END
+				  ELSE 
+					CASE WHEN NVL(COW_SOG_WT,0) < 400 THEN '11'
+						 ELSE '12'
+					 END
+				  END MONTH_OLD_C
+				, A.SEL_STS_DSC
+				, NVL(A.SRA_SBID_AM,0) SRA_SBID_AM
+				, NVL(A.SRA_SBID_UPR,0) SRA_SBID_UPR
+				, A.LOWS_SBID_LMT_AM
+				, B.SRA_INDV_AMNNO
+				, ROW_NUMBER() OVER(ORDER BY NVL(A.SRA_SBID_AM,0) DESC) RANK_NO
+				, TRUNC(AVG(DECODE(A.SEL_STS_DSC,'22',SRA_SBID_AM)) OVER(PARTITION BY 1)) AVG_SBID_AMT
+				, C.NA_BZPLCLOC
+			FROM TB_LA_IS_MH_SOG_COW A
+			INNER JOIN TB_LA_IS_MM_INDV B ON A.NA_BZPLC = B.NA_BZPLC 
+										  AND A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO 
+										  AND A.SRA_SRS_DSC = B.SRA_SRS_DSC
+			INNER JOIN TB_LA_IS_BM_BZLOC C ON A.NA_BZPLC = C.NA_BZPLC 
+		]]>
+	</sql>
+	<insert id="insDashBoardSaveForDay">
+		INSERT INTO TB_LA_IS_MM_DB_SUM(
+			AUC_DT
+			, NA_BZPLC
+			, AUC_OBJ_DSC
+			, INDV_SEX_C
+			, MONTH_OLD_C
+			, TOT_SOG_CNT
+			, TOT_SBID_CNT
+			, MAX_SBID_UPR
+			, SBID_SUM_AMT
+			, MIN_SBID_UPR
+			, EXPRI_TOT_SUM_AMT
+			, EXPRI_SBID_SUM_AMT
+			, CR_DTM
+		)
+		SELECT
+			T.AUC_DT
+			, T.NA_BZPLC
+			, T.AUC_OBJ_DSC
+			, T.INDV_SEX_C	
+			, T.MONTH_OLD_C
+			, COUNT(*) TOT_CNT
+			, COUNT(DECODE(T.SEL_STS_DSC,22,1)) TOT_SUC_CNT
+			, NVL(MAX(DECODE(T.SEL_STS_DSC,'22',T.SRA_SBID_AM)),0) MAX_SRA_SBID_AM
+			, NVL(SUM(DECODE(T.SEL_STS_DSC,'22',T.SRA_SBID_AM)),0) SUM_SRA_SBID_AM
+			, NVL(MIN(DECODE(T.SEL_STS_DSC,'22',T.SRA_SBID_AM)),0) MIN_SRA_SBID_AM
+			, NVL(SUM(T.LOWS_SBID_LMT_AM),0) SUM_LOWS_SBID_LMT_AM
+			, NVL(SUM(DECODE(T.SEL_STS_DSC,'22',T.LOWS_SBID_LMT_AM)),0) SUM_SUC_LOWS_SBID_LMT_AM
+			, SYSDATE
+		FROM (
+			<include refid="selDashBoard"></include>
+			WHERE A.AUC_DT = TO_CHAR(SYSDATE-1,'YYYYMMDD')
+		) T
+		GROUP BY T.AUC_DT, T.NA_BZPLC, T.AUC_OBJ_DSC, T.INDV_SEX_C	, T.MONTH_OLD_C
+		ORDER BY T.AUC_DT, T.NA_BZPLC, T.AUC_OBJ_DSC, T.INDV_SEX_C	, T.MONTH_OLD_C
+	</insert>
+	
+	<insert id="insDashBoardSaveForTop">
+		INSERT INTO TB_LA_IS_MM_DB_BDPRTOP
+		SELECT
+			TO_CHAR(SYSDATE,'YYYYMMDD') CR_DT
+			, T.AUC_OBJ_DSC
+			, T.RANK_NO
+			, T.SRA_INDV_AMNNO
+			, T.NA_BZPLC
+			, T.INDV_SEX_C
+			, T.MONTH_OLD_C
+			, T.SRA_SBID_AM
+			, T.AVG_SBID_AMT
+		FROM (
+			<include refid="selDashBoard"></include>
+			WHERE A.AUC_DT BETWEEN TO_CHAR(SYSDATE-7,'YYYYMMDD') AND TO_CHAR(SYSDATE,'YYYYMMDD')
+		) T
+		WHERE T.RANK_NO <![CDATA[<=]]> 10
+	</insert>
+	
+	<delete id="delDashBoardBtcAuc">
+		DELETE FROM TB_LA_IS_MM_DB_BTCAUC
+		WHERE SBID_DT = #{AUC_DT}
+	</delete>
+	<insert id="insDashBoardBtcAuc">
+		INSERT INTO TB_LA_IS_MM_DB_BTCAUC(
+			SBID_DT
+			, NA_BZPLC
+			, INDV_SEX_C
+			, SRA_GRD_DSC
+			, CLNTNM
+			, BRC_HDCN
+			, MIN_SRA_SBID_UPR
+			, MAX_SRA_SBID_UPR
+			, AVG_SRA_SBID_UPR				
+		)VALUES(
+			TRIM(#{SBID_DT})
+			, TRIM(#{NA_BZPLC})
+			, TRIM(#{INDV_SEX_C})
+			, TRIM(#{SRA_GRD_DSC})
+			, TRIM(#{CLNTNM})
+			, TO_NUMBER(TRIM(#{BTC_HDCN}))
+			, TO_NUMBER(TRIM(#{MIN_SRA_SBID_UPR}))
+			, TO_NUMBER(TRIM(#{MAX_SRA_SBID_UPR}))
+			, TO_NUMBER(TRIM(#{AVG_SRA_SBID_UPR}))	
+		)
+	</insert>
+	
+	
+	<delete id="delDashBoardBtc">
+		DELETE FROM TB_LA_IS_MM_DB_BTCINF
+		WHERE BTC_DT = #{BTC_DT}
+	</delete>
+	<insert id="insDashBoardBtc">
+		INSERT INTO TB_LA_IS_MM_DB_BTCINF(
+			BTC_DT
+			, NA_BZPLC
+			, INDV_SEX_C
+			, SRA_GRD_DSC
+			, CLNTNM
+			, BTC_HDCN			
+		)VALUES(
+			TRIM(#{BTC_DT})
+			, TRIM(#{NA_BZPLC})
+			, TRIM(#{INDV_SEX_C})
+			, TRIM(#{SRA_GRD_DSC})
+			, TRIM(#{CLNTNM})
+			, TO_NUMBER(TRIM(#{BTC_HDCN}))
+		)
+	</insert>
+	
+	
+	<delete id="delDashBoardSaveForAreaAvgMkpr">
+		DELETE FROM TB_LA_IS_MM_DB_AREA_AVGMKPR
+		WHERE CR_DT = #{CR_DT}
+	</delete>
+	<insert id="insDashBoardSaveForAreaAvgMkpr">
+		INSERT INTO TB_LA_IS_MM_DB_AREA_AVGMKPR(
+			CR_DT
+			, AUC_OBJ_DSC
+			, NA_BZPLCLOC
+			, MONTH_OLD_C
+			, ST_AUC_DT
+			, ED_AUC_DT
+			, TOT_SOG_CNT
+			, TOT_SBID_CNT
+			, AVG_SBID_UPR
+			, SOG_CNT_INC_RATE
+			, SBID_AVG_INC_RATE
+			, SBID_RATE
+			, MAX_SBID_UPR
+			, MIN_SBID_UPR
+		)
+		SELECT
+			TO_CHAR(SYSDATE,'YYYYMMDD') CR_DT
+			, T.AUC_OBJ_DSC
+			, T.NA_BZPLCLOC
+			, T.MONTH_OLD_C
+			, TO_CHAR(ADD_MONTHS(SYSDATE,-1),'YYYYMMDD') ST_AUC_DT
+			, TO_CHAR(SYSDATE-1,'YYYYMMDD') ED_AUC_DT
+			, COUNT(*) TOT_SOG_CNT
+			, COUNT(DECODE(T.SEL_STS_DSC,'22',1)) TOT_SBID_CNT
+			, TRUNC(AVG(DECODE(T.SEL_STS_DSC,'22',T.SRA_SBID_AM))) AVG_SBID_UPR
+			, '' SOG_CNT_INC_RATE
+			, '' SBID_AVG_INC_RATE
+			, '' SBID_RATE
+			, MAX(DECODE(T.SEL_STS_DSC,'22',T.SRA_SBID_AM)) MAX_SBID_UPR
+			, MIN(DECODE(T.SEL_STS_DSC,'22',T.SRA_SBID_AM)) MIN_SBID_UPR
+		FROM (
+			<include refid="selDashBoard"></include>
+			WHERE A.AUC_DT BETWEEN TO_CHAR(ADD_MONTHS(SYSDATE,-1),'YYYYMMDD') AND TO_CHAR(SYSDATE-1,'YYYYMMDD')
+		) T
+		GROUP BY T.NA_BZPLCLOC , T.AUC_OBJ_DSC , T.MONTH_OLD_C
+	</insert>
+	
+	
+	
+	<delete id="delDashBoardSaveForMkpr">
+		DELETE FROM TB_LA_IS_MM_DB_MKPR
+		WHERE CR_DT = #{CR_DT}
+	</delete>
+	<insert id="insDashBoardSaveForMkpr">
+		INSERT INTO TB_LA_IS_MM_DB_MKPR(
+			CR_DT
+			, AUC_OBJ_DSC
+			, MOMTH_OLD_C
+			, ST_AUC_DT
+			, ED_AUC_DT
+			, TOT_SOG_CNT
+			, TOT_SBID_CNT
+			, MAX_SBID_UPR
+			, AVG_SBID_UPR
+			, MIN_SBID_UPR
+			, SOG_CNT_INC_RATE
+			, SBID_AVG_INC_RATE
+		)
+		SELECT
+			TO_CHAR(SYSDATE,'YYYYMMDD') CR_DT
+			, T.AUC_OBJ_DSC
+			, T.MONTH_OLD_C
+			, TO_CHAR(ADD_MONTHS(SYSDATE,-1),'YYYYMMDD') ST_AUC_DT
+			, TO_CHAR(SYSDATE,'YYYYMMDD') ED_AUC_DT
+			, COUNT(*) TOT_SOG_CNT
+			, COUNT(DECODE(T.SEL_STS_DSC,'22',1)) TOT_SBID_CNT
+			, MAX(DECODE(T.SEL_STS_DSC,'22',T.SRA_SBID_AM)) MAX_SBID_UPR
+			, TRUNC(AVG(DECODE(T.SEL_STS_DSC,'22',T.SRA_SBID_AM))) AVG_SBID_UPR
+			, MIN(DECODE(T.SEL_STS_DSC,'22',T.SRA_SBID_AM)) MIN_SBID_UPR
+			, '' SOG_CNT_INC_RATE
+			, '' SBID_AVG_INC_RATE
+		FROM (
+			<include refid="selDashBoard"></include>
+			WHERE A.AUC_DT BETWEEN TO_CHAR(ADD_MONTHS(SYSDATE,-1),'YYYYMMDD') AND TO_CHAR(SYSDATE,'YYYYMMDD')
+		) T
+		GROUP BY T.AUC_OBJ_DSC , T.MONTH_OLD_C
+	</insert>
+	
+	<select id="selMatchMwmnPhoneInfo" resultType="HashMap">
+		/*BatchMapper.selMatchMwmnPhoneInfo_20230103_추가*/
+		SELECT NA_BZPLC
+			, TRMN_AMNNO
+			, CLNTNM
+			, TEL_NO
+			, ADJ_BRC
+		FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY A.LSCHG_DTM DESC) AS N_NUM
+				, A.NA_BZPLC
+				, A.TRMN_AMNNO
+				, '00000000' AS AUC_DT
+				, BZ.CLNTNM
+				, BZ.TEL_NO
+				, WM.BRC AS ADJ_BRC
+			FROM TB_LA_IS_MM_MWMN A
+				INNER JOIN TB_LA_IS_BM_BZLOC BZ
+				ON(A.NA_BZPLC = BZ.NA_BZPLC)
+				INNER JOIN TB_LA_IS_MM_WMC WM
+				ON(A.NA_BZPLC = WM.NA_BZPLC)
+			WHERE A.MB_INTG_NO = #{MB_INTG_NO}
+		) 
+		WHERE N_NUM = 1
+	</select>
+	
+	<select id="selMatchFhsPhoneInfo" resultType="HashMap">
+		/*BatchMapper.selMatchFhsPhoneInfo_20230103_추가*/
+		SELECT NA_BZPLC
+			, TRMN_AMNNO
+			, CLNTNM
+			, TEL_NO
+			, ADJ_BRC
+		  FROM (
+			SELECT ROW_NUMBER() OVER(ORDER BY A.LSCHG_DTM DESC) AS N_NUM
+				, A.NA_BZPLC
+				, A.FHS_ID_NO || '-' || A.FARM_AMNNO AS TRMN_AMNNO 
+				, '00000000' AS AUC_DT
+				, BZ.CLNTNM
+				, BZ.TEL_NO
+				, WM.BRC AS ADJ_BRC
+			FROM TB_LA_IS_MM_FHS A
+				INNER JOIN TB_LA_IS_BM_BZLOC BZ
+				ON(A.NA_BZPLC = BZ.NA_BZPLC)
+				INNER JOIN TB_LA_IS_MM_WMC WM
+				ON(A.NA_BZPLC = WM.NA_BZPLC)
+			WHERE A.MB_INTG_NO = #{MB_INTG_NO}
+		) 
+		WHERE N_NUM = 1
+	</select>
+</mapper>

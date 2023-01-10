@@ -41,23 +41,23 @@
         /******************************
          * 주소 검색
          ******************************/
-        $("#pb_SearchZip").on('click',function(e){
-            e.preventDefault();
-            this.blur();
-            //fn_CallRoadnmPopup(function(result){
-            //    if(result){
-            //    	$("#zip").val(result.ZIP);
-            //        $("#dongup").val(result.RODNM_ADR);
-            //    }
-            //});
-            new daum.Postcode({
-		        oncomplete: function(data) {
-		        	console.log(data);
-            		$("#zip").val(data.zonecode);
-                    $("#dongup").val(data.roadAddress);
-		        }
-		    }).open();
-        });
+         $("#pb_SearchZip").on('click',function(e){
+             e.preventDefault();
+             this.blur();
+             //fn_CallRoadnmPopup(function(result){
+             //    if(result){
+             //    	$("#zip").val(result.ZIP);
+             //        $("#dongup").val(result.RODNM_ADR);
+             //    }
+             //});
+             new daum.Postcode({
+ 		        oncomplete: function(data) {
+ 		        	console.log(data);
+             		$("#zip").val(data.zonecode);
+                     $("#dongup").val(data.roadAddress);
+ 		        }
+ 		    }).open();
+         });
         
         /******************************
          * 이미지 미리보기
@@ -145,9 +145,6 @@
 				break;
             	}
             });            
-            result.SMS_BUFFER_2.split(',').forEach((o,i)=>{            	
-				$('#buffer_'+o.toLowerCase()).prop('checked',true);
-            });            
             $('#na_bzplc').attr("disabled",true);
             if(result.SEAL_IMG_FLNM != ""){
             	$("#pb_SealImgView").show();
@@ -179,8 +176,8 @@
             $('#trpl_shrt_c').focus();
             return;
         }
+        
 		var buffer_1='';
-		var buffer_2 = '';
 		var index=0;
 		$('.sms_buffer_1').each((i,o)=>{
         	if($(o).is(':checked')){
@@ -189,15 +186,7 @@
         		index++;
         	}
         });
-		$('.sms_buffer_2').each((i,o)=>{
-        	if($(o).is(':checked')){
-        		if(index > 0) buffer_2 +=','; 
-        		buffer_2 += $(o).val();
-        		index++;
-        	}
-        });
         $('#sms_buffer_1').val(buffer_1);
-        $('#sms_buffer_2').val(buffer_2);
         
         if(g_newFlg == true){
              MessagePopup('YESNO',"신규등록 하시겠습니까?",function(res){
@@ -560,7 +549,7 @@
                                 <th scope="row">성별</th>
                                 <th scope="row">계대</th>
                                 <th scope="row">산차</th>
-                                <th scope="row">응찰하한가</th>
+                                <th scope="row">예정가</th>
                                 <th scope="row">낙찰가</th>
                                 <th scope="row">낙찰자</th>
                             </tr>                         
@@ -732,7 +721,7 @@
                                     <input type="text" id="areanm" maxlength="50">
                                 </td>
                             </tr>                            
-                            <tr>
+                            <!-- tr>
                                 <th scope="row">위도</th>
                                 <td >
                                     <input type="text" id="lat" maxlength="20">
@@ -741,7 +730,7 @@
                                 <td >
                                     <input type="text" id="lng" maxlength="20">
                                 </td>
-                            </tr>                            
+                            </tr-->
                             <tr>
                                 <th scope="row">경매여부</th>
                                 <td>
@@ -779,6 +768,19 @@
                                 </td>
                             </tr>               
                             <tr>
+                                <th scope="row">카카오 영상송출 수</th>
+                                <td >
+                                    <input type="text" id="kko_svc_cnt" class="number" maxlength="2">
+                                </td>
+                                <th scope="row">키오스크 사용여부</th>
+                                <td >
+                                    <select id="kiosk_yn">
+                                        <option value="1">여</option>
+                                        <option value="0">부</option>
+                                    </select>
+                                </td>
+                            </tr>               
+                            <tr>
                                 <th scope="row">출하주 정보 수정 제외항목</th>
                                 <td colspan = '3'>
                                     <input type="hidden" id="sms_buffer_1" value=""/>
@@ -790,30 +792,6 @@
                                     <label for="buffer_3">휴대전화번호</label>
                                     <input type="checkbox" id="buffer_4" class="sms_buffer_1" value="AC"/>
                                     <label for="buffer_4">계좌번호</label>
-                                </td>
-                            </tr>   
-                            <tr>
-                                <th scope="row">모바일업무 메뉴</th>
-                                <td colspan = '3'>
-                                    <input type="hidden" id="sms_buffer_2" value=""/>                                		
-	                                <input type="checkbox" id="buffer_lw" class="sms_buffer_2" value="LW"/>
-	                                <label for="buffer_lw">하한가/중량등록</label>                                		
-	                                <input type="checkbox" id="buffer_aw" class="sms_buffer_2" value="AW"/>
-	                                <label for="buffer_aw">중량일괄등록</label>                                		
-	                                <input type="checkbox" id="buffer_al" class="sms_buffer_2" value="AL"/>
-	                                <label for="buffer_al">하한가일괄등록</label>                                		
-	                                <input type="checkbox" id="buffer_n" class="sms_buffer_2" value="N"/>
-	                                <label for="buffer_n">계류대변경</label>
-	                                <input type="checkbox" id="buffer_sb" class="sms_buffer_2" value="SB"/>
-	                                <label for="buffer_sb">낙찰결과 조회</label>
-	                                <input type="checkbox" id="buffer_scow" class="sms_buffer_2" value="SCOW"/>
-	                                <label for="buffer_scow">출장우 리스트</label>
-	                                <input type="checkbox" id="buffer_smcow" class="sms_buffer_2" value="SMCOW"/>
-	                                <label for="buffer_smcow">미감정 임신우</label>
-	                                <input type="checkbox" id="buffer_i" class="sms_buffer_2" value="I"/>
-	                                <label for="buffer_i">큰소 정보 입력</label>
-	                                <input type="checkbox" id="buffer_s" class="sms_buffer_2" value="S"/>
-	                                <label for="buffer_s">호가 낙찰 등록</label>
                                 </td>
                             </tr>   
                         </tbody>

@@ -31,9 +31,10 @@ public class LALM0114ServiceImpl implements LALM0114Service{
 	@Override
 	public Map<String, Object> LALM0114_insIndv(Map<String, Object> map) throws Exception {
 		
-		Map<String, Object> mcaMap  = mcaUtil.tradeMcaMsg("2200", map);
+		Map<String, Object> mcaMap  = mcaUtil.tradeMcaMsg("4700", map);
 		Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");		
-		double inq_cn_d = (double) dataMap.get("INQ_CN");		
+		//double inq_cn_d = (double) dataMap.get("INQ_CN");
+		double inq_cn_d = Double.valueOf(dataMap.getOrDefault("INQ_CN","0").toString());
 		int inq_cn = (int) Math.round(inq_cn_d);
 		
 		//한우종합 개체정보 확인

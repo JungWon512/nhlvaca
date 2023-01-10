@@ -22,4 +22,29 @@ public interface LALM0222PMapper {
 
 	Map<String, Object> LALM0222P_selBmBzloc(Map<String, Object> demap);
 
+
+	int LALM0222P_updPostInf(Map<String, Object> map);
+
+	int LALM0222P_insPostInf(Map<String, Object> map);
+
+	int LALM0222P_updSibInf(Map<String, Object> map);
+
+	int LALM0222P_insSibInf(Map<String, Object> map);
+
+	int LALM0222P_delSibInf(Map<String, Object> temp) throws Exception;
+
+	int LALM0222P_delPostInf(Map<String, Object> temp) throws Exception;
+
+	int LALM0222P_delCattleMvInf(Map<String, Object> temp) throws Exception;
+
+	int LALM0222P_insCattleMvInf(Map<String, Object> temp) throws Exception;
+
+	void LALM0222P_delChildbirthInf(Map<String, Object> temp) throws Exception;
+
+	int LALM0222P_insChildbirthInf(Map<String, Object> temp) throws Exception;
+
+	int LALM0222P_delMatingInf(Map<String, Object> tempMap) throws Exception;
+
+	int LALM0222P_insMatingInf(Map<String, Object> bhCrossMap) throws Exception;
+
 }

@@ -15,4 +15,6 @@ public interface LALM0311Service {
 	
 	Map<String, Object> LALM0311_updPgm(Map<String, Object> map) throws Exception;
 
+	Map<String, Object> LALM0311_updPgmOnlySave(Map<String, Object> map) throws Exception;
+
 }

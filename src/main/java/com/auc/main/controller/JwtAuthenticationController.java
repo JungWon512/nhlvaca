@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.type.filter.RegexPatternTypeFilter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -30,11 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.auc.common.config.CommonFunc;
 import com.auc.common.config.ConvertConfig;
+import com.auc.common.config.CookieUtil;
 import com.auc.common.config.CriptoConfig;
 import com.auc.common.config.JwtTokenUtil;
 import com.auc.common.config.RSACriptoConfig;
 import com.auc.common.exception.CusException;
 import com.auc.common.exception.ErrorCode;
+import com.auc.common.util.StringUtils;
 import com.auc.common.vo.JwtRequest;
 import com.auc.common.vo.JwtResponse;
 import com.auc.common.vo.ResolverMap;
@@ -60,6 +64,8 @@ public class JwtAuthenticationController {
 	@Autowired
 	CriptoConfig criptoConfig;
 	@Autowired
+	CookieUtil cookieUtil;
+	@Autowired
 	CommonFunc commonFunc;	
 	@Autowired
 	ConvertConfig convertConfig;
@@ -73,7 +79,8 @@ public class JwtAuthenticationController {
 	LogService logService;
 	@Autowired
 	McaUtil mcaUtil;
-	
+	@Value("${spring.profiles.service-name:nhlva}")
+	private String serviceName;
 
 	@Value("${cript.key}")
     private String key;
@@ -88,11 +95,13 @@ public class JwtAuthenticationController {
 		PrivateKey privateKey = rsaCriptoConfig.StringToPrivateKey(map.get("RSAKey").toString());				
 		map.put("user_id", rsaCriptoConfig.decryptRsa(privateKey, (String)map.get("user_id")));
 		map.put("user_pw", rsaCriptoConfig.decryptRsa(privateKey, (String)map.get("user_pw")));
+		map.put("na_bzplc", rsaCriptoConfig.decryptRsa(privateKey, (String)map.get("na_bzplc")));
 		
 		int result = 0;    	    	    	
     	Map<String, String> loginMap = userDetailsService.signIn(map);
 		
 
+        String ip = (req.getHeader("X-Forwarded-For") ==  null)?req.getRemoteAddr():req.getHeader("X-Forwarded-For");
     	//사용자 없음
     	if(loginMap.size() == 0) {
     		throw new CusException(ErrorCode.CUSTOM_ERROR, "사용자 정보를 찾을수 없습니다.");
@@ -105,6 +114,11 @@ public class JwtAuthenticationController {
 		
     	//패스워드 일치 확인
     	int chkPw = 0;
+		Map<String, Object> tempMap = new HashMap<String, Object>();
+		tempMap.put("usrid", loginMap.get("USRID"));
+		tempMap.put("user_pw", map.get("user_pw"));
+		tempMap.put("na_bzplc", loginMap.get("NA_BZPLC"));
+    	//chkPw = userDetailsService.selChkPw(tempMap);
     	chkPw = userDetailsService.selChkPw((String)loginMap.get("USRID"), (String)map.get("user_pw"));
 
 	
@@ -123,7 +137,7 @@ public class JwtAuthenticationController {
 			String apl_ed_dtm = "";
 			
 			//관리자 제외
-			if(!"001".equals(loginMap.get("GRP_C"))) {				
+			if(!"001".equals(loginMap.get("GRP_C")) && !"tibero".equals(serviceName)) {
 				secMap.put("eno", loginMap.get("USRID"));
 				secMap.put("na_bzplc", loginMap.get("NA_BZPLC"));
 				Map<String, Object> secreMap = (Map<String, Object>) mcaUtil.tradeMcaMsg("2800", secMap).get("jsonData");
@@ -131,6 +145,14 @@ public class JwtAuthenticationController {
 				//재직여부가 1이 아니면 로그인하면안됨				
 				if(!"1".equals(secreMap.get("HDOF_YN"))) {
 					//로그인하면 안됨
+			        Map<String, Object> logMap = new HashMap<String, Object>();
+			        logMap.put("na_bzplc", loginMap.get("NA_BZPLC"));
+			        logMap.put("usrid", loginMap.get("USRID"));
+			        logMap.put("url_nm", "/signIn");
+			        logMap.put("pgid",   "퇴직자 접속시도");
+			        logMap.put("ipadr",  ip);
+			        logMap.put("data_prc_dsc", "D");			        
+			        logService.insUserLog(logMap);
 					throw new CusException(ErrorCode.CUSTOM_ERROR, "퇴직자입니다.");
 //					return ResponseEntity.ok(null);
 				}
@@ -140,9 +162,6 @@ public class JwtAuthenticationController {
 			}
 			
 			String security = "0";
-			
-			//로그인 성공 시 비밀번호 틀린 횟수 초길화
-			int udpPwerrInit = userDetailsService.updPwerr_ntInit(loginMap);
 
 	    	String jwtStr = map.get("user_id") + "|" + loginMap.get("NA_BZPLC");
 			JwtRequest authenticationRequest = new JwtRequest();
@@ -152,13 +171,22 @@ public class JwtAuthenticationController {
 	    	authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());	    
 	    		    	
 	        final JwtUser userDetails = (JwtUser) userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-	        
+
 	        userDetails.setApl_ed_dtm("".equals(apl_ed_dtm) ? "19000101120000" : apl_ed_dtm);
 	        userDetails.setSecurity(security);
 	        final String token = jwtTokenUtil.generateToken(userDetails);
+	        final String refreshToken = jwtTokenUtil.generateTokenRefresh(userDetails);
 	        
-	        String ip = (req.getHeader("X-Forwarded-For") ==  null)?req.getRemoteAddr():req.getHeader("X-Forwarded-For");
-            
+	        loginMap.put("refresh_token", refreshToken);
+	        //userDetailsService.updRefreshToken(loginMap);
+			
+			/* 로그인 성공 시 비밀번호 틀린 횟수 초기화
+	        * + 리프레쉬토큰 db저장
+	        */
+			int udpPwerrInit = userDetailsService.updPwerr_ntInit(loginMap);
+	        cookieUtil.createCookie("refresh_token", criptoConfig.encript(refreshToken),60*60*2);
+	        cookieUtil.createCookie("token", token,60*30,resp);
+            session.setAttribute("token", refreshToken);
 	        //로그인 로그 입력
 	        Map<String, Object> logMap = new HashMap<String, Object>();
 	        logMap.put("na_bzplc", loginMap.get("NA_BZPLC"));
@@ -201,7 +229,14 @@ public class JwtAuthenticationController {
 	    userDetails.setApl_ed_dtm("19000101120000");
 	    userDetails.setSecurity("0");
 	    final String token = jwtTokenUtil.generateToken(userDetails);
-	    
+        final String refreshToken = jwtTokenUtil.generateTokenRefresh(userDetails);
+        loginMap.put("refresh_token", refreshToken);
+		int udpPwerrInit = userDetailsService.updPwerr_ntInit(loginMap);
+		
+        req.getSession(true).setAttribute("token", refreshToken);
+        cookieUtil.createCookie("refresh_token", criptoConfig.encript("newRtoken"),60*60*2,resp);
+        cookieUtil.createCookie("token", token ,60*30,resp);
+	     
 	    String ip = (req.getHeader("X-Forwarded-For") ==  null)?req.getRemoteAddr():req.getHeader("X-Forwarded-For");
 	    
 	    //로그인 로그 입력
@@ -227,6 +262,21 @@ public class JwtAuthenticationController {
 	public Map<String, Object> logout(HttpServletRequest req, HttpServletResponse resp) throws Exception{
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("result", "logOut");
+		HttpSession session = req.getSession();
+		String token = (String)session.getAttribute("token");
+		if(StringUtils.isNotEmpty(token)) {
+	        Map<String,Object> temp = new HashMap<String, Object>();
+	        temp.put("refresh_token", token);
+	        Map<String, String> userMap = userDetailsService.signIn(temp);
+	        if(token.equals(userMap.getOrDefault("TOKEN",""))) {
+		        temp.put("refresh_new_token", "");
+		        temp.put("usrid", jwtTokenUtil.getAllClaimsFromTokenClaim(token).get("userId"));
+		        userDetailsService.updRefreshToken(temp);				        	
+	        }			
+		}
+		session.setAttribute("token", "");
+		session.invalidate();
+		
 		JSONObject reJson = commonFunc.convertMaptoJson(resultMap);
 		String encript = criptoConfig.encript(reJson.toString());
 		Map<String, Object> reMap = new HashMap<String, Object>();

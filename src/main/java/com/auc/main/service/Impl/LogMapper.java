@@ -12,4 +12,8 @@ public interface LogMapper {
 	int insMmIndvLog(Map<String, Object> map) throws Exception;
 
 	int insMwmnLog(Map<String, Object> map) throws Exception;
+	int insGrpLog(Map<String, Object> map) throws Exception;
+	void insGrpUsrLog(Map<String, Object> map) throws Exception;
+	
+	
 }

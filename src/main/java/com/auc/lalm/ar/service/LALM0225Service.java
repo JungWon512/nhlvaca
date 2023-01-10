@@ -12,4 +12,12 @@ public interface LALM0225Service {
 	 */
 	List<Map<String, Object>> LALM0225_selList(Map<String, Object> map);
 
+	/**
+	 * 출장우 접수 -> 출장우 등록 전환
+	 * @param map
+	 * @return
+	 * @throws Exception 
+	 */
+	Map<String, Object> LALM0225_insSogCow(Map<String, Object> map) throws Exception;
+
 }

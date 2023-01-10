@@ -31,6 +31,12 @@
 </style>
 
 <script type="text/javascript">
+	var locGbList              = [{value : "", text : "선택", details : ""}
+								, {value : "L1", text : "중부1", details : "합천읍,대병,묘산,봉산"}
+								, {value : "L2", text : "중부2", details : "대양,용주,율곡"}
+								, {value : "L3", text : "동부", details : "초계,적중,청덕,쌍책,덕곡"}
+								, {value : "L4", text : "남부", details : "삼가,쌍백,가희"}
+								, {value : "L5", text : "북부", details : "가야,야로"}];
 	////////////////////////////////////////////////////////////////////////////////
 	//  공통버튼 클릭함수 시작
 	////////////////////////////////////////////////////////////////////////////////
@@ -117,7 +123,8 @@
 		fn_InitFrm('frm_Search');
 		
 		$("#auc_dt_st").datepicker().datepicker("setDate", fn_getDay(0, 'YYYY-MM-DD'));
-		$("#auc_dt_en").datepicker().datepicker("setDate", fn_getDay(365, 'YYYY-MM-DD'));
+		$("#auc_dt_en").datepicker().datepicker("setDate", fn_getDay(0, 'YYYY-MM-DD'));
+		fn_setChgRadio('auc_obj_dsc','0')
 	}
 	
 	/*------------------------------------------------------------------------------
@@ -172,14 +179,61 @@
 		fn_ExcelDownlad('grd_MhSogCow', '출장우내역조회',tempObj);
 	}
 	
+	/*------------------------------------------------------------------------------
+	 * 1. 함 수 명    : 축경통자료 엑셀 함수
+	 * 2. 입 력 변 수 : N/A
+	 * 3. 출 력 변 수 : N/A
+	 ------------------------------------------------------------------------------*/
 	function fn_ExcelMca() {
 		fn_ExcelDownlad('grd_MhSogCow_mca', '축경통자료', null);
 	}
 	
+	/*------------------------------------------------------------------------------
+	 * 1. 함 수 명    : 엑셀자료 엑셀 함수
+	 * 2. 입 력 변 수 : N/A
+	 * 3. 출 력 변 수 : N/A
+	 ------------------------------------------------------------------------------*/
 	function fn_ExcelData() {
 		fn_ExcelDownlad('grd_MhSogCow_data', '엑셀자료', null);
 	}
 	
+	/*------------------------------------------------------------------------------
+	 * 1. 함 수 명    : 출장우 등록 함수
+	 * 2. 입 력 변 수 : N/A
+	 * 3. 출 력 변 수 : N/A
+	 ------------------------------------------------------------------------------*/
+	function fn_RegistEntry() {
+		var srchData		= new Object();
+		var result			= null;
+	
+		var aucDtSt = $("#auc_dt_st").val();
+		var aucDtEn = $("#auc_dt_en").val();
+		if(aucDtSt != aucDtEn) {
+			MessagePopup('OK','경매일자를 확인하세요.', null);
+			return;
+		}
+		
+		srchData["frm_Search"]	= setFrmToData("frm_Search");
+		
+		result = sendAjax(srchData, "/LALM0225_insSogCow", "POST");
+		
+		if(result.status == RETURN_SUCCESS){
+			MessagePopup("OK", "저장되었습니다.",function(res){
+				mv_RunMode = 3;
+				mv_auc_dt = $("#auc_dt").val();
+				mv_auc_obj_dsc = $("#auc_obj_dsc").val();
+				mv_InitBoolean = true;
+				fn_Init();
+			});
+		}
+		else {
+			showErrorMessage(result);
+			mv_InitBoolean = true;
+			fn_Init();
+			return;
+		}
+		
+	}
 	////////////////////////////////////////////////////////////////////////////////
 	//  공통버튼 클릭함수 종료
 	////////////////////////////////////////////////////////////////////////////////
@@ -197,7 +251,7 @@
 		}
 		var searchResultColNames = ["H사업장코드"
 									,"경매<br/>대상", "경매일자", "경매<br/>번호", "접수일자", "접수<br/>번호", "예약취소", "취소일자", "바코드", "성별", "출하자"
-									,"주소", "동이하주소", "사료<br/>사용여부", "생년월일", "어미구분", "어미<br/>바코드", "개체<br/>관리번호", "등록구분", "월령", "산차"
+									,"주소", "동이하주소", "지역구분", "사료<br/>사용여부", "생년월일", "어미구분", "어미<br/>바코드", "개체<br/>관리번호", "등록구분", "월령", "산차"
 									,"계대", "아비<br/>KPN", "브루셀라", "백신접종", "전화번호","휴대전화", "계좌번호", "비고", "친자검사<br/>여부", "친자검사<br/>결과"
 									,"자가여부", "수송자", "추가운송비", "사료대금", "임신구분", "인공수정일", "수정<br/>KPN", "분만예정일", "임신<br/>개월수", "임신<br/>감정여부"
 									,"괴사<br/>감정여부", "제각여부", "최초등록자", "최초등록일", "최종수정자", "최종수정일"];
@@ -215,8 +269,9 @@
 									{name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
 									{name:"FTSNM",                index:"FTSNM",                width:80,  sortable:false, align:'center'},
 									
-									{name:"DONGUP",               index:"DONGUP",               width:150, sortable:false, align:'left'},
+									{name:"DONGUP",               index:"DONGUP",               width:200, sortable:false, align:'left'},
 									{name:"DONGBW",               index:"DONGBW",               width:150, sortable:false, align:'left'},
+									{name:"LOC_GB",               index:"LOC_GB",               width:150, sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCustonCodeString(locGbList)}},
 									{name:"SRA_FED_SPY_YN",       index:"SRA_FED_SPY_YN",       width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 									{name:"BIRTH",                index:"BIRTH",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
 									{name:"MCOW_DSC",             index:"MCOW_DSC",             width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
@@ -234,7 +289,7 @@
 									{name:"CUS_MPNO",             index:"CUS_MPNO",             width:120, sortable:false, align:'center'},
 									{name:"SRA_FARM_ACNO",        index:"SRA_FARM_ACNO",        width:120, sortable:false, align:'center'},
 									{name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable:false, align:'left'},
-									{name:"DNA_YN_CHE",           index:"DNA_YN_CHE",           width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"DNA_YN_CHK",           index:"DNA_YN_CHK",           width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 									{name:"DNA_JUG_RESULT",       index:"DNA_JUG_RESULT",       width:60,  sortable:false, align:'center'},
 									
 									{name:"TRPCS_PY_YN",          index:"TRPCS_PY_YN",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
@@ -341,8 +396,8 @@
 		$("#grd_MhSogCow_1").jqGrid("setLabel", "rn","No");  
 		//고정 타이틀 빼고 전부 숨김처리
 		$("#grd_MhSogCow_1").jqGrid("hideCol",[
-			"DONGUP", "DONGBW", "SRA_FED_SPY_YN", "BIRTH", "MCOW_DSC", "MCOW_SRA_INDV_AMNNO", "INDV_ID_NO", "RG_DSC", "MTCN", "MATIME"
-			, "SRA_INDV_PASG_QCN", "KPN_NO", "BRCL_ISP_DT", "VACN_DT", "OHSE_TELNO", "CUS_MPNO", "SRA_FARM_ACNO", "RMK_CNTN", "DNA_YN_CHE", "DNA_JUG_RESULT"
+			"DONGUP", "DONGBW", "LOC_GB", "SRA_FED_SPY_YN", "BIRTH", "MCOW_DSC", "MCOW_SRA_INDV_AMNNO", "INDV_ID_NO", "RG_DSC", "MTCN", "MATIME"
+			, "SRA_INDV_PASG_QCN", "KPN_NO", "BRCL_ISP_DT", "VACN_DT", "OHSE_TELNO", "CUS_MPNO", "SRA_FARM_ACNO", "RMK_CNTN", "DNA_YN_CHK", "DNA_JUG_RESULT"
 			, "TRPCS_PY_YN", "VHC_DRV_CAFFNM", "SRA_TRPCS", "SRA_FED_SPY_AM", "PPGCOW_FEE_DSC", "AFISM_MOD_DT", "MOD_KPN_NO", "PTUR_PLA_DT", "PRNY_MTCN", "PRNY_JUG_YN"
 			, "NCSS_JUG_YN", "DEBD_CANCEL_YN", "FSRGMN_NM", "FSRG_DTM", "LSCHG_NM", "LSCHG_DTM"]);
 		
@@ -556,7 +611,7 @@
 							{name:"VHC_SHRT_C",           index:"VHC_SHRT_C",           width:80,  sortable:false, align:'center'},
 							{name:"VHC_DRV_CAFFNM",       index:"VHC_DRV_CAFFNM",       width:80,  sortable:false, align:'center'},
 							{name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable:false, align:'left'},
-							{name:"DNA_YN_CHE",           index:"DNA_YN_CHE",           width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+							{name:"DNA_YN_CHK",           index:"DNA_YN_CHK",           width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 							{name:"DNA_JUG_RESULT",       index:"DNA_JUG_RESULT",       width:60,  sortable:false, align:'center'},
 							
 							{name:"AUC_RECV_DT",          index:"AUC_RECV_DT",          width:90,  sortable:false, align:'center', formatter:'gridDateFormat'},
@@ -614,7 +669,7 @@
 									<th scope="row">경매대상구분</th>
 									<td>
 										<div class="cellBox" id="rd_auc_obj_dsc" style="width:40%;">
-											<input type="hidden" id="auc_obj_dsc" name="auc_obj_dsc" />
+											<input type="hidden" id="auc_obj_dsc" name="auc_obj_dsc" value="0" />
 											<div class="cell">
 												<input type="radio" id="auc_obj_dsc_0" name="auc_obj_dsc_radio" value="0" onclick="javascript:fn_setChgRadio('auc_obj_dsc','0');" checked="checked" />
 												<label>전체</label>

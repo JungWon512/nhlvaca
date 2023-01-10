@@ -42,7 +42,7 @@
     	 
          fn_setCodeBox("cb_auc_obj_dsc", "AUC_OBJ_DSC", 2, true);
  //        fn_setCodeBox("maco_yn", "MACO_YN", 1, true);
-		 
+         
          fn_Init();    
          /******************************
           * 폼변경시 클리어 이벤트
@@ -145,7 +145,7 @@
     	var tot_m_sra_sbid_am = 0;
     	var tot_m_wt = 0;
     	var tot_m_cnt = 0;
-    	   
+    	
     	$('#mainGrid').getRowData().forEach((o,i)=>{
     		if(o.AUC_DT != '일계'){
     			tot_lows_sbid_lmt_am += new Number(o.LOWS_SBID_LMT_AM);
@@ -214,7 +214,7 @@
         }
         
         	/*                            1          2         3        4      5        6       7        8            9          10     		  11	   			   12	  			 13 	                14               15        16  */
-        	var searchResultColNames = ["경매일자", "경매대상", "등록구분", "성별", "출장두수", "두수", "유찰두수", "전체(kg)", "평균(kg)", "총 응찰하한가", "응찰하한가<br>평균금액(A)", "총 낙찰가<br>금액", "낙찰가<br>평균금액(B)", "비고(평균차액)<br>(B-A)", "최고가", "최저가"
+        	var searchResultColNames = ["경매일자", "경매대상", "등록구분", "성별", "출장두수", "두수", "유찰두수", "전체(kg)", "평균(kg)", "총 예정가", "예정가<br>평균금액(A)", "총 낙찰가<br>금액", "낙찰가<br>평균금액(B)", "비고(평균차액)<br>(B-A)", "최고가", "예정가"
         								];        
 	        var searchResultColModel = [						 
 						                {name:"AUC_DT",     		    index:"AUC_DT",     		    width:70, align:'center'},
@@ -274,8 +274,8 @@
         var ftot_tot_hdcn2        = 0; //유찰두수                
         var ftot_tot_wt           = 0; //전체(kg)                
         var ftot_avg_wt           = 0; //평균(kg)                
-        var ftot_lows_sbid_lmt_am = 0; //총 응찰하한가(A)
-        var ftot_avg_pr           = 0; //응찰하한가<br>평균금액( 
+        var ftot_lows_sbid_lmt_am = 0; //총 예정가(A)
+        var ftot_avg_pr           = 0; //예정가<br>평균금액( 
         var ftot_sra_sbid_am      = 0; //총 낙찰가<br>금액       
         var ftot_sra_avg_sbid_upr = 0; //낙찰가<br>평균금액(B)   
         var ftot_bigo             = 0; //비고(평균차액)<br>(B-A) 	     
@@ -285,8 +285,8 @@
         var mtot_tot_hdcn2        = 0; //유찰두수                
         var mtot_tot_wt           = 0; //전체(kg)                
         var mtot_avg_wt           = 0; //평균(kg)                
-        var mtot_lows_sbid_lmt_am = 0; //총 응찰하한가           
-        var mtot_avg_pr           = 0; //응찰하한가<br>평균금액(A)
+        var mtot_lows_sbid_lmt_am = 0; //총 예정가           
+        var mtot_avg_pr           = 0; //예정가<br>평균금액(A)
         var mtot_sra_sbid_am      = 0; //총 낙찰가<br>금액       
         var mtot_sra_avg_sbid_upr = 0; //낙찰가<br>평균금액(B)   
         var mtot_bigo             = 0; //비고(평균차액)<br>(B-A)   
@@ -296,11 +296,11 @@
         var tot_tot_hdcn2        = 0; //유찰두수                
         var tot_tot_wt           = 0; //전체(kg)                
         var tot_avg_wt           = 0; //평균(kg)                
-        var tot_lows_sbid_lmt_am = 0; //총 응찰하한가           
-        var tot_avg_pr           = 0; //응찰하한가<br>평균금액(A)
+        var tot_lows_sbid_lmt_am = 0; //총 예정가           
+        var tot_avg_pr           = 0; //예정가<br>평균금액(A)
         var tot_sra_sbid_am      = 0; //총 낙찰가<br>금액       
         var tot_sra_avg_sbid_upr = 0; //낙찰가<br>평균금액(B)   
-        var tot_bigo             = 0; //비고(평균차액)<br>(B-A)
+        var tot_bigo             = 0; //비고(평균차액)<br>(B-A)    
         
         var fCnt = 0;
         var mCnt = 0;
@@ -319,7 +319,7 @@
 	        	ftot_avg_pr           += parseInt(gridDatatemp[i].AVG_PR);	  
 	        	ftot_sra_sbid_am      += parseInt(gridDatatemp[i].SRA_SBID_AM);	  
 	        	ftot_sra_avg_sbid_upr += parseInt(gridDatatemp[i].SRA_AVG_SBID_UPR);	  
-	        	ftot_bigo             += parseInt(gridDatatemp[i].BIGO);	
+	        	ftot_bigo             += parseInt(gridDatatemp[i].BIGO);	  
 	        	fCnt++;
         	}
 			//수 합
@@ -327,7 +327,7 @@
 	        	mtot_tot_hdcn3        += parseInt(gridDatatemp[i].TOT_HDCN3);	      
 	        	mtot_tot_hdcn         += parseInt(gridDatatemp[i].TOT_HDCN);	  
 	        	mtot_tot_hdcn2        += parseInt(gridDatatemp[i].TOT_HDCN2);	  
-	        	mtot_tot_wt           += parseInt(gridDatatemp[i].TOT_WT); 
+	        	mtot_tot_wt           += parseInt(gridDatatemp[i].TOT_WT);	  
 	        	mtot_avg_wt           += parseInt(gridDatatemp[i].AVG_WT);	  
 	        	mtot_lows_sbid_lmt_am += parseInt(gridDatatemp[i].LOWS_SBID_LMT_AM);	  
 	        	mtot_avg_pr           += parseInt(gridDatatemp[i].AVG_PR);	  
@@ -341,7 +341,7 @@
 	        	tot_tot_hdcn3        += parseInt(gridDatatemp[i].TOT_HDCN3);	      
 	        	tot_tot_hdcn         += parseInt(gridDatatemp[i].TOT_HDCN);	  
 	        	tot_tot_hdcn2        += parseInt(gridDatatemp[i].TOT_HDCN2);	  
-	        	tot_tot_wt           += parseInt(gridDatatemp[i].TOT_WT);
+	        	tot_tot_wt           += parseInt(gridDatatemp[i].TOT_WT);	  
 	        	tot_avg_wt           += parseInt(gridDatatemp[i].AVG_WT);	  
 	        	tot_lows_sbid_lmt_am += parseInt(gridDatatemp[i].LOWS_SBID_LMT_AM);	  
 	        	tot_avg_pr           += parseInt(gridDatatemp[i].AVG_PR);	  
@@ -449,7 +449,7 @@
                             <col width="30">
                             <col width="50">
                             <col width="30">
-                            <col width="100">
+                            <col width="100">                          
                             <col width="100">
                             <col width="200">                        
                         </colgroup>

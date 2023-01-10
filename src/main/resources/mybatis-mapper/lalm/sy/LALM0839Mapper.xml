@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.sy.service.Impl.LALM0839Mapper">
+	
+	 <select id="LALM0839_selList" resultType="hashMap">
+	 	/*LALM0839Mapper.LALM0839_selList_20221117_추가*/
+	 	SELECT BAT_ID
+			, BAT_ACT_DT
+			, BAT_ACT_SEQ
+			, TO_CHAR(BAT_ST_DTM,'YYYY-MM-DD HH:MI:SS') AS BAT_ST_DTM
+			, TO_CHAR(BAT_ED_DTM,'YYYY-MM-DD HH:MI:SS') AS BAT_ED_DTM
+			, BAT_SUC_YN
+			, BAT_RST_MSG
+			, SUBSTR(BAT_ID, 7, 4) AS BAT_ID_NUM
+		FROM TB_LA_IS_MM_BATLOG
+		WHERE BAT_ST_DTM <![CDATA[>=]]> TO_DATE(#{st_dt} || '000000', 'YYYYMMDDHH24MISS')
+			AND BAT_ED_DTM <![CDATA[<=]]> TO_DATE(#{ed_dt} || '235959', 'YYYYMMDDHH24MISS')
+			<if test="srch_bat_id != null and srch_bat_id != ''">
+			AND BAT_ID = #{srch_bat_id}
+			</if>
+			<if test="bat_suc_yn != null and bat_suc_yn != ''">
+			AND BAT_SUC_YN = #{bat_suc_yn}
+			</if>
+		ORDER BY FSRG_DTM DESC	
+	</select>	
+</mapper>

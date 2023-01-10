@@ -1,10 +1,8 @@
 package com.auc.lalm.ar.controller;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,11 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.auc.common.config.CommonFunc;
 import com.auc.common.config.ConvertConfig;
-import com.auc.common.exception.CusException;
-import com.auc.common.exception.ErrorCode;
 import com.auc.common.vo.ResolverMap;
 import com.auc.lalm.ar.service.LALM0214P3Service;
-import com.auc.lalm.ar.service.LALM0214Service;
 
 @RestController
 public class LALM0214P3Controller {
@@ -62,6 +57,7 @@ public class LALM0214P3Controller {
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@ResponseBody
 	@RequestMapping(value="/LALM0214P3_selIndvSync", method=RequestMethod.POST)
 	public Map<String, Object> LALM0214P3_selIndvSync(ResolverMap rMap) throws Exception{				

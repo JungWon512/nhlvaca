@@ -86,5 +86,17 @@ public class LALM0311Controller {
 		
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="/LALM0311_updPgmOnlySave", method=RequestMethod.POST)
+	public Map<String, Object> LALM0311_updPgmOnlySave(ResolverMap rMap) throws Exception{				
+				
+		Map<String, Object> map   = convertConfig.conMap(rMap);
+		Map<String, Object> inMap = lalm0311Service.LALM0311_updPgmOnlySave(map);
+		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
+		
+		return reMap;	
+		
+	}
+	
 
 }

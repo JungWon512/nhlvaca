@@ -92,7 +92,7 @@
         fn_setClearFromFrm("frm_Search","#grd_MmMwmn");             
         
         $("#grd_MmMwmn").jqGrid("hideCol","MWMN_NA_TRPL_C");
-        $("#grd_MmMwmn").jqGrid("hideCol","FRLNO");
+        $("#grd_MmMwmn").jqGrid("hideCol","CUS_RLNO");
         $("#grd_MmMwmn").jqGrid("hideCol","TMS_YN");
         $("#grd_MmMwmn").jqGrid("hideCol","DEL_YN");
         $("#grd_MmMwmn").jqGrid("hideCol","RMK_CNTN");
@@ -154,7 +154,12 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Select(){     
-        var sel_rowid = $("#grd_MmMwmn").jqGrid("getGridParam", "selrow");        
+        var sel_rowid = $("#grd_MmMwmn").jqGrid("getGridParam", "selrow");    
+        if(sel_rowid == null || sel_rowid == undefined){
+        	MessagePopup('OK','검색결과에서 중도매인을 선택해주세요.');
+            return;
+        }
+        
         pageInfo.returnValue = $("#grd_MmMwmn").jqGrid("getRowData", sel_rowid);
         
         var parentInput =  parent.$("#pop_result_" + pageInfo.popup_info.PGID );
@@ -174,12 +179,12 @@
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["중도매인번호", "중도매인<br>거래처코드", "중도매인명", "실명번호<br>(앞6자리)","우편번호","동이상주소","동이하주소","자택 전화번호","휴대폰 번호","조합원여부","관내외<br>구분코드","개인정보제공<br>동의여부", "전송여부", "삭제여부", "비고", "인증번호", "불량거래인<br>여부" ];        
+        var searchResultColNames = ["중도매인번호", "중도매인<br>거래처코드", "중도매인명", "생년월일/사업자번호","우편번호","동이상주소","동이하주소","자택 전화번호","휴대폰 번호","조합원여부","관내외<br>구분코드","개인정보제공<br>동의여부", "전송여부", "삭제여부", "비고", "인증번호", "불량거래인<br>여부", "경매참여제한","회원통합번호"];        
         var searchResultColModel = [
                                      {name:"TRMN_AMNNO"			, index:"TRMN_AMNNO"		, width:80,  align:'center'},
                                      {name:"MWMN_NA_TRPL_C" 	, index:"MWMN_NA_TRPL_C"	, width:80,  align:'center'},
                                      {name:"SRA_MWMNNM"			, index:"SRA_MWMNNM"		, width:80,  align:'center'},
-                                     {name:"FRLNO"				, index:"FRLNO"				, width:80,  align:'center'},
+                                     {name:"CUS_RLNO"				, index:"CUS_RLNO"				, width:80,  align:'center'},
                                      {name:"ZIP"				, index:"ZIP"				, width:60,  align:'center'},
                                      {name:"DONGUP"				, index:"DONGUP"			, width:100, align:'left'},
                                      {name:"DONGBW"				, index:"DONGBW"			, width:100, align:'left'},
@@ -193,6 +198,8 @@
                                      {name:"RMK_CNTN"			, index:"RMK_CNTN"			, width:100,  align:'center'},
                                      {name:"SMS_NO"			    , index:"SMS_NO"			, width:70,  align:'center', hidden:true},
                                      {name:"BAD_TRMN_AMNNO"		, index:"BAD_TRMN_AMNNO"	, width:70,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+                                     {name:"AUC_PART_LIMIT_YN"			    , index:"AUC_PART_LIMIT_YN"			, width:90,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+                                     {name:"MB_INTG_NO"			    , index:"MB_INTG_NO"			, width:90,  align:'center'}
                                      
                                      ];
             
@@ -216,7 +223,7 @@
            },
         });
         $("#grd_MmMwmn").jqGrid("hideCol","MWMN_NA_TRPL_C");
-        $("#grd_MmMwmn").jqGrid("hideCol","FRLNO");
+        $("#grd_MmMwmn").jqGrid("hideCol","CUS_RLNO");
         $("#grd_MmMwmn").jqGrid("hideCol","TMS_YN");
         $("#grd_MmMwmn").jqGrid("hideCol","DEL_YN");
         $("#grd_MmMwmn").jqGrid("hideCol","RMK_CNTN");        

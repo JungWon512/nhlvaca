@@ -98,12 +98,23 @@
             MessagePopup('OK','메세지 종류를 선택하세요.');
             return;
     	}
+    	
+    	if($('#msg_plus').val().length > 40){
+            MessagePopup('OK','추가문구는 40자 이하로 입력해주세요.');
+            return;
+    	}
+    	        
+    	if($('#msg_plus').val().length > 40){
+            MessagePopup('OK','추가문구는 40자 이하로 입력해주세요.');
+            return;
+    	}
     	        
         //그리드 초기화
          $("#grd_Msg").jqGrid("clearGridData", true);
     	 
     	var srchData = new Object();
     	srchData["ctgrm_cd"]     = '3100';
+    	srchData["tms_type"]     = '01';
         srchData["auc_obj_dsc"]  = $("#auc_obj_dsc").val();
         srchData["auc_dt"]       = fn_dateToData($("#auc_dt").val());
         srchData["obj_gbn"]      = $("#obj_gbn").val();
@@ -118,6 +129,11 @@
             result = setDecrypt(results);
         }
         
+        //2022.10.31 추가문구 요건 추가
+       	const addMsg = $("#msg_plus").val() || '';
+       	result.map(e => {
+       		e.MSG_CNTN = e.MSG_CNTN + addMsg;
+       	})
         fn_CreateGrid(result);
         
     }
@@ -159,6 +175,7 @@
     	    	
     	var srchData = new Object();
         srchData["ctgrm_cd"]     = '3100';
+        srchData["tms_type"]     = '01';
         srchData["auc_obj_dsc"]  = $("#auc_obj_dsc").val();
         srchData["auc_dt"]       = fn_dateToData($("#auc_dt").val());
         srchData["obj_gbn"]      = $("#obj_gbn").val();
@@ -178,9 +195,6 @@
         	fn_Search();
             return;
         }
-        
-        
-        
     }
     
     //메세지 라디오 설정
@@ -192,27 +206,27 @@
         	//구미칠곡        	
         	if("8808990657615" == App_na_bzplc){
         		$("#msg_div").append("<input type='radio' id='msg_gbn_01' name='msg_gbn_radio' value='01'/>"
-			                        +"<label for='msg_gbn_01'>경매전(응찰자)</label>"
+			                        +"<label for='msg_gbn_01' style='margin-right:10px;'>경매전(응찰자)</label>"
 			                        +"<input type='radio' id='msg_gbn_02' name='msg_gbn_radio' value='02'/>"
-			                        +"<label for='msg_gbn_02'>경매후(낙찰평균)</label>"
+			                        +"<label for='msg_gbn_02' style='margin-right:10px;'>경매후(낙찰평균)</label>"
 			                        +"<input type='radio' id='msg_gbn_03' name='msg_gbn_radio' value='03'/>"
-			                        +"<label for='msg_gbn_03'>경매후(최고,최저)</label>"
+			                        +"<label for='msg_gbn_03' style='margin-right:10px;'>경매후(최고,최저)</label>"
 			                        +"<input type='radio' id='msg_gbn_04' name='msg_gbn_radio' value='04'/>"
-			                        +"<label for='msg_gbn_04'>경매후(입금금액)</label>"); 
+			                        +"<label for='msg_gbn_04' style='margin-right:10px;'>경매후(입금금액)</label>"); 
         	}else{
         		$("#msg_div").append("<input type='radio' id='msg_gbn_01' name='msg_gbn_radio' value='01'/>"
-			                        +"<label for='msg_gbn_01'>경매전(응찰자)</label>"
+			                        +"<label for='msg_gbn_01' style='margin-right:10px;'>경매전(응찰자)</label>"
 			                        +"<input type='radio' id='msg_gbn_02' name='msg_gbn_radio' value='02'/>"
-			                        +"<label for='msg_gbn_02'>경매후(낙찰평균)</label>"
+			                        +"<label for='msg_gbn_02' style='margin-right:10px;'>경매후(낙찰평균)</label>"
 			                        +"<input type='radio' id='msg_gbn_03' name='msg_gbn_radio' value='03'/>"
-			                        +"<label for='msg_gbn_03'>경매후(최고,최저)</label>");        		
+			                        +"<label for='msg_gbn_03' style='margin-right:10px;'>경매후(최고,최저)</label>");        		
         	}
         //출하자
         }else{
         	$("#msg_div").append("<input type='radio' id='msg_gbn_01' name='msg_gbn_radio' value='01'/>"
-			                    +"<label for='msg_gbn_01'>경매전(출하주)</label>"
+			                    +"<label for='msg_gbn_01' style='margin-right:10px;'>경매전(출하주)</label>"
 			                    +"<input type='radio' id='msg_gbn_02' name='msg_gbn_radio' value='02'/>"
-			                    +"<label for='msg_gbn_02'>경매후(낙찰가)</label>");
+			                    +"<label for='msg_gbn_02' style='margin-right:10px;'>경매후(낙찰가)</label>");
         }
     	
         fn_setChgRadio("msg_gbn", "01");
@@ -376,6 +390,10 @@
                                     </div>
                                     <input type="hidden" id="msg_gbn"/>
                                 </td>
+                                <th>추가문구</th>
+                                <td colspan="4"> 
+                                    <input type="text" id="msg_plus" style="width:70%;" maxlength="40"/>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -386,8 +404,8 @@
                 <ul class="tab_list fl_L">
                     <li><p class="dot_allow">검색결과</p></li>
                 </ul>
-            <div class="fl_C"><!--  //버튼 모두 우측정렬 -->   
-                <label id="msg_Sbid" style="font-size:15px;color: blue;font: message-box;">※ 수신자전화번호가 10자리보다 작을시 전송되지 않습니다.</label>
+            <div class="fl_C" style="width: 65%;left:60%;"><!--  //버튼 모두 우측정렬 -->   
+                <label id="msg_Sbid" style="font-size:15px;color: blue;font: message-box;">※ 체크한 수신자 전화번호가 10자리보다 작을시 전송되지 않습니다. 발송 메시지가 80자 초과시 2회로 나뉘어 전송됩니다.</label>
             </div>  
                 <div class="fl_R"><!--  //버튼 모두 우측정렬 -->    
                 <button class="tb_btn" id="pb_sendMsg">문자 전송</button>

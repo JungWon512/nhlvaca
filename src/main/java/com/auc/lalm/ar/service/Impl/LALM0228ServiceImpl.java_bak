@@ -1,0 +1,212 @@
+package com.auc.lalm.ar.service.Impl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.auc.lalm.ar.service.LALM0228Service;
+import com.auc.lalm.sy.service.Impl.LALM0840Mapper;
+import com.auc.lalm.sy.service.Impl.LALM0899Mapper;
+import com.auc.mca.AlarmTalkForm;
+
+@Service("LALM0228Service")
+public class LALM0228ServiceImpl_bak implements LALM0228Service{
+
+	@Autowired
+	LALM0899Mapper lalm0899Mapper;
+	
+	@Autowired
+	LALM0840Mapper lalm0840Mapper;
+	
+	@Autowired
+	LALM0228Mapper lalm0228Mapper;
+	
+	@Autowired
+	AlarmTalkForm alarmForm;
+	
+	@Override
+	public List<Map<String, Object>> LALM0228_selList(Map<String, Object> map) throws Exception {
+		// [알람톡 발송 내용 템플릿 적용 replace]
+		// 1. 발송대상자 조회 후 현재 선택한 템플릿을 가져온다.
+		// 2. filterMap에 replace 적용할 대상들을 설정한다.
+		// 3. 발송대상자 조회리스트에서 적용할 컬럼만 뽑아 filterMap의 컬럼과 매치하여 replace 처리
+		
+		// 발송대상자 조회
+		List<Map<String, Object>> list = lalm0228Mapper.LALM0228_selList(map);
+		
+		// 현재 선택한 템플릿 가져오기
+		Map<String, Object> tempMap = lalm0840Mapper.LALM0840_selInfo(map);
+		
+		Map<String, String> filterMap = new HashMap<>();
+		filterMap.put("CLNTNM","#\\{조합명\\}");
+		filterMap.put("SRA_SBID_AM", "#\\{낙찰가\\}");
+		filterMap.put("AUC_DT", "#\\{경매일\\}");
+		filterMap.put("AUC_OBJ_DSC_NM", "#\\{경매대상\\}");
+		filterMap.put("AUC_PRG_SQ", "#\\{경매번호\\}");
+		filterMap.put("FTSNM", "#\\{출하주\\}");
+		filterMap.put("INDV_SEX_C_NM", "#\\{성별\\}");
+		filterMap.put("COW_SOG_WT", "#\\{중량\\}");
+		filterMap.put("LOWS_SBID_LMT_AM", "#\\{예정가\\}");
+		filterMap.put("MIN_SRA_SBID_AM", "#\\{최저낙찰가\\}");
+		filterMap.put("MAX_SRA_SBID_AM", "#\\{최고낙찰가\\}");
+		
+		if (list.size() > 0) {
+			for (Map<String, Object> item : list) {
+				String content = (String) tempMap.get("TALK_CONTENT");
+				Iterator<String> keyIt = item.keySet().stream().filter(e -> {
+					return filterMap.containsKey(e);
+				}).iterator();
+				while	(keyIt.hasNext()) {
+					String key = (String) keyIt.next();					
+					String tempVal = item.get(key) != null ? item.get(key).toString() : "";
+					content = content.replaceAll(filterMap.get(key), tempVal);	
+				}
+				item.put("MSG_CNTN",content);
+			}
+		}
+		
+		return list;
+	}
+
+	@Override
+	public List<Map<String, Object>> LALM0228_selAlarmList(Map<String, Object> map) throws Exception {
+		int cntSize = 0;
+		// 발송대상자 조회
+		String templateId = "";
+		List<Map<String, Object>> list = new ArrayList<>();
+
+		ListIterator<Map<String, Object>> it = lalm0228Mapper.LALM0228_selCntList(map).listIterator();
+		if("1".equals(map.get("obj_gbn")) && "01".equals(map.get("msg_gbn"))) {
+			// 응찰자 경매전
+			list = lalm0228Mapper.LALM0228_selList2(map);
+			for (Map<String, Object> item : list) {
+				item.put("MSG", " 출장우 예정 현황을 ");
+				while(it.hasNext()) {
+					cntSize = it.nextIndex()+1;
+					Map<String, Object> cntItem = it.next();
+					StringBuffer sb = new StringBuffer();
+					sb.append("총 "+cntItem.get("TOT_CNT")+"두 (암 "+cntItem.get("SEX_W_CNT")+"두, 수 "+cntItem.get("SEX_M_CNT")+"두)");
+					item.put("COW_INFO"+cntSize, sb.toString());
+				}
+				if(cntSize == 1) {					
+					templateId = "NHKKO00249";	
+					// 발송템플릿 조회
+					Map<String, Object> tempMap = lalm0840Mapper.LALM0840_selInfo(map);
+					
+				}else if(cntSize == 2) {
+					templateId = "NHKKO00250";
+				}else if(cntSize == 3) {
+					templateId = "NHKKO00251";
+				}
+				item.put("KAKAO_TPL_C", templateId);
+				item.put("MSG_CNTN", alarmForm.getAlarmTalkTemplate(templateId, item));	
+				item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));		
+			}
+		} else if("1".equals(map.get("obj_gbn")) && ("05".equals(map.get("msg_gbn")) || "06".equals(map.get("msg_gbn")))){
+			list = lalm0228Mapper.LALM0228_selList3(map);
+		} else if("2".equals(map.get("obj_gbn")) && "03".equals(map.get("msg_gbn"))){
+			list = lalm0228Mapper.LALM0228_selList4(map);
+		} else {
+			list = lalm0228Mapper.LALM0228_selList(map);
+			for (Map<String, Object> item : list) {
+				//응찰자
+				if("1".equals(map.get("obj_gbn"))) {
+					if("02".equals(map.get("msg_gbn"))) {
+						//경매후 - 낙찰평균
+						item.put("MSG", " 낙찰 평균을 ");
+						while(it.hasNext()) {
+							cntSize = it.nextIndex()+1;
+							Map<String, Object> cntItem = it.next();
+							StringBuffer sb = new StringBuffer();
+							sb.append(cntItem.get("AUC_OBJ_DSC_NAME")+" : 총 "+cntItem.get("TOT_CNT")+"두 평균 : "+cntItem.get("AVG_SRA_SBID_AM").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT"));
+							sb.append(" (암 "+cntItem.get("SEX_W_CNT")+"두 평균 : "+cntItem.get("AVG_SRA_SBID_AM_M").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT"));
+							sb.append(", 수 "+cntItem.get("SEX_M_CNT")+"두 평균 : "+cntItem.get("AVG_SRA_SBID_AM_W").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT")+")");
+							item.put("COW_INFO"+cntSize, sb.toString());
+						}
+						if(cntSize == 1) {
+							templateId = "NHKKO00249";	
+						}else if(cntSize == 2) {
+							templateId = "NHKKO00250";
+						}else if(cntSize == 3) {
+							templateId = "NHKKO00251";
+						}
+						
+					}else if("03".equals(map.get("msg_gbn"))) {
+						//경매후 - 최고,최저
+						item.put("MSG", " 낙찰 최고,최저 금액을 ");
+						while(it.hasNext()) {
+							cntSize = it.nextIndex()+1;
+							Map<String, Object> cntItem = it.next();
+							StringBuffer sb = new StringBuffer();
+							sb.append(""+cntItem.get("AUC_OBJ_DSC_NAME")+" : ");
+							sb.append(" 암 ( 최저 : "+cntItem.get("MIN_SRA_SBID_AM_W").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT")+", 최고 : "+cntItem.get("MAX_SRA_SBID_AM_W").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT")+")");
+							sb.append(" ,수 ( 최저 : "+cntItem.get("MIN_SRA_SBID_AM_M").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT")+", 최고 : "+cntItem.get("MAX_SRA_SBID_AM_M").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT")+")");
+							item.put("COW_INFO"+cntSize, sb.toString());
+						}				
+						if(cntSize == 1) {
+							templateId = "NHKKO00249";	
+						}else if(cntSize == 2) {
+							templateId = "NHKKO00250";
+						}else if(cntSize == 3) {
+							templateId = "NHKKO00251";
+						}		
+					} else if ("05".equals(map.get("msg_gbn")) || "06".equals(map.get("msg_gbn"))) {
+						item.put("MSG", " 낙찰 내역을 ");
+						item.put("COW_INFO1", "출하두수 : "+item.get("TOT_CNT")+"두(낙찰:"+ item.get("TOT_CNT_NAK")+"두, 유찰:"+item.get("TOT_CNT_YOU")+"두)");
+						item.put("COW_INFO2", "총낙찰금액 : "+item.get("TOT_SRA_SBID_AM")+"원");
+						item.put("COW_INFO3", "총수수료 : "+item.get("TOT_SRA_TR_FEE")+"원");
+						item.put("COW_INFO4", "받으실 금액 : "+item.get("TOT_AM")+"원");
+						item.put("COW_INFO5", "계좌번호 : "+item.get("BANK_NM")+", "+item.get("ACNO"));
+						
+						
+						templateId = "05".equals(map.get("msg_gbn")) ? "NHKKO00253" : "NHKKO00259";
+					}
+				}else {
+					if("01".equals(map.get("msg_gbn"))) {
+						//경매전 천단위 콤마
+						item.put("MSG", " 신청한 예정가를 ");
+						item.put("COW_INFO1", "경매번호 : "+item.get("AUC_PRG_SQ")+"번");
+						item.put("COW_INFO2", "등록구분 : "+item.get("AUC_OBJ_DSC_NM")+"("+item.get("INDV_SEX_C_NM")+")");
+						item.put("COW_INFO3", "개체번호 : "+item.get("SRA_INDV_AMNNO_FORMAT"));
+						item.put("COW_INFO4", "예정가 : "+item.get("LOWS_SBID_LMT_AM_FORMAT")+"원");
+						templateId = "NHKKO00252";
+					}else if("02".equals(map.get("msg_gbn"))) {
+						//경매후 - 낙/유찰 전송 천단위 콤마
+						item.put("MSG", " 낙찰내역을 ");
+						item.put("COW_INFO1", "경매번호 : "+item.get("AUC_PRG_SQ")+"번");
+						item.put("COW_INFO2", "등록구분 : "+item.get("AUC_OBJ_DSC_NM")+"("+item.get("INDV_SEX_C_NM")+")");
+						item.put("COW_INFO3", "개체번호 : "+item.get("SRA_INDV_AMNNO_FORMAT"));
+						item.put("COW_INFO4", "낙찰금액 : "+item.get("SRA_SBID_AM_FORMAT")+"원");
+						templateId = "NHKKO00252";
+					} else if("03".equals(map.get("msg_gbn"))) {
+						//템플릿 파라메터
+						item.put("MSG", " 출하주 정산금액을  ");
+						item.put("COW_INFO1", "출하두수 : "+item.get("TOT_CNT")+"두(낙찰:"+ item.get("TOT_CNT_NAK")+"두, 유찰:"+item.get("TOT_CNT_YOU")+"두)");
+						item.put("COW_INFO2", "총낙찰금액 : "+item.get("TOT_SRA_SBID_AM")+"원");
+						item.put("COW_INFO3", "총수수료 : "+item.get("TOT_SRA_TR_FEE")+"원");
+						item.put("COW_INFO4", "받으실 금액 : "+item.get("TOT_AM")+"원");
+						item.put("COW_INFO5", "계좌번호 : "+item.get("BANK_NM")+", "+item.get("ACNO"));
+						
+						//버튼 파라메터 
+						item.put("BTN_NM", "정산서 보기");
+						//[TO-DO] URL 적용..(파라메터 적용)
+						item.put("BTN_URL", "");
+						
+						templateId = "NHKKO00259";
+					}
+				}
+				item.put("KAKAO_TPL_C", templateId);
+				item.put("MSG_CNTN", alarmForm.getAlarmTalkTemplate(templateId, item));
+				item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));		
+			}
+		}
+			
+		return list;
+	}
+}

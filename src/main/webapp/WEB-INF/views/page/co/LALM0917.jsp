@@ -300,7 +300,8 @@
     	var srchData = new Object();
         srchData["ctgrm_cd"]  = "1200";
                 
-    	srchData["io_all_yn"] = $("input[name='io_all_yn_radio']:checked").val();
+    	//srchData["io_all_yn"] = $("input[name='io_all_yn_radio']:checked").val();
+    	srchData["io_all_yn"] = '0';
         srchData["na_bzplc"]  = App_na_bzplc;
         srchData["inq_st_dt"] = $("#inq_st_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
         srchData["inq_ed_dt"] = $("#inq_ed_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
@@ -352,7 +353,8 @@
         var result;
         
         var srchData = new Object();
-        srchData["ctgrm_cd"]  = "1400";
+        //srchData["ctgrm_cd"]  = "1400";
+        srchData["ctgrm_cd"]  = "4600";
         srchData["io_all_yn"] = $("input[name='io_all_yn_radio']:checked").val();
         srchData["na_bzplc"]  = App_na_bzplc;
         srchData["inq_st_dt"] = $("#inq_st_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
@@ -365,7 +367,7 @@
         
         while(true){
         	
-            srchData["in_sqno"]   = st_pos;
+            srchData["in_sqno"]   = st_pos+'';
             
             results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");
             

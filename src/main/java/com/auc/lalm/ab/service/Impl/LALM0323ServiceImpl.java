@@ -45,7 +45,7 @@ public class LALM0323ServiceImpl implements LALM0323Service{
 		for(int i = 0; i< list.size();i++) {
 			detailMap = (Map<String, Object>)list.get(i);
 			detailMap.put("chg_pgid", "[LM0323]");
-			detailMap.put("chg_rmk_cntn", "수기낙찰결정[응찰하한가]");
+			detailMap.put("chg_rmk_cntn", "수기낙찰결정[예정가]");
 			//프로그램 DB 저장
 			insertNum = insertNum + logService.insSogCowLog(detailMap);	
 			//하한가 변경

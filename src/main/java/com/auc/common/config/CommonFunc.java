@@ -91,7 +91,9 @@ public class CommonFunc {
 			reMap.put("message", "");
 		}
 		reMap.put("data", encript);
+		reMap.put("dataCnt", list.size());
 		reMap.put("ss_eno", jwtuser.getUserEno());
+		reMap.put("ss_userid", jwtuser.getUsername());
 		reMap.put("ss_bzplc", jwtuser.getNa_bzplc());
 		
 		return reMap;	
@@ -112,26 +114,30 @@ public class CommonFunc {
 		if(map == null || map.isEmpty()) {
 			reMap.put("status", 201);
 			reMap.put("code", "C001");
+			reMap.put("dataCnt", "0");
 			reMap.put("message", "조회된 내역이 없습니다.");
 		}else if(map.containsKey("jsonHeader")){
 			if("Error".equals(map.get("jsonHeader"))) {
 				reMap.put("status", 202);
 				reMap.put("code", "C002");
+				reMap.put("dataCnt", "0");
 				reMap.put("message", "전송 실패 하였습니다.");
 			}else {
 				reMap.put("status", 200);
 				reMap.put("code", "C000");
-				reMap.put("dataCnt", map.get("dataCnt"));
+				reMap.put("dataCnt", map.getOrDefault("dataCnt","0"));
 				reMap.put("message", "");
 			}
 		}else {
 			reMap.put("status", 200);
+			reMap.put("dataCnt", "0");
 			reMap.put("code", "C000");
 			reMap.put("message", "");
 		}		
 		reMap.put("data", encript);
 		reMap.put("ss_eno", jwtuser.getUserEno());
 		reMap.put("ss_bzplc", jwtuser.getNa_bzplc());
+		reMap.put("ss_userid", jwtuser.getUsername());
 		
 		return reMap;		
 	}
@@ -170,6 +176,7 @@ public class CommonFunc {
 		}		
 		reMap.put("data", encript);
 		reMap.put("ss_eno", jwtuser.getUserEno());
+		reMap.put("ss_userid", jwtuser.getUsername());
 		reMap.put("ss_bzplc", jwtuser.getNa_bzplc());
 		
 		return reMap;		
@@ -181,40 +188,45 @@ public class CommonFunc {
 		JwtUser jwtuser = (JwtUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		
 		//데이터 암호화해서 result 추가, 상태코드 추가, 조회 count 추가
-		Map<String, Object> reMap = new HashMap<String, Object>();		
+		Map<String, Object> reMap = new HashMap<String, Object>();
 
 		//JSON으로 변경
-		JSONObject jsonObject = convertMaptoJson(map);		
-		String encript = criptoConfig.encript(jsonObject.toString());	
+		JSONObject jsonObject = convertMaptoJson(map);
+		String encript = criptoConfig.encript(jsonObject.toString());
 		reMap.put("data", encript);
 		reMap.put("ss_eno", jwtuser.getUserEno());
 		reMap.put("ss_bzplc", jwtuser.getNa_bzplc());
-		
+		reMap.put("ss_userid", jwtuser.getUsername());
+
 		if(map == null) {
 			reMap.put("status", 201);
 			reMap.put("code", "C001");
 			reMap.put("message", "저장된 내역이 없습니다");
-		}else {
+		}
+		else {
 			//service에서 insertNum, updateNum, deleteNum 값 put 해줌
-			if(map.containsKey("insertNum")) {				
+			if(map.containsKey("insertNum")) {
 				reMap.put("insertNum", map.get("insertNum"));
 				reMap.put("status", 200);
 				reMap.put("code", "C000");
 				reMap.put("message", "");
+				if (map.containsKey("rtnData")) reMap.put("rtnData", map.get("rtnData"));
 			}
 			if(map.containsKey("updateNum")) {
 				reMap.put("updateNum", map.get("updateNum"));
 				reMap.put("status", 200);
 				reMap.put("code", "C000");
 				reMap.put("message", "");
+				if (map.containsKey("rtnData")) reMap.put("rtnData", map.get("rtnData"));
 			}
 			if(map.containsKey("deleteNum")) {
 				reMap.put("deleteNum", map.get("deleteNum"));
 				reMap.put("status", 200);
 				reMap.put("code", "C000");
 				reMap.put("message", "");
+				if (map.containsKey("rtnData")) reMap.put("rtnData", map.get("rtnData"));
 			}
-	        if(!map.containsKey("insertNum") && !map.containsKey("updateNum") && !map.containsKey("deleteNum")) {
+			if(!map.containsKey("insertNum") && !map.containsKey("updateNum") && !map.containsKey("deleteNum")) {
 				reMap.put("status", 201);
 				reMap.put("code", "C001");
 				reMap.put("message", map.getOrDefault("message", "저장된 내역이 없습니다"));
@@ -224,9 +236,5 @@ public class CommonFunc {
 		return reMap;
 		
 	}
-	
-	
-	
-	
 
 }

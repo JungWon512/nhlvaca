@@ -15,6 +15,20 @@
          </if>      		 
     </select>
 
+    <select id="LALM0833_selUsrList" resultType="hashMap">
+        SELECT A.USRID
+		     , A.USRNM
+		  FROM TB_LA_IS_MM_USR A
+		 WHERE 1=1
+		 AND NA_BZPLC = #{ss_na_bzplc}
+		 <if test="usrid != null and usrid != ''">
+            AND A.USRID LIKE '%'||#{usrid}||'%'
+         </if>      		
+		 <if test="usrnm != null and usrnm != ''">
+            AND A.USRNM LIKE '%'||#{usrnm}||'%'
+         </if>      		 
+    </select>
+
     <select id="LALM0833_selList" resultType="hashMap"> 
 		SELECT A.WK_GRP_C
 		     , A.WK_GRPNM
@@ -26,7 +40,6 @@
 		  FROM TB_LA_IS_MM_GRP     A
 		  JOIN TB_LA_IS_MM_GRP_USR B ON(A.WK_GRP_C = B.GRP_C)
 		 WHERE 1=1
-		   AND A.wk_grp_c != '002'
          <if test='wk_grp_c != null and wk_grp_c != ""'>
             AND A.wk_grp_c = #{wk_grp_c}
           </if>      
@@ -66,11 +79,12 @@
     <update id="LALM0833_updUsr">
         UPDATE TB_LA_IS_MM_GRP_USR
            SET apl_sts_dsc = #{de_apl_sts_dsc} 
+             , grp_c   		= #{de_wk_grp_c} 
              , apl_st_dt   = #{de_apl_st_dt} 
              , apl_ed_dt   = #{de_apl_ed_dt}
              , lschg_dtm   = SYSDATE 
              , ls_cmeno    = #{ss_userid}
-         WHERE grp_c       = #{de_wk_grp_c}
+         WHERE 1=1
            AND usrid       = #{de_usrid}
     </update>
     

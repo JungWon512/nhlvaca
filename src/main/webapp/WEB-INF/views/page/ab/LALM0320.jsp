@@ -192,7 +192,7 @@
         }
         
         	/*                               1       2        3        4         5       6       7       8       9     10     11      12        13       14        15      16*/
-        	var searchResultColNames = ["경매대상", "경매번호", "출하자", "귀표번호", "생년월일", "성별", "어미구분", "KPN", "계대", "산차", "중량", "응찰하한가", "낙찰가", "낙찰가차액", "낙찰자", "진행상태"];        
+        	var searchResultColNames = ["경매대상", "경매번호", "출하자", "귀표번호", "생년월일", "성별", "어미구분", "KPN", "계대", "산차", "중량", "예정가", "낙찰가", "낙찰가차액", "낙찰자", "진행상태"];        
 	        var searchResultColModel = [						 
 						                {name:"AUC_OBJ_DSC",       index:"AUC_OBJ_DSC",          width:80,  align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
 						                {name:"AUC_PRG_SQ",        index:"AUC_PRG_SQ",           width:80,  align:'center'},
@@ -344,14 +344,14 @@
                         <tbody>
                             <tr>
                                 <th scope="row"><p style="text-align:center; font-size:300%;">암</p></th>
-                                <th scope="row" ><p style="text-align:center; font-size:150%;">응찰하한가 평균(원)</p>
+                                <th scope="row" ><p style="text-align:center; font-size:150%;">예정가 평균(원)</p>
                                     <input disabled="disabled" type="text" id="am_eve_lmt_am" style="text-align:right;">                               
                                 </th>                               
                                 <th scope="row"><p style="text-align:center; font-size:150%;">낙찰가 평균(원)</p>
                                 	<input disabled="disabled" type="text" id="am_eve_sbid_am" style="text-align:right;">  
                                 </th>                               
                                 <th scope="row"><p style="text-align:center; font-size:300%;">수</p></th>
-                                <th scope="row"><p style="text-align:center; font-size:150%;">응찰하한가 평균(원)</p>
+                                <th scope="row"><p style="text-align:center; font-size:150%;">예정가 평균(원)</p>
                                 	<input disabled="disabled" type="text" id="su_eve_lmt_am" style="text-align:right;">                                
                                 </th>
                                 <th scope="row"><p style="text-align:center; font-size:150%;">낙찰가 평균(원)</p>

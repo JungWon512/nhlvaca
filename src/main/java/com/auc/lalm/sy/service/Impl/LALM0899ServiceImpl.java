@@ -211,13 +211,15 @@ public class LALM0899ServiceImpl implements LALM0899Service{
 //				insertNum += lalm0899Mapper.LALM0899_insMca1200(inMap);
 			//합천축협일경우 or 수기농가일경우
 //			}else {
-				chk_fhsIdNo = lalm0899Mapper.LALM0899_selMca1200_fhsIdNo(inMap);
+			
+			// TODO :: 회원 통합 프로세스 넣어야 함...
+			chk_fhsIdNo = lalm0899Mapper.LALM0899_selMca1200_fhsIdNo(inMap);
 
-				if(chk_fhsIdNo > 0) {
-					updateNum += lalm0899Mapper.LALM0899_updMca1200(inMap);
-				}else {
-					insertNum += lalm0899Mapper.LALM0899_insMca1200_2(inMap); 
-				}
+			if(chk_fhsIdNo > 0) {
+				updateNum += lalm0899Mapper.LALM0899_updMca1200(inMap);
+			}else {
+				insertNum += lalm0899Mapper.LALM0899_insMca1200_2(inMap); 
+			}
 //			}
 		}		
 		return insertNum;
@@ -443,5 +445,24 @@ public class LALM0899ServiceImpl implements LALM0899Service{
 		deleteNum = lalm0899Mapper.LALM0899_delMca1800(map);
 		return deleteNum;
 	}
+	
+	@Override
+	public int LALM0899_insMca4600(List<Map<String, Object>> list,Map<String, Object> map) throws Exception{		
+		int insertNum = 0;
+		for(Map<String, Object> inMap : list) {
+			inMap.put("ss_na_bzplc", (String)map.get("ss_na_bzplc"));
+			inMap.put("ss_userid", (String)map.get("ss_userid"));
+						
+			lalm0899Mapper.LALM0899_delMca1400(inMap);
+			insertNum += lalm0899Mapper.LALM0899_insMca4600(inMap);
+		}		
+		return insertNum;		
+	}
 
+	@Override
+	public Map<String, Object> LALM0899_selMca5100AlarmTalkId(Map<String, Object> map) throws Exception {
+		Map<String, Object> reMap = new HashMap<String, Object>();
+		reMap = lalm0899Mapper.LALM0899_selMca5100AlarmTalkId(map);
+		return reMap;
+	}
 }

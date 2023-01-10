@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0918Mapper">
+    
+    <select id="LALM0918_selData" resultType="java.util.LinkedHashMap">
+        SELECT A. SIMP_C
+				, A.SIMP_TPC
+				, A.SIMP_C_GRP_SQNO
+				, A.SIMP_CNM
+				, NVL(B.VISIB_YN, 0) VISIB_YN
+		FROM TB_LA_IS_MH_COMN_APL A
+			LEFT OUTER JOIN TB_LA_IS_MM_EXPITEMSETT B 
+			ON A.SIMP_C_GRP_SQNO = B.SCREEN_CD AND A.SIMP_C = B.ITEM_CD AND B.NA_BZPLC = #{ss_na_bzplc}
+		WHERE A.SIMP_TPC = 'EXP_ITEM_SETT'
+		ORDER BY A.SIMP_C_GRP_SQNO, A.SIMP_C
+    </select>
+
+    <update id="LALM0918_updData">
+        MERGE INTO TB_LA_IS_MM_EXPITEMSETT A
+        USING DUAL
+          ON (
+          		A.NA_BZPLC       =	#{ss_na_bzplc}
+          AND A.SCREEN_CD		=	#{screen_cd}
+          AND A.ITEM_CD		=	#{item_cd}
+          )
+        WHEN MATCHED THEN
+        UPDATE SET
+               A.VISIB_YN               	=	#{visib_yn}                      		/* 표출여부                */
+             , A.LSCHG_DTM             =	SYSDATE                      	 		/* 최종변경일시          */
+             , A.LS_CMENO               =	#{ss_userid}                        	/* 최종변경자개인번호          */
+         WHEN NOT MATCHED THEN
+         INSERT (
+               NA_BZPLC                                      	/* 경제통합사업장코드          */
+             , SCREEN_CD                             			/* 화면코드              */
+             , ITEM_CD                                   		/* 항목코드                */
+             , VISIB_YN                                     	/* 표출여부                */
+             , FSRG_DTM                                		/* 최초등록일시            */
+             , FSRGMN_ENO                                  	/* 최초등록자개인번호                   */
+             , LSCHG_DTM                                     /* 최종변경일시          */
+             , LS_CMENO                                       /* 최종변경자개인번호          */
+        ) VALUES(
+               #{ss_na_bzplc}          
+             , #{screen_cd}              	
+             , #{item_cd}                  
+             , #{visib_yn}                   
+             , SYSDATE                       
+             , #{ss_userid}             
+             , SYSDATE             
+             , #{ss_userid}  
+        ) 
+    </update>
+    
+    <update id="LALM0918_updMobileEtc">
+        MERGE INTO TB_LA_IS_BM_BZLOC A
+        USING DUAL
+          ON (A.NA_BZPLC       = #{ss_na_bzplc})
+        WHEN MATCHED THEN
+        UPDATE SET
+             A.SMS_BUFFER_2 				= #{sms_buffer_2}	/* 모바일 업무 간편 비고 항목 */
+         WHEN NOT MATCHED THEN
+         INSERT(
+             SMS_BUFFER_2 				/* 모바일 업무 간편 비고 항목 */
+        ) VALUES(
+             #{sms_buffer_2}					/* 모바일 업무 간편 비고 항목 */
+        )
+    </update>
+    
+        
+</mapper>

@@ -171,7 +171,7 @@
     	TitleData.title = "경매 응찰내역 조회";
     	TitleData.sub_title = "";
     	TitleData.unit="";
-    	TitleData.srch_condition=  '[경매대상 : ' + $('#cb_auc_obj_dsc option:selected").text()  + ' / 경매일자 : '+ $('#auc_dt').val() + ' / 응찰자 : '+ $('#sra_mwmnnm').val()+']';
+    	TitleData.srch_condition=  '[경매대상 : ' + $("#cb_auc_obj_dsc option:selected").text()  + ' / 경매일자 : '+ $("#auc_dt").val() + ' / 응찰자 : '+ $("#sra_mwmnnm").val()+']';
     	
     	ReportPopup('LALM0511R',TitleData, 'mainGrid', 'V');
     		
@@ -189,7 +189,7 @@
         }
         
         	/*                            1         2         3        4       5           6           7          8         9        10   */
-        	var searchResultColNames = ["경매번호", "경매대상", "귀표번호", "중량", "응찰하한가", "응찰자코드", "경매참가번호", "응찰자명", "응찰금액", "응찰시간"];        
+        	var searchResultColNames = ["경매번호", "경매대상", "귀표번호", "중량", "예정가", "응찰자코드", "경매참가번호", "응찰자명", "응찰금액", "응찰시간"];        
 	        var searchResultColModel = [						 
 						                {name:"AUC_PRG_SQ",      	index:"AUC_PRG_SQ",         width:10, align:'center'},
 						                {name:"AUC_OBJ_DSC",     	index:"AUC_OBJ_DSC",        width:10, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},

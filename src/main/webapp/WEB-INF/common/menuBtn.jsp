@@ -5,6 +5,9 @@
 	<h1 class="tit" id="menu_info"></h1>
 	<div class="main_btn ta_r">
 		<!--  //버튼 모두 우측정렬 -->
+		<button class="button saveBtn" id="btn_Reg_Entry">
+			<span>출장우 등록</span>
+		</button>
 		<button class="button resetBtn" id="btn_Init">
 			<span>초기화</span>
 		</button>
@@ -83,6 +86,7 @@
 		if (pageInfo.pgid != "LALM0225") {
 			$("#btn_ExcelMca").remove();
 			$("#btn_ExcelData").remove();
+			$("#btn_Reg_Entry").remove();
 		}
 
 		//버튼 리스너
@@ -183,6 +187,13 @@
 				alert("권한이없습니다");
 			}
 		});
+		
+		// 출장우 접수페이지 
+		$("#btn_Reg_Entry").click(function(e) {
+			e.preventDefault();
+			this.blur();
+			fn_RegistEntry();
+		})
 
 	});
 </script>

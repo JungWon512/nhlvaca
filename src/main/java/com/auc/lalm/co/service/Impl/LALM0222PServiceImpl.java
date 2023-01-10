@@ -6,20 +6,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.auc.common.exception.CusException;
 import com.auc.common.exception.ErrorCode;
+import com.auc.common.filter.JwtRequestFilter;
 import com.auc.lalm.co.service.LALM0222PService;
 
 @Service("LALM0222PService")
 public class LALM0222PServiceImpl implements LALM0222PService{
 
+	private static Logger log = LoggerFactory.getLogger(LALM0222PServiceImpl.class);
 	@Autowired
 	LALM0222PMapper lalm0222PMapper;	
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> LALM0222P_updReturnValue(Map<String, Object> map) throws Exception {
 		
 		Map<String, Object> reMap = new HashMap<String, Object>();
@@ -39,7 +44,11 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 		
 		while(keys.hasNext()) {
 			String key = keys.next();
-			Demap.put(key, map.get(key).toString().trim());
+			if(key.startsWith("list_")) {
+				Demap.put(key, map.get(key));				
+			}else {
+				Demap.put(key, map.get(key).toString().trim());				
+			}
 		}
 		
 		if(!Demap.get("sra_farm_fzip").equals("") || !Demap.get("sra_farm_rzip").equals("")) {
@@ -92,6 +101,72 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 			reMap.put("SRA_FARM_ACNO", fhsList.get(0).get("SRA_FARM_ACNO"));
 			
 			updateNum = lalm0222PMapper.LALM0222P_updIsMmFhs(Demap);			
+		}
+
+		//20221031 : JJW 분만정보 저장
+		List<Map<String, Object>> bhPturList = (List<Map<String, Object>>) Demap.get("list_bh_ptur");
+		Map<String,Object> tempMap = new HashMap<>();
+		tempMap.put("ss_na_bzplc", Demap.get("ss_na_bzplc"));
+		tempMap.put("ss_usrid", Demap.get("ss_usrid"));
+		tempMap.put("p_sra_indv_amnno", Demap.get("sra_indv_amnno"));
+		lalm0222PMapper.LALM0222P_delChildbirthInf(tempMap);
+		if(bhPturList != null && !bhPturList.isEmpty()) {
+			for(Map<String,Object> bhPturMap:bhPturList) {
+				tempMap.putAll(bhPturMap);
+				insertNum += lalm0222PMapper.LALM0222P_insChildbirthInf(tempMap);
+			}
+		}
+
+
+		//20221031 : JJW 교배 저장
+		List<Map<String, Object>> bhCrossList = (List<Map<String, Object>>) Demap.get("list_bh_cross");
+		tempMap = new HashMap<>();
+		tempMap.put("ss_na_bzplc", Demap.get("ss_na_bzplc"));
+		tempMap.put("ss_usrid", Demap.get("ss_usrid"));
+		tempMap.put("p_sra_indv_amnno", Demap.get("sra_indv_amnno"));
+		lalm0222PMapper.LALM0222P_delMatingInf(tempMap);
+		if(bhCrossList != null && !bhCrossList.isEmpty()) {
+			for(Map<String,Object> bhCrossMap:bhCrossList) {
+				bhCrossMap.putAll(tempMap);
+				insertNum += lalm0222PMapper.LALM0222P_insMatingInf(bhCrossMap);
+			}
+		}
+
+		//20221031 : JJW 형매정보 저장
+		List<Map<String, Object>> sibIndvList = (List<Map<String, Object>>) Demap.get("list_sib_indv");
+		if(sibIndvList != null && !sibIndvList.isEmpty()) {
+			for(Map<String,Object> temp:sibIndvList) {
+				temp.put("ss_na_bzplc", Demap.get("ss_na_bzplc"));
+				temp.put("ss_usrid", Demap.get("ss_usrid"));
+				temp.put("p_sra_indv_amnno", Demap.get("sra_indv_amnno"));
+				lalm0222PMapper.LALM0222P_delSibInf(temp);
+				insertNum += lalm0222PMapper.LALM0222P_insSibInf(temp);
+			}				
+		}
+		
+		//20221031 : JJW 후대정보 저장
+		List<Map<String, Object>> postIndvList = (List<Map<String, Object>>) Demap.get("list_post_indv");
+
+		if(postIndvList != null && !postIndvList.isEmpty()) {
+			for(Map<String,Object> temp:postIndvList) {
+				temp.put("ss_na_bzplc", Demap.get("ss_na_bzplc"));
+				temp.put("ss_usrid", Demap.get("ss_usrid"));
+				temp.put("p_sra_indv_amnno", Demap.get("sra_indv_amnno"));
+				lalm0222PMapper.LALM0222P_delPostInf(temp);
+				insertNum += lalm0222PMapper.LALM0222P_insPostInf(temp);
+			}	
+		}
+
+		//20221031 : JJW 개체 이동내역 저장
+		List<Map<String, Object>> cattleMoveList = (List<Map<String, Object>>) Demap.get("list_cattle_move");
+		if(cattleMoveList != null && !cattleMoveList.isEmpty()) {
+			lalm0222PMapper.LALM0222P_delCattleMvInf(Demap);
+			for(Map<String,Object> temp:cattleMoveList) {
+				temp.put("ss_na_bzplc", Demap.get("ss_na_bzplc"));
+				temp.put("ss_usrid", Demap.get("ss_usrid"));
+				temp.put("p_sra_indv_amnno", Demap.get("sra_indv_amnno"));
+				insertNum += lalm0222PMapper.LALM0222P_insCattleMvInf(temp);
+			}			
 		}
 		
 		if(insertNum > 0) {

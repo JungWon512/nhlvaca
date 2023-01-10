@@ -302,4 +302,27 @@ public class MainController {
 		return mv;
 	}
 		
+	@ResponseBody
+	@RequestMapping(value="/MainSecApply_selList", method=RequestMethod.POST)
+	public Map<String, Object> MainSecApply_selList(ResolverMap rMap) throws Exception{				
+		
+		Map<String, Object> map = convertConfig.conMap(rMap);
+		List<Map<String, Object>> reList = mainService.MainSecApply_selList(map);				
+		Map<String, Object> reMap = commonFunc.createResultSetListData(reList); 	
+		
+		return reMap;
+	}	
+
+	@ResponseBody
+	@RequestMapping(value="/co/getNaBzPlc", method=RequestMethod.POST)
+	public Map<String, Object> getNaBzPlc(ResolverMap rMap, HttpServletRequest req, HttpServletResponse resp) throws Exception{
+		Map<String, Object> map = new HashMap<String, Object>();
+		Map<String, Object> reMap = new HashMap<String, Object>();
+		//Map<String, Object> map = convertConfig.conMap(rMap);
+		map.put("user_id", req.getParameter("user_id"));
+		//사업장코드, 사업장명 조회
+		List<Map<String, Object>> naList = mainService.selectNaUserList(map);
+		reMap.put("naList", naList);
+		return reMap;
+	}	
 }

@@ -36,7 +36,10 @@ $(document).ready(function() {
     		e.preventDefault();
     		return false;
     	}
-    })
+    });
+    
+    // 폼 input 자동완성 off
+    $('form').attr("autocomplete", "off");
     
     //날짜 기본 설정
     $.datepicker.setDefaults({
@@ -223,7 +226,7 @@ $(document).ready(function() {
                 d = val.substring(6,8);
                 return y+"-"+m+"-"+d;
         	}else{
-        		return '';
+        		return val;
         	}
             
         }
@@ -281,7 +284,7 @@ $(document).ready(function() {
         unformat:function(val,options){
             return val.replace(/-/gi,"");
         }
-    });
+    });    
 });
 
 //**************************************
@@ -913,6 +916,28 @@ function fn_setCodeBox(p_obj, p_simp_tpc, p_simp_c_grp_sqno, p_codeView, p_flag)
 }
 
 //***************************************
+//* function   : fn_setCustomCodeBox
+//* paramater  : 
+//* result     : N/A
+//***************************************
+function fn_setCustomCodeBox(p_target, p_obj) {
+	$("#" + p_target).empty().data('options');
+	for (info of p_obj) {
+		$("#" + p_target).append("<option value='" + info["value"] + "' data-details='" + info["details"] + "'>" + info["text"] + "</option>");
+	}
+// 	if (p_flag != null) {
+// 	    $("#" + p_obj).append('<option value="">' + p_flag + '</option>');
+// 	}
+	  
+// 	$.each(comboList, function(i){
+// 	    if(comboList[i].SIMP_TPC == p_simp_tpc && comboList[i].SIMP_C_GRP_SQNO == p_simp_c_grp_sqno){
+// 	        var v_simp_nm = (p_codeView)?('['+comboList[i].SIMP_C + '] ' + comboList[i].SIMP_CNM):'' + comboList[i].SIMP_CNM;
+// 	        $("#" + p_obj).append('<option value=' + comboList[i].SIMP_C + '>' + v_simp_nm + '</option>');
+// 	    }        
+// 	}); 
+}
+
+//***************************************
 //* function   : fn_setCodeRadio
 //* paramater  : 
 //* result     : N/A
@@ -930,7 +955,7 @@ function fn_setCodeRadio(p_target, p_obj, p_simp_tpc, p_simp_c_grp_sqno) {
         	               + '<input type="radio" id="' + p_obj + '_' + comboList[i].SIMP_C
         	               + '" name="' + p_obj + '_radio" value="' + comboList[i].SIMP_C + '"'
         	               + ' onclick="javascript:fn_setChgRadio(\''+p_obj+'\',\''+comboList[i].SIMP_C+'\');"/>\n'
-        	               + '<label>' + comboList[i].SIMP_CNM + '</label>\n'
+        	               + '<label for="' + p_obj + '_' + comboList[i].SIMP_C + '">' + comboList[i].SIMP_CNM + '</label>\n'
         	               + '</div>';
         	
             $("#" + p_target).append(appendData);
@@ -981,8 +1006,25 @@ function fn_setCodeString(p_simp_tpc, p_simp_c_grp_sqno, p_flag) {
     	  if(resultString != '')resultString += ';'
     	  resultString += comboList[i].SIMP_C + ':' + comboList[i].SIMP_CNM;
       }        
-  }); 
+  });
   return resultString;
+}
+ 
+//***************************************
+//* function   : fn_setCustonCodeString(커스텀 코드 그리드 사용 텍스트 변환)
+//* paramater  : 
+//* result     : ex) 1:여;0:부
+//***************************************
+function fn_setCustonCodeString(p_list) {
+	var rtnString = "";
+	for (obj of p_list) {
+		if (fn_isNull(obj["value"])) continue;
+		rtnString += obj["value"];
+		rtnString += ":";
+		rtnString += obj["text"];
+		rtnString += ";";
+	}
+	return rtnString;
 }
 
 //***************************************
@@ -1396,13 +1438,26 @@ function fn_CallRoadnmPopup(callback){
 //* result     : gridRowData
 //***************************************
 function fn_CallGrpAddPopup(callback){
-var pgid = 'LALM0833P';
-var menu_id = $("#menu_info").attr("menu_id");
+	var pgid = 'LALM0833P';
+	var menu_id = $("#menu_info").attr("menu_id");
+	
+	parent.layerPopupPage(pgid, menu_id, null, null, 800, 600,function(result){
+	    callback(result);
+	});
+}
 
-parent.layerPopupPage(pgid, menu_id, null, null, 800, 600,function(result){
-    callback(result);
-});
-
+//***************************************
+//* function   : 유저 추가 팝업
+//* paramater  : p_param(object), p_flg(단건 리턴여부)
+//* result     : gridRowData
+//***************************************
+function fn_CallUserAddPopup(callback){
+	var pgid = 'LALM0833P2';
+	var menu_id = $("#menu_info").attr("menu_id");
+	
+	parent.layerPopupPage(pgid, menu_id, null, null, 800, 600,function(result){
+	    callback(result);
+	});
 }
 
 
@@ -1414,7 +1469,7 @@ parent.layerPopupPage(pgid, menu_id, null, null, 800, 600,function(result){
 function fn_CallIndvInfHstPopup(p_param,p_flg,callback){
 	var pgid = 'LALM0222P';
 	var menu_id = $("#menu_info").attr("menu_id");
-	p_param["ctgrm_cd"]  = "2200"
+	p_param["ctgrm_cd"]  = "4700"
 	
 	if(p_flg){
 		
@@ -1429,7 +1484,11 @@ function fn_CallIndvInfHstPopup(p_param,p_flg,callback){
 	    }
 		
 	    if(result != null && result["INQ_CN"] == 1){
-	  	    callback(result);
+	  	    //callback(result);
+	  	    p_param["unique_yn"] = "Y";
+	  	    parent.layerPopupPage(pgid, menu_id, p_param, result, 1300, 900,function(result){
+	          callback(result);
+	      	});
 	    } else {
 	  	    parent.layerPopupPage(pgid, menu_id, p_param, result, 1300, 900,function(result){
 	          callback(result);
@@ -1446,7 +1505,7 @@ function fn_CallIndvInfHstPopup(p_param,p_flg,callback){
 function fn_CallIndvInfHstPopupForExcel(p_param,p_flg,callback){
 	var pgid = 'LALM0222P';
 	var menu_id = $("#menu_info").attr("menu_id");
-	p_param["ctgrm_cd"]  = "2200"
+	p_param["ctgrm_cd"]  = "4700"
 	
 	if(p_flg){
 		
@@ -1459,7 +1518,10 @@ function fn_CallIndvInfHstPopupForExcel(p_param,p_flg,callback){
 	    }else{      
 	        result = setDecrypt(resultData);
 		    if(result != null && result["INQ_CN"] == 1){
-		  	    callback(result);
+		  	    p_param["unique_yn"] = "Y";
+		  	    parent.layerPopupPage(pgid, menu_id, p_param, result, 1300, 900,function(result){
+		          callback(result);
+		      	});
 		    } else {
 		  	    parent.layerPopupPage(pgid, menu_id, p_param, result, 1300, 900,function(result){
 		          callback(result);
@@ -1540,152 +1602,146 @@ function gridSaveRow(gridID) {
 function fn_ExcelDownlad(gid, p_title, p_footer){
 
 	gridSaveRow(gid);
-	var gridData = $('#' + gid).jqGrid('getGridParam', 'data');
-
-	if (gridData.length == 0) {
-		MessagePopup("OK", '조회된 데이터가 없습니다.');
-		return false;
-	}
+   var gridData    = $('#' + gid).jqGrid('getGridParam', 'data');
+   
+   if (gridData.length == 0) {
+       MessagePopup("OK", '조회된 데이터가 없습니다.');
+       return false;
+   }
+   
+   var message = '다운로드사유를 입력하세요.<br/><br/><input id="input_rn" maxlength="50" style="padding: 4px 6px 2px 6px;width: 100%;line-height: 12px;border: 1px solid #d9d9d9;vertical-align: middle;background: #fff;outline: none;"';   
+   message += '/>';
+   message += '<script type="text/javascript">';
+   message += '$(document).find(\'input[id=input_rn]\').focusout(function(e){';
+   message += 'parent.inputRn=$(this).val();';
+   message += '});';
+   message += '<';
+   message += "/script>";
+   
+   MessagePopup('YESNO', message, function(res){
+	   if(res){
+		   if(parent.inputRn.length < 2){
+			   MessagePopup('OK','다운로드사유를 2글자 이상 입력해주세요.');
+			   return;
+		   }
+		   fn_ExcelDownlad_Tmp(gid, p_title, p_footer,parent.inputRn);
+	   }
+   });
+   
+   function fn_ExcelDownlad_Tmp(gid, p_title, p_footer,input_rn){
+	   var newcolModel = [];
+	   var colModel    = $('#' + gid).jqGrid('getGridParam', 'colModel');
+	   var colName     = $('#' + gid).jqGrid('getGridParam', 'colNames');
+	   var gridData    = $('#' + gid).jqGrid('getGridParam', 'data');
 	
-	var message = '다운로드사유를 입력하세요.<br/><br/><input id="input_rn" maxlength="50" style="padding: 4px 6px 2px 6px;width: 100%;line-height: 12px;border: 1px solid #d9d9d9;vertical-align: middle;background: #fff;outline: none;"';   
-	message += '/>';
-	message += '<script type="text/javascript">';
-	message += '$(document).find(\'input[id=input_rn]\').focusout(function(e){';
-	message += 'parent.inputRn=$(this).val();';
-	message += '});';
-	message += '<';
-	message += "/script>";
-
-	MessagePopup('YESNO', message, function(res){
-		if(res){
-			if(parent.inputRn.length < 2){
-				MessagePopup('OK','다운로드사유를 2글자 이상 입력해주세요.');
-				return;
-			}
-			fn_ExcelDownlad_Tmp(gid, p_title, p_footer,parent.inputRn);
-		}
-	});
-	
-	function fn_ExcelDownlad_Tmp(gid, p_title, p_footer,input_rn) {
-		var newcolModel	= [];
-		var colModel	= $('#' + gid).jqGrid('getGridParam', 'colModel');
-		var colName		= $('#' + gid).jqGrid('getGridParam', 'colNames');
-		var gridData	= $('#' + gid).jqGrid('getGridParam', 'data');
-	
-		var title = p_title + "_" + fn_getDay(0).replace(/-/gi, "").replace(" ", "").replace(":", "");
-	
-		if (gridData.length == 0) {
-			MessagePopup("OK", '조회된 데이터가 없습니다.');
-			return false;
-		}
-		
-		for (var i = 0, len = colModel.length; i < len; i++) {
-			if (colModel[i].hidden === true) {
-				continue;
-			}
-			if (colModel[i].colmenu === false) {
-				continue;
-			}
-			var rowdata = {};
-			if(colModel[i].name != 'CHK' && colModel[i].name != 'ROWNUM1') {  //엑셀파일 출력 시 NO와 CHK박스 제외
+	   var title       = p_title + "_" + fn_getDay(0).replace(/-/gi, "").replace(" ", "").replace(":", "");
+	   
+	   if (gridData.length == 0) {
+	       MessagePopup("OK", '조회된 데이터가 없습니다.');
+	       return false;
+	   }
+	   for (var i = 0, len = colModel.length; i < len; i++) {
+	       if (colModel[i].hidden === true) {
+	           continue;
+	       }
+	       if (colModel[i].colmenu === false) {
+	           continue;
+	       }
+	       var rowdata = {};
+	       if(colModel[i].name != 'CHK' && colModel[i].name != 'ROWNUM1') {  //엑셀파일 출력 시 NO와 CHK박스 제외
 				rowdata['label']     = colName[i].replaceAll("<br/>", "\n").replaceAll("<br />", "\n");
-				rowdata['name']      = colModel[i].name;
-				rowdata['width']     = colModel[i].width;
-				rowdata['align']     = fn_isNull(colModel[i].align) ? 'left' : colModel[i].align;
-				rowdata['formatter'] = fn_isNull(colModel[i].formatter) ? '' : colModel[i].formatter;
-			}
-			newcolModel.push(rowdata);
-			if (colModel[i].formatter == 'select') {
-				$('#' + gid).jqGrid('setColProp', colModel[i].name, {
-					unformat: gridUnfmt
-				});
-			}
-		}
-		
-		var rowNumtemp    = $('#' + gid).jqGrid('getGridParam', 'rowNum');
-		var scrolltemp    = $('#' + gid).jqGrid('getGridParam', 'scroll');
-		var pgbuttonstemp = $('#' + gid).jqGrid('getGridParam', 'pgbuttons');
-		$('#' + gid).jqGrid('setGridParam', {
-			rowNum   : 1000000000,
-			scroll   : 1,
-			pgbuttons: false
-		});
-		
-		var gridDatatemp = $('#' + gid).getRowData();
-
-		$('#' + gid).jqGrid('setGridParam', {
-			rowNum   : rowNumtemp,
-			scroll   : scrolltemp,
-			pgbuttons: pgbuttonstemp
-		});
-		
-		$('#' + gid).trigger('reloadGrid');
+	           rowdata['name']      = colModel[i].name;
+	           rowdata['width']     = colModel[i].width;
+	           rowdata['align']     = fn_isNull(colModel[i].align) ? 'left' : colModel[i].align;
+	           rowdata['formatter'] = fn_isNull(colModel[i].formatter) ? '' : colModel[i].formatter;
+	           
+	       }
+	       newcolModel.push(rowdata);
+	       if (colModel[i].formatter == 'select') {
+	           $('#' + gid).jqGrid('setColProp', colModel[i].name, {
+	               unformat: gridUnfmt
+	           });
+	       }
+	   }
+	   var rowNumtemp    = $('#' + gid).jqGrid('getGridParam', 'rowNum');
+	   var scrolltemp    = $('#' + gid).jqGrid('getGridParam', 'scroll');
+	   var pgbuttonstemp = $('#' + gid).jqGrid('getGridParam', 'pgbuttons');
+	   $('#' + gid).jqGrid('setGridParam', {
+	       rowNum   : 1000000000
+	     , scroll   : 1
+	     , pgbuttons: false
+	   });
+	   var gridDatatemp = $('#' + gid).getRowData();
+	        
+	   $('#' + gid).jqGrid('setGridParam', {
+	       rowNum   : rowNumtemp
+	     , scroll   : scrolltemp
+	     , pgbuttons: pgbuttonstemp
+	   });
+	   $('#' + gid).trigger('reloadGrid');
 		for (var i = 0, len = colModel.length; i < len; i++) {
-			if (colModel[i].formatter == 'select') {
-				$('#' + gid).jqGrid('setColProp', colModel[i].name, {
-					unformat: null
-				});
-			}
-		}
-		
-		var excelUrl = "/excelDownload";
-		var xhr  = new XMLHttpRequest();
-		var param = JSON.stringify({'colModel': newcolModel, 'gridData': gridDatatemp, 'title': title, 'footer': p_footer});
-	
-		xhr.open("POST", excelUrl, true);
-		xhr.responseType = "blob";
-		xhr.setRequestHeader("Authorization", 'Bearer ' + localStorage.getItem("nhlvaca_token"));
-		xhr.setRequestHeader("Content-Type",  "application/json; charset=UTF-8");
-		
-		xhr.onload = function(e) {
-// 						localStorage.setItem("nhlvaca_token", getCookie('token'));    
-						var filename = title;
-						var disposition = xhr.getResponseHeader('Content-Disposition');
-						if(disposition && disposition.indexOf("attachment") !== -1){
-							var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
-							var matches       = filenameRegex.exec(disposition);
-							if(matches != null && matches[1]){
-								filename = decodeURI(matches[1].replace(/['"]/g, ''));
-							}
-							
-							if(this.status == 200){
-								var blob = this.response;
-								if(window.navigator.msSaveOrOpenBlob){
-									window.navigator.msSaveBlob(blob, filename);
-								}
-								else{
-									var downloadLink = window.document.createElement('a');
-									var contentTypeHeader = xhr.getResponseHeader("Content-Type");
-									downloadLink.href = window.URL.createObjectURL(new Blob([blob], {type:contentTypeHeader}));
-									downloadLink.download = filename;
-									document.body.appendChild(downloadLink);
-									downloadLink.click();
-									document.body.removeChild(downloadLink);
-								}
-							}
-						}
-					}
-
-		xhr.send(param);
-		
-		/*20221005 jjw 리포트 로그 저장*/
-		var srchData = new Object();
-		if(typeof pageInfo == 'undefined'){
-			srchData["PGID"]	= p_title;
-		}else{
-			srchData["PGID"]	= pageInfo.pgid??p_title;
-		}
-		
-		srchData["INQ_CN"]			= gridData.length;
-		srchData["BTN_TPC"]			= "E";
-		srchData["APVRQR_RSNCTT"]	= input_rn;
-		fn_InsDownloadLog(srchData);
-	};
+	       if (colModel[i].formatter == 'select') {
+	           $('#' + gid).jqGrid('setColProp', colModel[i].name, {
+	               unformat: null
+	           });
+	       }
+	   }
+	   var excelUrl = "/excelDownload";
+	   var xhr  = new XMLHttpRequest();
+	   
+	   var param = JSON.stringify({'colModel': newcolModel, 'gridData': gridDatatemp, 'title': title, 'footer': p_footer});
+	   
+	   xhr.open("POST", excelUrl, true);
+	   xhr.responseType = "blob";
+	   xhr.setRequestHeader("Authorization", 'Bearer ' + localStorage.getItem("nhlvaca_token"));
+	   xhr.setRequestHeader("Content-Type",  "application/json; charset=UTF-8");
+	                     
+	   xhr.onload = function(e){	       
+		   localStorage.setItem("nhlvaca_token", getCookie('token'));    
+	       var filename = title;
+	       var disposition = xhr.getResponseHeader('Content-Disposition');
+	       if(disposition && disposition.indexOf("attachment") !== -1){
+	           var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+	           var matches       = filenameRegex.exec(disposition);
+	           if(matches != null && matches[1]){
+	               filename = decodeURI(matches[1].replace(/['"]/g, ''));
+	           }
+	           
+	           if(this.status == 200){
+	               var blob = this.response;
+	               if(window.navigator.msSaveOrOpenBlob){
+	                   window.navigator.msSaveBlob(blob, filename);
+	               }else{
+	                  var downloadLink = window.document.createElement('a');
+	                  var contentTypeHeader = xhr.getResponseHeader("Content-Type");
+	                  downloadLink.href = window.URL.createObjectURL(new Blob([blob], {type:contentTypeHeader}));
+	                  downloadLink.download = filename;
+	                  document.body.appendChild(downloadLink);
+	                  downloadLink.click();
+	                  document.body.removeChild(downloadLink);                     
+	               }
+	           }                 
+	       }
+	   };
+	               
+	   xhr.send(param);
+	   /*20221005 jjw 리포트 로그 저장*/
+	    var srchData = new Object();
+	   if(typeof pageInfo == 'undefined'){
+		   srchData["PGID"] 	= p_title;		   
+	   }else{
+		   srchData["PGID"] 	= pageInfo.pgid??p_title;
+	   }		
+		srchData["INQ_CN"] 		= gridData.length;
+		srchData["BTN_TPC"] 		= "E";
+		srchData["APVRQR_RSNCTT"] 		= input_rn; 	
+	    fn_InsDownloadLog(srchData);
+   };
 }
  
  function fn_InsDownloadLog(param){
 	parent.inputRn = '';
-    param["SRCH_CND_CNTRN"] 		= JSON.stringify(setFrmToData('frm_Search')).substr(0,2000);
+    param["SRCH_CND_CNTRN"] 		= JSON.stringify(setFrmToData('frm_Search')).substr(0,2000);    
 	result = sendAjax(param, "/insDownloadLog", "POST");	 
  }
  
@@ -1706,7 +1762,7 @@ function fn_fileDownlad(p_title){
     xhr.setRequestHeader("Content-Type",  "application/json; charset=UTF-8");
                          
     xhr.onload = function(e){
-//  	   localStorage.setItem("nhlvaca_token", getCookie('token'));
+ 	   localStorage.setItem("nhlvaca_token", getCookie('token'));
            
         var filename = p_title;
         var disposition = xhr.getResponseHeader('Content-Disposition');

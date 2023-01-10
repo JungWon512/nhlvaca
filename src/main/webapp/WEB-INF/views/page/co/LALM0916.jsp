@@ -285,7 +285,9 @@
                 }else {
                     result = JSON.parse(response.responseText); 
                 }            
-            },
+            },complete:function(data){
+           	   localStorage.setItem("nhlvaca_token", getCookie('token'));
+			}
         });        
         return result;
     }

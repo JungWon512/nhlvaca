@@ -66,7 +66,6 @@ $(document).ready(function() {
                     data['na_bzplc']  = $('#nav_menu_userInfo').attr('na_bzplc');
 
                     var results = sendAjax(data, "/relogin", "POST");
-                    console.log(results);
                     
                     if(results.status != RETURN_SUCCESS){
                         showErrorMessage(results);
@@ -125,7 +124,7 @@ $(document).ready(function() {
     var baseInfoData = sendAjaxFrm("", "/selectBaseInfo", "POST");
     
     if(baseInfoData.status != RETURN_SUCCESS){
-    	if(baseInfoData.status == NO_DATA_FOUND){
+    	if(baseInfoData && baseInfoData.status == NO_DATA_FOUND){
     		MessagePopup('OK','기준정보를 조회할수 없습니다.<br>시스템담당자에게 문의하세요.',function(res){
     			logout();
     		});
@@ -739,7 +738,7 @@ function layerPopupClose(target){
 function layerPopupPage(pgid,menu_id,param,result,width,height,callback){
 	
 	var popup_info;
-    
+	
     $.each(popupList, function(i){
         if(popupList[i].PGID == pgid){
             popup_info = popupList[i];
@@ -770,7 +769,7 @@ function layerPopupPage(pgid,menu_id,param,result,width,height,callback){
     //iframe 데이터 전달
     fn_sendIFrameDataPopup(popup_info, menu_id, param, result);  
     
-    $(target).show().addClass('open');
+    if(!param || param.unique_yn != 'Y') $(target).show().addClass('open');
     var $layerContentH = $layerContent.height();
     var $conPos = ($winH / 2) - ($layerContentH / 2);
     
@@ -780,20 +779,16 @@ function layerPopupPage(pgid,menu_id,param,result,width,height,callback){
         $layerContent.css({marginTop: 0});
     }    
     $("<div id='popupPage_"+pgid+"_overlay' class='pop_overlay' style='z-index:"+pop_zIndex+"'></div>").appendTo('.wrapper');
-    pop_zIndex++;
     //리턴받을경우
-    $('iframe#pop_'+pgid).load(function(){
-        var result = $('iframe#pop_'+pgid).get(0).contentWindow.pageInfo;
-        //var frmIds =$('iframe#pop_'+pgid).contents().find('#result_data');
-        var resultInput = $("#pop_result_" + pgid );
-        
-        resultInput.bind('change', function(){
-    		if(resultInput.val()){
-                PopupClose(target);
-    			callback(result.returnValue);
-    		};
-    	}); 
-    });    
+    $("#pop_result_" + pgid ).on('change',function(){
+    	console.log('TEST : TEST');
+		if($(this).val()){
+            var result = $('iframe#pop_'+pgid).get(0).contentWindow.pageInfo;
+            PopupClose(target);
+			callback(result.returnValue);
+		};
+    });
+    pop_zIndex++;
 }
 
 //모달레이어팝업닫기

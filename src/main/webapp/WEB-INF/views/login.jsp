@@ -99,6 +99,7 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
     	rsa.setPublic($("#RSAModulus").val(), $("#RSAExponent").val());
     	var user_id = rsa.encrypt($("#user_id").val());
     	var user_pw = rsa.encrypt($("#user_pw").val());
+    	var na_bzplc = rsa.encrypt($("#na_bzplc").val());
         var result;          
         $.ajax({
             url: sendUrl,
@@ -110,6 +111,7 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
             data:{
                    user_id : user_id,
                    user_pw : user_pw,
+                   na_bzplc : na_bzplc,
                    RSAKey  : $("#RSAKey").val(),
                    rsa_mod : $("#RSAModulus").val(),
                    rsa_exp : $("#RSAExponent").val()
@@ -135,7 +137,6 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
     
     //RsaKey 요청
     function getRsaKey(){
-        
     	$.ajax({
             url: '/co/getRSAKey',
             type: 'POST',
@@ -158,6 +159,26 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
     	
     	return result;
     }
+
+    function getNaBzPlc(user_id){
+        var result = null;
+    	$.ajax({
+            url: '/co/getNaBzPlc',
+            data : {"user_id": user_id},
+            type: 'POST',
+            async : false,
+            dataType:'json',
+            header:{"Content-Type":"application/json"},
+            success:function(data) {
+                result = data;                
+            },
+            error:function(request){            	
+                console.log(request);
+            }
+        });
+    	
+    	return result;
+    }
     
     //로그인 요청
     function getLogin(sendFrm){    	
@@ -172,34 +193,60 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
             $("#err_pw").show();
             return;
         }        
+        
+        var resultNaBzplc = getNaBzPlc($("#user_id").val());
+        if(resultNaBzplc?.naList.length >0){
+        	$('#na_bzplc').val(resultNaBzplc.naList[0].NA_BZPLC);
+        	if(resultNaBzplc?.naList.length == 1){
+                fn_LoginProc(sendFrm);        		
+        	}else{
+            	var sHtml = '';            
+        	    var sHtml = '<select id="chg_na_bzplc_select" onchange="$(\'#na_bzplc\').val(this.value);">';
+    			//     	    sHtml += '<option value="">선택</option>';
+        	    resultNaBzplc.naList.forEach((e,i)=>{
+        	    	//sHtml += '<option value="' + e.NA_BZPLC +(i==0?' "selected"':'')+'">' + e.NA_BZPLCNM + '</option>';
+        	    	sHtml += '<option value="' + e.NA_BZPLC+ (i==0?'" selected':'')+'">' + e.NA_BZPLCNM + '</option>';
 
-        //인증토큰 요청
-        results = getRsaKey();
-                
-        results = loginToken(sendFrm, "/signIn", "POST");       
-        console.log(results);
-        if(results != null){  
-        	if(results.token       == null || results.token  == '' || 
-                    results.key    == null || results.key    == '' ||
-                    results.iv     == null || results.iv     == '' ||
-                    results.userId == null || results.userId == '' 
-        	){
-        		MessagePopup("OK",'로그인정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
-        	}else if(results.na_bzplc == null || results.na_bzplc == ''){
-                MessagePopup("OK",'사업장정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
-        	}else if(results.grp_c == null || results.grp_c == ''){
-                MessagePopup("OK",'권한정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
-            }else if(results.strg_dt != null && fn_SpanDay(results.strg_dt, fn_getToday('YYYYMMDD'), 'Month') > 3){
-            	MessagePopup("OK",'비밀번호 변경시점에서 3개월 이상 경과하였습니다.<br>비밀번호를 변경하여 주십시오.',function(res){
-            		var pgid = 'LALM0916';
-                    var data = new Object();
-                    data['usrid'] = $('#user_id').val();
-                    data['old_pw_yn'] = 'Y';
-                    data['nhlvaca_token'] = results.token;
-                      
-                    parent.loginLayerPopupPage(pgid, '비밀번호 변경', data, 500, 300,function(result){
-                        if(result){
-                        	localStorage.setItem("nhlvaca_token", results.token);
+        	    });
+        	    sHtml += '</select>';
+        		MessagePopup('YESNO',sHtml,function(res){
+        			if(res){
+        				fn_LoginProc(sendFrm);
+        			}
+        		});        		
+        	}
+        }else{
+        	MessagePopup("OK",'로그인정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
+        	return;
+        }
+    }
+    
+  function fn_LoginProc(sendFrm){
+      //인증토큰 요청
+      getRsaKey();
+      results = loginToken(sendFrm, "/signIn", "POST");       
+      if(results != null){  
+      	if(results.token       == null || results.token  == '' || 
+                  results.key    == null || results.key    == '' ||
+                  results.iv     == null || results.iv     == '' ||
+                  results.userId == null || results.userId == '' 
+      	){
+      		MessagePopup("OK",'로그인정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
+      	}else if(results.na_bzplc == null || results.na_bzplc == ''){
+              MessagePopup("OK",'사업장정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
+      	}else if(results.grp_c == null || results.grp_c == ''){
+              MessagePopup("OK",'권한정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
+          }else if(results.strg_dt != null && fn_SpanDay(results.strg_dt, fn_getToday('YYYYMMDD'), 'Month') > 3){
+          	MessagePopup("OK",'비밀번호 변경시점에서 3개월 이상 경과하였습니다.<br>비밀번호를 변경하여 주십시오.',function(res){
+          		var pgid = 'LALM0916';
+                  var data = new Object();
+                  data['usrid'] = $('#user_id').val();
+                  data['old_pw_yn'] = 'Y';
+                  data['nhlvaca_token'] = results.token;
+                    
+                  parent.loginLayerPopupPage(pgid, '비밀번호 변경', data, 500, 300,function(result){
+                      if(result){
+                      	localStorage.setItem("nhlvaca_token", results.token);
 	                        localStorage.setItem("nhlvaca_key", results.key);
 	                        localStorage.setItem("nhlvaca_iv", results.iv);
 	                        localStorage.setItem("nhlvaca_userId", results.userId);
@@ -210,30 +257,27 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
 	                        localStorage.setItem("nhlvaca_usrnm", results.usrnm);
 	                        localStorage.setItem("nhlvaca_grp_c", results.grp_c);
 	                        localStorage.setItem("nhlvaca_strg_dt", results.strg_dt);
-	                        localStorage.setItem("nhlvaca_strg_yn", results.strg_yn);
-                        	window.location.href = "/index";
-                        }
-                    });
-            	});
-            }
-            else {
-            	localStorage.setItem("nhlvaca_token", results.token);
-                localStorage.setItem("nhlvaca_key", results.key);
-                localStorage.setItem("nhlvaca_iv", results.iv);
-                localStorage.setItem("nhlvaca_userId", results.userId);
-                localStorage.setItem("nhlvaca_eno", results.eno);
-                localStorage.setItem("nhlvaca_na_bzplc", results.na_bzplc);
-                localStorage.setItem("nhlvaca_security", results.security);
-                localStorage.setItem("nhlvaca_na_bzplnm", results.na_bzplnm);
-                localStorage.setItem("nhlvaca_usrnm", results.usrnm);
-                localStorage.setItem("nhlvaca_grp_c", results.grp_c);
-                localStorage.setItem("nhlvaca_strg_dt", results.strg_dt);
-                localStorage.setItem("nhlvaca_strg_yn", results.strg_yn);
-            	window.location.href = "/index";
-            }
-        }        
-    }
-    
+                      	window.location.href = "/index";
+                      }
+                  });
+          	});
+          }else {
+          	localStorage.setItem("nhlvaca_token", results.token);
+              localStorage.setItem("nhlvaca_key", results.key);
+              localStorage.setItem("nhlvaca_iv", results.iv);
+              localStorage.setItem("nhlvaca_userId", results.userId);
+              localStorage.setItem("nhlvaca_eno", results.eno);
+              localStorage.setItem("nhlvaca_na_bzplc", results.na_bzplc);
+              localStorage.setItem("nhlvaca_security", results.security);
+              localStorage.setItem("nhlvaca_na_bzplnm", results.na_bzplnm);
+              localStorage.setItem("nhlvaca_usrnm", results.usrnm);
+              localStorage.setItem("nhlvaca_grp_c", results.grp_c);
+              localStorage.setItem("nhlvaca_strg_dt", results.strg_dt);
+          	window.location.href = "/index";
+          }
+     	    
+      }	  
+  }
   //모달레이어팝업
   function MessagePopup(type,msg,callback){
 	  var title = '';
@@ -454,6 +498,7 @@ function offBeforeunload(){
                     <input type="hidden" id="RSAKey"      value="${RSAKey }"/>
                     <input type="hidden" id="RSAModulus"  value="${RSAModulus }"/>
                     <input type="hidden" id="RSAExponent" value="${RSAExponent }"/>
+                    <input type="hidden" id="na_bzplc" value=""/>
 					
 				</form>
 			</div>

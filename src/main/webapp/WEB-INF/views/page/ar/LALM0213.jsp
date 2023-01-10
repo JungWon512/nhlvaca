@@ -35,6 +35,7 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     var na_bzplc = App_na_bzplc;
+    var ot_auc_obj_dsc = "";
     //mv_RunMode = '1':최초로딩, '2':조회, '3':저장/삭제, '4':기타설정
     var mv_RunMode = 0;
     var mv_CheckQcnMsg = 0;
@@ -252,6 +253,11 @@
             $("#mainGrid").jqGrid("clearGridData", true);
             fn_CreateGrid(result); 
             mv_RunMode = 2;
+            
+            //불량등록이력 체크 시, 이력있는 사람은 목록 가져오기
+            if($("#cb_grd_MhBadTrmnShow").is(":checked")){
+            	fn_SearchBadTrmn();
+            }
         }
     }
     
@@ -265,7 +271,7 @@
     	mv_RunMode = 2;
     	$("#mhBadTrmnGrid").jqGrid("clearGridData", true);
     	
-    	var results = sendAjaxFrm("frm_MhAucEntr", "/LALM0213_selBadTrmn", "POST");        
+    	var results = sendAjaxFrm("frm_Search", "/LALM0213_selBadTrmn", "POST");        
         var result;
         
         if(results.status != RETURN_SUCCESS){
@@ -273,7 +279,6 @@
         }else{      
         	result = setDecrypt(results);
         	fn_CreateSubGrid(result); 
-            fn_SearchBadCheck();
         }
     }
     
@@ -282,31 +287,19 @@
      * 2. 입 력 변 수 : N/A
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
-    function fn_SearchBadCheck(){    	 
+    function fn_SearchBadCheck(mb_intg_no){    	 
+
+    	var param      = new Object();
+        param["mb_intg_no"] = mb_intg_no;
     	
-    	var results = sendAjaxFrm("frm_MhAucEntr", "/LALM0213_selBadCheck", "POST");        
+    	var results = sendAjax(param, "/LALM0213_selBadCheck", "POST");        
         var result;
         
         if(results.status != RETURN_SUCCESS){
-            return;
+            return "99";
         }else{      
             result = setDecrypt(results);
-            if(result[0]["TR_PMSS_YN"] == "0") {
-            	MessagePopup('YESNO',"불량거래인입니다. 등록하시겠습니까??",function(res){
-        			if(res){
-        				return;
-            		} else {
-            			fn_InitFrm('frm_MhAucEntr');
-            			fn_DisableFrm('frm_MhAucEntr', false);
-                		fn_DisableAuc(false);
-                		fn_DisableCbAuc("1");
-                		
-                		$("#mhBadTrmnGrid").jqGrid("clearGridData", true);
-            		}
-        		});
-            } else {
-            	$("#mhBadTrmnGrid").jqGrid("clearGridData", true);
-            }
+            return result[0].AUC_PART_LIMIT_YN;
         }
     }
     
@@ -561,7 +554,6 @@
 	               
 	            if(results.status == RETURN_SUCCESS) {
 	            	result = setDecrypt(results);
-	            	
 	                
 	            	$("#auc_date").val(aucDat);
 	                $("#ddl_qcn").val(result[0].QCN)
@@ -586,7 +578,7 @@
 	                $("#del_yn").val(result[0].DEL_YN);
 	                
 	                fn_DisableAuc(true);
-	                //불량중도매인 검색
+	                //검색결과의 선택한 ROW 중도매인에 대한 불량중도매인 이력 검색
 	                fn_SearchBadTrmn();
 	            }
            },
@@ -603,18 +595,18 @@
             rowNoValue = data.length;
         }
         
-        /*                                1        2        3           4          5         6              7         8         9 */
-        var searchResultColNames = ["등록일자", "등록조합", "등록자", "등록자연락처", "중도매인명", "전화번호", "사고등록사유내용", "거래상태", "등록순서"];        
+        var searchResultColNames = ["등록조합","중도매인코드", "중도매인명", "블랙등록일자", "거래제한일자", "전화번호","사고등록사유내용", "경매참여제한여부", "등록자", "등록자연락처"];        
         var searchResultColModel = [ 						 
-        							 {name:"RG_DT",       	index:"RG_DT",       	width:15, align:'center', formatter:'gridDateFormat'},
-                                     {name:"RG_BZPLNM",		index:"RG_BZPLNM",		width:15, align:'center'},                                     
-                                     {name:"RGMNM",			index:"RGMNM",			width:15, align:'center'},
-                                     {name:"RGMN_TELNO",	index:"RGMN_TELNO",		width:15, align:'center'},
+                                     {name:"CLNTNM",		index:"CLNTNM",		width:15, align:'center'},                                     
+        							 {name:"TRMN_AMNNO",       	index:"TRMN_AMNNO",       	width:15, align:'center'},
                                      {name:"SRA_MWMNNM",    index:"SRA_MWMNNM",     width:15, align:'center'},
+        							 {name:"REG_DATE",       	index:"REG_DATE",       	width:15, align:'center', formatter:'gridDateFormat'},
+        							 {name:"LIMIT_DATE",       	index:"LIMIT_DATE",       	width:15, align:'center', formatter:'gridDateFormat'},
                                      {name:"TELNO",        	index:"TELNO",        	width:15, align:'center'},
-                                     {name:"ACD_RG_RSNCTT",	index:"ACD_RG_RSNCTT", 	width:20, align:'center'},
-                                     {name:"TR_PMSS_YN",    index:"TR_PMSS_YN",    	width:20, align:'center'},
-                                     {name:"RG_SQNO",       index:"RG_SQNO",    	width:15, align:'center'},
+                                     {name:"REG_REASON",	index:"REG_REASON", 	width:20, align:'center'},
+                                     {name:"AUC_PART_LIMIT_YN",    index:"AUC_PART_LIMIT_YN", width:20, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+                                     {name:"USRNM",			index:"USRNM",			width:15, align:'center'},
+                                     {name:"MPNO",	index:"MPNO",		width:15, align:'center'}
                                     ];
             
         $("#mhBadTrmnGrid").jqGrid("GridUnload");
@@ -701,6 +693,11 @@
          	result = setDecrypt(results);
          	$("#ddl_qcn").val(result[0]["QCN"]);
          	$("#lvst_auc_ptc_mn_no").focus();
+         	ot_auc_obj_dsc = result[0]["AUC_OBJ_DSC"].concat(",", result[0]["OT_AUC_OBJ_DSC"]).split(",");
+         	var arrOtAucObjDsc = result[0]["OT_AUC_OBJ_DSC"].split(",");
+         	for (var aucObjDsc of arrOtAucObjDsc) {
+         		fn_contrChBox(true, "cb_auc_obj_dsc" + aucObjDsc, "");
+         	}
          } else {
         	if(mv_CheckQcnMsg == 1) {
         		MessagePopup('OK',"경매차수가 등록되지 않았습니다.");
@@ -718,6 +715,11 @@
 	// result   : N/A
 	//**************************************
 	function fn_DisableCbAuc(p_param){
+		if (p_param != 0) {
+			for (var auc_obj_dsc of ot_auc_obj_dsc) {
+				fn_contrChBox(true, "cb_auc_obj_dsc" + auc_obj_dsc, "");
+			}
+		}
 		if(p_param == 1) {
 			fn_contrChBox(false, "cb_auc_obj_dsc1", "");
 			$("#cb_auc_obj_dsc1").attr("disabled", true);
@@ -879,15 +881,39 @@
  		fn_CallMwmnnmPopup(data,checkBoolean,function(result) {
  			if(result){
  				console.log(result)
- 				$("#trmn_amnno").val(result.TRMN_AMNNO);
- 				$("#sra_mwmnnm").val(result.SRA_MWMNNM);
- 				$("#frlno").val(result.FRLNO);
- 				$("#smsNo").val(result.SMS_NO);
- 				$("#cus_mpno").val(result.CUS_MPNO);
- 				$("#dongup").val(fn_xxsDecode(result.DONGUP + ' ' + result.DONGBW));
- 				$("#rmk_cntn").val(result.RMK_CNTN);
- 				// 불량중도매인 검색
- 				fn_SearchBadTrmn();
+ 				// 불량중도매인 체크
+ 				var blackFlag = fn_SearchBadCheck(result.MB_INTG_NO);
+ 				if(blackFlag != '99'){
+ 					switch(blackFlag){
+ 					case "1" :
+ 						//경매참여 가능하긴 하지만 불량회원 등록되어 있는 상태이다. 알럿 띄우고 정보 셋팅
+ 						MessagePopup('OK',"불량회원(B/L)으로 등록된 중도매인 입니다.<br/>확인 바랍니다.<br/>(불량회원 해지는 '기준정보 > 불량회원[B/L] 관리')", function(){
+	 						$("#trmn_amnno").val(result.TRMN_AMNNO);
+	 		 				$("#sra_mwmnnm").val(result.SRA_MWMNNM);
+	 		 				$("#frlno").val(result.FRLNO);
+	 		 				$("#smsNo").val(result.SMS_NO);
+	 		 				$("#cus_mpno").val(result.CUS_MPNO);
+	 		 				$("#dongup").val(fn_xxsDecode(result.DONGUP + ' ' + result.DONGBW));
+	 		 				$("#rmk_cntn").val(result.RMK_CNTN);
+ 			            });
+ 						break;
+ 					case "0" : 
+ 						//경매참여도 불가능한 상태라 알럿만 띄우고 참가번호 등록 안됨
+ 						MessagePopup('OK','경매참여 불가 회원입니다. 기준정보 > 불량회원[B/L] 관리에서 참여제한을 해제하세요');
+ 						break;
+ 					}
+ 				}
+ 				//불량회원 아닌 경우 정상 정보 셋팅
+ 				else{
+	 				$("#trmn_amnno").val(result.TRMN_AMNNO);
+	 				$("#sra_mwmnnm").val(result.SRA_MWMNNM);
+	 				$("#frlno").val(result.FRLNO);
+	 				$("#smsNo").val(result.SMS_NO);
+	 				$("#cus_mpno").val(result.CUS_MPNO);
+	 				$("#dongup").val(fn_xxsDecode(result.DONGUP + ' ' + result.DONGBW));
+	 				$("#rmk_cntn").val(result.RMK_CNTN);
+ 				}
+ 						
  			} else {
  				$("#trmn_amnno").val("");
  				$("#sra_mwmnnm").val("");
@@ -929,7 +955,7 @@
                             <col width="180">
                             <col width="80">
                             <col width="*">                            
-                            <col width="80">
+                            <col width="100">
                             <col width="*">
                         </colgroup>
                         <tbody>
@@ -949,7 +975,7 @@
                                 	<input type="text" style="ime-mode:active;width:100px" id="sra_mwmnnm1">
                                 	<button id="pb_sra_mwmnnm1" class="tb_btn white srch"><i class="fa fa-search"></i></button>
                                 </td>
-                                <th scope="row"><span class="tb_dot">불량거래</span></th>
+                                <th scope="row"><span class="tb_dot">불량등록이력</span></th>
                                 <td>                                    
                                     <input type="checkbox" id="cb_grd_MhBadTrmnShow" name="cb_grd_MhBadTrmnShow" value="0">
                                     <h id="grd_MhBadTrmnShow">부</h>                                                                      
@@ -1002,9 +1028,9 @@
                                 </td>
                                 <th scope="row"><span>추가경매대상</span></th>
                                 <td>
-                                    <input type="checkbox" id="cb_auc_obj_dsc1" name="cb_auc_obj_dsc1" value="1"> 송아지
-                                    <input type="checkbox" id="cb_auc_obj_dsc2" name="cb_auc_obj_dsc2" value="2"> 비육우
-                                    <input type="checkbox" id="cb_auc_obj_dsc3" name="cb_auc_obj_dsc3" value="3"> 번식우                   
+                                    <input type="checkbox" id="cb_auc_obj_dsc1" name="cb_auc_obj_dsc1" class="auc_obj_dsc" value="1"> 송아지
+                                    <input type="checkbox" id="cb_auc_obj_dsc2" name="cb_auc_obj_dsc2" class="auc_obj_dsc" value="2"> 비육우
+                                    <input type="checkbox" id="cb_auc_obj_dsc3" name="cb_auc_obj_dsc3" class="auc_obj_dsc" value="3"> 번식우                   
                                 </td>
                                 <th scope="row"><span>경매차수</span></th>
                                 <td>
@@ -1082,7 +1108,7 @@
             
             <div class="tab_box clearfix" id="grd_MhBadTrmn_Text">
                 <ul class="tab_list">
-                    <li><p class="dot_allow">불량중도매인</p></li>
+                    <li><p class="dot_allow">불량중도매인 등록이력</p></li>
                 </ul>
             </div>
             <div class="listTable rsp_v" id="grd_MhBadTrmn_Grid">

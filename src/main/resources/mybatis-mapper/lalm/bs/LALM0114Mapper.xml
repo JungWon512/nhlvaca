@@ -100,6 +100,12 @@
           , sra_indv_brdsra_rg_no
           , rg_dsc
           , anw_yn
+          , grfa_sra_kpn_no 
+          , grfa_sra_indv_eart_no 
+          , grmo_sra_indv_eart_no 
+          , mtgrfa_sra_kpn_no 
+          , mtgrfa_sra_indv_eart_no 
+          , mtgrmo_sra_indv_eart_no
           , fsrg_dtm
           , fsrgmn_eno
           , lschg_dtm
@@ -122,6 +128,12 @@
            , #{sra_indv_brdsra_rg_no}
            , #{rg_dsc}
            , '9'
+           , #{grfa_sra_kpn_no}
+           , #{grfa_sra_indv_eart_no}
+           , #{grmo_sra_indv_eart_no}
+           , #{mtgrfa_sra_kpn_no}
+           , #{mtgrfa_sra_indv_eart_no}
+           , #{mtgrmo_sra_indv_eart_no}
            , SYSDATE
            , #{ss_userid}
            , SYSDATE
@@ -153,6 +165,13 @@
             , indv_id_no                = #{indv_id_no}
             , sra_indv_brdsra_rg_no     = #{sra_indv_brdsra_rg_no}
             , rg_dsc                    = #{rg_dsc}
+            , grfa_sra_kpn_no           = #{grfa_sra_kpn_no}
+            , grfa_sra_indv_eart_no     = #{grfa_sra_indv_eart_no}
+            , grmo_sra_indv_eart_no     = #{grmo_sra_indv_eart_no}
+            , mtgrfa_sra_kpn_no         = #{mtgrfa_sra_kpn_no}
+            , mtgrfa_sra_indv_eart_no   = #{mtgrfa_sra_indv_eart_no}
+            , mtgrmo_sra_indv_eart_no   = #{mtgrmo_sra_indv_eart_no}
+            , metrb_metqlt_grd          = #{metrb_metqlt_grd}
             , lschg_dtm                 = SYSDATE
             , ls_cmeno                  = #{ss_userid}
         where na_bzplc                  = #{ss_na_bzplc}

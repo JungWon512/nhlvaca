@@ -13,54 +13,60 @@
     
     <select id="LALM0113_selListGrd_MmMwmn" resultType="HashMap">
         select
-		       na_bzplc
-		     , trmn_amnno
-		     , mwmn_na_trpl_c
+		       a.na_bzplc
+		     , a.trmn_amnno
+		     , a.mwmn_na_trpl_c
 		     , CASE WHEN #{ss_security} = '1'   THEN sra_mwmnnm
-		            WHEN LENGTH(sra_mwmnnm) = 2 THEN SUBSTR(sra_mwmnnm,1,1) || '*' 
-		            WHEN LENGTH(sra_mwmnnm) = 3 THEN SUBSTR(sra_mwmnnm,1,1) || '*'  || SUBSTR(sra_mwmnnm,3,1) 
-		            WHEN LENGTH(sra_mwmnnm) = 4 THEN SUBSTR(sra_mwmnnm,1,1) || '**' || SUBSTR(sra_mwmnnm,4,1)  
-		            WHEN LENGTH(sra_mwmnnm) >= 5 THEN SUBSTR(sra_mwmnnm,1,2) || '**' || SUBSTR(sra_mwmnnm,5,LENGTH(sra_mwmnnm))  END AS sra_mwmnnm  /* 축산중도매인명                        */
-		     , frlno
-		     , zip
-		     , dongup
-		     , CASE WHEN #{ss_security} = '1' THEN dongbw
-		            ELSE LPAD(' ', LENGTH(dongbw), '*') END dongbw      /*  동이하주소                            */
-		     , CASE WHEN #{ss_security} = '1'                          THEN ohse_telno
-		            WHEN LENGTH(REPLACE(trim(ohse_telno),'-','')) = 9  THEN SUBSTR(REPLACE(trim(ohse_telno),'-',''),1,2) || '-***-' || SUBSTR(REPLACE(trim(ohse_telno),'-',''),6,4)  
-		            WHEN LENGTH(REPLACE(trim(ohse_telno),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(trim(ohse_telno),'-',''),1,2) = '02' 
-		                                                                          THEN SUBSTR(REPLACE(trim(ohse_telno),'-',''),1,2) || '-****-' || SUBSTR(REPLACE(trim(ohse_telno),'-',''),7,4)  
-		                                                                          ELSE SUBSTR(REPLACE(trim(ohse_telno),'-',''),1,3) || '-***-' || SUBSTR(REPLACE(trim(ohse_telno),'-',''),7,4)  END) 
-		            WHEN LENGTH(REPLACE(trim(ohse_telno),'-','')) = 11 THEN SUBSTR(REPLACE(trim(ohse_telno),'-',''),1,3) || '-****-' || SUBSTR(REPLACE(trim(ohse_telno),'-',''),8,4)
-		            WHEN LENGTH(REPLACE(trim(ohse_telno),'-','')) <![CDATA[<]]> 9  THEN '***-' || SUBSTR(REPLACE(trim(ohse_telno),'-',''),4,4)                                                                           
+		            WHEN LENGTH(a.sra_mwmnnm) = 2 THEN SUBSTR(a.sra_mwmnnm,1,1) || '*' 
+		            WHEN LENGTH(a.sra_mwmnnm) = 3 THEN SUBSTR(a.sra_mwmnnm,1,1) || '*'  || SUBSTR(a.sra_mwmnnm,3,1) 
+		            WHEN LENGTH(a.sra_mwmnnm) = 4 THEN SUBSTR(a.sra_mwmnnm,1,1) || '**' || SUBSTR(a.sra_mwmnnm,4,1)  
+		            WHEN LENGTH(a.sra_mwmnnm) >= 5 THEN SUBSTR(a.sra_mwmnnm,1,2) || '**' || SUBSTR(a.sra_mwmnnm,5,LENGTH(a.sra_mwmnnm))  END AS sra_mwmnnm  /* 축산중도매인명                        */
+		     , a.frlno
+		     , a.zip
+		     , a.dongup
+		     , CASE WHEN #{ss_security} = '1' THEN a.dongbw
+		            ELSE LPAD(' ', LENGTH(a.dongbw), '*') END dongbw      /*  동이하주소                            */
+		     , CASE WHEN #{ss_security} = '1'                          THEN a.ohse_telno
+		            WHEN LENGTH(REPLACE(trim(a.ohse_telno),'-','')) = 9  THEN SUBSTR(REPLACE(trim(a.ohse_telno),'-',''),1,2) || '-***-' || SUBSTR(REPLACE(trim(a.ohse_telno),'-',''),6,4)  
+		            WHEN LENGTH(REPLACE(trim(a.ohse_telno),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(trim(a.ohse_telno),'-',''),1,2) = '02' 
+		                                                                          THEN SUBSTR(REPLACE(trim(a.ohse_telno),'-',''),1,2) || '-****-' || SUBSTR(REPLACE(trim(a.ohse_telno),'-',''),7,4)  
+		                                                                          ELSE SUBSTR(REPLACE(trim(a.ohse_telno),'-',''),1,3) || '-***-' || SUBSTR(REPLACE(trim(a.ohse_telno),'-',''),7,4)  END) 
+		            WHEN LENGTH(REPLACE(trim(a.ohse_telno),'-','')) = 11 THEN SUBSTR(REPLACE(trim(a.ohse_telno),'-',''),1,3) || '-****-' || SUBSTR(REPLACE(trim(a.ohse_telno),'-',''),8,4)
+		            WHEN LENGTH(REPLACE(trim(a.ohse_telno),'-','')) <![CDATA[<]]> 9  THEN '***-' || SUBSTR(REPLACE(trim(a.ohse_telno),'-',''),4,4)                                                                           
 		            END  AS ohse_telno       /* 자택전화번호               */
-		     , CASE WHEN #{ss_security} = '1'                         THEN cus_mpno
-		            WHEN LENGTH(REPLACE(RTRIM(cus_mpno),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(cus_mpno),'-',''),1,2) || '-***-' || SUBSTR(REPLACE(RTRIM(cus_mpno),'-',''),6,4)  
-		            WHEN LENGTH(REPLACE(RTRIM(cus_mpno),'-','')) = 10 THEN 
-		           (CASE WHEN SUBSTR(REPLACE(RTRIM(cus_mpno),'-',''),1,2) = '02' 
-		                 THEN SUBSTR(REPLACE(RTRIM(cus_mpno),'-',''),1,2) || '-****-' || SUBSTR(REPLACE(RTRIM(cus_mpno),'-',''),7,4)
-		            ELSE SUBSTR(REPLACE(RTRIM(cus_mpno),'-',''),1,3) || '-***-' || SUBSTR(REPLACE(RTRIM(cus_mpno),'-',''),7,4)  END) 
-		            WHEN LENGTH(REPLACE(RTRIM(cus_mpno),'-','')) IN (11,12) THEN SUBSTR(REPLACE(RTRIM(cus_mpno),'-',''),1,3) || '-****-' || SUBSTR(REPLACE(RTRIM(cus_mpno),'-',''),8,4)                                             
+		     , CASE WHEN #{ss_security} = '1'                         THEN a.cus_mpno
+		            WHEN LENGTH(REPLACE(RTRIM(a.cus_mpno),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(a.cus_mpno),'-',''),1,2) || '-***-' || SUBSTR(REPLACE(RTRIM(a.cus_mpno),'-',''),6,4)  
+		            WHEN LENGTH(REPLACE(RTRIM(a.cus_mpno),'-','')) = 10 THEN 
+		           (CASE WHEN SUBSTR(REPLACE(RTRIM(a.cus_mpno),'-',''),1,2) = '02' 
+		                 THEN SUBSTR(REPLACE(RTRIM(a.cus_mpno),'-',''),1,2) || '-****-' || SUBSTR(REPLACE(RTRIM(a.cus_mpno),'-',''),7,4)
+		            ELSE SUBSTR(REPLACE(RTRIM(a.cus_mpno),'-',''),1,3) || '-***-' || SUBSTR(REPLACE(RTRIM(a.cus_mpno),'-',''),7,4)  END) 
+		            WHEN LENGTH(REPLACE(RTRIM(a.cus_mpno),'-','')) IN (11,12) THEN SUBSTR(REPLACE(RTRIM(a.cus_mpno),'-',''),1,3) || '-****-' || SUBSTR(REPLACE(RTRIM(a.cus_mpno),'-',''),8,4)                                             
 		       END AS cus_mpno                                    /*  핸드폰번호                     */
-		     , maco_yn
-		     , jrdwo_dsc
-		     , psn_inf_ofr_agr_yn
-		     , tms_yn
-		     , del_yn
-		     , fsrg_dtm
-		     , fsrgmn_eno
-		     , lschg_dtm
-		     , ls_cmeno
-		     , rmk_cntn
-		     , Replace(cus_rlno,'-','') AS cus_rlno
-		     , sra_mwmnnm               as org_sra_mwmnnm
-		     , dongbw                   as org_dongbw
-		     , ohse_telno               as org_ohse_telno
-		     , cus_mpno                 as org_cus_mpno
-		    from tb_la_is_mm_mwmn
-		    where na_bzplc   = #{ss_na_bzplc}
-		    and   sra_mwmnnm like '%' || #{sr_sra_mwmnnm} || '%'
-		    and   del_yn     = '0';
+		     , a.maco_yn
+		     , a.jrdwo_dsc
+		     , a.psn_inf_ofr_agr_yn
+		     , a.tms_yn
+		     , a.del_yn
+		     , a.fsrg_dtm
+		     , a.fsrgmn_eno
+		     , a.lschg_dtm
+		     , a.ls_cmeno
+		     , a.rmk_cntn
+		     , REGEXP_REPLACE(a.cus_rlno, '[^0-9]') AS cus_rlno
+		     , a.sra_mwmnnm               as org_sra_mwmnnm
+		     , a.dongbw                   as org_dongbw
+		     , a.ohse_telno               as org_ohse_telno
+		     , a.cus_mpno                 as org_cus_mpno
+		     , a.mb_intg_no
+		     , nvl(b.dormacc_yn, '0') as dormacc_yn
+		    from tb_la_is_mm_mwmn a
+		    left outer join tb_la_is_mm_mbintg b
+		      on ( a.mb_intg_no = b.mb_intg_no and b.mb_intg_gb = '01')
+		    where a.na_bzplc   = #{ss_na_bzplc}
+		    and a.sra_mwmnnm like '%' || #{sr_sra_mwmnnm} || '%'
+		    and a.del_yn     = '0'
+		    and nvl(b.delacc_yn, '0') = '0'
+		    and nvl(b.dormacc_yn, '0') = '0'
     </select>
     
     <select id="LALM0113_selListFrm_MmMwmn" resultType="HashMap">
@@ -85,7 +91,7 @@
 	     , lschg_dtm
 	     , ls_cmeno
 	     , rmk_cntn
-	     , Replace(cus_rlno,'-','') AS cus_rlno 
+	     , REGEXP_REPLACE(cus_rlno, '[^0-9]') AS cus_rlno
 	    from tb_la_is_mm_mwmn
 	    where na_bzplc   = #{ss_na_bzplc}
 	    and   trmn_amnno = #{trmn_amnno}
@@ -118,6 +124,7 @@
             , ls_cmeno
             , rmk_cntn
             , cus_rlno
+            , mb_intg_no
         )
         values (
               #{ss_na_bzplc}
@@ -125,7 +132,7 @@
             , #{mwmn_na_trpl_c}
             , #{sra_mwmnnm}
             , #{frlno}
-            , replace(#{zip},'-','')
+            , REGEXP_REPLACE(#{zip}, '[^0-9]')
             , #{dongup}
             , #{dongbw}
             , #{ohse_telno}
@@ -140,7 +147,8 @@
             , SYSDATE
             , #{ss_userid}
             , #{rmk_cntn}
-            , #{cus_rlno}
+            , REGEXP_REPLACE(#{cus_rlno}, '[^0-9]')
+            , #{mb_intg_no}
         )
     </insert>
     
@@ -166,6 +174,7 @@
             , lschg_dtm
             , ls_cmeno
             , rmk_cntn
+            , mb_intg_no
         )
         select
               na_bzplc
@@ -188,6 +197,7 @@
             , lschg_dtm
             , ls_cmeno
             , rmk_cntn
+            , mb_intg_no
         from  tb_la_is_mm_mwmn
         where na_bzplc   = #{ss_na_bzplc}
         and   trmn_amnno = #{trmn_amnno}
@@ -198,7 +208,7 @@
               mwmn_na_trpl_c         = #{mwmn_na_trpl_c}
             , sra_mwmnnm             = #{sra_mwmnnm}
             , frlno                  = #{frlno}
-            , zip                    = replace(#{zip},'-','')
+            , zip                    = REGEXP_REPLACE(#{zip}, '[^0-9]')
             , dongup                 = #{dongup}
             , dongbw                 = #{dongbw}
             , ohse_telno             = #{ohse_telno}
@@ -211,7 +221,8 @@
             , lschg_dtm              = SYSDATE
             , ls_cmeno               = #{ss_userid}
             , rmk_cntn               = #{rmk_cntn}
-            , cus_rlno               = #{cus_rlno}
+            , cus_rlno               = REGEXP_REPLACE(#{cus_rlno}, '[^0-9]')
+            , mb_intg_no             = #{mb_intg_no}
         where na_bzplc               = #{ss_na_bzplc}
         and   trmn_amnno             = #{trmn_amnno}
     </update>
@@ -228,37 +239,156 @@
     
     <select id="LALM0113_selDetail" resultType="HashMap">
         select
-               na_bzplc
-             , trmn_amnno
-             , mwmn_na_trpl_c
-             , sra_mwmnnm  /* 축산중도매인명                        */
-             , frlno
-             , zip
-             , dongup
-             , dongbw      /*  동이하주소                            */
-             , ohse_telno       /* 자택전화번호               */
-             , cus_mpno                                    /*  핸드폰번호                     */
-             , maco_yn
-             , jrdwo_dsc
-             , psn_inf_ofr_agr_yn
-             , tms_yn
-             , del_yn
-             , fsrg_dtm
-             , fsrgmn_eno
-             , lschg_dtm
-             , ls_cmeno
-             , rmk_cntn
-             , Replace(cus_rlno,'-','') AS cus_rlno
-             , sra_mwmnnm               as org_sra_mwmnnm
-             , dongbw                   as org_dongbw
-             , ohse_telno               as org_ohse_telno
-             , cus_mpno                 as org_cus_mpno
-            from tb_la_is_mm_mwmn
-            where na_bzplc   = #{ss_na_bzplc}
-            and   trmn_amnno = #{trmn_amnno}
-            and   del_yn     = '0'
+               a.na_bzplc
+             , a.trmn_amnno
+             , a.mwmn_na_trpl_c
+             , a.sra_mwmnnm  /* 축산중도매인명                        */
+             , a.frlno
+             , a.zip
+             , a.dongup
+             , a.dongbw      /*  동이하주소                            */
+             , a.ohse_telno       /* 자택전화번호               */
+             , a.cus_mpno                                    /*  핸드폰번호                     */
+             , a.maco_yn
+             , a.jrdwo_dsc
+             , a.psn_inf_ofr_agr_yn
+             , a.tms_yn
+             , a.del_yn
+             , a.fsrg_dtm
+             , a.fsrgmn_eno
+             , a.lschg_dtm
+             , a.ls_cmeno
+             , a.rmk_cntn
+             , Replace(a.cus_rlno,'-','') AS cus_rlno
+             , a.sra_mwmnnm               as org_sra_mwmnnm
+             , a.dongbw                   as org_dongbw
+             , a.ohse_telno               as org_ohse_telno
+             , a.cus_mpno                 as org_cus_mpno
+             , a.mb_intg_no
+             , nvl(b.dormacc_yn, '0') as dormacc_yn
+            from tb_la_is_mm_mwmn a
+            left outer join tb_la_is_mm_mbintg b
+		      on ( a.mb_intg_no = b.mb_intg_no and b.mb_intg_gb = '01')
+            where a.na_bzplc   = #{ss_na_bzplc}
+            and   a.trmn_amnno = #{trmn_amnno}
+            and   a.del_yn     = '0'
     </select>
-   
+
+	<!-- 동일한 이름, 생년월일, 휴대전화번호로 등록된 정보가 있는지 확인 -->
+	<select id="LALM0113_selMwmnInfo" parameterType="hashMap" resultType="hashMap">
+		SELECT NA_BZPLC
+			 , TRMN_AMNNO
+			 , MWMN_NA_TRPL_C
+			 , SRA_MWMNNM
+			 , FRLNO
+			 , ZIP
+			 , DONGUP
+			 , DONGBW
+			 , OHSE_TELNO
+			 , CUS_MPNO
+			 , MACO_YN
+			 , JRDWO_DSC
+			 , PSN_INF_OFR_AGR_YN
+			 , TMS_YN
+			 , DEL_YN
+			 , RMK_CNTN
+			 , CUS_RLNO
+			 , LSCHG_DTM
+			 , LS_CMENO
+			 , FSRG_DTM
+			 , FSRGMN_ENO
+			 , NVL(MB_INTG_NO, '') AS MB_INTG_NO
+		  FROM TB_LA_IS_MM_MWMN
+		 WHERE NA_BZPLC = #{ss_na_bzplc}
+		   AND REPLACE(TRIM(SRA_MWMNNM),' ','') = REPLACE(TRIM(#{sra_mwmnnm}),' ','')
+		   AND REPLACE(TRIM(CUS_RLNO),' ','') = REPLACE(TRIM(#{cus_rlno}),' ','')
+		   AND REGEXP_REPLACE(CUS_MPNO, '[^0-9]') = REGEXP_REPLACE(#{cus_mpno}, '[^0-9]')
+		   AND DEL_YN = '0'
+	</select>
+
+	<!-- 모든 조합에서 이름(SRA_MWMNNM), 생년월일(CUS_RLNO), 휴대전화번호(CUS_MPNO)로 통합된 번호가 있는지 체크 -->
+	<select id="LALM0113_selMwmnMbIntgNo" parameterType="hashMap" resultType="hashMap">
+		SELECT NVL(MIN(MB_INTG_NO), '') AS MB_INTG_NO
+		  FROM TB_LA_IS_MM_MWMN
+		 WHERE REPLACE(TRIM(SRA_MWMNNM),' ','') = REPLACE(TRIM(#{sra_mwmnnm}),' ','')
+		   AND REPLACE(TRIM(CUS_RLNO),' ','') = REPLACE(TRIM(#{cus_rlno}),' ','')
+		   AND REGEXP_REPLACE(CUS_MPNO, '[^0-9]') = REGEXP_REPLACE(#{cus_mpno}, '[^0-9]')
+		   AND DEL_YN = '0'
+	</select>
+	
+	<!-- 이름, 생년월일, 휴대전화로 통합회원 정보 조회 -->
+	<select id="LALM0113_selMbIntgInfo" parameterType="hashMap" resultType="hashMap">
+		SELECT MB_INTG_NO
+			 , MB_INTG_NM
+			 , MB_RLNO
+			 , OHSE_TELNO
+			 , MB_MPNO
+			 , DORMACC_YN
+			 , DORMACC_DT
+			 , DELACC_YN
+			 , DELACC_DT
+			 , MB_INTG_DT
+			 , TMS_YN
+			 , FNCON_DTM
+			 , FSRG_DTM
+			 , FSRGMN_ENO
+			 , LSCHG_DTM
+			 , LS_CMENO
+			 , MB_INTG_GB
+			 , DORMDUE_DT
+		  FROM TB_LA_IS_MM_MBINTG
+		 WHERE REPLACE(TRIM(MB_INTG_NM),' ','') = REPLACE(TRIM(#{sra_mwmnnm}),' ','')
+		   AND REPLACE(TRIM(MB_RLNO),' ','') = REPLACE(TRIM(#{cus_rlno}),' ','')
+		   AND REGEXP_REPLACE(OHSE_TELNO, '[^0-9]') = REGEXP_REPLACE(#{cus_mpno}, '[^0-9]')
+		   AND MB_INTG_GB = '01'
+	</select>
+	
+	<!-- 중도매인 통합회원정보 신규 저장 -->
+	<insert id="LALM0113_insMbIntgInfo" parameterType="hashMap">
+		<selectKey keyProperty="mb_intg_no" resultType="int" order="BEFORE">
+			SELECT NVL(MAX(MB_INTG_NO) + 1, 1) FROM TB_LA_IS_MM_MBINTG WHERE MB_INTG_GB = '01'
+		</selectKey>
+		INSERT INTO TB_LA_IS_MM_MBINTG (
+			MB_INTG_NO
+			, MB_INTG_NM
+			, MB_RLNO
+			, OHSE_TELNO
+			, MB_MPNO
+			, DORMACC_YN
+			, DORMACC_DT
+			, DELACC_YN
+			, DELACC_DT
+			, MB_INTG_DT
+			, TMS_YN
+			, FNCON_DTM
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, MB_INTG_GB
+			, DORMDUE_DT
+		)
+		VALUES (
+			#{mb_intg_no}
+			, #{sra_mwmnnm}
+			, REGEXP_REPLACE(#{cus_rlno}, '[^0-9]')
+			, #{ohse_telno}
+			, #{cus_mpno}
+			, '0'
+			, NULL
+			, '0'
+			, NULL
+			, TO_CHAR(SYSDATE, 'YYYYMMDD')
+			, '0'
+			, SYSDATE
+			, SYSDATE
+			, #{ss_userid}
+			, SYSDATE
+			, #{ss_userid}
+			, '01'
+			, TO_CHAR(SYSDATE + 365, 'YYYYMMDD')
+		)
+	</insert>
 </mapper>
 
 

@@ -55,13 +55,20 @@
 	var mv_vhc_shrt_c          = "";
 	var mv_vhc_drv_caffnm      = "";
 	var mv_Today               = "";
-	var mv_sgno_prc_dsc			= "";
+	var mv_sgno_prc_dsc        = "";
 	var setRowStatus           = "";
 	// init시 저장 후 init인지 아닌지 체크
 	var mv_InitBoolean         = true;
 	var rowId                  = "";
 	// 등록권한 1:등록, 0:조회 > 이 권한이 있을 경우에만 경매일자 수정 가능
 	var isRegAuth              = (localStorage.getItem("nhlvaca_strg_yn") == "1") ? true : false;
+	// 지역별 구분 리스트
+	var locGbList              = [{value : "", text : "선택", details : ""}
+								, {value : "L1", text : "중부1", details : "합천읍,대병,묘산,봉산"}
+								, {value : "L2", text : "중부2", details : "대양,용주,율곡"}
+								, {value : "L3", text : "동부", details : "초계,적중,청덕,쌍책,덕곡"}
+								, {value : "L4", text : "남부", details : "삼가,쌍백,가희"}
+								, {value : "L5", text : "북부", details : "가야,야로"}];
 	
 	$(document).ready(function(){
 
@@ -73,6 +80,8 @@
 		fn_setCodeBox("mcow_dsc", "SRA_INDV_BRDSRA_RG_DSC", 1);		// 어미구분
 		fn_setCodeBox("ppgcow_fee_dsc", "PPGCOW_FEE_DSC",1);		// 임신구분
 
+		fn_setCustomCodeBox("loc_gb", locGbList);
+		
 		// 최초 라디오버튼 세팅
 		fn_setCodeRadio("rd_auc_obj_dsc","auc_obj_dsc","AUC_OBJ_DSC", 1);
 		
@@ -115,7 +124,7 @@
 		$("#ppgcow_fee_dsc").change(function(e) {
 			// 번식우
 			if($("#auc_obj_dsc").val() == "3") {
-				if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
+				if($(this).val() == "1" || $(this).val() == "3") {
 					fn_contrChBox(true, "prny_jug_yn", "");
 				}
 				else {
@@ -124,6 +133,14 @@
 					$("#prny_mtcn").val("");
 					fn_AfismModDtModify();
 				}
+				
+				// 임신우 + 송아지, 비임신우 + 송아지인 경우
+				if ($(this).val() == "3" || $(this).val() == "4") {
+					$("#ccow_sra_indv_amnno").prop("disabled", false).val("");
+				}
+				else {
+					$("#ccow_sra_indv_amnno").prop("disabled", true).val("");
+				}
 			}
 		});
 		
@@ -131,8 +148,7 @@
 		 * 경매일자 변경이벤트
 		******************************/
 		$("#auc_dt").change(function(e) {
-			fn_setPrnyMtcn();	// 임신개월수
-			fn_setMtcn();		// 월령
+			fn_setPrnyMtcn();
 		});
 		
 		/******************************
@@ -171,14 +187,14 @@
 		*******************************/
 		$("#birth").on("propertychange change keyup paste input", function(e) {
 			console.log("change");
-			($("#auc_obj_dsc").val() == "1") ? fn_setAucDt() : "";
+			($("#auc_obj_dsc").val() == "1" || $("#hdn_auc_obj_dsc").val() == "1") ? fn_setAucDt() : "";
 		});
 		
 		/******************************
 		 * 개체성별코드 선택 이벤트
 		 ******************************/
 		$("#indv_sex_c").on("propertychange change keyup paste input", function(e) {
-			($("#auc_obj_dsc").val() == "1") ? fn_setAucDt() : "";
+			($("#auc_obj_dsc").val() == "1" || $("#hdn_auc_obj_dsc").val() == "1") ? fn_setAucDt() : "";
 		});
 		
 		/******************************
@@ -233,7 +249,7 @@
 				
 				$("#brcl_isp_dt").val("")					// 브루셀라검사일
 				$("#vacn_dt").val("");						// 예방접종일
-				fn_contrChBox(false, "dna_yn_che", "");		// 친자감정여부
+				fn_contrChBox(false, "dna_yn_chk", "");		// 친자감정여부
 				$("#dna_yn").val("3");						// 친자확인결과
 				fn_contrChBox(false, "dna_sampled_yn", "");	// 모근채취여부
 				
@@ -257,8 +273,8 @@
 				fn_contrChBox(false, "sra_fed_spy_yn", "");	// 사료사용여부
 				
 				$("#zip").val("");							// 우편번호
-				$("#dongup").val("");						// 주소
-				$("#dongbw").val("");						// 동이하주소
+				$("#dongup").val("").trigger("change");		// 주소
+				$("#dongbw").val("").trigger("change");		// 동이하주소
 				$("#sra_farm_acno").val("");				// 계좌번호
 				
 				if ($("#auc_obj_dsc").val() == "3") {
@@ -276,6 +292,8 @@
 				fn_contrChBox(false, "ncss_jug_yn", "");	// 임신감정여부
 				
 				$("#sog_na_trpl_c").val("");				// 출하주 경제통합코드
+				
+				$("#ccow_sra_indv_amnno").prop("disabled", true).val("");			// 딸린 송아지귀표번호
 			}
 		});
 		
@@ -295,7 +313,7 @@
 			
 			$("#brcl_isp_dt").val("")					// 브루셀라검사일
 			$("#vacn_dt").val("");						// 예방접종일
-			fn_contrChBox(false, "dna_yn_che", "");		// 친자감정여부
+			fn_contrChBox(false, "dna_yn_chk", "");		// 친자감정여부
 			$("#dna_yn").val("3");						// 친자확인결과
 			fn_contrChBox(false, "dna_sampled_yn", "");	// 모근채취여부
 			
@@ -319,8 +337,8 @@
 			fn_contrChBox(false, "sra_fed_spy_yn", "");	// 사료사용여부
 			
 			$("#zip").val("");							// 우편번호
-			$("#dongup").val("");						// 주소
-			$("#dongbw").val("");						// 동이하주소
+			$("#dongup").val("").trigger("change");		// 주소
+			$("#dongbw").val("").trigger("change");		// 동이하주소
 			$("#sra_farm_acno").val("");				// 계좌번호
 			
 			if ($("#auc_obj_dsc").val() == "3") {
@@ -338,6 +356,7 @@
 			fn_contrChBox(false, "ncss_jug_yn", "");	// 임신감정여부
 			
 			$("#sog_na_trpl_c").val("");				// 출하주 경제통합코드
+			$("#ccow_sra_indv_amnno").prop("disabled", true).val("");			// 딸린 송아지귀표번호
 		});
 	
 		/******************************
@@ -368,6 +387,13 @@
 			}
 		});
 		
+		/*********************************
+		 * 주소 변경 이벤트
+		 *********************************/
+		$("#dongup, #dongbw").on("propertychange change keyup paste input", function(){
+			fn_setLocGb();
+		});
+		
 		/******************************
 		 * 출하주 검색 팝업 호출 이벤트(돋보기)
 		 ******************************/
@@ -375,6 +401,36 @@
 			e.preventDefault();
 			this.blur();
 			fn_CallFtsnmPopup(false);
+		});
+		
+		/******************************
+		 * 출장우 접수 검색영역 출하주 검색 팝업 이벤트
+		 ******************************/
+		$("#pb_searchFhs").on("click", function(e){
+			e.preventDefault();
+			this.blur();
+			fn_CallFhsPopup(true);
+		});
+		
+		/******************************
+		 * 검색영역 출하주 keydown 이벤트
+		 * 엔터키 : 출하주 검색 팝업
+		 * backspace 또는 delete인 경우 검색영역 농가 코드 삭제
+		 ******************************/
+		$("#sch_ftsnm").keydown(function(e) {
+			// 엔터키인 경우
+			if(e.keyCode == 13) {
+				this.blur();
+				fn_CallFhsPopup(true);
+			}
+		});
+		
+		/******************************
+		 * 검색영역 출하주 변경 이벤트
+		 * 남은 글자 수가 0인 경우 검색영역 농가 코드 삭제
+		 ******************************/
+		$("#sch_ftsnm").on("propertychange change keyup paste input", function(e) {
+			$("#sch_fhs_id_no").val("");
 		});
 
 		/******************************
@@ -386,8 +442,8 @@
 				$("#farm_amnno").val("");
 				$("#ohse_telno").val("");
 				$("#zip").val("");
-				$("#dongup").val("");
-				$("#dongbw").val("");
+				$("#dongup").val("").trigger("change");
+				$("#dongbw").val("").trigger("change");
 				$("#sra_pdmnm").val("");
 				$("#sra_pd_rgnnm").val("");
 				$("#sog_na_trpl_c").val("");
@@ -456,8 +512,8 @@
 		/******************************
 		 * 친자검사여부 checkbox 이벤트
 		 ******************************/
-		$("#dna_yn_che").change(function() {
-			fn_contrChBox($(this).is(":checked"), "dna_yn_che", "");
+		$("#dna_yn_chk").change(function() {
+			fn_contrChBox($(this).is(":checked"), "dna_yn_chk", "");
 		});
 		
 		/******************************
@@ -654,6 +710,7 @@
 							mv_auc_obj_dsc = $("#auc_obj_dsc").val();
 							mv_InitBoolean = true;
 							fn_Init();
+							fn_Search();
 						});
 					}
 					else {
@@ -685,6 +742,7 @@
 							
 							mv_InitBoolean = true;
 							fn_Init();
+							fn_Search();
 						});
 				
 					}
@@ -709,8 +767,8 @@
 	//  사용자 함수 시작
 	////////////////////////////////////////////////////////////////////////////////
 	//**************************************
-	//function  : fn_GridCboxFormat(그리드 돋보기 버튼) 
-	//paramater : N/A 
+	// function  : fn_GridCboxFormat(그리드 돋보기 버튼) 
+	// paramater : N/A 
 	// result   : N/A
 	//**************************************
 	function fn_GridCboxFormat(val, options, rowdata) {
@@ -721,8 +779,8 @@
 	}
 	
 	//**************************************
-	//function  : fn_GridCboxFormat(그리드 검색 버튼) 
-	//paramater : N/A 
+	// function  : fn_GridCboxFormat(그리드 검색 버튼) 
+	// paramater : N/A 
 	// result   : N/A
 	//**************************************
 	function fn_GridCboxFormat2(val, options, rowdata) {
@@ -733,8 +791,8 @@
 	}
 	
 	//**************************************
-	//function  : fn_popInfHstPopup(귀표번호 인터페이스 버튼 이벤트) 
-	//paramater : N/A
+	// function  : fn_popInfHstPopup(귀표번호 인터페이스 버튼 이벤트) 
+	// paramater : N/A
 	// result   : N/A
 	//**************************************
 	function fn_popInfHstPopup(chkBool){
@@ -781,8 +839,8 @@
 							$("#zip").val(returnVal[0].ZIP.substr(0, 3) + "-" + returnVal[0].ZIP.substr(3, 3));
 						}
 						
-						$("#dongup").val(fn_xxsDecode(returnVal[0].DONGUP));
-						$("#dongbw").val(fn_xxsDecode(returnVal[0].DONGBW));
+						$("#dongup").val(fn_xxsDecode(returnVal[0].DONGUP)).trigger("change");
+						$("#dongbw").val(fn_xxsDecode(returnVal[0].DONGBW)).trigger("change");
 						$("#sra_pdmnm").val(fn_xxsDecode(returnVal[0].FTSNM));
 						$("#sra_pd_rgnnm").val(fn_xxsDecode(returnVal[0].DONGUP));
 						$("#sog_na_trpl_c").val(returnVal[0].NA_TRPL_C);
@@ -828,8 +886,8 @@
 						$("#zip").val(result.ZIP.substr(0, 3) + "-" + result.ZIP.substr(3, 3));
 					}
 					
-					$("#dongup").val(fn_xxsDecode(result.DONGUP));
-					$("#dongbw").val(fn_xxsDecode(result.DONGBW));
+					$("#dongup").val(fn_xxsDecode(result.DONGUP)).trigger("change");
+					$("#dongbw").val(fn_xxsDecode(result.DONGBW)).trigger("change");
 					$("#sra_pdmnm").val(fn_xxsDecode(result.FTSNM));
 					$("#sra_pd_rgnnm").val(fn_xxsDecode(result.DONGUP));
 					$("#sog_na_trpl_c").val(result.NA_TRPL_C);
@@ -856,23 +914,19 @@
 				
 				// 브루셀라검사 조회
 				fn_CallBrclIspSrch();
-				// 구제역 백신접종 조회
-				fn_CallVacnDtSrch();
 				// 친자확인 조회
 // 				fn_CallLsPtntInfSrch();
 				//유전체 분석 조회
 // 				fn_CallGeneBredrInfSrch();
-				//어미귀표번호가 존재할 시 어미유전체 조회
-// 				if(!fn_isNull($("#mcow_sra_indv_amnno").val())){
-// 					fn_CallGeneBredrInfSrch($("#mcow_sra_indv_amnno").val());
-// 				}
+				// 해당 출장우의 분만정보 조회
+				fn_SelBhCross();
 			}
 		});
 	}
 	
 	//**************************************
-	//function  : fn_Reset(초기화 후 기본셋팅) 
-	//paramater : N/A 
+	// function  : fn_Reset(초기화 후 기본셋팅) 
+	// paramater : N/A 
 	// result   : N/A
 	//**************************************
 	function fn_Reset() {
@@ -891,8 +945,8 @@
 	}
 	
 	//**************************************
-	//function  : fn_InitRadioSet(라디오버튼 기본셋팅) 
-	//paramater : N/A 
+	// function  : fn_InitRadioSet(라디오버튼 기본셋팅) 
+	// paramater : N/A 
 	// result   : N/A
 	//**************************************
 	function fn_InitRadioSet() {
@@ -904,8 +958,8 @@
 	}
 
 	//**************************************
-	//function  : fn_InitSet(초기화 후 기본셋팅) 
-	//paramater : N/A 
+	// function  : fn_InitSet(초기화 후 기본셋팅) 
+	// paramater : N/A 
 	// result   : N/A
 	//**************************************
 	function fn_InitSet() {
@@ -955,7 +1009,6 @@
 			
 			// 사용자가 등록 권한이 있는 경우에만 경매일자 datepicker 활성화 
 			if (isRegAuth) {
-				console.log("1234");
 				$("#auc_dt").datepicker();
 			}
 			
@@ -1037,8 +1090,8 @@
 	}
 	
 	//**************************************
-	//function  : fn_SetData(조회된 데이터 바인딩) 
-	//paramater : N/A 
+	// function  : fn_SetData(조회된 데이터 바인딩) 
+	// paramater : N/A 
 	// result   : N/A
 	//**************************************
 	function fn_SetData(result) {
@@ -1124,11 +1177,11 @@
 		$("#vacn_dt").datepicker();
 		
 		// 친자감정여부
-		if(result[0]["DNA_YN_CHE"] == "1") {
-			fn_contrChBox(true, "dna_yn_che", "");
+		if(result[0]["DNA_YN_CHK"] == "1") {
+			fn_contrChBox(true, "dna_yn_chk", "");
 		}
 		else {
-			fn_contrChBox(false, "dna_yn_che", "");
+			fn_contrChBox(false, "dna_yn_chk", "");
 		}
 		// 친자확인결과
 		$("#dna_yn").val(result[0]["DNA_YN"]);
@@ -1146,7 +1199,7 @@
 		$("#indv_sex_c").val(result[0]["INDV_SEX_C"]);
 		// 생년월일
 		if(fn_isDate(result[0]["BIRTH"])) {
-			$("#birth").val(fn_toDate(result[0]["BIRTH"]));
+			$("#birth").val(fn_toDate(result[0]["BIRTH"])).trigger("change");
 		}
 		// 어미구분
 		$("#mcow_dsc").val(result[0]["MCOW_DSC"]);
@@ -1187,6 +1240,9 @@
 		$("#zip").val(result[0]["ZIP"]);
 		$("#dongup").val(fn_xxsDecode(result[0]["DONGUP"]));
 		$("#dongbw").val(fn_xxsDecode(result[0]["DONGBW"]));
+		// 지역구분
+		$("#loc_gb").val(result[0]["LOC_GB"]);
+		
 		// 계좌번호
 		$("#sra_farm_acno").val(result[0]["SRA_FARM_ACNO"]);
 		// -------------------- 출하주 정보 [e]-------------------- //
@@ -1194,7 +1250,7 @@
 		// -------------------- 번식우 정보 [s]-------------------- //
 		if($("#rd_auc_obj_dsc").val() == "3") {
 			// 임신구분
-			$("#ppgcow_fee_dsc").val(result[0]["PPGCOW_FEE_DSC"]);
+			$("#ppgcow_fee_dsc").val(result[0]["PPGCOW_FEE_DSC"]).trigger("change");
 			// 인공수정일
 			if(fn_isDate(result[0]["AFISM_MOD_DT"])) {
 				$("#afism_mod_dt").val(fn_toDate(result[0]["AFISM_MOD_DT"]));
@@ -1232,6 +1288,8 @@
 			else {
 				fn_contrChBox(false, "ncss_jug_yn", "");
 			}
+			
+			$("#ccow_sra_indv_amnno").val(result[0]["CCOW_SRA_INDV_AMNNO"]);			// 딸린 송아지귀표번호
 		}
 		// -------------------- 번식우 정보 [e]-------------------- //
 		
@@ -1255,18 +1313,11 @@
 			// 브루셀라검사 조회
 			fn_CallBrclIspSrch();
 		}
-		
-		if(fn_isNull($("#vacn_dt").val())) {
-			// 구제역 백신접종여부 조회
-			fn_CallVacnDtSrch();
-		}
-		
-		fn_setMtcn();
 	}
 	
 	//**************************************
-	//function  : fn_SelInfo(조회) 
-	//paramater : N/A 
+	// function  : fn_SelInfo(조회) 
+	// paramater : N/A 
 	// result   : N/A
 	//**************************************
 	function fn_SelInfo() {
@@ -1293,8 +1344,8 @@
 	}
 	
 	//**************************************
-	//function  : fn_ClearCal(달력 초기값 셋팅) 
-	//paramater : p_param(구분자) ex) "init" 
+	// function  : fn_ClearCal(달력 초기값 셋팅) 
+	// paramater : p_param(구분자) ex) "init" 
 	// result   : N/A
 	//**************************************
 	function fn_ClearCal(p_param) {
@@ -1306,8 +1357,8 @@
 	}
 
 	//**************************************
-	//function  : fn_AucOnjDscModify(경매대상 수정 시 변경) 
-	//paramater : N/A
+	// function  : fn_AucOnjDscModify(경매대상 수정 시 변경) 
+	// paramater : N/A
 	// result   : N/A
 	//**************************************
 	function fn_AucOnjDscModify(flag) {
@@ -1339,8 +1390,8 @@
 	}
 	
 	//**************************************
-	//function  : fn_AfismModDtModify(경매일자 수정 시 변경) 
-	//paramater : N/A
+	// function  : fn_AfismModDtModify(경매일자 수정 시 변경) 
+	// paramater : N/A
 	// result   : N/A
 	//**************************************
 	function fn_AfismModDtModify() {
@@ -1352,8 +1403,8 @@
 	}
 	
 	//**************************************
-	//function  : fn_TrpcsPyYnModify(자가운송여부 수정 시 변경) 
-	//paramater : N/A
+	// function  : fn_TrpcsPyYnModify(자가운송여부 수정 시 변경) 
+	// paramater : N/A
 	// result   : N/A
 	//**************************************
 	function fn_TrpcsPyYnModify(val) {
@@ -1375,8 +1426,8 @@
 	}
 	
 	//**************************************
-	//function  : fn_FrmClear(Frm Clear) 
-	//paramater : N/A
+	// function  : fn_FrmClear(Frm Clear) 
+	// paramater : N/A
 	// result   : N/A
 	//**************************************
 	function fn_FrmClear() {
@@ -1397,8 +1448,8 @@
 	}
 	
 	//**************************************
-	//function  : fn_DisableAuc(경매대상 Disable 및 Enable) 
-	//paramater : p_boolean(disable) ex) true 
+	// function  : fn_DisableAuc(경매대상 Disable 및 Enable) 
+	// paramater : p_boolean(disable) ex) true 
 	// result   : N/A
 	//**************************************
 	function fn_DisableAuc(p_boolean){
@@ -1418,12 +1469,12 @@
 	}
 	
 	//**************************************
-	//function  : fn_CallBrclIspSrch(브루셀라검사 조회) 
-	//paramater : N/A
+	// function  : fn_CallBrclIspSrch(브루셀라검사 조회) 
+	// paramater : N/A
 	// result   : N/A
 	//**************************************
 	function fn_CallBrclIspSrch() {
-		if ($("#brcl_chk_yn").is(":checked")) return;
+		if ($("#brcl_chk_yn").val() != "0") return;
 		
 		var srchData = new Object();
 		var P_sra_indv_amnno = "";
@@ -1453,46 +1504,10 @@
 			$("#brcl_isp_dt").val(fn_toDate($.trim(result["insepctDt"])));
 		}
 	}
-	
-	//**************************************
-	//function  : fn_CallVacnDtSrch(구제역 백신 접종일 조회) 
-	//paramater : N/A
-	// result   : N/A
-	//**************************************
-	function fn_CallVacnDtSrch() {
-		if ($("#brcl_chk_yn").is(":checked")) return;
-		
-		var srchData = new Object();
-		var P_sra_indv_amnno = "";
-		
-		if($("#sra_indv_amnno").val().replace("-", "").length == 9) {
-			P_sra_indv_amnno = "410" + $("#hed_indv_no").val() + $("#sra_indv_amnno").val().replace("-", "");
-		}
-		else {
-			MessagePopup('OK','귀표번호를 확인하세요.',null,function(){
-				$("#sra_indv_amnno").focus();
-			});
-			return;
-		}
-		
-		srchData["trace_no"]	= P_sra_indv_amnno;
-		srchData["option_no"]	= "5";
-		
-		var results = sendAjax(srchData, "/LALM0899_selRestApi", "POST");
-		var result;
-		
-		if(results.status != RETURN_SUCCESS) {
-			return;
-		}
-		else {
-			result = setDecrypt(results);
-			$("#vacn_dt").val(fn_toDate($.trim(result["injectionYmd"])));
-		}
-	}
 
 	//**************************************
-	//function  : fn_CallLsPtntInfSrch(축산연구원 친자확인 조회 인터페이스) 
-	//paramater : N/A
+	// function  : fn_CallLsPtntInfSrch(축산연구원 친자확인 조회 인터페이스) 
+	// paramater : N/A
 	// result   : N/A
 	//**************************************
 	function fn_CallLsPtntInfSrch() {
@@ -1551,10 +1566,38 @@
 			}
 		}
 	}
+	
+	//**************************************
+	// function  : fn_SelBhCross(교배정보 조회 인터페이스) 
+	// paramater : N/A
+	// result   : N/A
+	//**************************************
+	function fn_SelBhCross() {
+		if ($("#auc_obj_dsc").val() != "3") return;												// 번식우가 아닌 경우
+		if ($("#ppgcow_fee_dsc").val() != "1" && $("#ppgcow_fee_dsc").val() != "3") return;		// 임신우, 임신우+송아지가 아닌 경우
+		
+		var srchData = new Object();
+		var resultsBhCross = null;
+		var resultBhCross = null;
+		
+		srchData["ctgrm_cd"]  = "2400";
+		srchData["mcow_sra_indv_eart_no"] = "410" + $("#hed_indv_no").val() + $("#sra_indv_amnno").val();
+		resultsBhCross = sendAjax(srchData, "/LALM0899_selIfSend", "POST");
+		if(resultsBhCross.status != RETURN_SUCCESS){
+			showErrorMessage(resultsBhCross,'NOTFOUND');
+			return;
+		}
+		else {
+			resultBhCross = setDecrypt(resultsBhCross);
+			if (resultBhCross.length > 0) {
+				console.log(resultBhCross)
+			}
+		}
+	}
 
 	//**************************************
-	//function  : maxLengthCheck(바이트 문자 입력가능 문자수 체크) 
-	//paramater : id(tag id), title(tag title), maxLength(최대 입력가능 수 byte)
+	// function  : maxLengthCheck(바이트 문자 입력가능 문자수 체크) 
+	// paramater : id(tag id), title(tag title), maxLength(최대 입력가능 수 byte)
 	// result   : Boolean
 	//**************************************
 	function maxLengthCheck(id, title, maxLength) {
@@ -1574,8 +1617,8 @@
 	}
 	
 	//**************************************
-	//function  : byteCheck(바이트수 반환) 
-	//paramater : el(tag jquery object)
+	// function  : byteCheck(바이트수 반환) 
+	// paramater : el(tag jquery object)
 	// result   : number
 	//**************************************
 	function byteCheck(el) {
@@ -1598,8 +1641,8 @@
 	}
 	
 	//**************************************
-	//function  : fn_xxsEncode(특수문자 치환) 
-	//paramater : p_str
+	// function  : fn_xxsEncode(특수문자 치환) 
+	// paramater : p_str
 	// result   : result
 	//**************************************
 	function fn_xxsEncode(p_str){
@@ -1624,17 +1667,29 @@
 	/*******************************
 	 * 경매일자 자동 변경 이벤트
 	 * 합천축협 송아지 경매일자 결정 방식
-	 * 1. 수송아지 7개월령이 넘기 직전의 목요일, 암송아지 8개월령이 넘기 직전의 목요일
-	 * 2. 25일 ~ 9일 출생 송아지는 네번째 목요일, 10일 ~ 24일 출생 송아지는 두번째 목요일
+	 * 1. 수송아지 7개월령이 넘기 직전의 목요일, 암송아지 8개월령이 넘기 직전의 목요일 (두번째, 네번째)
+	 * 2. 25일 ~ 9일 출생 송아지는 네번째 목요일, 10일 ~ 24일 출생 송아지는 두번째 목요일 (deprecated)
+	 * 
+	 * 변경 이력
+	 * -------------------------------------------------------------------------------------------------------------------------------------
+	 *  변경일자  ||                                            변경내역                                            ||      요청자        
+	 * -------------------------------------------------------------------------------------------------------------------------------------
+	 * 2022.11.16 || 25일 ~ 9일 출생 송아지는 네번째 목요일, 10일 ~ 24일 출생 송아지는 두번째 목요일 조건 삭제 요청 || 합천축협 박미정 과장
+	 *            || 수송아지 7개월령이 넘기 직전의 목요일, 암송아지 8개월령이 넘기 직전의 목요일 (두번째, 네번째)  || 합천축협 박미정 과장
+	 *            || 추후 두번째, 세번째, 네번째 목요일로 변경 가능한지 확인요청                                    || 합천축협 박미정 과장
+	 *            || 수송아지 7개월령 -> 6개월령 15일, 암송아지 8개월령 -> 7개월령 15일로 변경 가능한지 확인 요청   || 합천축협 박미정 과장
+	 * -------------------------------------------------------------------------------------------------------------------------------------
 	*******************************/
 	function fn_setAucDt() {
-		if ($("#birth").val().length == 10) {
+		if (fn_isDate($("#birth").val())) {
 			var feCow	= ["1", "6"];											// 암송아지 > 성별이 암 또는 프리마틴
 			var mtcn	= feCow.includes($("#indv_sex_c").val()) ? 8 : 7;		// 암송아지면 8개월령 수송아지면 7개월령
 			var birth	= dayjs($("#birth").val());								// 입력한 생년월일
 			var aucDtSt	= birth.add((mtcn-1), "month");							// 입력한 생년월일을 기반으로 경매기간 시작 계산 
 			var aucDtEn	= birth.add(mtcn, "month").add(-1, "day");				// 입력한 생년월일을 기반으로 경매기간 종료 계산
-			var aucWeek	= (birth.date() > 9 && birth.date() < 25) ? 2 : 4;
+// 			var aucWeek	= (birth.date() > 9 && birth.date() < 25) ? 2 : 4;
+			var aucWeek = [2, 4];
+			
 			// 시작일과 가장 가까운 특정 요일(목요일) 찾기
 			var nearest = aucDtSt.add(7 * parseInt((aucDtSt.day()-1)/4), "day").day(4);
 			
@@ -1642,7 +1697,7 @@
 			// 경매기간 종료 이전의 요일 데이터 저장
 			var arrAucDt = [];
 			while(nearest.isBefore(aucDtEn)) {
-				if ((parseInt((nearest.date()-1)/7) + 1) == aucWeek) {
+				if (aucWeek.includes(parseInt((nearest.date()-1)/7) + 1)) {
 					arrAucDt.push(nearest);
 				}
 				nearest = nearest.add(7, "day");
@@ -1677,22 +1732,9 @@
 		$("#ptur_pla_dt").val(afismModDt.add(285, "day").format("YYYY-MM-DD"));
 	}
 	
-	/*******************************
-	 생년월일, 경매일자 변경 이벤트
-	*******************************/
-	function fn_setMtcn() {
-		if(!fn_isDate($("#auc_dt").val()) || !fn_isDate($("#birth").val())) return;
-		
-		var aucDt		= dayjs($("#auc_dt").val());		// 경매일자
-		var birth		= dayjs($("#birth").val());			// 생년월일
-		$("#mtcn").val(aucDt.diff(birth, "month") + 1);		// 월령
-	}
-	
-	/*------------------------------------------------------------------------------
-	 * 1. 함 수 명    : 엑셀 함수
-	 * 2. 입 력 변 수 : N/A
-	 * 3. 출 력 변 수 : N/A
-	 ------------------------------------------------------------------------------*/
+	//**************************************
+	// function  : fn_Excel(접수내역 엑셀 저장) 
+	//**************************************
 	function fn_Excel(){
 		var tempObj = [];
 		$('#gbox_grd_MhSogCow_1 tr.footrow:visible td:visible').each((i,o)=>{
@@ -1701,9 +1743,36 @@
 		$('#gbox_grd_MhSogCow_2 tr.footrow:visible td:visible').each((i,o)=>{
 			tempObj.push({label:$(o).text(),name:$(o).attr('aria-describedby')?.replace('grd_MhSogCow_1_',''),width:$(o).outerWidth(),align:$(o).css('text-align'),formatter:'',colspan:$(o).attr('colspan')??'1'});
 		});
-		console.log(tempObj);
 		fn_ExcelDownlad('grd_MhSogCow', '출장우접수내역조회',tempObj);
 	} 
+	
+	//**************************************
+	// function  : fn_setLocGb(지역구분 선택) 
+	//**************************************
+	function fn_setLocGb() {
+		var addr = $("#dongup").val().trim() + $("#dongbw").val().trim();
+		if(fn_isNull(addr)) {
+			$("#loc_gb").val("");
+			return;
+		}
+		var options = $("#loc_gb").find("option").toArray();
+		var selValue = "";
+		
+		for (option of options) {
+			var details = $(option).data("details");
+			if (details == "") {
+				continue;
+			}
+			
+			for (detail of details.split(",")) {
+				if (addr.indexOf(detail) > -1) {
+					selValue = $(option).val();
+					break;
+				}
+			}
+		}
+		$("#loc_gb").val(selValue);
+	}
 	////////////////////////////////////////////////////////////////////////////////
 	//  사용자 함수 종료
 	////////////////////////////////////////////////////////////////////////////////
@@ -1719,63 +1788,64 @@
 		}
 		var searchResultColNames = ["H사업장코드"
 									,"경매<br/>대상", "경매일자", "경매<br/>번호", "접수일자", "접수<br/>번호", "예약취소", "취소일자", "바코드", "성별", "출하자"
-									,"주소", "동이하주소", "사료<br/>사용여부", "생년월일", "어미구분", "어미<br/>바코드", "개체<br/>관리번호", "등록구분", "월령", "산차"
+									,"주소", "동이하주소", "지역구분", "사료<br/>사용여부", "생년월일", "어미구분", "어미<br/>바코드", "개체<br/>관리번호", "등록구분", "월령", "산차"
 									,"계대", "아비<br/>KPN", "브루셀라", "백신접종", "전화번호","휴대전화", "계좌번호", "비고", "친자검사<br/>여부", "친자검사<br/>결과"
 									,"자가여부", "수송자", "추가운송비", "사료대금", "임신구분", "인공수정일", "수정<br/>KPN", "분만예정일", "임신<br/>개월수", "임신<br/>감정여부"
 									,"괴사<br/>감정여부", "제각여부", "최초등록자", "최초등록일", "최종수정자", "최종수정일"];
 		
-		var searchResultColModel = [{name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,height:30, sortable:false, align:'center', hidden:true},
+		var searchResultColModel = [{name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,height:30, align:'center', hidden:true},
 			
-									{name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}, frozen:true},
-									{name:"AUC_DT",               index:"AUC_DT",               width:90,  sortable:false, align:'center', frozen:true},
-									{name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:40,  sortable:false, align:'center', sorttype: "number", frozen:true},
-									{name:"AUC_RECV_DT",          index:"AUC_RECV_DT",          width:90,  sortable:false, align:'center', frozen:true},
-									{name:"AUC_RECV_NO",          index:"AUC_RECV_NO",          width:40,  sortable:false, align:'center', sorttype: "number"},
-									{name:"RECV_CAN_YN",          index:"RECV_CAN_YN",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"RECV_CAN_DT",          index:"RECV_CAN_DT",          width:90,  sortable:false, align:'center'},
-									{name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, sortable:false, align:'center', formatter:'gridIndvFormat'},
-									{name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
-									{name:"FTSNM",                index:"FTSNM",                width:80,  sortable:false, align:'center'},
+									{name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:40, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
+									{name:"AUC_DT",               index:"AUC_DT",               width:90, align:'center', formatter:'gridDateFormat', sorttype: "number"},
+									{name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:40, align:'center', sorttype: "number"},
+									{name:"AUC_RECV_DT",          index:"AUC_RECV_DT",          width:90, align:'center', formatter:'gridDateFormat', sorttype: "number"},
+									{name:"AUC_RECV_NO",          index:"AUC_RECV_NO",          width:40, align:'center', sorttype: "number"},
+									{name:"RECV_CAN_YN",          index:"RECV_CAN_YN",          width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"RECV_CAN_DT",          index:"RECV_CAN_DT",          width:90, align:'center', sorttype: "number"},
+									{name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, align:'center', formatter:'gridIndvFormat'},
+									{name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
+									{name:"FTSNM",                index:"FTSNM",                width:80, align:'center'},
 									
-									{name:"DONGUP",               index:"DONGUP",               width:150, sortable:false, align:'left'},
-									{name:"DONGBW",               index:"DONGBW",               width:150, sortable:false, align:'left'},
-									{name:"SRA_FED_SPY_YN",       index:"SRA_FED_SPY_YN",       width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"BIRTH",                index:"BIRTH",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
-									{name:"MCOW_DSC",             index:"MCOW_DSC",             width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
-									{name:"MCOW_SRA_INDV_AMNNO",  index:"MCOW_SRA_INDV_AMNNO",  width:110, sortable:false, align:'center', formatter:'gridIndvFormat'},
-									{name:"INDV_ID_NO",           index:"INDV_ID_NO",           width:60,  sortable:false, align:'center'},
-									{name:"RG_DSC",               index:"RG_DSC",               width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
-									{name:"MTCN",                 index:"MTCN",                 width:40,  sortable:false, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-									{name:"MATIME",               index:"MATIME",               width:40,  sortable:false, align:'right'},
+									{name:"DONGUP",               index:"DONGUP",               width:200, align:'left'},
+									{name:"DONGBW",               index:"DONGBW",               width:150, align:'left'},
+									{name:"LOC_GB",               index:"LOC_GB",               width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCustonCodeString(locGbList)}},
+									{name:"SRA_FED_SPY_YN",       index:"SRA_FED_SPY_YN",       width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"BIRTH",                index:"BIRTH",                width:70, align:'center', formatter:'gridDateFormat'},
+									{name:"MCOW_DSC",             index:"MCOW_DSC",             width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
+									{name:"MCOW_SRA_INDV_AMNNO",  index:"MCOW_SRA_INDV_AMNNO",  width:110, align:'center', formatter:'gridIndvFormat'},
+									{name:"INDV_ID_NO",           index:"INDV_ID_NO",           width:60, align:'center'},
+									{name:"RG_DSC",               index:"RG_DSC",               width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
+									{name:"MTCN",                 index:"MTCN",                 width:40, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+									{name:"MATIME",               index:"MATIME",               width:40, align:'right'},
 									
-									{name:"SRA_INDV_PASG_QCN",    index:"SRA_INDV_PASG_QCN",    width:40,  sortable:false, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-									{name:"KPN_NO",               index:"KPN_NO",               width:50,  sortable:false, align:'center'},
-									{name:"BRCL_ISP_DT",          index:"BRCL_ISP_DT",          width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
-									{name:"VACN_DT",              index:"VACN_DT",              width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
-									{name:"OHSE_TELNO",           index:"OHSE_TELNO",           width:120, sortable:false, align:'center'},
-									{name:"CUS_MPNO",             index:"CUS_MPNO",             width:120, sortable:false, align:'center'},
-									{name:"SRA_FARM_ACNO",        index:"SRA_FARM_ACNO",        width:120, sortable:false, align:'center'},
-									{name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable:false, align:'left'},
-									{name:"DNA_YN_CHE",           index:"DNA_YN_CHE",           width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"DNA_JUG_RESULT",       index:"DNA_JUG_RESULT",       width:60,  sortable:false, align:'center'},
+									{name:"SRA_INDV_PASG_QCN",    index:" SRA_INDV_PASG_QCN",    width:40, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+									{name:"KPN_NO",               index:"KPN_NO",               width:50, align:'center'},
+									{name:"BRCL_ISP_DT",          index:"BRCL_ISP_DT",          width:70, align:'center', formatter:'gridDateFormat'},
+									{name:"VACN_DT",              index:"VACN_DT",              width:70, align:'center', formatter:'gridDateFormat'},
+									{name:"OHSE_TELNO",           index:"OHSE_TELNO",           width:120, align:'center'},
+									{name:"CUS_MPNO",             index:"CUS_MPNO",             width:120, align:'center'},
+									{name:"SRA_FARM_ACNO",        index:"SRA_FARM_ACNO",        width:120, align:'center'},
+									{name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, align:'left'},
+									{name:"DNA_YN_CHK",           index:"DNA_YN_CHK",           width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"DNA_JUG_RESULT",       index:"DNA_JUG_RESULT",       width:60, align:'center'},
 									
-									{name:"TRPCS_PY_YN",          index:"TRPCS_PY_YN",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"VHC_DRV_CAFFNM",       index:"VHC_DRV_CAFFNM",       width:80,  sortable:false, align:'center'},
-									{name:"SRA_TRPCS",            index:"SRA_TRPCS",            width:70,  sortable:false, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-									{name:"SRA_FED_SPY_AM",       index:"SRA_FED_SPY_AM",       width:70,  sortable:false, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-									{name:"PPGCOW_FEE_DSC",       index:"PPGCOW_FEE_DSC",       width:100, sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("PPGCOW_FEE_DSC", 1)}},
-									{name:"AFISM_MOD_DT",         index:"AFISM_MOD_DT",         width:80,  sortable:false, align:'center', formatter:'gridDateFormat'},
-									{name:"MOD_KPN_NO",           index:"MOD_KPN_NO",           width:50,  sortable:false, align:'center'},
-									{name:"PTUR_PLA_DT",          index:"PTUR_PLA_DT",          width:80,  sortable:false, align:'center', formatter:'gridDateFormat'},
-									{name:"PRNY_MTCN",            index:"PRNY_MTCN",            width:50,  sortable:false, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-									{name:"PRNY_JUG_YN",          index:"PRNY_JUG_YN",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"TRPCS_PY_YN",          index:"TRPCS_PY_YN",          width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"VHC_DRV_CAFFNM",       index:"VHC_DRV_CAFFNM",       width:80, align:'center'},
+									{name:"SRA_TRPCS",            index:"SRA_TRPCS",            width:70, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+									{name:"SRA_FED_SPY_AM",       index:"SRA_FED_SPY_AM",       width:70, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+									{name:"PPGCOW_FEE_DSC",       index:"PPGCOW_FEE_DSC",       width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("PPGCOW_FEE_DSC", 1)}},
+									{name:"AFISM_MOD_DT",         index:"AFISM_MOD_DT",         width:80, align:'center', formatter:'gridDateFormat'},
+									{name:"MOD_KPN_NO",           index:"MOD_KPN_NO",           width:50, align:'center'},
+									{name:"PTUR_PLA_DT",          index:"PTUR_PLA_DT",          width:80, align:'center', formatter:'gridDateFormat'},
+									{name:"PRNY_MTCN",            index:"PRNY_MTCN",            width:50, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+									{name:"PRNY_JUG_YN",          index:"PRNY_JUG_YN",          width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 									
-									{name:"NCSS_JUG_YN",          index:"NCSS_JUG_YN",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"DEBD_CANCEL_YN",       index:"DEBD_CANCEL_YN",       width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"FSRGMN_NM",            index:"FSRGMN_NM",            width:80,  sortable:false, align:'center'},
-									{name:"FSRG_DTM",             index:"FSRG_DTM",             width:110, sortable:false, align:'center'},
-									{name:"LSCHG_NM",             index:"LSCHG_NM",             width:80,  sortable:false, align:'center'},
-									{name:"LSCHG_DTM",            index:"LSCHG_DTM",            width:110, sortable:false, align:'center'}
+									{name:"NCSS_JUG_YN",          index:"NCSS_JUG_YN",          width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"DEBD_CANCEL_YN",       index:"DEBD_CANCEL_YN",       width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"FSRGMN_NM",            index:"FSRGMN_NM",            width:80, align:'center'},
+									{name:"FSRG_DTM",             index:"FSRG_DTM",             width:110, align:'center'},
+									{name:"LSCHG_NM",             index:"LSCHG_NM",             width:80, align:'center'},
+									{name:"LSCHG_DTM",            index:"LSCHG_DTM",            width:110, align:'center'}
 									];
 
 		$("#grd_MhSogCow").jqGrid("GridUnload");
@@ -1785,10 +1855,10 @@
 			data:        data,
 			height:      150,
 			rowNum:      rowNoValue,
-			resizeing: true,
-			sortable:false,
-			autowidth:   false,
-			rownumbers:true,
+			resizeing:   true,
+			autowidth:   true,
+			shrinkToFit: false,
+			rownumbers:  true,
 			rownumWidth:30,
 			footerrow: true,
 			userDataOnFooter: true,
@@ -1819,7 +1889,7 @@
 		//고정 타이틀 빼고 전부 숨김처리
 // 		$("#grd_MhSogCow").jqGrid("hideCol",[
 // 			"DONGUP", "DONGBW", "SRA_FED_SPY_YN", "BIRTH", "MCOW_DSC", "MCOW_SRA_INDV_AMNNO", "INDV_ID_NO", "RG_DSC", "MTCN", "MATIME"
-// 			, "SRA_INDV_PASG_QCN", "KPN_NO", "BRCL_ISP_DT", "VACN_DT", "OHSE_TELNO", "CUS_MPNO", "SRA_FARM_ACNO", "RMK_CNTN", "DNA_YN_CHE", "DNA_JUG_RESULT"
+// 			, "SRA_INDV_PASG_QCN", "KPN_NO", "BRCL_ISP_DT", "VACN_DT", "OHSE_TELNO", "CUS_MPNO", "SRA_FARM_ACNO", "RMK_CNTN", "DNA_YN_CHK", "DNA_JUG_RESULT"
 // 			, "TRPCS_PY_YN", "VHC_DRV_CAFFNM", "SRA_TRPCS", "SRA_FED_SPY_AM", "PPGCOW_FEE_DSC", "AFISM_MOD_DT", "MOD_KPN_NO", "PTUR_PLA_DT", "PRNY_MTCN", "PRNY_JUG_YN"
 // 			, "NCSS_JUG_YN", "DEBD_CANCEL_YN", "FSRGMN_NM", "FSRG_DTM", "LSCHG_NM", "LSCHG_DTM"]);
 	}
@@ -1831,8 +1901,8 @@
 	//  팝업 시작
 	////////////////////////////////////////////////////////////////////////////////
 	//**************************************
-	//function  : fn_CallFtsnmPopup(출하주 팝업 호출) 
-	//paramater : N/A 
+	// function  : fn_CallFtsnmPopup(출하주 팝업 호출) 
+	// paramater : N/A 
 	// result   : N/A
 	//**************************************
 	function fn_CallFtsnmPopup(p_param) {
@@ -1858,8 +1928,8 @@
 					$("#zip").val(result.ZIP.substr(0, 3) + "-" + result.ZIP.substr(3, 3));
 				}
 				
-				$("#dongup").val(fn_xxsDecode(result.DONGUP));
-				$("#dongbw").val(fn_xxsDecode(result.DONGBW));
+				$("#dongup").val(fn_xxsDecode(result.DONGUP)).trigger("change");
+				$("#dongbw").val(fn_xxsDecode(result.DONGBW)).trigger("change");
 				$("#sra_pdmnm").val(fn_xxsDecode(result.FTSNM));
 				$("#sra_pd_rgnnm").val(fn_xxsDecode(result.DONGUP));
 				
@@ -1889,8 +1959,8 @@
 				$("#ftsnm").val("");
 				$("#ohse_telno").val("");
 				$("#zip").val("");
-				$("#dongup").val("");
-				$("#dongbw").val("");
+				$("#dongup").val("").trigger("change");
+				$("#dongbw").val("").trigger("change");
 				$("#sra_pdmnm").val("");
 				$("#sra_pd_rgnnm").val("");
 
@@ -1911,9 +1981,27 @@
 		});
 	}
 	
+	function fn_CallFhsPopup(p_param) {
+		var checkBoolean = p_param;
+		var data = new Object();
+		data['ftsnm'] = $("#sch_ftsnm").val();
+		if(!p_param) {
+			data = null;
+		}
+		fn_CallFtsnm0127Popup(data,checkBoolean,function(result) {
+			if(result){
+				$("#sch_fhs_id_no").val(result.FHS_ID_NO);
+				$("#farm_amnno").val(result.FARM_AMNNO);
+				$("#sch_ftsnm").val(fn_xxsDecode(result.FTSNM));
+			}
+		});
+	
+		
+	}
+	
 	//**************************************
-	//function  : fn_CallIndvInfSrch(개체정보검색 전 셋팅) 
-	//paramater : N/A
+	// function  : fn_CallIndvInfSrch(개체정보검색 전 셋팅) 
+	// paramater : N/A
 	// result   : N/A
 	//**************************************
 	function fn_CallIndvInfSrch() {
@@ -1956,12 +2044,11 @@
 	}
 	
 	//**************************************
-	//function  : fn_CallIndvInfSrchPopup(개체정보검색팝업 호출) 
-	//paramater : p_param(true, false), P_sra_indv_amnno(sra_indv_amnno Value)
+	// function  : fn_CallIndvInfSrchPopup(개체정보검색팝업 호출) 
+	// paramater : p_param(true, false), P_sra_indv_amnno(sra_indv_amnno Value)
 	// result   : N/A
 	//**************************************
 	function fn_CallIndvInfSrchPopup(p_param, P_sra_indv_amnno) {
-		console.log(arguments);
 		var checkBoolean = p_param;
 		var data = new Object();
 			
@@ -1990,8 +2077,8 @@
 					$("#zip").val(result.ZIP);
 				}
 				
-				$("#dongup").val(fn_xxsDecode(result.DONGUP));
-				$("#dongbw").val(fn_xxsDecode(result.DONGBW));
+				$("#dongup").val(fn_xxsDecode(result.DONGUP)).trigger("change");
+				$("#dongbw").val(fn_xxsDecode(result.DONGBW)).trigger("change");
 				$("#sra_pdmnm").val(fn_xxsDecode(result.FTSNM));
 				$("#sra_pd_rgnnm").val(fn_xxsDecode(result.DONGUP));
 				$("#sog_na_trpl_c").val(result.NA_TRPL_C);
@@ -2018,8 +2105,8 @@
 	}
 	
 	//**************************************
-	//function  : fn_CallIndvInfSrchSet(개체정보검색 팝업 후 세팅) 
-	//paramater : N/A
+	// function  : fn_CallIndvInfSrchSet(개체정보검색 팝업 후 세팅) 
+	// paramater : N/A
 	// result   : N/A
 	//**************************************
 	function fn_CallIndvInfSrchSet() {
@@ -2040,8 +2127,8 @@
 					$("#zip").val(resultFhsIdNo[0]["ZIP"]);
 				}
 				
-				$("#dongup").val(fn_xxsDecode(resultFhsIdNo[0]["DONGUP"]));
-				$("#dongbw").val(fn_xxsDecode(resultFhsIdNo[0]["DONGBW"]));
+				$("#dongup").val(fn_xxsDecode(resultFhsIdNo[0]["DONGUP"])).trigger("change");
+				$("#dongbw").val(fn_xxsDecode(resultFhsIdNo[0]["DONGBW"])).trigger("change");
 				$("#sra_pdmnm").val(fn_xxsDecode(resultFhsIdNo[0]["FTSNM"]));
 				$("#sra_pd_rgnnm").val(fn_xxsDecode(resultFhsIdNo[0]["DONGUP"]));
 				$("#sog_na_trpl_c").val(resultFhsIdNo[0]["NA_TRPL_C"]);
@@ -2056,16 +2143,12 @@
 		}
 		// 브루셀라검사 조회
 		fn_CallBrclIspSrch();
-		// 구제역 백신접종 조회
-		fn_CallVacnDtSrch();
 		// 친자확인 조회
 //		fn_CallLsPtntInfSrch();
 		// 유전체 분석 조회
 //		fn_CallGeneBredrInfSrch();
-		// 어미귀표번호가 존재할 시 어미유전체 조회
-//		if(!fn_isNull($("#mcow_sra_indv_amnno").val())){
-//			fn_CallGeneBredrInfSrch($("#mcow_sra_indv_amnno").val());
-//		}
+		// 해당 출장우의 분만정보 조회
+		fn_SelBhCross();
 	}
 	////////////////////////////////////////////////////////////////////////////////
 	//  팝업 종료
@@ -2201,8 +2284,8 @@
 										</td>
 										<th scope="row"><span>친자감정여부</span></th>
 										<td>
-											<input type="checkbox" id="dna_yn_che" name="dna_yn_che" value="0" />
-											<label id="dna_yn_che_text" for="dna_yn_che"> 부</label>
+											<input type="checkbox" id="dna_yn_chk" name="dna_yn_chk" value="0" />
+											<label id="dna_yn_chk_text" for="dna_yn_chk"> 부</label>
 										</td>
 										<th scope="row"><span>친자확인결과</span></th>
 										<td>
@@ -2333,10 +2416,14 @@
 							</tr>
 							<tr>
 								<th scope="row"><span>주소</span></th>
-								<td colspan="5">
-									<input disabled="disabled" type="text" id="zip" style="width:10%;" />
-									<input disabled="disabled" type="text" id="dongup" style="width:44%;" />
-									<input disabled="disabled" type="text" id="dongbw" style="width:44%;" />
+								<td colspan="3">
+									<input readonly="readonly" type="text" id="zip" style="width:10%;" />
+									<input type="text" id="dongup" style="width:44%;" />
+									<input type="text" id="dongbw" style="width:44%;" />
+								</td>
+								<th scope="row"><span>지역구분</span></th>
+								<td>
+									<select id="loc_gb" name="loc_gb"></select>
 								</td>
 								<th scope="row"><span>계좌번호</span></th>
 								<td>
@@ -2398,6 +2485,10 @@
 										<input type="checkbox" id="ncss_jug_yn" name="ncss_jug_yn" value="0">
 										<label id="ncss_jug_yn_text" for="ncss_jug_yn"> 부</label>
 									</td>
+									<th scope="row"><span>송아지<br/>귀표번호</span></th>
+									<td>
+										<input type="text" id="ccow_sra_indv_amnno" disabled="disabled">
+									</td>
 								</tr>
 							</tbody>
 							<tbody id="hiddenBody" style="display:none">
@@ -2437,9 +2528,6 @@
 			<div class="sec_table">
 				<div class="grayTable rsp_v">
 					<form id="frm_Search" name="frm_Search" autocomplete="off">
-						<input type="hidden" id="chg_del_yn" />
-						<input type="hidden" id="chg_pgid" />
-						<input type="hidden" id="chg_rmk_cntn" />
 						<table>
 							<colgroup>
 								<col width="100">
@@ -2452,7 +2540,7 @@
 									<th scope="row">경매대상구분</th>
 									<td>
 										<div class="cellBox" id="rd_auc_obj_dsc" style="width:40%;">
-											<input type="hidden" id="shc_auc_obj_dsc" name="auc_obj_dsc" />
+											<input type="hidden" id="shc_auc_obj_dsc" name="shc_auc_obj_dsc" />
 											<div class="cell">
 												<input type="radio" id="sch_auc_obj_dsc_0" name="sch_auc_obj_dsc_radio" value="0" onclick="javascript:fn_setChgRadio('shc_auc_obj_dsc','0');" checked="checked" />
 												<label>전체</label>
@@ -2485,15 +2573,15 @@
 									<td>
 										<div class="cellBox v_addr">
 											<div class="cell" style="width: 60px;">
-												<input disabled="disabled" type="text" id="sch_fhs_id_no" maxlength="10" />
+												<input type="text" id="sch_fhs_id_no" maxlength="10" readonly="readonly" />
 											</div>
 											<div class="cell pl2" style="width: 28px;">
-												<button id="pb_searchFhs" class="tb_btn white srch">
+												<button id="pb_searchFhs" class="tb_btn white srch" type="button">
 													<i class="fa fa-search"></i>
 												</button>
 											</div>
 											<div class="cell">
-												<input type="text" id="ftsnm" maxlength="30" />
+												<input type="text" id="sch_ftsnm" maxlength="30" />
 											</div>
 										</div>
 									</td>

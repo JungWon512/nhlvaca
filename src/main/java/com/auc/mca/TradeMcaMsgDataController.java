@@ -70,6 +70,8 @@ public class TradeMcaMsgDataController {
 	            data.append(",\"JRDWO_DSC\":\""          + padLeftBlank((String)inMap.get("JRDWO_DSC"),1)           + "\"");
 	            data.append(",\"PSN_INF_OFR_AGR_YN\":\"" + padLeftBlank((String)inMap.get("PSN_INF_OFR_AGR_YN"),1)  + "\"");
 	            data.append(",\"DEL_YN\":\""             + padLeftBlank((String)inMap.get("DEL_YN"),1)              + "\"");
+	            //20221118 스마트가축시장 고도화 inf 항목 추가
+	            data.append(",\"MB_INTG_NO\":\""          + padLeftBlank((String)inMap.get("MB_INTG_NO"),8)              + "\"");
 	            if(k+1 == mwmnList.size()) {
 	            	data.append("}");	
 	            }else {
@@ -79,7 +81,7 @@ public class TradeMcaMsgDataController {
             data.append("]");
         //개체정보 수신
         }else if("1400".equals(ctgrm_cd)) {
-        	data.append("\"IN_SQNO\":\""             + padLeftZero(""+(int)paraMap.get("IN_SQNO"),7)    + "\"");
+        	data.append("\"IN_SQNO\":\""             + padLeftZero((String)paraMap.get("IN_SQNO"),7)    + "\"");
             data.append(",\"IN_REC_CN\":\""          + padLeftZero((String)paraMap.get("IN_REC_CN"),4)  + "\"");
             data.append(",\"NA_BZPLC\":\""           + padLeftBlank((String)paraMap.get("NA_BZPLC"),13) + "\"");
             data.append(",\"INQ_ST_DT\":\""          + padLeftBlank((String)paraMap.get("INQ_ST_DT"),8) + "\"");
@@ -151,6 +153,9 @@ public class TradeMcaMsgDataController {
             	data.append(",\"FSRGMN_ENO\":\""            + padLeftBlank((String)inMap.get("FSRGMN_ENO"),9)            + "\"");
             	data.append(",\"LSCHG_DTM\":\""             + padLeftBlank((String)inMap.get("LSCHG_DTM"),14)            + "\"");
             	data.append(",\"LS_CMENO\":\""              + padLeftBlank((String)inMap.get("LS_CMENO"),9)              + "\"");
+            	//20221118 스마트가축시장 고도화 inf 항목 추가
+            	data.append(",\"BDLN_VAL\":\""              + padLeftBlank(inMap.getOrDefault("BDLN_VAL","").toString(),8)              + "\"");
+            	data.append(",\"BDHT_VAL\":\""              + padLeftBlank(inMap.getOrDefault("BDHT_VAL","").toString(),8)              + "\"");
         	    if(k+1 == mwmnList.size()) {
 	            	data.append("}");	
 	            }else {
@@ -316,7 +321,7 @@ public class TradeMcaMsgDataController {
     	    data.append("\"NA_BZPLC\":\"" + padLeftBlank((String)paraMap.get("NA_BZPLC"),13)   + "\"");
         	data.append(",\"MPNO\":\""     + padLeftBlank((String)paraMap.get("CUS_MPNO"),11)  + "\"");
         	data.append(",\"USRNM\":\""    + padLeftBlank((String)paraMap.get("USRNM"),20)     + "\"");
-        	data.append(",\"MSG_CNTN\":\"" + padLeftBlank((String)paraMap.get("MSG_CNTN"),200) + "\"");
+        	data.append(",\"MSG_CNTN\":\"" + padLeftBlank((String)paraMap.get("MSG_CNTN"),4000) + "\"");
         	data.append("}");	
     		data.append("]");
         	
@@ -529,6 +534,42 @@ public class TradeMcaMsgDataController {
             data.append(",\"INDV_ID_NO\":\""  + padLeftBlank((String)paraMap.get("INDV_ID_NO"),15)  + "\"");
         }else if("4500".equals(ctgrm_cd)) {
         	data.append("\"NA_BZPLC\":\"" + padLeftBlank((String)paraMap.get("NA_BZPLC"),13)    + "\"");
+        }else if("4600".equals(ctgrm_cd)) {
+        	data.append("\"IN_SQNO\":\""    + padLeftZero(""+(String)paraMap.get("IN_SQNO"),7)    + "\"");
+            data.append(",\"IN_REC_CN\":\"" + padLeftZero((String)paraMap.get("IN_REC_CN"), 4) + "\"");
+            data.append(",\"NA_BZPLC\":\""  + padLeftBlank((String)paraMap.get("NA_BZPLC"),13) + "\"");
+            data.append(",\"INQ_ST_DT\":\"" + padLeftBlank((String)paraMap.get("INQ_ST_DT"),8) + "\"");
+            data.append(",\"INQ_ED_DT\":\"" + padLeftBlank((String)paraMap.get("INQ_ED_DT"),8) + "\"");
+        }else if("4700".equals(ctgrm_cd) || "4900".equals(ctgrm_cd)) {
+        	data.append("\"SRA_INDV_AMNNO\":\"" + padLeftBlank((String)paraMap.get("SRA_INDV_AMNNO"),20)    + "\"");
+        }else if("5100".equals(ctgrm_cd)) {
+        	data.append("\"IO_TGRM_KEY\":\""    + padLeftBlank(""+(String)paraMap.get("IO_TGRM_KEY"),10)    + "\"");
+            data.append(",\"ADJ_BRC\":\"" + padLeftBlank((String)paraMap.get("ADJ_BRC"), 6) + "\"");
+            data.append(",\"RLNO\":\"" + padLeftBlank((String)paraMap.get("RLNO"), 13) + "\"");
+            data.append(",\"IO_DPAMN_MED_ADR\":\"" + padLeftBlank((String)paraMap.get("IO_DPAMN_MED_ADR"), 80) + "\"");
+            data.append(",\"IO_SDMN_MED_ADR\":\"" + padLeftBlank((String)paraMap.get("IO_SDMN_MED_ADR"), 80) + "\"");
+            data.append(",\"IO_TIT\":\"" + padLeftBlank((String)paraMap.get("IO_TIT"), 40) + "\"");
+            data.append(",\"KAKAO_TPL_C\":\"" + padLeftBlank((String)paraMap.get("KAKAO_TPL_C"), 30) + "\"");
+            data.append(",\"KAKAO_MSG_CNTN\":\"" + padLeftBlank((String)paraMap.get("KAKAO_MSG_CNTN"), 4000) + "\"");
+            data.append(",\"FBK_UYN\":\"" + padLeftBlank((String)paraMap.get("FBK_UYN"), 1) + "\"");
+            data.append(",\"FBK_MSG_DSC\":\"" + padLeftBlank((String)paraMap.get("FBK_MSG_DSC"), 1) + "\"");
+            data.append(",\"FBK_TIT\":\"" + padLeftBlank((String)paraMap.get("FBK_TIT"), 20) + "\"");
+            data.append(",\"IO_ATGR_ITN_TGRM_LEN\":\"" + padLeftBlank(paraMap.get("IO_ATGR_ITN_TGRM_LEN").toString(), 4) + "\"");
+            data.append(",\"UMS_FWDG_CNTN\":\"" + padLeftBlank(paraMap.get("UMS_FWDG_CNTN").toString(), 4000) + "\"");
+        }else if("5200".equals(ctgrm_cd)) {
+        	data.append("\"NA_BZPLC\":\""    + padLeftBlank(""+(String)paraMap.get("NA_BZPLC"),13)    + "\"");
+            data.append(",\"AUC_DT\":\"" + padLeftBlank((String)paraMap.get("AUC_DT"), 8) + "\"");
+        	data.append(",\"IN_SQNO\":\""    + padLeftZero(""+(String)paraMap.get("IN_SQNO"),7)    + "\"");
+            data.append(",\"IN_REC_CN\":\"" + padLeftZero((String)paraMap.get("IN_REC_CN"), 4) + "\"");
+        }else if("5300".equals(ctgrm_cd) || "5400".equals(ctgrm_cd)) {
+        	data.append("\"NA_BZPLC\":\""    + padLeftBlank(""+(String)paraMap.get("NA_BZPLC"),13)    + "\"");
+            data.append(",\"AUC_DT\":\"" + padLeftBlank((String)paraMap.get("AUC_DT"), 8) + "\"");
+        }else if("5500".equals(ctgrm_cd)) {
+        	data.append("\"AUC_DT\":\""    + padLeftBlank(""+(String)paraMap.get("AUC_DT"),8)    + "\"");
+            data.append(",\"SRA_SRS_DSC\":\"" + padLeftBlank("01", 2) + "\"");	//01 : 한우
+        }else if("5600".equals(ctgrm_cd)) {
+        	data.append("\"BTC_DT\":\""    + padLeftBlank(""+(String)paraMap.get("BTC_DT"),8)    + "\"");
+            data.append(",\"SRA_SRS_DSC\":\"" + padLeftBlank("01", 2) + "\"");	//01 : 한우
         }
         
         int io_all_yn = 0;
@@ -673,6 +714,9 @@ public class TradeMcaMsgDataController {
         	data.append(",\"FSRGMN_ENO\":\""            + padLeftBlank("",9)   + "\"");
         	data.append(",\"LSCHG_DTM\":\""             + padLeftBlank("",14)  + "\"");
         	data.append(",\"LS_CMENO\":\""              + padLeftBlank("",9)   + "\"");
+        	//20221118 스마트가축시장 고도화 inf 항목 추가
+        	data.append(",\"BDLN_VAL\":\""              + padLeftBlank("",8) + "\"");
+        	data.append(",\"BDHT_VAL\":\""              + padLeftBlank("",8) + "\"");
         	data.append("}");       
     		data.append("]");
         }else if("3700".equals(ctgrm_cd)) {
