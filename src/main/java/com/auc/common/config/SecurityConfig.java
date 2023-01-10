@@ -81,6 +81,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/error/**").permitAll()
             .antMatchers("/js/**").permitAll()
             .antMatchers("/css/**").permitAll()
+            .antMatchers("/files/**").permitAll()
             .antMatchers("/images/**").permitAll()
             .antMatchers("/fonts/**").permitAll()
             //로그인관련 추가
