@@ -537,6 +537,7 @@
 	            showErrorMessage(results);
 	            mv_InitBoolean = true;
 	            fn_Init();
+	            fn_selCowImg;
 	            $("#btn_Delete").attr("disabled", true);
 	            return;
 	        } else {
@@ -1158,7 +1159,6 @@
    	     		}
    	 		});
     	 }
-    	 fn_selCowImg();
     }
     
     /*------------------------------------------------------------------------------
@@ -1170,6 +1170,7 @@
 		
     	mv_RunMode = "2";
 		fn_SelList();
+		fn_selCowImg();
 				
 		$("#re_indv_no").val("410"+$("#sra_indv_amnno").val());
 		
@@ -2573,6 +2574,10 @@
 		else {
 			$("#sra_indv_amnno").focus();
 		}
+		
+		// 이미지 영역도 초기화
+		$("#uploadImg").val("");
+		$(".uploadImg").empty();
  	}
     
  	//**************************************
@@ -4243,8 +4248,7 @@
 		sendData["na_bzplc"] = localStorage.getItem("nhlvaca_na_bzplc");
 		sendData["auc_dt"] = fn_dateToData($("#auc_dt").val());
 		sendData["auc_obj_dsc"] = $("#auc_obj_dsc").val()
-// 		sendData["oslp_no"] = fn_isNull(data) ? $("#oslp_no").val() : data.rtnData;
-		sendData["oslp_no"] = $("#oslp_no").val();
+		sendData["oslp_no"] = fn_isNull(data.rtnData) ? $("#oslp_no").val() : data.rtnData;
 		sendData["led_sqno"] = "1";
 		sendData["sra_indv_amnno"] = "410" + $("#sra_indv_amnno").val();
 		
