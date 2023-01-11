@@ -21,6 +21,24 @@
 }
 
 </style>
+<script>
+$(document).ready(function (){
+	/******************************
+     * 이미지 일괄 삭제 이벤트
+     ******************************/
+	$("#delAllImg").click(function(e) {
+		e.preventDefault();
+		
+		$("#uploadImg").val("");
+		$(".uploadImg").empty();
+	});
+	
+	$(document).on("click",".delIndvImg", function(e){
+		e.preventDefault();
+		$(this).closest("div").parent("li").remove();
+	});
+});
+</script>
 <body>
 	<section class="content">
 		<div class="btn_area">

@@ -1,8 +1,11 @@
 package com.auc.lalm.ar.service.Impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -32,6 +36,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.Permission;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.Base64;
+import com.auc.common.util.StringUtils;
 import com.auc.lalm.ar.service.LALM0215Service;
 import com.auc.main.service.LogService;
 import com.auc.main.service.Impl.LogMapper;
@@ -546,6 +551,36 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		paramMap.put("led_sqno", param.get("led_sqno"));
 		reList = lalm0215Mapper.LALM0215_selSogCowImg(paramMap);
 
+		for(Map<String, Object> map : reList) {
+			String url = map.get("FILE_URL").toString();
+			InputStream inputStream = null;
+			ByteArrayOutputStream byteOutStream = null;
+			URL oUrl = new URL(url);
+			try{
+				int len = 0;
+				File file = new File(url);
+				inputStream = oUrl.openStream();
+				byteOutStream = new ByteArrayOutputStream();
+
+				byte[] buf = new byte[1024];
+				
+		        while ((len = inputStream.read(buf)) != -1) {
+		             byteOutStream.write(buf, 0, len);
+		        }
+
+		        byte[] fileArray = byteOutStream.toByteArray();
+
+		        String  encodeFile = StringUtils.byteToBase64(fileArray);
+		        
+		        map.put("ENCODE_FILE", "data:image/png;base64,"+encodeFile);
+			}catch (RuntimeException | IOException re) {
+				re.printStackTrace();
+			}finally {
+				if(inputStream != null)inputStream.close();
+		        if(byteOutStream != null)byteOutStream.close();
+			}
+		};
+		
 		return reList;
 	}
 	
@@ -731,10 +766,19 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 	 */
 	@Override
 	public Map<String, Object> LALM0215_insImgPgm(Map<String, Object> rMap) throws Exception {
+		int insertNum = 0;
+		int updateNum = 0;
 		final Map<String, Object> reMap = new HashMap<String, Object>();
+		// 파일이 없을시 db delete
+		final List<String> files = (List<String>)rMap.get("files");
+		if (ObjectUtils.isEmpty(files)) {
+			updateNum += lalm0215Mapper.LALM0215_delImgPgm(rMap);
+			reMap.put("updateNum", updateNum);
+			return reMap;
+		}
+		
 		// 클라우드 업로드 후 성공한 리스트 가져오기
 		final List<Map<String, Object>> resList = this.imgUploadPrc(rMap);
-		int insertNum = 0;
 		int imgSqno = 1;
 		if (ObjectUtils.isEmpty(resList)) {
 			reMap.put("inserNum", insertNum);

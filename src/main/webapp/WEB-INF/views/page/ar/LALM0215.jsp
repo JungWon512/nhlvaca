@@ -1070,21 +1070,6 @@
             	rowid++;
             }
 		});
-		
-		/******************************
-         * 이미지 일괄 삭제 이벤트
-         ******************************/
-    	$("#delAllImg").click(function(e) {
-    		e.preventDefault();
-    		
-    		$("#uploadImg").val("");
-    		$(".uploadImg").empty();
-    	});
-		
-		$(document).on("click",".delIndvImg", function(e){
-			e.preventDefault();
-			$(this).closest("div").parent("li").remove();
-		});
 
 		 /******************************
          * 이미지 등록 이벤트
@@ -1159,7 +1144,7 @@
 		 $("#pb_tab1").addClass('on');
 		 $("#pb_tab2").removeClass('on');
 		 $("#pb_tab3").removeClass('on');
-    	
+		 
     	 if(mv_InitBoolean) {
     		 fn_Reset();
     	 } else {
@@ -1173,6 +1158,7 @@
    	     		}
    	 		});
     	 }
+    	 fn_selCowImg();
     }
     
     /*------------------------------------------------------------------------------
@@ -1343,12 +1329,12 @@
 			}
 		}
 		else {
-			if(!fn_isNull($("#trmn_amnno").val())) {
-				MessagePopup('OK','낙찰이 아닌경우 중도매인을 입력할수 없습니다.');
-				$("#trmn_amnno").val("");
-				$("#sra_mwmnnm").val("");
-				return;
-			}
+// 			if(!fn_isNull($("#trmn_amnno").val())) {
+// 				MessagePopup('OK','낙찰이 아닌경우 중도매인을 입력할수 없습니다.');
+// 				$("#trmn_amnno").val("");
+// 				$("#sra_mwmnnm").val("");
+// 				return;
+// 			}
 			
 			if($("#sra_sbid_am").val() != "0") {
 				MessagePopup('OK','낙찰이 아닌경우 낙찰금액을 입력할수 없습니다.');
@@ -1837,41 +1823,24 @@
     						result = sendAjax(srchData, "/LALM0215_insPgm", "POST");
     						
     						if(result.status == RETURN_SUCCESS){
-    							if($("#uploadImg").val() != ""){
-    	                    		if (fn_UploadImage(setDecrypt(result)) == true){
-    									MessagePopup("OK", "저장되었습니다.",function(res){
-    					            		mv_RunMode = 3;
-    										mv_auc_dt = $("#auc_dt").val();
-    										mv_auc_obj_dsc = $("#auc_obj_dsc").val();
-    										
-    										if(fn_isNull($("gvno_bascd").val())) {
-    											mv_gvno_bascd = 0;
-    										} else {
-    											mv_gvno_bascd = $("#gvno_bascd").val();
-    										}
-    										mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
-    										
-    										mv_InitBoolean = true;
-    										fn_Init();
-    					            	});
-    								} 
-    							} else {
-    								MessagePopup("OK", "저장되었습니다.",function(res){
-    				            		mv_RunMode = 3;
-    									mv_auc_dt = $("#auc_dt").val();
-    									mv_auc_obj_dsc = $("#auc_obj_dsc").val();
-    									
-    									if(fn_isNull($("gvno_bascd").val())) {
-    										mv_gvno_bascd = 0;
-    									} else {
-    										mv_gvno_bascd = $("#gvno_bascd").val();
-    									}
-    									mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
-    									
-    									mv_InitBoolean = true;
-    									fn_Init();
-    				            	});
-    							}
+    							var status = fn_UploadImage(setDecrypt(result));
+   	                    		if (status){
+   									MessagePopup("OK", "저장되었습니다.",function(res){
+   					            		mv_RunMode = 3;
+   										mv_auc_dt = $("#auc_dt").val();
+   										mv_auc_obj_dsc = $("#auc_obj_dsc").val();
+   										
+   										if(fn_isNull($("gvno_bascd").val())) {
+   											mv_gvno_bascd = 0;
+   										} else {
+   											mv_gvno_bascd = $("#gvno_bascd").val();
+   										}
+   										mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
+   										
+   										mv_InitBoolean = true;
+   										fn_Init();
+   					            	});
+   								} 
     			            } else {
     			            	showErrorMessage(result);
     			                return;
@@ -1888,41 +1857,24 @@
     						result = sendAjax(srchData, "/LALM0215_updPgm", "POST");
     						
     						if(result.status == RETURN_SUCCESS){
-    							if($("#uploadImg").val() != ""){
-    	                    		if (fn_UploadImage() == true){
-    									MessagePopup("OK", "저장되었습니다.",function(res){
-    										mv_RunMode = 3;
-    										mv_auc_dt = $("#auc_dt").val();
-    										mv_auc_obj_dsc = $("#auc_obj_dsc").val();
-    										
-    										if(fn_isNull($("gvno_bascd").val())) {
-    											mv_gvno_bascd = 0;
-    										} else {
-    											mv_gvno_bascd = $("#gvno_bascd").val();
-    										}
-    										mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
-    										
-    										mv_InitBoolean = true;
-    										fn_Init();
-    									});
-                        			}
-    							} else {
-    								MessagePopup("OK", "저장되었습니다.",function(res){
-    									mv_RunMode = 3;
-    									mv_auc_dt = $("#auc_dt").val();
-    									mv_auc_obj_dsc = $("#auc_obj_dsc").val();
-    									
-    									if(fn_isNull($("gvno_bascd").val())) {
-    										mv_gvno_bascd = 0;
-    									} else {
-    										mv_gvno_bascd = $("#gvno_bascd").val();
-    									}
-    									mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
-    									
-    									mv_InitBoolean = true;
-    									fn_Init();
-    								});
-    							}
+								var status = fn_UploadImage(setDecrypt(result));
+   	                    		if (status){
+   									MessagePopup("OK", "저장되었습니다.",function(res){
+   										mv_RunMode = 3;
+   										mv_auc_dt = $("#auc_dt").val();
+   										mv_auc_obj_dsc = $("#auc_obj_dsc").val();
+   										
+   										if(fn_isNull($("gvno_bascd").val())) {
+   											mv_gvno_bascd = 0;
+   										} else {
+   											mv_gvno_bascd = $("#gvno_bascd").val();
+   										}
+   										mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
+   										
+   										mv_InitBoolean = true;
+   										fn_Init();
+   									});
+                       			}
     			            } else {
     			            	showErrorMessage(result);
     			                return;
@@ -2613,7 +2565,7 @@
 		$("#chk_AucNoChg").show();
 		$("#chk_continue").show();
 		
-		fn_InitSet();
+		fn_InitSet();		
 		
 		if ($("#chack_on").is(":checked")) {
 			$("#auc_prg_sq").focus().select();
@@ -4208,7 +4160,6 @@
 		var results = sendAjax(srchData, "/LALM0215_selImgList", "POST");        
 		var result;
 		if(results.status != RETURN_SUCCESS){
-            showErrorMessage(results);
             return;
         }else{      
             imgList = setDecrypt(results);
@@ -4218,7 +4169,7 @@
 	      		for (const item of imgList) {
 	      			sHtml += '<li id="'+ item.NA_BZPLC + '_' + item.OSLP_NO +'" style="display:inline-block;width:200px;height:200px;">';
 	      			sHtml += '	<div class="fileDiv"><button type="button" class="tb_btn delIndvImg">파일삭제</button>';
-	      			sHtml += '	<img src="'+ item.FILE_URL +'" data-file="'+ item.FILE_URL +'" />';
+	      			sHtml += '	<img src="'+ item.ENCODE_FILE +'" />';
 	      			sHtml += '</li>';			
 	      		}            	
 	      		$("#imagePreview").append(sHtml);
@@ -4292,23 +4243,49 @@
 		sendData["na_bzplc"] = localStorage.getItem("nhlvaca_na_bzplc");
 		sendData["auc_dt"] = fn_dateToData($("#auc_dt").val());
 		sendData["auc_obj_dsc"] = $("#auc_obj_dsc").val()
-		sendData["oslp_no"] = fn_isNull(data) ? $("#oslp_no").val() : data.rtnData;
+// 		sendData["oslp_no"] = fn_isNull(data) ? $("#oslp_no").val() : data.rtnData;
+		sendData["oslp_no"] = $("#oslp_no").val();
 		sendData["led_sqno"] = "1";
 		sendData["sra_indv_amnno"] = "410" + $("#sra_indv_amnno").val();
 		
 		var files = [];
-		var fileList = $(".fileDiv").siblings("img");
+// 		var fileList = $(".fileDiv").siblings("img");
+		var fileList = $(".fileDiv img")
 		$(fileList).each(function(){
-			files.push($(this).attr("src"));
+			var src = $(this).attr("src");
+// 			if (src.indexOf("base64") < 0) {
+// 				files.push(getBase64Image($(this)[0]));
+// 			} else {
+				files.push(src);
+// 			}
 		});
 		
 		sendData["files"] = files;
 		console.log(sendData);
 		
-		var result = sendAjax(sendData, "/LALM0215_insImgPgm", "POST")
-		console.log(result);
+		var results = sendAjax(sendData, "/LALM0215_insImgPgm", "POST")
+		console.log(results);
+		if(results.status != RETURN_SUCCESS){
+            showErrorMessage(results);
+            return false;
+        }else{      
+			return true;
+        }
 	}
-    
+	
+	function getBase64Image(img) {
+		  img.crossOrigin = 'anonymous';
+// 		  img.crossOrigin = 'use-credentials';
+		  var canvas = document.createElement("canvas");
+		  canvas.width = img.width;
+		  canvas.height = img.height;
+		  var ctx = canvas.getContext("2d");
+		  ctx.drawImage(img, 0, 0, img.width, img.height);
+		  
+		  $("#uploadImg").append(canvas);
+		  
+		  return canvas.toDataURL("image/png", 1);
+		}
     ////////////////////////////////////////////////////////////////////////////////
     //  사용자 함수 종료
     ////////////////////////////////////////////////////////////////////////////////
