@@ -3202,6 +3202,12 @@
  		$("#bdln_val").val(result[0]["BDLN_VAL"]);
  		$("#bdht_val").val(result[0]["BDHT_VAL"]);
  		
+ 		$("#brcl_isp_rzt_c").val(result[0]["BRCL_ISP_RZT_C"]);
+ 		$("#bovine_rsltnm").val(result[0]["BOVINE_RSLTNM"]);
+ 		$("#vacn_order").val(result[0]["VACN_ORDER"]);
+ 		
+ 		
+ 		
  		// -------------------- 히든 정보 -------------------- //
  		$("#oslp_no").val(result[0]["OSLP_NO"]);
  		$("#led_sqno").val(result[0]["LED_SQNO"]);
