@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -309,16 +310,14 @@ public class LALM0215Controller {
 	@ResponseBody
 	@RequestMapping(value="/LALM0215_selImgList", method=RequestMethod.POST)
 	public Map<String, Object> LALM0215_selImgList(ResolverMap rMap) throws Exception{
-		
 		Map<String, Object> map = convertConfig.conMap(rMap);
 		List<Map<String, Object>> reList = lalm0215Service.LALM0215_selImgList(map);
 		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-		
 		return reMap;
 	}
 	
 	/**
-	 * 출장우 이미지 저장
+	 * 경매준비관리 > 출장우 내역등록 > 이미지 탭 > 출장우 이미지 저장
 	 * @param rMap
 	 * @return
 	 * @throws Exception
@@ -333,38 +332,11 @@ public class LALM0215Controller {
 	}
 	
 	/**
-	 * 출장우 이미지 저장
-	 * @param request
+	 * 경매준비관리 > 출장우 내역등록 > 이미지 탭 > 출장우 이미지 삭제
+	 * @param rMap
 	 * @return
 	 * @throws Exception
 	 */
-	@Deprecated
-	@ResponseBody
-	@RequestMapping(value="/LALM0215_insImgList", method=RequestMethod.POST)
-	public Map<String, Object> LALM0215_insImgList(MultipartHttpServletRequest request) throws Exception{
-		Map<String, Object> tempMap = new HashMap<>();
-		
-		tempMap.put("files", request.getFiles("uploadImg"));
-		tempMap.put("fileMap", request.getFileMap());
-		tempMap.put("na_bzplc", request.getParameter("na_bzplc"));
-		tempMap.put("sra_indv_amnno", request.getParameter("sra_indv_amnno"));
-		
-		Map<String, Object> inMap = lalm0215Service.LALM0215_insImgList(tempMap);
-		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
-		
-		return reMap;
-	}
-	
-	@ResponseBody
-	@RequestMapping(value="/LALM0215_selImg", method=RequestMethod.POST)
-	public Map<String, Object> LALM0215_selImg(ResolverMap rMap) throws Exception{
-		Map<String, Object> map = convertConfig.conMap(rMap);
-		Map<String, Object> tempMap = lalm0215Service.LALM0215_selImg(map);
-		Map<String, Object> reMap = commonFunc.createResultSetMapData(tempMap);
-
-		return reMap;
-	}
-	
 	@ResponseBody
 	@RequestMapping(value="/LALM0215_delImgList", method=RequestMethod.POST)
 	public Map<String, Object> LALM0215_delImgList(ResolverMap rMap) throws Exception{

@@ -1,17 +1,20 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
 <!-- 암호화 -->
-<%@ include file="/WEB-INF/common/serviceCall.jsp" %>
-<%@ include file="/WEB-INF/common/head.jsp" %>
+<%@ include file="/WEB-INF/common/serviceCall.jsp"%>
+<%@ include file="/WEB-INF/common/head.jsp"%>
 
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <!-- Tell the browser to be responsive to screen width -->
- <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<meta
+	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+	name="viewport">
 </head>
 <script type="text/javascript">
     ////////////////////////////////////////////////////////////////////////////////
@@ -322,96 +325,97 @@
     
 </script>
 <body>
- <div class="contents">
-        <%@ include file="/WEB-INF/common/menuBtn.jsp" %>
+	<div class="contents">
+		<%@ include file="/WEB-INF/common/menuBtn.jsp"%>
 
-        <!-- content -->
-        <section class="content">
-            <div class="tab_box clearfix">
-                <ul class="tab_list">
-                    <li><p class="dot_allow">조회조건</p></li>
-                </ul>
-            </div>
-            <!-- //tab_box e -->
-            <div class="sec_table">
-                <div class="blueTable rsp_v">
-                    <form id="frm_Search" name="frm_Search">
-                    <table>
-                        <colgroup>
-                            <col width="100">
-                            <col width="*">
-                            <col width="100">
-                            <col width="*">
-                            <col width="100">
-                            <col width="*">
-                            <col width="*">
-                            <col width="*">
-                        </colgroup>
-                        <tbody>
-                            <tr>
-                                <th scope="row">경매대상<strong class="req_dot">*</strong></th>
-                                <td>
-                                    <select id="auc_obj_dsc" class="popup"></select>
-                                </td>
-                                <th scope="row">경매일자<strong class="req_dot">*</strong></th>
-                                <td>
-                                    <div class="cellBox">
-                                        <div class="cell"><input type="text" class="popup date" id="auc_dt"></div>
-                                    </div>
-                                </td>
-                                <th>대상</th>
-                                <td>
-                                    <div class="cellBox" id="rd_obj_gbn">
-                                        <div class="cell">
-                                            <input type="radio" id="obj_gbn_1" name="obj_gbn_radio" value="1" 
-                                            onclick="javascript:fn_setChgRadio('obj_gbn','1');"/>
-                                            <label for="obj_gbn_1">응찰자</label>
-                                            <input type="radio" id="obj_gbn_2" name="obj_gbn_radio" value="2" 
-                                            onclick="javascript:fn_setChgRadio('obj_gbn','2');"/>
-                                            <label for="obj_gbn_2">출하자</label>
-                                        </div>
-                                    </div>
-                                    <input type="hidden" id="obj_gbn"/>
-                                </td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th>메세지</th>
-                                <td colspan="4"> 
-                                    <div class="cellBox" id="rd_msg_gbn">
-                                        <div class="cell" id="msg_div">
-                                        </div>
-                                    </div>
-                                    <input type="hidden" id="msg_gbn"/>
-                                </td>
-                                <th>추가문구</th>
-                                <td colspan="4"> 
-                                    <input type="text" id="msg_plus" style="width:70%;" maxlength="40"/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    </form>
-                </div>
-            </div> 
-            <div class="tab_box clearfix">
-                <ul class="tab_list fl_L">
-                    <li><p class="dot_allow">검색결과</p></li>
-                </ul>
-            <div class="fl_C" style="width: 65%;left:60%;"><!--  //버튼 모두 우측정렬 -->   
-                <label id="msg_Sbid" style="font-size:15px;color: blue;font: message-box;">※ 체크한 수신자 전화번호가 10자리보다 작을시 전송되지 않습니다. 발송 메시지가 80자 초과시 2회로 나뉘어 전송됩니다.</label>
-            </div>  
-                <div class="fl_R"><!--  //버튼 모두 우측정렬 -->    
-                <button class="tb_btn" id="pb_sendMsg">문자 전송</button>
-            </div>  
-            </div>
-            <div class="listTable mb0">
-                <table id="grd_Msg">
-                </table>
-            </div>
-        </section>
-    </div>
-<!-- ./wrapper -->
+		<!-- content -->
+		<section class="content">
+			<div class="tab_box clearfix">
+				<ul class="tab_list">
+					<li><p class="dot_allow">조회조건</p></li>
+				</ul>
+			</div>
+			<!-- //tab_box e -->
+			<div class="sec_table">
+				<div class="blueTable rsp_v">
+					<form id="frm_Search" name="frm_Search">
+						<table>
+							<colgroup>
+								<col width="100">
+								<col width="*">
+								<col width="100">
+								<col width="*">
+								<col width="100">
+								<col width="*">
+								<col width="*">
+								<col width="*">
+							</colgroup>
+							<tbody>
+								<tr>
+									<th scope="row">경매대상<strong class="req_dot">*</strong></th>
+									<td><select id="auc_obj_dsc" class="popup"></select></td>
+									<th scope="row">경매일자<strong class="req_dot">*</strong></th>
+									<td>
+										<div class="cellBox">
+											<div class="cell">
+												<input type="text" class="popup date" id="auc_dt">
+											</div>
+										</div>
+									</td>
+									<th>대상</th>
+									<td>
+										<div class="cellBox" id="rd_obj_gbn">
+											<div class="cell">
+												<input type="radio" id="obj_gbn_1" name="obj_gbn_radio"
+													value="1"
+													onclick="javascript:fn_setChgRadio('obj_gbn','1');" /> <label
+													for="obj_gbn_1">응찰자</label> <input type="radio"
+													id="obj_gbn_2" name="obj_gbn_radio" value="2"
+													onclick="javascript:fn_setChgRadio('obj_gbn','2');" /> <label
+													for="obj_gbn_2">출하자</label>
+											</div>
+										</div> <input type="hidden" id="obj_gbn" />
+									</td>
+									<td></td>
+									<td></td>
+								</tr>
+								<tr>
+									<th>메세지</th>
+									<td colspan="4">
+										<div class="cellBox" id="rd_msg_gbn">
+											<div class="cell" id="msg_div"></div>
+										</div> <input type="hidden" id="msg_gbn" />
+									</td>
+									<th>추가문구</th>
+									<td colspan="4"><input type="text" id="msg_plus"
+										style="width: 70%;" maxlength="40" /></td>
+								</tr>
+							</tbody>
+						</table>
+					</form>
+				</div>
+			</div>
+			<div class="tab_box clearfix">
+				<ul class="tab_list fl_L">
+					<li><p class="dot_allow">검색결과</p></li>
+				</ul>
+				<div class="fl_C" style="width: 65%; left: 60%;">
+					<!--  //버튼 모두 우측정렬 -->
+					<label id="msg_Sbid"
+						style="font-size: 15px; color: blue; font: message-box;">※
+						체크한 수신자 전화번호가 10자리보다 작을시 전송되지 않습니다. 발송 메시지가 80자 초과시 2회로 나뉘어 전송됩니다.</label>
+				</div>
+				<div class="fl_R">
+					<!--  //버튼 모두 우측정렬 -->
+					<button class="tb_btn" id="pb_sendMsg">문자 전송</button>
+				</div>
+			</div>
+			<div class="listTable mb0">
+				<table id="grd_Msg">
+				</table>
+			</div>
+		</section>
+	</div>
+	<!-- ./wrapper -->
 </body>
 </html>

@@ -13,15 +13,6 @@
 <!-- Tell the browser to be responsive to screen width -->
  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 </head>
-<style>
-#fileDiv {
-	text-overflow:ellipsis;
-	overflow:hidden;
-	white-space:nowrap;
-}
-
-</style>
-
 <script type="text/javascript">
 /*------------------------------------------------------------------------------
  * 1. 단위업무명   : 가축시장
@@ -1104,7 +1095,7 @@
  	    });
          
          $("#uploadImg").on("change", function(e){
-	        getImageFiles(e);
+        	 fn_ImageFiles(e);
 	    });
 		
      	/******************************
@@ -1191,10 +1182,9 @@
      ------------------------------------------------------------------------------*/
     function fn_Search() {    	 
 		
-    	 mv_RunMode = "2";
-	
+    	mv_RunMode = "2";
 		fn_SelList();
-		
+				
 		$("#re_indv_no").val("410"+$("#sra_indv_amnno").val());
 		
 		if(fn_isDate($("#afism_mod_dt").val())) {
@@ -3253,6 +3243,7 @@
              if(results.status == RETURN_SUCCESS){
              	result = setDecrypt(results);
                 fn_SetData(result);
+                fn_selCowImg();
                 
              }else {
                  showErrorMessage(results);
@@ -3955,12 +3946,12 @@
             } else {
             	$("#brcl_isp_rzt_c").val("0");
             }
-        	$("#brcl_isp_dt").val(fn_toDate(result["inspectDt"]+''));
+        	$("#brcl_isp_dt").val(fn_toDate($.trim(result["inspectDt"])));
         	
-        	$("#vacn_order").val(result["vaccineorder"]);        	
-        	$("#vacn_dt").val(fn_toDate(result["injectionYmd"]+''));
-        	$("#bovine_dt").val(fn_toDate(result["tbcInspectYmd"]+''));
-        	$("#bovine_rsltnm").val(result["tbcInspectRsltNm"]);
+        	$("#vacn_order").val($.trim(result["vaccineorder"]));        	
+        	$("#vacn_dt").val(fn_toDate($.trim(result["injectionYmd"])));
+        	$("#bovine_dt").val(fn_toDate($.trim(result["tbcInspectYmd"])));
+        	$("#bovine_rsltnm").val($.trim(result["tbcInspectRsltNm"]));
         }
     }
     
@@ -4195,11 +4186,46 @@
 	}
 	
 	//**************************************
-	// function  : getImageFiles(이미지 등록) 
+	// function  : fn_selCowImg(이미지 조회) 
 	// paramater : event
 	// result   : N/A
 	//**************************************
-	function getImageFiles(e){
+	function fn_selCowImg(){
+		var srchData = new Object();
+		srchData["na_bzplc"] = localStorage.getItem("nhlvaca_na_bzplc");
+		srchData["auc_dt"] = fn_dateToData($("#auc_dt").val());
+		srchData["auc_obj_dsc"] = $("#auc_obj_dsc").val()
+		srchData["oslp_no"] = $("#oslp_no").val();
+		srchData["led_sqno"] = "1";
+		srchData["sra_indv_amnno"] = "410" + $("#sra_indv_amnno").val();
+		
+		var results = sendAjax(srchData, "/LALM0215_selImgList", "POST");        
+		var result;
+		if(results.status != RETURN_SUCCESS){
+            showErrorMessage(results);
+            return;
+        }else{      
+            imgList = setDecrypt(results);
+            if (imgList.length > 0) {
+            	$("#imagePreview").empty();
+	            let sHtml = '';
+	      		for (const item of imgList) {
+	      			sHtml += '<li id="'+ item.NA_BZPLC + '_' + item.OSLP_NO +'" style="display:inline-block;width:200px;height:200px;">';
+	      			sHtml += '	<div class="fileDiv"><button type="button" class="tb_btn delIndvImg">파일삭제</button>';
+	      			sHtml += '	<img src="'+ item.FILE_URL +'" data-file="'+ item.FILE_URL +'" />';
+	      			sHtml += '</li>';			
+	      		}            	
+	      		$("#imagePreview").append(sHtml);
+            }
+        }
+	}
+
+	//**************************************	
+	// function  : fn_ImageFiles(이미지 등록) 
+	// paramater : event
+	// result   : N/A
+	//**************************************
+	function fn_ImageFiles(e){
 		const uploadFiles = [];
 		const files = e.currentTarget.files;
 		const fileImg = $("ul#imagePreview li");
@@ -4225,7 +4251,7 @@
 				uploadFiles.push(file);
 				const reader = new FileReader();
 				reader.onload = (e) => {
-					const preview = createElement(e, file);
+					const preview = fn_CreateImgElement(e, file);
 					$("#imagePreview").append(preview);
 				};
 				reader.readAsDataURL(file);
@@ -4234,22 +4260,27 @@
 	}
 	
 	//**************************************
-	// function  : createElement(이미지 미리보기) 
+	// function  : fn_CreateImgElement(이미지 미리보기) 
 	// paramater : event, file
 	// result   : N/A
 	//**************************************
-	function createElement(e, file) {
-		let sHtml = "";
+	function fn_CreateImgElement(e, file) {
+		let sHtml = '';
+
 		sHtml += '<li id="'+ file.name + '_' + file.size +'" style="display:inline-block;width:200px;height:200px;">';
 		sHtml += '	<div class="fileDiv"><button type="button" class="tb_btn delIndvImg">파일삭제</button>';
-		sHtml += '	<span style="" class="fileName_'+ e.target.result +'">'+ file.name +'</span></div>';
 		sHtml += '	<img src="'+ e.target.result +'" data-file="'+ file.name +'" />';
 		sHtml += '</li>';
-		return sHtml;
+
+		return sHtml;						
 	}
 	
+	//**************************************
+	// function  : fn_UploadImage(이미지 등록) 
+	// paramater : event, file
+	// result   : N/A
+	//**************************************
 	function fn_UploadImage(data) {
-
 		var result;
 		var sendData = new Object();
 		sendData["na_bzplc"] = localStorage.getItem("nhlvaca_na_bzplc");
@@ -4270,39 +4301,6 @@
 		
 		var result = sendAjax(sendData, "/LALM0215_insImgPgm", "POST")
 		console.log(result);
-	}
-
-	//**************************************
-	// function  : fileUpload(이미지 저장) - 사용X
-	// paramater : event, file
-	// result   : N/A
-	//**************************************
-	function fileUpload() {
-		var result;
-		var formData = new FormData($("#frm_MhSogCow")[0]);
-		formData.append("na_bzplc", localStorage.getItem("nhlvaca_na_bzplc"));
-		formData.append("sra_indv_amnno", "410" + $("#sra_indv_amnno").val());
-
-		$.ajax({
-			url: "/LALM0215_insImgList",
-			type: "POST",
-			enctype:"multipart/form-data",
-			processData:false,
-			contentType:false,
-			data: formData,
-			async: false,
-			headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
-			success:function(data) {
-				cntn_result = setDecrypt(data);
-			},
-			error:function(request){   
-				MessagePopup("OK", "서버 수행중 오류가 발생하였습니다.",function(res){
-			    });
-			    return;
-			}
-		});
-		
-		return result; 
 	}
     
     ////////////////////////////////////////////////////////////////////////////////
@@ -5622,20 +5620,7 @@
                 </table>
 	        </div>
 	        <div id="tab3" class="tab_content">
-	        	<section class="content">
-        		<div class="btn_area">
-	        		<button type="button" class="tb_btn" id="addImg">파일 추가</button>
-	        		<button type="button" class="tb_btn" id="delAllImg">파일 일괄 삭제</button>
-	        	</div>
-	        	<br>
-	        	<br>
-	        	<div class="img_area">
-	        		<div style="display:none;">
-	       				<input type="file" id="uploadImg" name="uploadImg" class="uploadImg" accept="image/*" required multiple />
-	        		</div>
-	        		<ul id="imagePreview" class="uploadImg"></ul>
-	        	</div>
-	        	</section>
+				<jsp:include page="/WEB-INF/views/page/ar/LALM0215_IMG.jsp" flush="true" />
 	        </div>
             </form>
             

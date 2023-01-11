@@ -71,6 +71,8 @@ public interface LALM0215Mapper {
 	int LALM0215_updIndvSet(Map<String, Object> map) throws Exception;
 
 	Map<String, Object> LALM0215_selSogCow(Map<String, Object> map) throws Exception;
+	
+	List<Map<String, Object>> LALM0215_selSogCowImg(Map<String, Object> map) throws Exception;
 
 	int LALM0215_insImgPgm(Map<String, Object> res) throws Exception;
 

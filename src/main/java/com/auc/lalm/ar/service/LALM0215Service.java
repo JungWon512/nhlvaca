@@ -45,14 +45,6 @@ public interface LALM0215Service {
 	
 	Map<String, Object> LALM0215_updAucChange(Map<String, Object> map) throws Exception;
 	
-	List<Map<String, Object>> LALM0215_selImgList(Map<String, Object> map) throws Exception;
-	
-	Map<String, Object> LALM0215_selImg(Map<String, Object> map) throws Exception;
-	
-	Map<String, Object> LALM0215_insImgList(Map<String, Object> map) throws Exception;
-	
-	Map<String, Object> LALM0215_delImgList(Map<String, Object> map) throws Exception;
-
 	/**
 	 * 출장우 이미지 저장 
 	 * @param rMap
@@ -61,4 +53,9 @@ public interface LALM0215Service {
 	 */
 	Map<String, Object> LALM0215_insImgPgm(Map<String, Object> rMap) throws Exception;
 
+	List<Map<String, Object>> LALM0215_selImgList(Map<String, Object> map) throws Exception;
+	
+	Map<String, Object> LALM0215_insImgList(Map<String, Object> map) throws Exception;
+	
+	Map<String, Object> LALM0215_delImgList(Map<String, Object> map) throws Exception;
 }
