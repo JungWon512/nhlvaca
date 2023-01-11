@@ -216,8 +216,7 @@
         fn_InitFrm('frm_Search');
         fn_DisableFrm('frm_Search', false);
         $("#fhs_id_no").attr("disabled", true);
-        //$("#auc_dt").datepicker().datepicker("setDate", fn_getToday());
-        $("#auc_dt").datepicker().datepicker("setDate", "2023-01-05");
+        $("#auc_dt").datepicker().datepicker("setDate", fn_getToday());
         $("#mainGrid").jqGrid("clearGridData", true);
         
         // 경매대상 초기화면 '송아지' 설정(세종공주: 8808990656588 경주: 8808990659008)

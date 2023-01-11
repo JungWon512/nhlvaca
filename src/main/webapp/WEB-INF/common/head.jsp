@@ -766,6 +766,9 @@ function fn_getToday(p_retType){
 //* result     : 2021-10-07
 //***************************************
 function fn_toDate(date,type){
+  if(!date || date.length == 0){
+  	return '';
+  }
   var yyyy = date.substr(0,4);
   var mm = date.substr(4,2);
   var dd = date.substr(6,2);

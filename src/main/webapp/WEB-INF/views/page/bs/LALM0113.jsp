@@ -597,7 +597,7 @@
 								</tr>
 								<tr>
 									<th scope="row">비고</th>
-									<td colspan="5"><input type="text" id="rmk_cntn" /></td>
+									<td colspan="5"><input type="text" id="rmk_cntn" maxlength='30'/></td>
 								</tr>
 								<tr>
 									<th scope="row">통합회원코드</th>

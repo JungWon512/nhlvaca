@@ -32,6 +32,7 @@
 	        , A.BRCL_ISP_DT                     /* 브루셀라검사일자                    	*/
 	        , A.LWPR_CHG_NT                     /* 최저가변경횟수                     	*/
 	        , A.VACN_DT                         /* 예방접종일자                       	*/
+	        , A.VACN_ORDER                         /* 예방접종일자                       	*/
 	        , A.LVST_MKT_TRPL_AMNNO             /* 가축시장거래처관리번호                	*/
 	        , A.MT12_OVR_YN                     /* 12개월이상여부                     	*/
 	        , A.PPGCOW_FEE_DSC                  /* 번식우수수료구분코드                 	*/
@@ -95,6 +96,7 @@
 	        , A.PDA_ID                          /* 수의사구분                          */
 	        , A.DNA_YN_CHK                      /* 친자검사여부                        	*/
 	        , A.BOVINE_DT                       /* 우결핵검사일                        	*/
+	        , A.BOVINE_RSLTNM                   /* 우결핵검사                        	*/
 	        , A.RE_PRODUCT_1                    /* 유전능력 냉도체중                    	*/
 	        , A.RE_PRODUCT_1_1                  /* 유전능력 냉도체중 등급                	*/
 	        , A.RE_PRODUCT_2                    /* 유전능력 배최장근단면적                	*/
@@ -485,6 +487,7 @@
 			, BRCL_ISP_DT
 			, LWPR_CHG_NT
 			, VACN_DT
+			, VACN_ORDER
 			, LVST_MKT_TRPL_AMNNO
 			, MT12_OVR_YN
 			, PPGCOW_FEE_DSC
@@ -522,6 +525,7 @@
 			, PDA_ID
 			, DNA_YN_CHK
 			, BOVINE_DT
+			, BOVINE_RSLTNM
 			, RE_PRODUCT_1
 			, RE_PRODUCT_1_1
 			, RE_PRODUCT_2
@@ -613,8 +617,10 @@
          , SEL_STS_DSC                            	/* 판매상태구분코드           */
          , BRCL_ISP_CTFW_SMT_YN                   	/* 브루셀라검사증명서제출여부 */
          , BRCL_ISP_DT                            	/* 브루셀라검사일자           */
+         , brcl_isp_rzt_c
          , LWPR_CHG_NT                            	/* 최저가변경횟수             */
          , VACN_DT                                	/* 예방접종일자               */
+         , VACN_ORDER								/* 예방접종일자               */
          , LVST_MKT_TRPL_AMNNO                    	/* 가축시장거래처관리번호     */
          , MT12_OVR_YN                            	/* 12개월이상여부             */
          , PPGCOW_FEE_DSC                         	/* 번식우수수료구분코드       */
@@ -655,6 +661,7 @@
          , PDA_ID                                 	/* 산정위 PDA_ID              */
          , DNA_YN_CHK                             	/* 친자검사여부               */
          , BOVINE_DT                              	/* 우결핵검사일               */
+		 , BOVINE_RSLTNM
          , RE_PRODUCT_1                             /* 유전능력 냉도체중                      */
 		 , RE_PRODUCT_1_1                           /* 유전능력 냉도체중 등급                 */
 		 , RE_PRODUCT_2                             /* 유전능력 배최장근단면적                */
@@ -717,8 +724,10 @@
          , #{sel_sts_dsc}              				/* 판매상태구분코드           */
          , #{brcl_isp_ctfw_smt_yn}     				/* 브루셀라검사증명서제출여부 */
          , #{brcl_isp_dt}              				/* 브루셀라검사일자           */
+         , #{brcl_isp_rzt_c}
          , #{lwpr_chg_nt}              				/* 최저가변경횟수             */
          , #{vacn_dt}                  				/* 예방접종일자               */
+         , #{vacn_order}                  				/* 예방접종일자               */
          <choose>
 			<when test='lvst_mkt_trpl_amnno == "" or lvst_mkt_trpl_amnno == null'>	/* 가축시장거래처관리번호     */
 				, null								
@@ -775,6 +784,7 @@
          , #{pda_id}                   				/* 산정위 PDA_ID              */
          , #{dna_yn_chk}               				/* 친자검사여부               */
          , #{bovine_dt}                				/* 우결핵검사일               */
+		 , #{bovine_rsltnm}
          , #{re_product_1}                           /* 유전능력 냉도체중                      */
 		 , #{re_product_1_1}                         /* 유전능력 냉도체중 등급                 */
 		 , #{re_product_2}                           /* 유전능력 배최장근단면적                */
