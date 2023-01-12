@@ -63,8 +63,10 @@
             <!-- //blueTable e -->
         </div>
 		<div class="fl_R">
+			<!--
 		    <button class="tb_btn" id="pb_addRow">행 추가</button>
 		    <button class="tb_btn" id="pb_delRow">행 삭제</button>
+		    -->
 		    <button class="tb_btn" id="pb_allSyncIndv">개체 연계</button>
 		</div>        
         <div class="tab_box clearfix">

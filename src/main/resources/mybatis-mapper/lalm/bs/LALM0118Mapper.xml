@@ -78,6 +78,7 @@
 			<if test="na_bzplc != null and na_bzplc != ''">
 			AND BLK.NA_BZPLC = #{na_bzplc}
 			</if>
+		ORDER BY BLK.LSCHG_DTM DESC, BLK.NA_BZPLC
     </select>
     
     <select id="LALM0118_selBlackDetail" resultType="HashMap">
