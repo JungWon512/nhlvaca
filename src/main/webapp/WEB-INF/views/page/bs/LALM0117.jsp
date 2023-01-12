@@ -698,7 +698,8 @@
 				<div class="fl_R dorm_secs_btn"><!--  //버튼 모두 우측정렬 -->
 	                <span class="dorm_preUsr_comment">주) 휴면 대상은 30일 이내 대상자 입니다.</span>
                     <button class="tb_btn btn_tab1" id="pb_Psn">휴면대상 해제</button>
-                    <button class="tb_btn btn_tab1" id="pb_sendSms">문자 발송</button>
+                    <!--<button class="tb_btn btn_tab1" id="pb_sendSms">문자 발송</button>-->
+                    <button class="tb_btn btn_tab1" id="pb_sendSms">알림톡 발송</button>
                     <button class="tb_btn btn_tab2" id="pb_delete" style="display:none;">선택 삭제</button>
                     <button class="tb_btn btn_tab2" id="pb_dormCncl" style="display:none;">휴면 해제</button>
                     <span class="secession_info" style="display:none;">* 이용해지 처리시 모든 회원정보가 삭제됩니다.</span>

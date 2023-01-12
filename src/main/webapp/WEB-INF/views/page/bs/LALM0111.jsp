@@ -65,6 +65,7 @@ var isFrmOrgData = null;
 					console.log(data);
 					$("#zip").val(data.zonecode);
 					$("#dongup").val(data.roadAddress);
+					$("#dongbw").focus();
 				}
 			}).open();
 			//fn_CallRoadnmPopup(function(result){

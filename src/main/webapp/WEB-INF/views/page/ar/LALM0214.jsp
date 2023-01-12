@@ -298,7 +298,7 @@
             		 auc_obj_dsc : $('#auc_obj_dsc').val()
             		 , auc_dt : $('#auc_dt').val()
              }
-             parent.layerPopupPage(pgid, menu_id, param, null, 1000, 600,function(result){
+             parent.layerPopupPage(pgid, menu_id, param, null, 1800, 750,function(result){
             	 if(result)fn_Search();
                  
              });
