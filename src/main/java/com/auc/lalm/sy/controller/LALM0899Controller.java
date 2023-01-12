@@ -25,6 +25,7 @@ import com.auc.common.vo.JwtUser;
 import com.auc.common.vo.ResolverMap;
 import com.auc.lalm.sy.service.LALM0899Service;
 import com.auc.mca.McaUtil;
+import com.auc.mca.RestApiJsonController;
 
 @RestController
 public class LALM0899Controller {
@@ -38,6 +39,8 @@ public class LALM0899Controller {
 	McaUtil mcaUtil;
 	@Autowired
 	LALM0899Service lalm0899Service;
+	@Autowired
+	RestApiJsonController restApiJsonController;
 	
 	@ResponseBody
 	@RequestMapping(value="/LALM0899_selIfTotCnt", method=RequestMethod.POST)
@@ -475,6 +478,12 @@ public class LALM0899Controller {
 				msgMap.put("FBK_MSG_DSC","7");
 				// IO_ATGR_ITN_TGRM_LEN (UMS_FWDG_CNTN의 바이트 수)
 				msgMap.put("IO_ATGR_ITN_TGRM_LEN", msgMap.getOrDefault("ums_fwdg_cntn","").toString().getBytes().length);
+				
+//				// 다이내믹 링크 생성을 위한 타켓 링크
+//				msgMap.put("TARGET_LINK", "");
+//				// 다이내믹 링크 단축 URL
+//				Map<String, Object> dLinkMap = restApiJsonController.createShortLink(msgMap);
+				
 				mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), msgMap);
 				Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");	
 				//전송여부
