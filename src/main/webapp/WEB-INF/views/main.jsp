@@ -369,7 +369,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="javascript:;" pgid="LALM0321">
+                            <a href="javascript:;" pgid="LALM0318">
                                 <img src="/images/common/lalm0321.png" alt="">
                                 <p>산정가 처리</p>
                             </a>

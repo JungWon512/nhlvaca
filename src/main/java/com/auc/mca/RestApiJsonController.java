@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -431,37 +433,12 @@ public class RestApiJsonController {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		
 		String makeUrl = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyCE1O0S6Kzz4GQKIShVIiL9Nuuwpa2vHUY";
-		URL url = new URL(makeUrl);
 		HttpURLConnection con = null;
 		String shortLink = "";
 
 		try {
-			HostnameVerifier hv = new HostnameVerifier() {
-				@Override
-				public boolean verify(String arg0, SSLSession arg1) {
-					return true;
-				}
-			};
-			TrustManager[] trustAllCerts = new TrustManager[] {
-				new X509TrustManager() {
-					@Override
-					public X509Certificate[] getAcceptedIssuers() {
-						return null;
-					}
-					
-					@Override
-					public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {return;}
-					
-					@Override
-					public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {return;}
-				}
-			};
-			
-			SSLContext sc = SSLContext.getInstance("SSL");
-			sc.init(null, trustAllCerts, new SecureRandom());
-			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-			HttpsURLConnection.setDefaultHostnameVerifier(hv);
-			
+			URL url = new URL(makeUrl);
+			this.SSLVaildBypass();
 			con = (HttpURLConnection) url.openConnection();
 			
 			final StringBuffer dynamicLink = new StringBuffer();
@@ -508,9 +485,8 @@ public class RestApiJsonController {
 				{
 					sb.append(line).append("\n");
 				}
-				responseBody = sb.toString();
 				Gson gson = new Gson();
-				rtnMap = gson.fromJson(responseBody, rtnMap.getClass());
+				rtnMap = gson.fromJson(sb.toString(), rtnMap.getClass());
 			}
 			
 			shortLink = rtnMap.getOrDefault("shortLink", targetLink).toString();
@@ -534,5 +510,32 @@ public class RestApiJsonController {
 		return shortLink;
 	}
 	
+	private void SSLVaildBypass() throws NoSuchAlgorithmException, KeyManagementException {
+		HostnameVerifier hv = new HostnameVerifier() {
+			@Override
+			public boolean verify(String arg0, SSLSession arg1) {
+				return true;
+			}
+		};
+		TrustManager[] trustAllCerts = new TrustManager[] {
+			new X509TrustManager() {
+				@Override
+				public X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+				
+				@Override
+				public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {return;}
+				
+				@Override
+				public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {return;}
+			}
+		};
+		
+		SSLContext sc = SSLContext.getInstance("SSL");
+		sc.init(null, trustAllCerts, new SecureRandom());
+		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		HttpsURLConnection.setDefaultHostnameVerifier(hv);
+	}
 }
 
