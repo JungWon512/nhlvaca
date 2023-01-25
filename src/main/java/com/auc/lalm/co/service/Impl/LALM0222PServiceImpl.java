@@ -161,10 +161,12 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 		List<Map<String, Object>> cattleMoveList = (List<Map<String, Object>>) Demap.get("list_cattle_move");
 		if(cattleMoveList != null && !cattleMoveList.isEmpty()) {
 			lalm0222PMapper.LALM0222P_delCattleMvInf(Demap);
+			int i=0;
 			for(Map<String,Object> temp:cattleMoveList) {
 				temp.put("ss_na_bzplc", Demap.get("ss_na_bzplc"));
 				temp.put("ss_usrid", Demap.get("ss_usrid"));
 				temp.put("p_sra_indv_amnno", Demap.get("sra_indv_amnno"));
+				temp.put("mv_seq", ++i);
 				insertNum += lalm0222PMapper.LALM0222P_insCattleMvInf(temp);
 			}			
 		}

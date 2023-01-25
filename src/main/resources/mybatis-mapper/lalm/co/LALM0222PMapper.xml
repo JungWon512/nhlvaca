@@ -417,17 +417,13 @@
 			, FSRG_DTM
 			, FSRGMN_ENO
     	)VALUES(
-			 #{p_sra_indv_amnno}
-			, #{sra_indv_amnno}
-			, #{matime}
-			, #{sra_indv_pasg_qcn}
-			, #{rg_dsc}
-			, #{kpn_no}
-			, #{indv_sex_c}
-			, #{birth}
-			, #{metrb_bbdy_wt}
-			, #{metrb_metqlt_grd}
-			, #{mif_btc_dt}
+			#{sra_indv_amnno}
+			, #{mv_seq}
+			, #{reg_type}
+			, #{reg_ymd}
+			, #{farmer_nm}
+			, #{farm_addr}
+			, #{farm_no}
 			, SYSDATE
 			, #{ss_usrid}
     	)	    
