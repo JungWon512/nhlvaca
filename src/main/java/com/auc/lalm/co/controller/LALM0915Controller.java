@@ -2,12 +2,8 @@ package com.auc.lalm.co.controller;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
@@ -24,7 +20,9 @@ import com.auc.common.config.CriptoConfig;
 import com.auc.common.vo.ResolverMap;
 import com.auc.lalm.co.service.LALM0915Service;
 import com.auc.lalm.sy.service.LALM0899Service;
+import com.auc.lalm.sy.service.Impl.LALM0840Mapper;
 import com.auc.main.service.MainService;
+import com.auc.mca.AlarmTalkForm;
 import com.auc.mca.McaUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -45,9 +43,9 @@ public class LALM0915Controller {
 	MainService mainService;
 	@Autowired
 	McaUtil mcaUtil;
+	
 	@Autowired
 	LALM0899Service lalm0899Service;
-	
 	
 	@SuppressWarnings("unchecked")
 	@ResponseBody
@@ -55,7 +53,6 @@ public class LALM0915Controller {
 	public Map<String, Object> LALM0915_selUsr(ResolverMap rMap) throws Exception{				
 		ObjectMapper mapper = new ObjectMapper();	
 		Map<String, Object> map = mapper.readValue(rMap.get("data").toString(), HashMap.class);
-		
 
 		/* 난수발생 */
 		Random r = new Random();
@@ -72,7 +69,6 @@ public class LALM0915Controller {
         
         map.put("pw",attc_no.toUpperCase());
         
-			
         Map<String, Object> inMap = lalm0915Service.LALM0915_selUsr(map);  
         
         //데이터 암호화해서 result 추가, 상태코드 추가, 조회 count 추가

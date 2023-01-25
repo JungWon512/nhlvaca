@@ -70,6 +70,13 @@
  				$(".secession_info").hide();
  			}
  			
+ 			// 휴면회원 탭인경우
+ 			if(activeTab.replace("#", "") == "tab2"){
+ 				$(".dormCncl_info").show();
+ 			}else{
+ 				$(".dormCncl_info").hide();
+ 			}
+ 			
  			//휴면대상 탭인 경우
  			if(activeTab.replace("#", "") == "tab1"){
  				$(".dorm_preUsr_comment").show();
@@ -687,12 +694,14 @@
                     <li><p class="dot_allow">검색결과</p></li>
                 </ul>
             </div>
+                    <div><p class="tab_box dorm dorm_preUsr_comment">※ 휴면대상 해제 시 휴면 대상자는 1년 유예 처리됩니다.</p></div>
+                    <div><p class="tab_box dormCncl_info" style="display:none;">※ 휴면회원에 대한 휴면 해제 시 대상자 지정에 대한 1년 유예 처리됩니다.</p></div>
             
             <div class="tab_box clearfix line">
 				<ul class="tab_list fl_L">
 					<li><a href="#tab1" id="pb_tab1" class="on">휴면대상</a></li>
 					<li><a href="#tab2" id="pb_tab2">휴면회원</a></li>
-					<li><a href="#tab3" id="pb_tab3">이용해지신청회원</a></li>
+					<li><a href="#tab3" id="pb_tab3">중도매인 이용해지신청회원</a></li>
 				</ul>
 				
 				<div class="fl_R dorm_secs_btn"><!--  //버튼 모두 우측정렬 -->

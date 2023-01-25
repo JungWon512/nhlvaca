@@ -68,6 +68,7 @@
 				<if test ="!'01'.toString().equals(msg_gbn)">
 					AND A.SEL_STS_DSC = '22'
 				</if>
+				AND LENGTH(NVL(DECODE(#{obj_gbn},'2',D.CUS_MPNO,C.CUS_MPNO),'')) <![CDATA[>=]]> 10	
 	</select>
 	
 
@@ -96,7 +97,8 @@
 									AND F.TRMN_AMNNO = #{auc_dt} || LPAD(C.TRMN_AMNNO, 5, '0')
 									AND F.DPAMN_DSC = '1'
 									AND F.TMS_TYPE = '02'
-		WHERE C.NA_BZPLC = #{ss_na_bzplc}	
+		WHERE C.NA_BZPLC = #{ss_na_bzplc}
+			AND LENGTH(REPLACE(NVL(C.CUS_MPNO,''), '-', '')) <![CDATA[>=]]> 10	
 	</select>
 	
 	<!-- 알림톡 템플릿 리스트 조회 응찰자 정산서 -->
@@ -166,6 +168,7 @@
 			LEFT JOIN TB_LA_IS_MH_COMN_APL C ON C.SIMP_C = G.REP_BNK_C
 															AND C.SIMP_TPC = 'BNK_C'
 															AND C.SIMP_C_GRP_SQNO = '1'
+		WHERE LENGTH(REPLACE(NVL(D.CUS_MPNO,''), '-', '')) <![CDATA[>=]]> 10	
 	</select>
 	
 	<!-- 알림톡 템플릿 리스트 조회 출하자 정산서 -->
@@ -236,6 +239,7 @@
 				LEFT JOIN TB_LA_IS_MH_COMN_APL C ON C.SIMP_C = G.REP_BNK_C
 																AND C.SIMP_TPC = 'BNK_C'
 																AND C.SIMP_C_GRP_SQNO = '1'
+			WHERE LENGTH(REPLACE(NVL(D.CUS_MPNO,''), '-', '')) <![CDATA[>=]]> 10	
 	</select>
 	
 	
@@ -273,7 +277,6 @@
 											AND A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO
 											AND A.SRA_SRS_DSC = B.SRA_SRS_DSC
 				WHERE A.NA_BZPLC = #{ss_na_bzplc}
-					AND A.AUC_OBJ_DSC = #{auc_obj_dsc}
 					AND A.AUC_DT = #{auc_dt}
 				GROUP BY A.NA_BZPLC,A.AUC_DT,A.AUC_OBJ_DSC
 			) T

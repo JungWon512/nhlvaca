@@ -693,7 +693,7 @@ var na_bzplc = App_na_bzplc;
             		 } else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485') {
    	            		 grid4 = grid4.map((o,i)=>{	
                				if(o.MTCN4 !='0'){
-   								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';	            					
+   								o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';	            					
                				}else{
                					o.MTCN = o.MTCN+'개월';	            					
                				}
@@ -726,7 +726,7 @@ var na_bzplc = App_na_bzplc;
             		 } else if(na_bzplc == '8808990227207'){
 	            		 grid4 = grid4.map((o,i)=>{	
             				if(o.MTCN4 !='0'){
-								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';	            					
+								o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';	            					
             				}else{
             					o.MTCN = '('+o.MTCN+'개월)';	            					
             				}
@@ -951,7 +951,7 @@ var na_bzplc = App_na_bzplc;
             		 } else if(na_bzplc == '8808990227207'){
 	            		 grid4 = grid4.map((o,i)=>{	
 							if(o.MTCN4 !='0'){
-								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';								
+								o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';								
 							}else{
 								o.MTCN = '('+o.MTCN+'개월)';
 							}
@@ -1150,7 +1150,7 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485') {
 	   	            		 grid4 = grid4.map((o,i)=>{	
 	               				if(o.MTCN4 !='0'){
-	   								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';	            					
+	   								o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';	            					
 	               				}else{
 	               					o.MTCN = o.MTCN+'개월';	            					
 	               				}
@@ -1328,7 +1328,7 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990656274') {
              			grid4 = grid4.map((o,i)=>{	
 							if(o.MTCN4 !='0'){
-								o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';								
+								o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';								
 							}else{
 								o.MTCN = '('+o.MTCN+'개월)';
 							}

@@ -48,6 +48,16 @@ public class LALM0919Controller {
 		return reMap;
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="/LALM0919_selCowList", method=RequestMethod.POST)
+	public Map<String, Object> LALM0919_selCowList(ResolverMap rMap) throws Exception{				
+		Map<String, Object> map = convertConfig.conMap(rMap);
+		List<Map<String, Object>> outMap = lalm0919Service.LALM0919_selCowList(map);				
+		Map<String, Object> reMap = commonFunc.createResultSetListData(outMap); 	
+		
+		return reMap;
+	}
+	
 	@Deprecated
 	@ResponseBody
 	@RequestMapping(value="/LALM0919_selMhSogCowCntList", method=RequestMethod.POST)

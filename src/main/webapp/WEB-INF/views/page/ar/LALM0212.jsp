@@ -45,6 +45,12 @@
          fn_setCodeRadio("auc_obj_dsc","hd_auc_obj_dsc","AUC_OBJ_DSC", 2);
          fn_setCodeRadio("sgno_prc_dsc", "hd_sgno_prc_dsc", "SGNO_PRC_DSC", 1);
          
+         if(App_na_bzplc =='8808990659701'){
+	         $('button[name=btn_Commit]').show();
+	         $('button[name=btn_CommitCancle]').show();        	 
+         }
+         
+         
          fn_Init();
          
          fn_setClearFromFrm("frm_Search","#mainGrid");
@@ -90,6 +96,18 @@
      		$("#hd_auc_obj_dsc").val("1");
      		$("#hd_sgno_prc_dsc").val("1");
      		
+         });
+     	
+     	/******************************
+         * 경매확정 버튼클릭 이벤트
+         ******************************/
+     	$(document).on("click", "button[name='btn_Commit']", function() {
+     		event.preventDefault();
+     		fn_SaveCommit('1');
+         });
+     	$(document).on("click", "button[name='btn_CommitCancle']", function() {
+     		event.preventDefault();
+     		fn_SaveCommit('0');
          });
      	
      	/******************************
@@ -431,6 +449,42 @@
             return;
         }                
     }
+    
+
+	function fn_SaveCommit(commit_yn){
+
+		if(fn_isNull($( "#hd_auc_obj_dsc" ).val())) {
+			MessagePopup('OK','경매대상구분을 선택하세요.',function(){
+				$( "#hd_auc_obj_dsc" ).focus();
+			});
+		    return;
+		}
+		if(fn_isNull($( "#auc_dt" ).val())){
+			MessagePopup('OK','경매일자를 선택하세요.',function(){
+				$( "#auc_dt" ).focus();
+		    });
+		    return;
+		}
+		if(!fn_isDate($( "#auc_dt" ).val())){
+			MessagePopup('OK','경매일자가 날짜형식에 맞지 않습니다.',function(){
+		        $( "#auc_dt" ).focus();
+		    });
+		    return;
+		}			
+		$('#commit_yn').val(commit_yn);
+		var result = sendAjaxFrm("frm_MhAucQcn", "/LALM0212_updCommit", "POST");
+		  
+		if(result.status == RETURN_SUCCESS){
+		  	MessagePopup('OK','정상적으로 처리되었습니다.');
+		  	// 저장 후 재조회
+			mv_RunMode = 3;
+			fn_Init();
+			fn_Search();
+		} else {
+			showErrorMessage(result);
+			return;
+		}		
+	}
     ////////////////////////////////////////////////////////////////////////////////
     //  공통버튼 클릭함수 종료
     ////////////////////////////////////////////////////////////////////////////////
@@ -449,7 +503,7 @@
         // 울산축협
         if(na_bzplc != "8808990656632") {
         	/*                               1         2      3            4                 5               6         7      8 */
-        	var searchResultColNames = ["경매일자", "경매대상", "차수", "경매방식", "경매방식","응찰한도금액", "절사단위금액(비육우)", "절사구분(비육우)", "마감여부", "전송", "경매안내문구"];        
+        	var searchResultColNames = ["경매일자", "경매대상", "차수", "경매방식", "경매방식","응찰한도금액", "절사단위금액(비육우)", "절사구분(비육우)", "마감여부", "전송","귀표번호 게시", "경매안내문구"];        
 	        var searchResultColModel = [						 
 	        							 {name:"AUC_DT",       		index:"AUC_DT",       		width:150, 	align:'center', formatter:'gridDateFormat'},
 	                                     {name:"AUC_OBJ_DSC",   index:"AUC_OBJ_DSC",	 	width:150, 	align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
@@ -461,11 +515,12 @@
 	                                     {name:"SGNO_PRC_DSC", index:"SGNO_PRC_DSC",  	width:150, 	align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SGNO_PRC_DSC", 1)}},
 	                                     {name:"DDL_YN",       		index:"DDL_YN",       		width:150, 	align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 	                                     {name:"TMS_YN",        	index:"TMS_YN",        		width:150, 	align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+	                                     {name:"COMMIT_YN",     index:"COMMIT_YN",      width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 	                                     {name:"AUC_INFMSG",   	index:"AUC_INFMSG",      	width:150, 	align:'center', hidden:true}
 	                                    ];
         } else {
         	/*                               1         2      3           4                  5               6         7      8                9              10 */
-        	var searchResultColNames = ["경매일자", "경매대상", "차수", "경매방식", "경매방식", "응찰한도금액", "절사단위금액(비육우)", "절사구분(비육우)", "마감여부", "전송", "암송아지(KG)단가", "수송아지(KG)단가", "경매안내문구"];        
+        	var searchResultColNames = ["경매일자", "경매대상", "차수", "경매방식", "경매방식", "응찰한도금액", "절사단위금액(비육우)", "절사구분(비육우)", "마감여부", "전송", "암송아지(KG)단가", "수송아지(KG)단가","귀표번호 게시", "경매안내문구"];        
 	        var searchResultColModel = [						 
 	        							 {name:"AUC_DT",       		index:"AUC_DT",       		width:150, align:'center', formatter:'gridDateFormat'},
 	                                     {name:"AUC_OBJ_DSC",   index:"AUC_OBJ_DSC",    	width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
@@ -479,6 +534,7 @@
 	                                     {name:"TMS_YN",        	index:"TMS_YN",        		width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 	                                     {name:"MALE_KG",   		index:"MALE_KG",   			width:150, align:'center'},
 	                                     {name:"FEMALE_KG",   	index:"FEMALE_KG",    		width:150, align:'center'},
+	                                     {name:"COMMIT_YN",     index:"COMMIT_YN",      width:150, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 	                                     {name:"AUC_INFMSG",   	index:"AUC_INFMSG",      	width:150, 	align:'center', hidden:true}
 	                                    ];
         }
@@ -693,6 +749,8 @@
                 
                 <div class="fl_R"><!--  //버튼 모두 우측정렬 -->   
                     <button class="tb_btn" name="btn_Init" value="입력초기화">입력초기화</button>
+                   	<button class="tb_btn" name="btn_Commit"  value="경매게시" style="display:none;">귀표번호 게시</button>
+                   	<button class="tb_btn" name="btn_CommitCancle"  value="경매숨김" style="display:none;">귀표번호 숨김</button>
                     <button class="tb_btn" name="btn_Ddl"  value="경매마감">경매마감</button>
                     <button class="tb_btn" name="btn_Can"  value="마감취소">마감취소</button>
                 </div>  
@@ -702,6 +760,7 @@
             <div class="sec_table">
                 <div class="grayTable rsp_v">
                 	<form id="frm_MhAucQcn" name="frm_MhAucQcn" autocomplete="off">
+                    <input type="hidden" id="commit_yn" name="commit_yn">
                     <table>
                         <colgroup>
                             <col width="150">

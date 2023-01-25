@@ -280,7 +280,7 @@ public class CommonServiceImpl implements CommonService{
 									if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "0".equals(MhSogCow.get("prny_yn"))) {// 임신감정료 / 진행상태:낙찰 / 임신여부:부
 										v_upr = 0;
 									}else if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "1".equals(MhSogCow.get("prny_yn"))) {
-										v_upr = (MhSogCow.get("IO_MWMN_MACO_YN").equals("1"))?macoFeeUpr:nmacoFeeUpr;
+										v_upr = ("1".equals(MhSogCow.get("IO_MWMN_MACO_YN")))?macoFeeUpr:nmacoFeeUpr;
 									}else {
 										if(MhSogCow.get("na_bzplc").equals("8808990656267") || MhSogCow.get("na_bzplc").equals("8808990656533") // 보성: 8808990656267 , 장흥: 8808990656533 , 영광: 8808990811710 , 장성: 8808990817675
 										 ||MhSogCow.get("na_bzplc").equals("8808990811710") || MhSogCow.get("na_bzplc").equals("8808990817675")) {

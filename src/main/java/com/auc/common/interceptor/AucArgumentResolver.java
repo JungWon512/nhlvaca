@@ -2,18 +2,12 @@ package com.auc.common.interceptor;
 
 import java.util.Iterator;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -23,7 +17,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import com.auc.common.config.CriptoConfig;
 import com.auc.common.config.JwtTokenUtil;
 import com.auc.common.vo.ResolverMap;
-import com.auc.common.vo.JwtUser;
 
 @Component
 public class AucArgumentResolver implements HandlerMethodArgumentResolver{

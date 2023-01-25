@@ -945,7 +945,7 @@
     		TitleData.srch_condition=  '[경매일자 : ' + $('#auc_dt').val() + ']'
  	       +  '/ [경매대상 : ' + $( "#auc_obj_dsc option:selected").text()  + ']';
     		
-    		ReportPopup('LALM0513R',TitleData, 'grd_MhSogCow10', 'V'); 
+    		ReportPopup('LALM0513R',TitleData, 'grd_ViewMhSogCow10', 'V'); 
     		
     	}
     	
@@ -2463,87 +2463,91 @@ function fn_CreateSubGrid_5(data){
 	         rownumbers:  true,
 	         rownumWidth: 40,
 	         colNames: searchResultColNames,
-	         colModel: searchResultColModel,          
+	         colModel: searchResultColModel,
 	         onSelectRow:function(rowid,status, e){
 	        	$("#rg_dsc");
 	        }
 	    });
 	    //행번호
 	    $("#grd_MhSogCow10").jqGrid("setLabel", "rn","No");
-	    
+	    $("#grd_MhSogCow10").show();
 	    if(data != null) {
-	        // View Grid
-	        var data2 = new Array();
-        	var dataItem = new Object();
-        	var l_LVST_AUC_PTC_MN_NO	= "";
-        	var l_AUC_ENTR_GRN_AM		= 0;
-        	var l_SRA_SBID_AM			= 0;
-        	var l_SRA_SEL_FEE           = 0;
-        	var l_SRA_INJT_FEE          = 0;
-//         	var l_SRA_TR_FEE			= 0;
-//         	var l_IO_AM_15				= 0;
-//         	var l_SRA_RV_AM				= 0;
-//         	var l_IO_AM_151				= 0;
-        	
-        	$.each(data, function(i){
-        		if(i != 0 && l_LVST_AUC_PTC_MN_NO != data[i].LVST_AUC_PTC_MN_NO) {
-        			dataItem = new Object();
-                	dataItem['LVST_AUC_PTC_MN_NO'] = "소계";
-                	dataItem['AUC_ENTR_GRN_AM']	= l_AUC_ENTR_GRN_AM;
-                	dataItem['SRA_SBID_AM']		= l_SRA_SBID_AM;
-                    dataItem['SRA_SEL_FEE']     = l_SRA_SEL_FEE;
-                    dataItem['SRA_INJT_FEE']    = l_SRA_INJT_FEE;
-//                 	dataItem['SRA_TR_FEE']		= l_SRA_TR_FEE;
-//                 	dataItem['IO_AM_15']		= l_IO_AM_15;
-//                 	dataItem['SRA_RV_AM']		= l_SRA_RV_AM;
-//                 	dataItem['IO_AM_151']		= l_IO_AM_151;
-                	
-                	l_LVST_AUC_PTC_MN_NO	= "";
-                	l_AUC_ENTR_GRN_AM		= 0;
-                	l_SRA_SBID_AM			= 0;
-                	l_SRA_SEL_FEE           = 0;
-                	l_SRA_INJT_FEE          = 0;
-//                 	l_SRA_TR_FEE			= 0;
-//                 	l_IO_AM_15				= 0;
-//                 	l_SRA_RV_AM				= 0;
-//                 	l_IO_AM_151				= 0;
-        			
-        			data2.push(dataItem);
-        		}
-        		
-        		data2.push(data[i]);
-        		
-        		l_LVST_AUC_PTC_MN_NO	= data[i].LVST_AUC_PTC_MN_NO;
-        		
-        		l_AUC_ENTR_GRN_AM 	= parseInt(l_AUC_ENTR_GRN_AM) + parseInt(data[i].AUC_ENTR_GRN_AM);
-        		l_SRA_SBID_AM 		= parseInt(l_SRA_SBID_AM) + parseInt(data[i].SRA_SBID_AM);
-        		l_SRA_SEL_FEE       = parseInt(l_SRA_SEL_FEE) + parseInt(data[i].SRA_SEL_FEE);
-        		l_SRA_INJT_FEE      = parseInt(l_SRA_INJT_FEE) + parseInt(data[i].SRA_INJT_FEE);
-//         		l_SRA_TR_FEE 		= parseInt(l_SRA_TR_FEE) + parseInt(data[i].SRA_TR_FEE);
-//         		l_IO_AM_15 			= parseInt(l_IO_AM_15) + parseInt(data[i].IO_AM_15);
-//         		l_SRA_RV_AM 		= parseInt(l_SRA_RV_AM) + parseInt(data[i].SRA_RV_AM);
-//         		l_IO_AM_151 		= parseInt(l_IO_AM_151) + parseInt(data[i].IO_AM_151);
-        		
-        	});
-        	dataItem = new Object();
-        	dataItem['LVST_AUC_PTC_MN_NO'] = "소계";
-        	dataItem['AUC_ENTR_GRN_AM']	= l_AUC_ENTR_GRN_AM;
-        	dataItem['SRA_SBID_AM']		= l_SRA_SBID_AM;
-        	dataItem['SRA_SEL_FEE']     = l_SRA_SEL_FEE;
-        	dataItem['SRA_INJT_FEE']    = l_SRA_INJT_FEE;
-//         	dataItem['SRA_TR_FEE']		= l_SRA_TR_FEE;
-//         	dataItem['IO_AM_15']		= l_IO_AM_15;
-//         	dataItem['SRA_RV_AM']		= l_SRA_RV_AM;
-//         	dataItem['IO_AM_151']		= l_IO_AM_151;
+			// View Grid
+			var data2 = new Array();
+			var dataItem = new Object();
+			var l_LVST_AUC_PTC_MN_NO	= "";
+			var l_AUC_ENTR_GRN_AM		= 0;			// 참가 보증금
+			var l_SRA_SBID_AM			= 0;			// 낙찰 금액
+			var l_SRA_SEL_FEE			= 0;			// 판매수수료
+			var l_SRA_INJT_FEE			= 0;			// 주사료
+			var l_SRA_SHNM				= 0;			// 자조금
+			var l_SRA_TR_FEE			= 0;			// 판매수수료
+			var l_IO_AM_15				= 0;
+			var l_SRA_RV_AM				= 0;
+			var l_IO_AM_151				= 0;
+			
+			$.each(data, function(i) {
+				if((i != 0 && l_LVST_AUC_PTC_MN_NO != data[i].LVST_AUC_PTC_MN_NO)) {
+					dataItem = new Object();
+					dataItem['LVST_AUC_PTC_MN_NO'] = "소계";
+					dataItem['AUC_ENTR_GRN_AM']	= l_AUC_ENTR_GRN_AM;
+					dataItem['SRA_SBID_AM']		= l_SRA_SBID_AM;
+					dataItem['SRA_SEL_FEE']		= l_SRA_SEL_FEE;
+					dataItem['SRA_INJT_FEE']	= l_SRA_INJT_FEE;
+					dataItem['SRA_SHNM']		= l_SRA_SHNM;
+					dataItem['SRA_TR_FEE']		= l_SRA_TR_FEE;
+					dataItem['IO_AM_15']		= l_IO_AM_15;
+					dataItem['SRA_RV_AM']		= l_SRA_RV_AM;
+					dataItem['IO_AM_151']		= l_IO_AM_151;
+
+					l_LVST_AUC_PTC_MN_NO	= "";
+					l_AUC_ENTR_GRN_AM		= 0;
+					l_SRA_SBID_AM			= 0;
+					l_SRA_SEL_FEE			= 0;
+					l_SRA_INJT_FEE			= 0;
+					l_SRA_SHNM				= 0;
+					l_SRA_TR_FEE			= 0;
+					l_IO_AM_15				= 0;
+					l_SRA_RV_AM				= 0;
+					l_IO_AM_151				= 0;
+					
+					data2.push(dataItem);
+				}
+				
+				data2.push(data[i]);
+				
+				l_LVST_AUC_PTC_MN_NO	= data[i].LVST_AUC_PTC_MN_NO;
+				l_AUC_ENTR_GRN_AM		= Number(data[i].AUC_ENTR_GRN_AM);
+				l_SRA_SBID_AM			= Number(l_SRA_SBID_AM) + Number(data[i].SRA_SBID_AM);
+				l_SRA_SEL_FEE			= Number(l_SRA_SEL_FEE) + Number(data[i].SRA_SEL_FEE);
+				l_SRA_INJT_FEE			= Number(l_SRA_INJT_FEE) + Number(data[i].SRA_INJT_FEE);
+				l_SRA_SHNM				= Number(l_SRA_SHNM) + Number(data[i].SRA_SHNM);
+				l_SRA_TR_FEE 			= Number(l_SRA_TR_FEE) + Number(data[i].SRA_TR_FEE);
+				l_IO_AM_15 				= Number(data[i].IO_AM_15);
+				l_SRA_RV_AM 			= Number(data[i].SRA_RV_AM);
+				l_IO_AM_151 			= Number(data[i].IO_AM_151)
+			});
+			
+			dataItem = new Object();
+			dataItem['LVST_AUC_PTC_MN_NO'] = "소계";
+			dataItem['AUC_ENTR_GRN_AM']	= l_AUC_ENTR_GRN_AM;
+			dataItem['SRA_SBID_AM']		= l_SRA_SBID_AM;
+			dataItem['SRA_SEL_FEE']		= l_SRA_SEL_FEE;
+			dataItem['SRA_INJT_FEE']	= l_SRA_INJT_FEE;
+			dataItem['SRA_SHNM']		= l_SRA_SHNM;
+			dataItem['SRA_TR_FEE']		= l_SRA_TR_FEE;
+			dataItem['IO_AM_15']		= l_IO_AM_15;
+			dataItem['SRA_RV_AM']		= l_SRA_RV_AM;
+			dataItem['IO_AM_151']		= l_IO_AM_151;
 			data2.push(dataItem);
 			
-			var rowNoValue = 0;     
-	        if(data2 != null){
-	            rowNoValue2 = data2.length;
-	        }
-	        
-	        var searchResultColNames = ["참가번호", "성명", "경매번호", "귀표번호", "(송)귀표번호", "참가 보증금", "성별", "낙찰금액", "출하수수료", "판매수수료", "조합출자금", "사고적립금", "운송비", 
-				"괴사감정료", "임신감정료", "검진비", "주사료", "자조금", "혈통접수비", "제각수수료", "위탁수수료", "총 금액", "입금금액", "정산금액"];        
+			var rowNoValue = 0;
+			if(data2 != null){
+				rowNoValue2 = data2.length;
+			}
+
+			var searchResultColNames = ["참가번호", "성명", "경매번호", "귀표번호", "(송)귀표번호", "참가 보증금", "성별", "낙찰금액", "출하수수료", "판매수수료", "조합출자금", "사고적립금", "운송비", 
+										"괴사감정료", "임신감정료", "검진비", "주사료", "자조금", "혈통접수비", "제각수수료", "위탁수수료", "총 금액", "입금금액", "정산금액"];        
 
 			var searchResultColModel = [
 								 {name:"LVST_AUC_PTC_MN_NO",		index:"LVST_AUC_PTC_MN_NO",     width:85, align:'center'},
@@ -2620,7 +2624,6 @@ function fn_CreateSubGrid_5(data){
 	        var tot_sra_tru_fee       = 0;
 	        
 	        $.each(gridDatatemp, function(i){
-	        	
 	        	tot_sra_sog_fee       = parseInt(tot_sra_sog_fee) + parseInt(gridDatatemp[i].SRA_SOG_FEE);
 	        	tot_sra_sel_fee       = parseInt(tot_sra_sel_fee) + parseInt(gridDatatemp[i].SRA_SEL_FEE);
 	        	tot_sra_aco_ivsam     = parseInt(tot_sra_aco_ivsam) + parseInt(gridDatatemp[i].SRA_ACO_IVSAM);
@@ -2636,8 +2639,6 @@ function fn_CreateSubGrid_5(data){
 	        	tot_sra_tru_fee       = parseInt(tot_sra_tru_fee) + parseInt(gridDatatemp[i].SRA_TRU_FEE);
 	            
 	        });
-		 	
-	        
 	        
 	        if(tot_sra_sog_fee == 0) {
 	        	$("#grd_ViewMhSogCow10").jqGrid("hideCol","SRA_SOG_FEE");

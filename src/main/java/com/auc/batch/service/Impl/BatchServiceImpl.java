@@ -411,7 +411,7 @@ public class BatchServiceImpl implements BatchService{
 		msgMap.put("FBK_UYN", "Y");			//fail-back 사용여부
 		msgMap.put("FBK_TIT","");
 		msgMap.put("FBK_MSG_DSC","7");	//3:SMS, 7:LMS
-		msgMap.put("UMS_FWDG_CNTN", msgMap.getOrDefault("MSG_CNTN","").toString().getBytes().length);	// IO_ATGR_ITN_TGRM_LEN (UMS_FWDG_CNTN의 바이트 수)
+		msgMap.put("UMS_FWDG_CNTN", msgMap.getOrDefault("MSG_CNTN","").toString());	// UMS_FWDG_CNTN fail-back 메세지 내용
 		msgMap.put("IO_ATGR_ITN_TGRM_LEN", msgMap.getOrDefault("UMS_FWDG_CNTN","").toString().getBytes().length);	// IO_ATGR_ITN_TGRM_LEN (UMS_FWDG_CNTN의 바이트 수)
 		
 		mcaMap = mcaUtil.tradeMcaMsg("5100", msgMap);
@@ -438,8 +438,11 @@ public class BatchServiceImpl implements BatchService{
 		insertNum += batchMapper.insDashBoardSaveForDay(map); 
 		succCnt++;
 		deleteNum += batchMapper.delDashBoardSaveForTop(map);
-		insertNum += batchMapper.insDashBoardSaveForTop(map); 
+		insertNum += batchMapper.insDashBoardSaveForTop(map);
 		succCnt++;
+		deleteNum += batchMapper.delDashBoardSaveForMonth(map);
+		insertNum += batchMapper.insDashBoardSaveForMonth(map); 
+		succCnt++; 
 		//deleteNum += batchMapper.delDashBoardSaveForMkpr(map);
 		//insertNum += batchMapper.insDashBoardSaveForMkpr(map); 
 		//succCnt++;

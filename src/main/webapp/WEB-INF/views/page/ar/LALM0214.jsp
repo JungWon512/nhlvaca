@@ -306,7 +306,7 @@
          
          $('#pb_ExcelTempDownload').on('click',function(e){					
 			    var pom = document.createElement('a');
-			    pom.setAttribute('href', '/files/20221219_SOGCOW_EXCEL.xlsx');
+			    pom.setAttribute('href', '/files/20230116_SOGCOW_EXCEL.xlsx');
 			    pom.setAttribute('type', 'application/vnd.ms-excel');
 			    pom.setAttribute('download', "출장우_엑셀업로드.xls");
 			 

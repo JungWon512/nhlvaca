@@ -71,4 +71,8 @@ public interface BatchMapper {
 	Map<String, Object> selMatchMwmnPhoneInfo(Map<String, Object> reVo) throws Exception;
 
 	Map<String, Object> selMatchFhsPhoneInfo(Map<String, Object> reVo) throws Exception;
+
+	int delDashBoardSaveForMonth(Map<String, Object> map) throws Exception;
+
+	int insDashBoardSaveForMonth(Map<String, Object> map) throws Exception;
 }

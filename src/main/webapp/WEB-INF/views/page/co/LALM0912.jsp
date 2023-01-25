@@ -782,7 +782,7 @@
                             </tr>               
                             <tr>
                                 <th scope="row">출하주 정보 수정 제외항목</th>
-                                <td colspan = '3'>
+                                <td>
                                     <input type="hidden" id="sms_buffer_1" value=""/>
                                     <input type="checkbox" id="buffer_1" class="sms_buffer_1" value="AD"/>
                                     <label for="buffer_1">주소</label>
@@ -793,7 +793,14 @@
                                     <input type="checkbox" id="buffer_4" class="sms_buffer_1" value="AC"/>
                                     <label for="buffer_4">계좌번호</label>
                                 </td>
-                            </tr>   
+                                <th scope="row">낙찰 알림톡 발송여부</th>
+                                <td >
+                                    <select id="sbid_sms_yn">
+                                        <option value="1">여</option>
+                                        <option value="0">부</option>
+                                    </select>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     

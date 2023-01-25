@@ -429,7 +429,9 @@
 	<!-- 회원정보 저장 -->
 	<insert id="Common_insMbintgInfo" parameterType="hashMap">
 		<selectKey keyProperty="mb_intg_no" resultType="String" order="BEFORE">
-			SELECT NVL(MAX(MB_INTG_NO) + 1, 1)
+			SELECT CASE WHEN #{MB_INTG_GB} = '01' THEN NVL(MAX(MB_INTG_NO), '100000000') + 1
+						ELSE NVL(MAX(MB_INTG_NO), '200000000') + 1
+					END AS MB_INTG_NO
 			  FROM TB_LA_IS_MM_MBINTG
 			 WHERE MB_INTG_GB = #{mb_intg_gb}
 		</selectKey>

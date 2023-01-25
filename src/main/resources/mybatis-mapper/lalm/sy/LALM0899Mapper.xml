@@ -886,6 +886,7 @@
               and  d.dpamn_dsc(+)        = '1'
               and  d.sel_sts_dsc(+)      = '01'
            	  and  d.tms_type(+)		= #{tms_type}
+           	  and  length(replace(nvl(a.cus_mpno,''), '-', '')) <![CDATA[>=]]> 10	
 		    order by a.trmn_amnno
     </select>
     
@@ -969,6 +970,7 @@
           and  d.dpamn_dsc(+)        = '1'
           and  d.sel_sts_dsc(+)      = '02'
           and  d.tms_type(+)				= #{tms_type}
+          and  length(replace(nvl(a.cus_mpno,''), '-', '')) <![CDATA[>=]]> 10	
 		order by a.trmn_amnno
     </select>
     
@@ -1066,6 +1068,7 @@
           and  e.dpamn_dsc(+)        = '1'
           and  e.sel_sts_dsc(+)      = '03'
        	  and  e.tms_type	(+)		= #{tms_type}
+       	  and  length(replace(nvl(a.cus_mpno,''), '-', '')) <![CDATA[>=]]> 10	
 	    order by a.trmn_amnno
     </select>
     
@@ -1128,6 +1131,7 @@
           and  f.dpamn_dsc(+)       = '2'
           and  f.sel_sts_dsc(+)     = '01'
           and  f.tms_type(+)			= #{tms_type}
+          and  length(replace(nvl(d.cus_mpno,''), '-', '')) <![CDATA[>=]]> 10	
 		order by a.auc_prg_sq
     </select>
     
@@ -1234,6 +1238,7 @@
           and  f.dpamn_dsc(+)        = '2'
           and  f.sel_sts_dsc(+)      = '02'
 		  and  f.tms_type(+)			= #{tms_type}
+		  and  length(replace(nvl(d.cus_mpno,''), '-', '')) <![CDATA[>=]]> 10	
 	    order by a.auc_prg_sq
     </select>
     
@@ -1350,6 +1355,7 @@
 	      and a.del_yn               = '0'
 	      and a.led_sqno             = 1
 		  and f.tms_type(+)			= #{tms_type}
+		  and  length(replace(nvl(b.cus_mpno,''), '-', '')) <![CDATA[>=]]> 10	
 	    order by TO_NUMBER(a.lvst_auc_ptc_mn_no) , a.auc_prg_sq
     </select>
     
@@ -1417,6 +1423,7 @@
 	       and g.dpamn_dsc(+)        = '2'
 	       and g.sel_sts_dsc(+)      = '01'
 		   and g.tms_type(+)			= #{tms_type}
+		   and  length(replace(nvl(d.cus_mpno,''), '-', '')) <![CDATA[>=]]> 10	
 	    )b
 	    GROUP BY na_bzplc, replace( cus_mpno,'-',''), name, fhs_id_no,TMS_YN, SMS_FWDG_DT, SMS_FWDG_SQNO
 			   , TRMN_AMNNO

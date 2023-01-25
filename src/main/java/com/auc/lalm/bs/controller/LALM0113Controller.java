@@ -17,6 +17,7 @@ import com.auc.common.vo.ResolverMap;
 import com.auc.lalm.bs.service.LALM0113Service;
 
 @RestController
+@SuppressWarnings({"unused"})
 public class LALM0113Controller {
 	
 	private static Logger log = LoggerFactory.getLogger(LALM0113Controller.class);
@@ -73,5 +74,13 @@ public class LALM0113Controller {
 		return reMap;
 	}
 	
+	@ResponseBody
+	@RequestMapping(value="/LALM0113_delMbIntgNo", method=RequestMethod.POST)
+	public Map<String, Object> LALM0113_delMbIntgNo(ResolverMap rMap) throws Exception{
+		Map<String, Object> map   = convertConfig.conMap(rMap);
+		Map<String, Object> inMap = lalm0113Service.LALM0113_delMbIntgNo(map);
+		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
+		return reMap;
+	}
 	
 }

@@ -66,7 +66,7 @@ public class RestControllerAdvice<T> implements ResponseBodyAdvice<T> {
 		    			inMap.put("inq_cn", temp.getOrDefault("dataCnt","0"));
 		    			inMap.put("btn_tpc", dataPrcDsc);
 		    			inMap.put("ipadr", ip);
-		    			inMap.put("srch_cnd_cntrn", param);
+		    			inMap.put("srch_cnd_cntrn", (param.length() > 2600 ? param.substring(0, 2600) : param));
 		    			inMap.put("apvrqr_rsnctt", "");
 		    			inMap.put("ss_userid", temp.get("ss_userid"));
 						commonService.Common_insDownloadLog(inMap);

@@ -76,8 +76,8 @@
 	        , B.SRA_INDV_BRDSRA_RG_NO                /* 축산개체종축등록번호                    */
 	        , A.LOWS_SBID_LMT_AM                     /* 하한가금액                                */
 	        , A.COW_SOG_WT                           /* 중량                                */
-         	, CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, B.BIRTH)) +1 <![CDATA[<=]]> 4 AND (A.NA_BZPLC != '8808990656199' OR A.NA_BZPLC != '8808990656434')
-			THEN 4 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, B.BIRTH)) +1 END AS MTCN      /* 월령  */
+         	, CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, B.BIRTH)) <![CDATA[<=]]> 4 AND (A.NA_BZPLC != '8808990656199' OR A.NA_BZPLC != '8808990656434')
+			THEN 4 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, B.BIRTH)) END AS MTCN      /* 월령  */
 	    FROM TB_LA_IS_MH_SOG_COW  A
 	       , TB_LA_IS_MM_INDV     B
 	       , TB_LA_IS_MM_FHS      C

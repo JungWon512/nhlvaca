@@ -337,14 +337,14 @@
 			, FSRG_DTM
 			, FSRGMN_ENO
     	)VALUES(
-			#{p_sra_indv_amnno}
+			 #{p_sra_indv_amnno}
 			, #{sra_indv_amnno}
-			, #{matime}
+			, #{sra_indv_ls_matime}
 			, #{sra_indv_pasg_qcn}
 			, #{rg_dsc}
-			, #{kpn_no}
+			, #{sra_kpn_no}
 			, #{indv_sex_c}
-			, #{birth}
+			, #{mif_sra_indv_birth}
 			, #{metrb_bbdy_wt}
 			, #{metrb_metqlt_grd}
 			, #{mif_btc_dt}
@@ -371,12 +371,12 @@
     	)VALUES(
 			 #{p_sra_indv_amnno}
 			, #{sra_indv_amnno}
-			, #{matime}
+			, #{sra_indv_ls_matime}
 			, #{sra_indv_pasg_qcn}
 			, #{rg_dsc}
-			, #{kpn_no}
+			, #{sra_kpn_no}
 			, #{indv_sex_c}
-			, #{birth}
+			, #{mif_sra_indv_birth}
 			, #{metrb_bbdy_wt}
 			, #{metrb_metqlt_grd}
 			, #{mif_btc_dt}

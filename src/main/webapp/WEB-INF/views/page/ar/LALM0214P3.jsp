@@ -15,6 +15,18 @@
  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 </head>
 <body>
+<style type="text/css">
+	div[id$=grd_MmInsSogCow].ui-jqgrid .ui-jqgrid-labels div[id=jqgh_grd_MmInsSogCow_AUC_OBJ_DSC]
+	,div[id$=grd_MmInsSogCow].ui-jqgrid .ui-jqgrid-labels div[id=jqgh_grd_MmInsSogCow_SRA_INDV_AMNNO]
+	,div[id$=grd_MmInsSogCow].ui-jqgrid .ui-jqgrid-labels div[id=jqgh_grd_MmInsSogCow_FHS_ID_NO]
+	,div[id$=grd_MmInsSogCow].ui-jqgrid .ui-jqgrid-labels div[id=jqgh_grd_MmInsSogCow_FARM_AMNNO]
+	,div[id$=grd_MmInsSogCow].ui-jqgrid .ui-jqgrid-labels div[id=jqgh_grd_MmInsSogCow_FTSNM]
+	,div[id$=grd_MmInsSogCow].ui-jqgrid .ui-jqgrid-labels div[id=jqgh_grd_MmInsSogCow_PPGCOW_FEE_DSC]
+	,div[id$=grd_MmInsSogCow].ui-jqgrid .ui-jqgrid-labels div[id=jqgh_grd_MmInsSogCow_PRNY_JUG_YN]
+	,div[id$=grd_MmInsSogCow].ui-jqgrid .ui-jqgrid-labels div[id=jqgh_grd_MmInsSogCow_AUC_PRG_SQ]{
+	    color: #ff0000;
+	}
+</style>
     <div class="pop_warp">
         <div class="tab_box btn_area clearfix">
             <ul class="tab_list fl_L">
@@ -65,8 +77,9 @@
 		<div class="fl_R">
 			<!--
 		    <button class="tb_btn" id="pb_addRow">행 추가</button>
-		    <button class="tb_btn" id="pb_delRow">행 삭제</button>
 		    -->
+		    <button class="tb_btn" id="pb_delRow">행 삭제</button>
+		    <button class="tb_btn" id="pb_allVaildChk">데이터 검증</button>
 		    <button class="tb_btn" id="pb_allSyncIndv">개체 연계</button>
 		</div>        
         <div class="tab_box clearfix">
@@ -151,6 +164,18 @@
 	           MessagePopup("OK", '조회된 데이터가 없습니다.');
 	           return false;
 	        }
+	        
+        	var booleanChk = rowData.some((o,i)=>{
+        		if(o.CHK_VAILD_ERR == 1){
+     	           	MessagePopup("OK", '데이터 검증후 개체연계 부탁드립니다.');        			
+        			return true;
+       			}else{
+       				return false;
+       			}
+        	});
+        	if(booleanChk) return;
+	        
+	        
 	        var param = {list : rowData,auc_obj_dsc : $('#auc_obj_dsc').val() ,auc_dt : aucDt.replaceAll('-','') ,rc_dt: rcDt.replaceAll('-','')};
 	        
 	        var result = sendAjax(param, '/LALM0214P3_selIndvSync', 'POST');	       
@@ -160,10 +185,63 @@
 	        	 return;
 	         } else {
 	        	 var decResult = setDecrypt(result);
-	        	 console.log(decResult);
       			 fn_CreateGrid(decResult);
+      			 $('#grd_MmInsSogCow').getDataIDs().forEach((rowid,i)=>{
+              	 	if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR') == '1'){
+              	 		$("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
+            	        $("#grd_MmInsSogCow").setRowData(rowid,false,{background:"#ff0000",color:"#fff"});
+            	 	}else if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_SRA_INDV') == '1' && $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '1'){
+             	         $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '*');
+             	         $("#grd_MmInsSogCow").setRowData(rowid,false,{background:"rgb(253 241 187)",color:""});
+             	 	}else{
+             	         $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
+           				$("#grd_MmInsSogCow").setRowData(rowid,false,{background:"",color:""});
+             	 	}      				
+      			 });
 	         }
     	});
+
+    	$('#pb_allVaildChk').click((e)=>{
+    		e.preventDefault();
+    		e.stopPropagation();
+
+    		var aucDt = $('#auc_dt').val();
+    		var rcDt = $('#rc_dt').val();
+	        gridSaveRow('grd_MmInsSogCow');
+    	 	var rowData = $('#grd_MmInsSogCow').getRowData();
+	            
+	        if (rowData.length == 0) {
+	           MessagePopup("OK", '조회된 데이터가 없습니다.');
+	           return false;
+	        }
+	        var param = {list : rowData,auc_obj_dsc : $('#auc_obj_dsc').val() ,auc_dt : aucDt.replaceAll('-','') ,rc_dt: rcDt.replaceAll('-','')};
+	        
+			var result = sendAjax(param, '/LALM0214P3_selSogCowVaild', 'POST');
+	        if(result.status != RETURN_SUCCESS){
+				showErrorMessage(result);
+				return;
+			} else {
+				var decList = setDecrypt(result);	        	 
+      			fn_CreateGrid(decList);
+      			var errCnt=0;
+      			$('#grd_MmInsSogCow').getDataIDs().forEach((rowid,i)=>{
+					if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR') == '1'){
+	             	 	errCnt++;
+	             	    $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '');
+	             	    if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_ERR_AUC_PRG_SQ') == '1'){
+	             	    	var aucPrgSq = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'AUC_PRG_SQ');
+	                 	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'AUC_PRG_SQ', aucPrgSq,{background:"rgb(255 0 0)"});             	        	
+						}
+	             	    if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_ERR_SRA_INDV_AMNNO') =='1'){
+	             	    	var sraIndvAmnno = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'SRA_INDV_AMNNO');
+	                  	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_INDV_AMNNO', sraIndvAmnno,{background:"rgb(255 0 0)"});             	        	
+						}
+					}
+				});
+    			if(errCnt==0) $('#pb_allSyncIndv').attr('disabled',false);
+	         }
+    	});
+    	
     	$('#auc_obj_dsc').change(()=>{
             fn_CreateGrid();
         	$('input[type=file]').val('');    		
@@ -176,6 +254,19 @@
 			
 			$("#grd_MmInsSogCow").jqGrid("clearGridData", true);
             fn_CreateGrid(data);
+  			$('#grd_MmInsSogCow').getDataIDs().forEach((rowid,i)=>{
+				if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR') == '1'){
+             	    $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '');
+             	    if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_ERR_AUC_PRG_SQ') == '1'){
+             	    	var aucPrgSq = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'AUC_PRG_SQ');
+                 	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'AUC_PRG_SQ', aucPrgSq,{background:"rgb(255 0 0)"});             	        	
+					}
+             	    if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_ERR_SRA_INDV_AMNNO') =='1'){
+             	    	var sraIndvAmnno = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'SRA_INDV_AMNNO');
+                  	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_INDV_AMNNO', sraIndvAmnno,{background:"rgb(255 0 0)"});             	        	
+					}
+				}
+			});
     	});
         $("#pb_addRow").click(()=>{
         	
@@ -251,6 +342,7 @@
         }
     	$('#rc_dt').val(fn_getToday());
     	$('input[type=file]').val('');
+    	$('#pb_allSyncIndv').attr('disabled',true);
         fn_CreateGrid();
     }
 
@@ -344,6 +436,18 @@
     
     function fn_popFstNm(rowid){
     	//$('#grd_MmInsSogCow').editCell(0,3,false);
+
+		var errCnt=0;
+		$('#grd_MmInsSogCow').getDataIDs().forEach((rowid,i)=>{
+			var chkVaild = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR');
+			if(chkVaild == '1' || chkVaild == ''){
+				errCnt++;
+			}
+		});
+		if(errCnt > 0) {
+			MessagePopup("OK", '데이터검증을 완료후 개체조회가 가능합니다.');		
+			return;	
+		}
     	var ftsnm = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'FTSNM');
 		if(!fn_isNull(ftsnm)) {
         	//fn_CallFtsnmPopup(true);
@@ -366,6 +470,7 @@
 		
 		if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_SRA_INDV') == '1' && $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '1'){
 	        $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '*');
+	        $("#grd_MmInsSogCow").setRowData(rowid,false,{background:"rgb(253 241 187)"});
 		}else{
 	        $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
 		}
@@ -376,6 +481,19 @@
 		var p_sra_indv_amnno = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'SRA_INDV_AMNNO');
 		var mcow_sra_indv_amnno = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'MCOW_SRA_INDV_AMNNO');
 
+		var errCnt=0;
+		$('#grd_MmInsSogCow').getDataIDs().forEach((rowid,i)=>{
+			var chkVaild = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR');
+			if(chkVaild == '1' || chkVaild == ''){
+				errCnt++;
+			}
+		});
+		if(errCnt > 0) {
+			MessagePopup("OK", '데이터검증을 완료후 개체조회가 가능합니다.');		
+			return;	
+		}
+		
+		
 		if(fn_isNull(p_sra_indv_amnno)){
 			MessagePopup("OK", '귀표번호를 입력해주세요.');
 			return;
@@ -533,6 +651,7 @@
 		
 		if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_SRA_INDV') == '1' && $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '1'){
 	        $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '*');
+	        $("#grd_MmInsSogCow").setRowData(rowid,false,{background:"rgb(253 241 187)"});
 		}else{
 	        $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
 		}        
@@ -732,7 +851,8 @@
         	data = [];
         }
         
-        var searchResultColNames = ["","* 경매대상","* 개체관리번호","","* 농가<br/>식별번호","* 농장<br/>관리번호","* 농가명","","* 경매번호","자가운송여부","운송비","출자금","사료공급금액"
+        var searchResultColNames = ["","* 경매대상","* 개체관리번호","","* 농가<br/>식별번호","* 농장<br/>관리번호","* 농가명"
+        							,"* 경매번호","자가운송여부","운송비","출자금","사료공급금액"
         	                        ,"당일접수비용","구제역 접종일자","구제역 검사결과","우결핵 접종일자","우결핵 백신차수", "브루셀라<br>검사일자","브루셀라 검사결과 코드","브루셀라검사증<br>확인여부","제각여부", "12개월이상여부","12개월이상<br>수수료","* 임신구분","인공수정일자","인공수정증명서<br>제출여부"
         	                        ,"수정KPN","인심개월수","* 임신감정여부","임신여부","괴사감정여부","괴사여부","친자확인결과","친자검사여부","비고","생산자명","생산지역명"
         	                        ,"어미소귀표번호"
@@ -740,18 +860,18 @@
         	                        ,"냉도체중 등급(EPD)","배최장근단면적 등급(EPD)","등지방두께 등급(EPD)","근내지방도 등급(EPD)"
         	                        ,"냉도체중(모EPD)","배최장근단면적(모EPD)","등지방두께(모EPD)","근내지방도(모EPD)"
         	                        ,"냉도체중 등급(모EPD)","배최장근단면적 등급(모EPD)","등지방두께 등급(모EPD)","근내지방도 등급(모EPD)"
-        	                        ,"",""];
+        	                        ,"","","","",""];
         
         var searchResultColModel = [
         							 {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},
                                      {name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:70,  align:'center', sortable : false, editable:false, edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)} , editrules:{required:true}},
-                                     {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:120, align:'center', sortable : false, editable: false , editoptions:{maxlength:"15"}},
+                                     {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:120, align:'center', sortable : false, editable: true , editoptions:{maxlength:"15"}},
                                      {name:"BTN_SRA_INDV_AMNNO",   index:"BTN_SRA_INDV_AMNNO",   width:45,  align:'center', sortable : false, formatter :gridSchboxFormatSraIndvAmnno},
                                      {name:"FHS_ID_NO",            index:"FHS_ID_NO",            width:80,  align:'center', sortable : false },
                                      {name:"FARM_AMNNO",           index:"FARM_AMNNO",           width:80,  align:'center', sortable : false },
                                      {name:"FTSNM",                index:"FTSNM",                width:80,  align:'center', sortable : false, editable:false },
-                                     {name:"BTN_FTSNM",            index:"BTN_FTSNM",            width:45,  align:'center', sortable : false, editable:false, formatter :gridSchboxFormat},
-                                     {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:100, align:'left'  , sortable : false, editable:false , formatter:'integer', formatoptions:{thousandsSeparator:''}},
+//                                      {name:"BTN_FTSNM",            index:"BTN_FTSNM",            width:45,  align:'center', sortable : false, editable:false, formatter :gridSchboxFormat},
+                                     {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:100, align:'left'  , sortable : false, editable:true , formatter:'integer', formatoptions:{thousandsSeparator:''}},
                                      {name:"TRPCS_PY_YN",          index:"TRPCS_PY_YN",          width:100, align:'left'  , sortable : false, editable:false , edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"SRA_TRPCS",            index:"SRA_TRPCS",            width:90,  align:'center', sortable : false, editable:false , formatter:'integer'},
                                      {name:"SRA_PYIVA",            index:"SRA_PYIVA",            width:90,  align:'center', sortable : false, editable:false , formatter:'integer'},
@@ -763,9 +883,9 @@
                                      {name:"VACN_ORDER",           index:"VACN_ORDER",                width:80,  align:'center', sortable : false, editable:false },
                                      {name:"BRCL_ISP_DT",          index:"BRCL_ISP_DT",          width:90,  align:'left'  , sortable : false, editable:false ,formatter:'gridDateFormat'},
                                      {name:"BRCL_ISP_RZT_C",       index:"BRCL_ISP_RZT_C",       width:90,  align:'left'  , sortable : false, hidden : true},
-                                     {name:"BRCL_ISP_CTFW_SMT_YN", index:"BRCL_ISP_CTFW_SMT_YN", width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}  },
-                                     {name:"RMHN_YN",              index:"RMHN_YN",              width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}  },
-                                     {name:"MT12_OVR_YN",          index:"MT12_OVR_YN",          width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}  },
+                                     {name:"BRCL_ISP_CTFW_SMT_YN", index:"BRCL_ISP_CTFW_SMT_YN", width:90,  align:'left'  , sortable : false, editable:false, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}  },
+                                     {name:"RMHN_YN",              index:"RMHN_YN",              width:90,  align:'left'  , sortable : false, editable:false, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}  },
+                                     {name:"MT12_OVR_YN",          index:"MT12_OVR_YN",          width:90,  align:'left'  , sortable : false, editable:false, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}  },
                                      {name:"MT12_OVR_FEE",         index:"MT12_OVR_FEE",         width:90,  align:'left'  , sortable : false, editable:false , formatter:'integer'  },
                                      {name:"PPGCOW_FEE_DSC",       index:"PPGCOW_FEE_DSC",       width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("PPGCOW_FEE_DSC",1)}  },
                                      {name:"AFISM_MOD_DT",         index:"AFISM_MOD_DT",         width:90,  align:'left'  , sortable : false, editable:false , formatter:'gridDateFormat'},
@@ -801,6 +921,9 @@
                                      
                                      {name:"CHK_IF_SRA_INDV",	   index:"CHK_IF_SRA_INDV",		 width:90,  align:'left'  , sortable : false, hidden : true},
                                      {name:"CHK_IF_FHS",	       index:"CHK_IF_FHS",      	 width:90,  align:'left'  , sortable : false, hidden : true},
+                                     {name:"CHK_VAILD_ERR",	       index:"CHK_VAILD_ERR",      	 width:90,  align:'left'  , sortable : false, hidden : true},
+                                     {name:"CHK_ERR_SRA_INDV_AMNNO",	index:"CHK_ERR_SRA_INDV_AMNNO",      	 width:90,  align:'left'  , sortable : false, hidden : true},
+                                     {name:"CHK_ERR_AUC_PRG_SQ",	index:"CHK_ERR_AUC_PRG_SQ",      	 width:90,  align:'left'  , sortable : false, hidden : true},
                                      
                                      ];
 
@@ -830,19 +953,17 @@
             		}
             	}
             	if(cellname =='FTSNM'){
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 0);
-     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM');
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO' );
-            		fn_popFstNm(rowid);
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 0);
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO' );
+            		//fn_popFstNm(rowid);
             	}
             	if(cellname =='SRA_INDV_AMNNO'){
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 0);
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 0);
-     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM');
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO' );
-            		fn_popSraIndvAmnno(rowid);
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 0);
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 0);
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO' );
+            		//fn_popSraIndvAmnno(rowid);
             	}
             },
             afterSaveCell : function(rowid, cellname, value, iRow, iCol){
@@ -853,19 +974,17 @@
             		}
             	}
             	if(cellname =='FTSNM'){
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 0);
-     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM');
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO' );
-            		fn_popFstNm(rowid);
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 0);
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO' );
+            		//fn_popFstNm(rowid);
             	}
             	if(cellname =='SRA_INDV_AMNNO'){
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 0);
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 0);
-     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM');
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
-     	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO' );
-            		fn_popSraIndvAmnno(rowid);
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 0);
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 0);
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
+     	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO' );
+            		//fn_popSraIndvAmnno(rowid);
             	}
             },
             afterEditCell : function(rowid, cellname, value, iRow, iCol){
@@ -874,6 +993,18 @@
                 });
                 $("input[id='"+iRow+"_"+cellname+"']").on('blur',function(e){
                     $("#grd_MmInsSogCow").jqGrid("saveCell", rowid, iCol);
+                }).on('keydown',function(e){
+                	var chkVaildErr = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR');
+                	if(chkVaildErr != '1'){
+						e.preventDefault();
+                	}
+                	if(cellname =='SRA_TRPCS'){
+                        //e.preventDefault();
+                		var trpcs_py_yn = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'TRPCS_PY_YN');
+                		if(trpcs_py_yn =='1'){
+                			$(this).val('');
+                		}
+                	}
                 }).on('focusout',function(e){
                     $("#grd_MmInsSogCow").jqGrid("saveCell", rowid, iCol);
                 }).on("input", function(){
@@ -881,15 +1012,6 @@
                 }).on("focus",function(){
                 	if($(this).val() == 0){
                 		$(this).val(null) ;
-                	}
-                }).on('keydown',function(e){
-                	if(cellname =='SRA_TRPCS'){
-                        //e.preventDefault();
-                		var trpcs_py_yn = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'TRPCS_PY_YN');
-                		if(trpcs_py_yn =='1'){
-                			$(this).val('');
-                            //$("#grd_MmInsSogCow").jqGrid("saveCell", rowid, iCol);
-                		}
                 	}
                 });
             }
@@ -929,43 +1051,54 @@
     	Obj.forEach(function(item,idx){
     		if(idx != 0 && item.length > 0){
     			var ExcelData = new Object();
-    			ExcelData['AUC_OBJ_DSC'          ] = item[0 ]??''; /* 경매대상구분코드             */
-    			ExcelData['FTSNM'                ] = item[1 ]??''; /* 농가명                       */
-    			ExcelData['SRA_PDMNM'            ] = item[2 ]??''; /* 축산생산자명                 */
-    			ExcelData['SRA_PD_RGNNM'         ] = item[3 ]??''; /* 축산생산지역명               */
-    			ExcelData['SRA_INDV_AMNNO'       ] = item[4 ]??''; /* 축산개체관리번호             */
-    			ExcelData['AUC_PRG_SQ'           ] = item[5 ]??''; /* 경매번호                     */
-    			ExcelData['TRPCS_PY_YN'          ] = item[6 ]??'0'; /* 운송비지급여부               */
-    			ExcelData['SRA_TRPCS'            ] = item[7 ]??''; /* 축산운송비                   */
-    			ExcelData['SRA_PYIVA'            ] = item[8 ]??''; /* 축산납입출자금               */
-    			ExcelData['SRA_FED_SPY_AM'       ] = item[9 ]??''; /* 축산사료공급금액             */
-    			ExcelData['TD_RC_CST'            ] = item[10]??''; /* 당일접수비용                 */
-    			ExcelData['VACN_DT'              ] = item[11]??''; /* 예방접종일자                 */
-    			ExcelData['VACN_ORDER'              ] = item[12]??''; /* 우결핵 검사결과 */
-    			ExcelData['BOVINE_DT'              ] = item[13]??''; /* 구제역 접종일자*/
-    			ExcelData['BOVINE_RSLTNM'              ] = item[14]??''; /* 우결핵 검사결과 */
-    			ExcelData['BRCL_ISP_DT'          ] = item[15]??''; /* 브루셀라검사일자             */
-    			ExcelData['BRCL_ISP_CTFW_SMT_YN' ] = item[16]??'0'; /* 브루셀라검사증명서제출여부   */
-    			ExcelData['RMHN_YN'              ] = item[17]??'0'; /* 제각여부                     */
-    			ExcelData['MT12_OVR_YN'          ] = item[18]??'0'; /* 12개월이상여부               */
-    			ExcelData['MT12_OVR_FEE'         ] = item[19]??''; /* 12개월이상수수료             */
-    			ExcelData['PPGCOW_FEE_DSC'       ] = item[20]??'5'; /* 번식우수수료구분코드         */
-    			ExcelData['AFISM_MOD_DT'         ] = item[21]??''; /* 인공수정일자                 */
-    			ExcelData['AFISM_MOD_CTFW_SMT_YN'] = item[22]??'0'; /* 인공수정증명서제출여부       */
-    			ExcelData['MOD_KPN'              ] = item[23]??''; /* 수정kpn                      */
-    			ExcelData['PRNY_MTCN'            ] = item[24]??''; /* 임신개월수                   */
-    			ExcelData['PRNY_JUG_YN'          ] = item[25]??'0'; /* 임신감정여부                 */
-    			ExcelData['PRNY_YN'              ] = item[26]??'0'; /* 임신여부                     */
-    			ExcelData['NCSS_JUG_YN'          ] = item[27]??'0'; /* 괴사감정여부                 */
-    			ExcelData['NCSS_YN'              ] = item[28]??'0'; /* 괴사여부                     */
-    			ExcelData['RMK_CNTN'             ] = item[29]??''; /* 비고                         */
-    			ExcelData['FHS_ID_NO'            ] = item[30]??''; /* 농가식별번호                 */
-    			ExcelData['FARM_AMNNO'           ] = item[31]??''; /* 농가관리번호                 */
-    			ExcelData['DNA_YN_CHK'           ] = item[32]??'0'; /* 친자검사여부                 */
-    			ExcelData['DNA_YN'               ] = item[33]??'3'; /* 친자확인결과                 */
-    			//Object.keys(ExcelData).forEach((o)=>{
-				//    ExcelData[o] = ExcelData[o]??'';
-				//});
+
+    			/*
+    			ExcelData['AUC_OBJ_DSC'          ] = item[0 ]??''; // 경매대상구분코드
+    			ExcelData['SRA_INDV_AMNNO'       ] = item[1 ]??''; // 축산개체관리번호
+    			ExcelData['AUC_PRG_SQ'       ] = item[2 ]??''; // 경매번호
+    			ExcelData['TRPCS_PY_YN'          ] = item[3]??'0'; // 운송비지급여부         
+    			ExcelData['SRA_TRPCS'            ] = item[4]??''; // 축산운송비              
+    			ExcelData['SRA_PYIVA'            ] = item[5]??''; // 축산납입출자금          
+    			ExcelData['SRA_FED_SPY_AM'       ] = item[6]??''; // 축산사료공급금액        
+    			ExcelData['TD_RC_CST'            ] = item[7]??''; // 당일접수비용           
+    			ExcelData['PPGCOW_FEE_DSC'            ] = '5'; // 당일접수비용           
+    			ExcelData['PRNY_JUG_YN'            ] = '0'; // 임신감정여부
+    			*/
+    			
+    			ExcelData['AUC_OBJ_DSC'          ] = item[0 ]??''; // 경매대상구분코드
+    			ExcelData['FTSNM'                ] = item[1 ]??''; // 농가명                  
+    			ExcelData['SRA_PDMNM'            ] = item[2 ]??''; // 축산생산자명            
+    			ExcelData['SRA_PD_RGNNM'         ] = item[3 ]??''; // 축산생산지역명          
+    			ExcelData['SRA_INDV_AMNNO'       ] = item[4 ]??''; // 축산개체관리번호
+    			ExcelData['AUC_PRG_SQ'           ] = item[5 ]??''; // 경매번호                
+    			ExcelData['TRPCS_PY_YN'          ] = item[6 ]??'0'; // 운송비지급여부         
+    			ExcelData['SRA_TRPCS'            ] = item[7 ]??''; // 축산운송비              
+    			ExcelData['SRA_PYIVA'            ] = item[8 ]??''; // 축산납입출자금          
+    			ExcelData['SRA_FED_SPY_AM'       ] = item[9 ]??''; // 축산사료공급금액        
+    			ExcelData['TD_RC_CST'            ] = item[10]??''; // 당일접수비용            
+    			ExcelData['VACN_DT'              ] = item[11]??''; // 예방접종일자            
+    			ExcelData['VACN_ORDER'              ] = item[12]??''; // 우결핵 검사결과 
+    			ExcelData['BOVINE_DT'              ] = item[13]??''; // 구제역 접종일자
+    			ExcelData['BOVINE_RSLTNM'              ] = item[14]??''; // 우결핵 검사결과 
+    			ExcelData['BRCL_ISP_DT'          ] = item[15]??''; // 브루셀라검사일자             
+    			ExcelData['BRCL_ISP_CTFW_SMT_YN' ] = item[16]??'0'; // 브루셀라검사증명서제출여부   
+    			ExcelData['RMHN_YN'              ] = item[17]??'0'; // 제각여부                     
+    			ExcelData['MT12_OVR_YN'          ] = item[18]??'0'; // 12개월이상여부               
+    			ExcelData['MT12_OVR_FEE'         ] = item[19]??''; // 12개월이상수수료             
+    			ExcelData['PPGCOW_FEE_DSC'       ] = item[20]??'5'; // 번식우수수료구분코드         
+    			ExcelData['AFISM_MOD_DT'         ] = item[21]??''; // 인공수정일자                 
+    			ExcelData['AFISM_MOD_CTFW_SMT_YN'] = item[22]??'0'; // 인공수정증명서제출여부       
+    			ExcelData['MOD_KPN'              ] = item[23]??''; // 수정kpn                      
+    			ExcelData['PRNY_MTCN'            ] = item[24]??''; // 임신개월수                   
+    			ExcelData['PRNY_JUG_YN'          ] = item[25]??'0'; // 임신감정여부                 
+    			ExcelData['PRNY_YN'              ] = item[26]??'0'; // 임신여부                     
+    			ExcelData['NCSS_JUG_YN'          ] = item[27]??'0'; // 괴사감정여부                 
+    			ExcelData['NCSS_YN'              ] = item[28]??'0'; // 괴사여부                     
+    			ExcelData['RMK_CNTN'             ] = item[29]??''; // 비고                         
+    			ExcelData['FHS_ID_NO'            ] = item[30]??''; // 농가식별번호                 
+    			ExcelData['FARM_AMNNO'           ] = item[31]??''; // 농가관리번호                 
+    			ExcelData['DNA_YN_CHK'           ] = item[32]??'0'; // 친자검사여부                 
+    			ExcelData['DNA_YN'               ] = item[33]??'3'; // 친자확인결과                 
     			
     			if($('#auc_obj_dsc').val() == ExcelData['AUC_OBJ_DSC']) ExcelList.push(ExcelData);
     		}

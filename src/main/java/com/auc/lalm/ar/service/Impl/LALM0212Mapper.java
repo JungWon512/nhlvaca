@@ -36,4 +36,9 @@ public interface LALM0212Mapper {
 	
 	int LALM0212_delLogPgm(Map<String, Object> map) throws Exception;
 
+	int LALM0212_updCommit(Map<String, Object> map) throws Exception;
+
+	void LALM0212_updLogPgmSel(Map<String, Object> map) throws Exception;
+
+
 }

@@ -35,4 +35,9 @@ public class LALM0915ServiceImpl implements LALM0915Service{
 		return reMap;
 	}
 
+	@Override
+	public Map<String, Object> LALM0915_selJoinBzPlcInfo(Map<String, Object> map) throws Exception {
+		return lalm0915Mapper.LALM0915_selJoinBzPlcInfo(map);
+	}
+
 }

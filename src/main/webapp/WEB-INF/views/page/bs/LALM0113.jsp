@@ -66,9 +66,7 @@
 				}
 			}
 
-			ReportPopup('LALM0113R0',
-					TitleData, tmpObject, 'V');//V:가로 , H:세로
-
+			ReportPopup('LALM0113R0', TitleData, tmpObject, 'V');//V:가로 , H:세로
 		});
 
 		/******************************
@@ -82,14 +80,9 @@
 					console.log(data);
 					$("#zip").val(data.zonecode);
 					$("#dongup").val(data.roadAddress);
+					$("#dongbw").focus();
 				}
 			}).open();
-			//fn_CallRoadnmPopup(function(result){
-			//    if(result){
-			//    	 $("#zip").val(result.ZIP);
-			//         $("#dongup").val(result.RODNM_ADR);
-			//    }
-			//});
 		});
 
 		/******************************
@@ -114,6 +107,9 @@
 			fn_BtnDelTrpl();
 		});
 
+		/******************************
+		 * 중도매인 검색 이벤트(엔터키)
+		 ******************************/
 		$("#sr_sra_mwmnnm").on("keydown", function(e) {
 			if (e.keyCode == 13) {
 				if (fn_isNull($("#sr_sra_mwmnnm").val())) {
@@ -124,7 +120,40 @@
 				}
 			}
 		});
-
+		
+		
+		/******************************
+		 * 통합회원코드 검색 이벤트(엔터키)
+		 ******************************/
+		$("#mb_intg_no").bind("keydown", function(e){
+			this.blur();
+			var param = new Object();
+			param["mb_intg_gb"] = "01";
+			fn_CallSearchIntgNoPopup(param, null ,function(result){
+				if(result) fn_SetIntgInfo(result);
+			});
+		});
+		
+		/******************************
+		 * 통합회원코드 검색 버튼 이벤트
+		 ******************************/
+		$("#pb_SearchIntgNo").bind("click", function(){
+			this.blur();
+			var param = new Object();
+			param["mb_intg_gb"] = "01";
+			fn_CallSearchIntgNoPopup(param, null ,function(result){
+				if(result) fn_SetIntgInfo(result);
+			});
+		});
+		
+		/******************************
+		 * 경제통합거래처 검색
+		 ******************************/
+		$("#pb_DelIntgNo").bind("click", function(){
+			this.blur();
+			fn_DelIntgNo();
+		});
+		
 		fn_Init();
 	});
 
@@ -273,7 +302,57 @@
 		TitleData.srch_condition = '[중도매인 : ' + $('#sra_mwmnnm').val() + ']';
 
 		ReportPopup('LALM0113R', TitleData, 'grd_MmMwmn', 'V');
-
+	}
+	
+	/*------------------------------------------------------------------------------
+	 * 1. 함 수 명    : 통합회원코드 검색결과 처리 이벤트
+	 * 2. 입 력 변 수 : N/A
+	 * 3. 출 력 변 수 : N/A
+	 ------------------------------------------------------------------------------*/
+	function fn_SetIntgInfo(data) {
+		// 기존 input에 통합회원코드가 있는 경우 변경 여부 confirm 메시지창 보여주기.
+		var ori_mb_intg_no = $("#mb_intg_no");
+		if (fn_isNull(ori_mb_intg_no.val())) {
+			ori_mb_intg_no.val(data.MB_INTG_NO);
+			return;
+		}
+		
+		if (ori_mb_intg_no.val() != data.MB_INTG_NO) {
+			MessagePopup('YESNO', "통합회원번호를 변경하시겠습니까?<br/>(저장 후 최종 변경됩니다.)", function(res) {
+				if (res) {
+					ori_mb_intg_no.val(data.MB_INTG_NO);
+				}
+			});
+		}
+	}
+	
+	/*------------------------------------------------------------------------------
+	 * 1. 함 수 명    : 통합회원코드 삭제 이벤트
+	 * 2. 입 력 변 수 : N/A
+	 * 3. 출 력 변 수 : N/A
+	 ------------------------------------------------------------------------------*/
+	function fn_DelIntgNo() {
+		if(fn_isNull($("#trmn_amnno").val())) {
+			MessagePopup("OK", "통합회원코드를 삭제할 중도매인을 선택하세요.");
+			return;
+		}
+		
+		MessagePopup('YESNO', "통합회원코드를 삭제하시겠습니까?", function(res) {
+			if (res) {
+				var results = sendAjaxFrm("frm_MmMwmn", "/LALM0113_delMbIntgNo", "POST");
+				var result;
+				if (results.status != RETURN_SUCCESS) {
+					showErrorMessage(results);
+					return;
+				} else {
+					MessagePopup("OK", "정상적으로 처리되었습니다.", function(res) {
+						fn_Search();
+					});
+				}
+			} else {
+				MessagePopup('OK', '취소되었습니다.');
+			}
+		});
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -395,6 +474,7 @@
 		//$("#grd_MmMwmn .jqgfirstrow td:last-child").width($("#grd_MmMwmn .jqgfirstrow td:last-child").width() - 17);
 	}
 
+	// 임력초기화 이벤트
 	function fn_BtnInit() {
 		fn_InitFrm('frm_MmMwmn');
 		$("#btn_Save").attr('disabled', false);
@@ -411,16 +491,16 @@
 		$("#sra_mwmnnm").focus();
 	}
 
+	// 경제통합거래처 삭제이벤트
 	function fn_BtnDelTrpl() {
-
 		$("#mwmn_na_trpl_c").val('');
 		fn_setChgRadio("maco_yn", '0');
 		fn_setRadioChecked("maco_yn");
 		$("#maco_yn").attr('disabled', false);
 	}
 
+	// 경제통합거래처 선택 이벤트
 	function fn_SetTrpl(result) {
-
 		$("#mwmn_na_trpl_c").val(result.NA_TRPL_C);
 
 		//조합원여부 체크
@@ -443,7 +523,6 @@
 		fn_setChgRadio("maco_yn", result.MACO_YN);
 		fn_setRadioChecked("maco_yn");
 		$("#maco_yn").attr('disabled', true);
-
 	}
 </script>
 <body>
@@ -486,7 +565,7 @@
 					<!--  //버튼 모두 우측정렬 -->
 					<label id="msg_Sbid"
 						style="font-size: 15px; color: blue; font: message-box;">※
-						필수입력사항 : 생년 월일/사업자 번호(숫자만 입력 가능), 주소, 휴대폰</label>
+						필수입력사항 : 중도매인명, 생년월일/사업자 번호(숫자만 입력 가능), 주소, 휴대폰</label>
 				</div>
 				<div class="fl_R">
 					<!--  //버튼 모두 우측정렬 -->
@@ -508,33 +587,35 @@
 							</colgroup>
 							<tbody>
 								<tr>
-									<th scope="row">중도매인코드</th>
+									<th scope="row">중도매인코드<strong class="req_dot">*</strong></th>
 									<td><input type="text" id="trmn_amnno" disabled="disabled" /></td>
 									<th scope="row">중도매인명<strong class="req_dot">*</strong></th>
 									<td><input type="text" id="sra_mwmnnm" class="popup" /></td>
-									<th scope="row">생년월일/사업자 번호</th>
+									<th scope="row">생년월일/사업자 번호<strong class="req_dot">*</strong></th>
 									<td><input type="text" id="cus_rlno" /></td>
 								</tr>
 								<tr>
-									<th scope="row">주소</th>
+									<th scope="row">주소<strong class="req_dot">*</strong></th>
 									<td>
 										<div class="cellBox v_addr">
 											<div class="cell" style="width: 60px;">
 												<input disabled="disabled" type="text" id="zip" disabled="disabled">
 											</div>
 											<div class="cell pl2" style="width: 26px;">
-												<button id="pb_SearchZip" class="tb_btn white srch">
+												<button type="button" id="pb_SearchZip" class="tb_btn white srch">
 													<i class="fa fa-search"></i>
 												</button>
 											</div>
 										</div>
 									</td>
-									<td colspan="2">
+									<td>
 										<input type="text" id="dongup" maxlength="40" />
 									</td>
-									<td colspan="2">
+									<td>
 										<input type="text" id="dongbw" maxlength="50" />
 									</td>
+									<th scope="row">비고</th>
+									<td><input type="text" id="rmk_cntn" maxlength='30'/></td>
 								</tr>
 								<tr>
 									<th scope="row">경제통합거래처</th>
@@ -544,18 +625,18 @@
 												<input disabled="disabled" type="text" id="mwmn_na_trpl_c" disabled="disabled">
 											</div>
 											<div class="cell pl2" style="width: 26px;">
-												<button id="pb_SearchTrpl" class="tb_btn white srch">
+												<button type="button" id="pb_SearchTrpl" class="tb_btn white srch">
 													<i class="fa fa-search"></i>
 												</button>
 											</div>
 											<div class="cell" style="width: 26px;">
-												<button id="pb_DelTrpl" class="tb_btn">삭제</button>
+												<button type="button" id="pb_DelTrpl" class="tb_btn">삭제</button>
 											</div>
 										</div>
 									</td>
 									<th scope="row">전화번호</th>
 									<td><input type="text" id="ohse_telno" class="digit" maxlength="14" /></td>
-									<th scope="row">휴대폰</th>
+									<th scope="row">휴대폰<strong class="req_dot">*</strong></th>
 									<td><input type="text" id="cus_mpno" class="digit" maxlength="14" /></td>
 								</tr>
 								<tr>
@@ -596,23 +677,29 @@
 									</td>
 								</tr>
 								<tr>
-									<th scope="row">비고</th>
-									<td colspan="5"><input type="text" id="rmk_cntn" maxlength='30'/></td>
-								</tr>
-								<tr>
 									<th scope="row">통합회원코드</th>
 									<td>
-										<input type="text" id="mb_intg_no" readonly="readonly" />
-										<input type="hidden" id="mb_intg_gb" value="01" readonly="readonly" />
+										<div class="cellBox v_addr">
+											<div class="cell" style="width:60%;">
+												<input type="text" id="mb_intg_no" readonly="readonly" />
+												<input type="hidden" id="mb_intg_gb" value="01" readonly="readonly" />
+											</div>
+											<div class="cell pl2" style="width:15%;">
+												<button type="button" id="pb_SearchIntgNo" class="tb_btn white srch">
+													<i class="fa fa-search"></i>
+												</button>
+											</div>
+											<div class="cell" style="width:25%;">
+												<button type="button" id="pb_DelIntgNo" class="tb_btn">삭제</button>
+											</div>
+										</div>
 									</td>
-									<th scope="row">개인정보동의일자</th>
+									<th scope="row">최근접속일자</th>
 									<td>
-										<input type="text" id="temp1" readonly="readonly" />
+										<input type="text" id="inout_dtm" readonly="readonly" />
 									</td>
-									<th scope="row">개인정보동의조합</th>
-									<td>
-										<input type="text" id="temp2" readonly="readonly" />
-									</td>
+									<th scope="row"></th>
+									<td></td>
 								</tr>
 							</tbody>
 						</table>

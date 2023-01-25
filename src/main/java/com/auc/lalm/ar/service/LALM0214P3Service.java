@@ -11,4 +11,6 @@ public interface LALM0214P3Service {
 
 	Map<String, Object> LALM0214P3_selIndvSync(Map<String, Object> map) throws Exception;
 
+	Map<String, Object> LALM0214P3_selSogCowVaild(Map<String, Object> map) throws Exception;
+
 }

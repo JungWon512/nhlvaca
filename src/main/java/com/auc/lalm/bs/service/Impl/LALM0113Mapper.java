@@ -51,5 +51,12 @@ public interface LALM0113Mapper {
 	 * 통합회원정보 저장
 	 * @param map
 	 */
-	void LALM0113_insMbIntgInfo(Map<String, Object> map);
+	int LALM0113_insMbIntgInfo(Map<String, Object> map);
+
+	/**
+	 * 통합회원번호 삭제
+	 * @param map
+	 * @return
+	 */
+	int LALM0113_delMbIntgNo(Map<String, Object> map);
 }

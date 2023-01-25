@@ -55,22 +55,22 @@
         	
         	if (resultList.length > 0) {
     			var sHtml = "";
-    			// 모바일 업무 간편 비고항목 추가
+    			// 모바일 업무 추가
     				sHtml += '		<div class="tab_box clearfix">';
     	    		sHtml += '			<ul class="tab_list_0">';
-    	    		sHtml += '				<li><p class="dot_allow">대상</p></li>';
+    	    		sHtml += '				<li><p class="dot_allow">모바일 업무</p></li>';
     	    		sHtml += '			</ul>';
     	    		sHtml += '		</div>';
     	    		sHtml += '		 <div class="sec_table">';
     	    		sHtml += '		 	<div class="grayTable rsp_v">';
     	    		sHtml += '		 		<table>';
     	    		sHtml += '		 			<colgroup>';
-    	    		sHtml += '		 				<col width="200">';
+    	    		sHtml += '		 				<col width="150">';
     	    		sHtml += '		 				<col width="*">';
     	    		sHtml += '		 			</colgroup>';
     	    		sHtml += '		 			<tbody>';
     	    		sHtml += '						<tr>';
-					sHtml += '							<th scope="row">모바일 업무 간편 비고항목</th>';
+					sHtml += '							<th scope="row">비고항목</th>';
 					sHtml += '							<td>';
 					sHtml += '								<input type="text" id="sms_buffer_2" name="sms_buffer_2" value=""/>';
 					sHtml += '								<p class="dot_allow">항목을 반드시 , 단위로 추가해주시기 바랍니다.</p>';
@@ -85,7 +85,7 @@
     	    		var tempList = resultList.filter(item => item.SIMP_C_GRP_SQNO == i+1);
     	    		sHtml += '		<div class="tab_box clearfix">';
     	    		sHtml += '			<ul class="tab_list_'+ resultList0[i].SIMP_C +'">';
-    	    		sHtml += '				<li><p class="dot_allow">'+ resultList0[i].SIMP_CNM +'</p></li>';
+    	    		sHtml += '				<li><p class="dot_allow">홈페이지</p></li>';
     	    		sHtml += '			</ul>';
     	    		sHtml += '		</div>';
     	    		sHtml += '		 <div class="sec_table">';
@@ -97,7 +97,7 @@
     	    		sHtml += '		 			</colgroup>';
     	    		sHtml += '		 			<tbody>';
     	    		sHtml += '		 				<tr>';
-    	    		sHtml += '		 				<th scope="row">대상</th>';	    		
+    	    		sHtml += '		 				<th scope="row">'+ resultList0[i].SIMP_CNM +'</th>';	    		
     	    		sHtml += '		 					<td>';
 					if (tempList.length > 0) {
 						for (var idx in tempList) {

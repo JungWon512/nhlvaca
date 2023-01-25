@@ -48,8 +48,10 @@ public class LALM0113ServiceImpl implements LALM0113Service{
 		}
 
 		// 통합회원정보 저장
-		map.put("mb_intg_gb", "01");
-		commonService.Common_insMbintgInfo(map);
+		if ("".equals(map.get("mb_intg_no"))) {
+			map.put("mb_intg_gb", "01");
+			commonService.Common_insMbintgInfo(map);
+		}
 
 		// 현재 조합에 해당 통합회원번호로 등록된 중도매인 데이터 수가 0이 아닌 경우
 		// 이전 단계에서 휴면 정보를 복구하면서 정보가 등록되었으므로 신규 저장을 하지 않는다.
@@ -74,13 +76,10 @@ public class LALM0113ServiceImpl implements LALM0113Service{
 		int insertNum = lalm0113Mapper.LALM0113_TrmnInsMiMwmn(map);
 		reMap.put("insertNum", insertNum);
 
-		// TODO :: 생년월일, 사업자번호, 휴대전화번호, 이름을 수정하는 경우 
-		// 채번된 통합회원번호가 있는 경우 통합회원번호가 바뀌는 것이 맞는지..???
-		// 근데 이게 맞는 것 같긴 함....
-//		if ("".equals(map.get("mb_intg_no"))) {
-		map.put("mb_intg_gb", "01");
-		commonService.Common_insMbintgInfo(map);
-//		}
+		if ("".equals(map.get("mb_intg_no"))) {
+			map.put("mb_intg_gb", "01");
+			commonService.Common_insMbintgInfo(map);
+		}
 
 		int updateNum = lalm0113Mapper.LALM0113_updTrmn(map);
 		reMap.put("updateNum", updateNum);
@@ -124,6 +123,18 @@ public class LALM0113ServiceImpl implements LALM0113Service{
 		lalm0113Mapper.LALM0113_insMbIntgInfo(map);
 
 		return map;
+	}
+	
+	/**
+	 * 통합회원번호 삭제
+	 * @param map
+	 * @return
+	 */
+	public Map<String, Object>LALM0113_delMbIntgNo(Map<String, Object> map) {
+		final Map<String, Object> reMap = new HashMap<String, Object>();
+		int updateNum = lalm0113Mapper.LALM0113_delMbIntgNo(map);
+		reMap.put("updateNum", updateNum);
+		return reMap;
 	}
 
 }

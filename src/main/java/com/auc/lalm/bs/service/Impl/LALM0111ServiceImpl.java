@@ -31,8 +31,6 @@ public class LALM0111ServiceImpl implements LALM0111Service{
 	@Override
 	public Map<String, Object> LALM0111_insFarm(Map<String, Object> map) throws Exception {
 		final Map<String, Object> reMap = new HashMap<String, Object>();
-		// TODO :: 수기 등록 농가도 회원통합을 진행해야 할 지?
-		// 한다면 기준은? 이름, 생년월일, 휴대전화번호?
 		// 동일한 이름, 생년월일, 휴대전화번호로 등록된 정보가 있는지 확인
 		final Map<String, Object> selMap = lalm0111Mapper.LALM0111_selFhsInfo(map);
 		if (!ObjectUtils.isEmpty(selMap) && !"".equals(selMap.get("FHS_ID_NO"))) {

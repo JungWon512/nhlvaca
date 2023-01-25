@@ -1575,6 +1575,18 @@ function fn_CallFhsPopup(p_param,p_flg,callback){
 	}
 }
 
+//***************************************
+//* function   : 통합회원정보 조회 팝업
+//* paramater  : p_param(object), p_flg(단건 리턴여부)
+//* result     : gridRowData
+//***************************************
+function fn_CallSearchIntgNoPopup(p_param, p_flag, callback) {
+	var pgid = 'LALM0135P';
+	var menu_id = $("#menu_info").attr("menu_id");
+	parent.layerPopupPage(pgid, menu_id, p_param, null, 800, 600,function(result){
+		callback(result);
+	});
+}
  
 //***************************************
 //* function   : gridSaveRow
@@ -1976,7 +1988,6 @@ function fn_xxsDecode(p_str){
     }
 }
 
- 
 </script>
 
 

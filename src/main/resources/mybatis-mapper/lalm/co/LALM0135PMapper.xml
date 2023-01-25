@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.co.service.Impl.LALM0135PMapper">
+
+	<select id="LALM0135P_selList" parameterType="map" resultType="map">
+		SELECT MB_INTG_NO
+			 , CASE WHEN #{ss_security} = '1' THEN MB_INTG_NM
+					WHEN LENGTH(MB_INTG_NM) = 2 THEN SUBSTR(MB_INTG_NM,1,1) || '*' 
+					WHEN LENGTH(MB_INTG_NM) = 3 THEN SUBSTR(MB_INTG_NM,1,1) || '*'  || SUBSTR(MB_INTG_NM,3,1) 
+					WHEN LENGTH(MB_INTG_NM) = 4 THEN SUBSTR(MB_INTG_NM,1,1) || '**' || SUBSTR(MB_INTG_NM,4,1)  
+					WHEN LENGTH(MB_INTG_NM) >= 5 THEN SUBSTR(MB_INTG_NM,1,2) || '**' || SUBSTR(MB_INTG_NM,5,LENGTH(MB_INTG_NM))
+				END AS MB_INTG_NM
+			 , MB_RLNO
+			 , OHSE_TELNO
+			 , CASE WHEN #{ss_security} = '1' THEN REGEXP_REPLACE(MB_MPNO, '(.{3})(.+)(.{4})', '\1-\2-\3')
+					ELSE REGEXP_REPLACE(MB_MPNO, '(02|.{3})(.+)(.{4})', '\1-****-\3')
+				END AS MB_MPNO
+			 , DORMACC_YN
+			 , DORMACC_DT
+			 , DELACC_YN
+			 , DELACC_DT
+			 , MB_INTG_DT
+			 , TMS_YN
+			 , FNCON_DTM
+			 , FSRG_DTM
+			 , FSRGMN_ENO
+			 , LSCHG_DTM
+			 , LS_CMENO
+			 , MB_INTG_GB
+			 , DORMDUE_DT
+		  FROM TB_LA_IS_MM_MBINTG
+		 WHERE DORMACC_YN = '0'
+		   AND DELACC_YN = '0'
+		   AND MB_INTG_GB = #{mb_intg_gb}
+	<if test="search_text != null and search_text != ''">
+		<choose>
+		<!-- 통합회원번호 -->
+		<when test='"0".equals(search_type)'>
+		   AND MB_INTG_NO like '%'|| #{search_text} ||'%'
+		</when>
+		<!-- 통합회원이름 -->
+		<when test='"1".equals(search_type)'>
+		   AND MB_INTG_NM like '%' || #{search_text} ||'%'
+		</when>
+		</choose>
+	</if>
+	</select>
+</mapper>

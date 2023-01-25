@@ -10,5 +10,6 @@ public interface LALM0915Mapper {
 
 	int LALM0915_selUsr(Map<String, Object> map) throws Exception;
 	Map<String, Object> LALM0915_selPW(Map<String, Object> map) throws Exception;
+	Map<String, Object> LALM0915_selJoinBzPlcInfo(Map<String, Object> map) throws Exception;
 	
 }

@@ -13,6 +13,8 @@ public interface LALM0919Mapper {
 	List<Map<String, Object>> LALM0919_selMhSogCowPriceList(Map<String, Object> map) throws Exception;
 
 	List<Map<String, Object>> LALM0919_selMhSogCowStaticsList(Map<String, Object> map) throws Exception;
+	
+	List<Map<String, Object>> LALM0919_selMhSogCowList(Map<String, Object> map) throws Exception;
 
 	List<Map<String, Object>> LALM0919_selMhSogCowRowDataList(Map<String, Object> map) throws Exception;
 	

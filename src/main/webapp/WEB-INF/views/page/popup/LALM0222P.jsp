@@ -725,19 +725,18 @@
         }
 
         var searchResultColNames = ["축산개체관리번호","산차","계대","등록구분코드","KPN번호","개체성별코드","생년월일","도체중","등급","도축일"];        
-        var searchResultColModel = [						            
+        var searchResultColModel = [					
 						            {name:"SRA_INDV_AMNNO"                   , index:"SRA_INDV_AMNNO"               , width:100,  align:'center'},
-						            {name:"MATIME"                           , index:"MATIME"                       , width:50,  align:'center'},
+						            {name:"SRA_INDV_LS_MATIME"               , index:"SRA_INDV_LS_MATIME"           , width:50,  align:'center'},
 						            {name:"SRA_INDV_PASG_QCN"                , index:"SRA_INDV_PASG_QCN"            , width:50,  align:'center'},
 						            {name:"RG_DSC"                           , index:"RG_DSC"                       , width:80,  align:'center'},
-						            {name:"KPN_NO"                           , index:"KPN_NO"                       , width:80,  align:'center'},
+						            {name:"SRA_KPN_NO"                       , index:"SRA_KPN_NO"                   , width:80,  align:'center'},
 						            {name:"INDV_SEX_C"                       , index:"INDV_SEX_C"                   , width:80,  align:'center'},
-						            {name:"BIRTH"                            , index:"BIRTH"                        , width:100,  align:'center'},
+						            {name:"MIF_SRA_INDV_BIRTH"               , index:"MIF_SRA_INDV_BIRTH"           , width:100,  align:'center'},
 						            {name:"METRB_BBDY_WT"                    , index:"METRB_BBDY_WT"                , width:100,  align:'center'},
 						            {name:"METRB_METQLT_GRD"                 , index:"METRB_METQLT_GRD"             , width:100,  align:'center'},
 						            {name:"MIF_BTC_DT"                       , index:"MIF_BTC_DT"                   , width:100,  align:'center'}
-
-                                     ];
+		];
             
         $("#grd_SibIndv").jqGrid("GridUnload");
                 
@@ -770,12 +769,12 @@
         var searchResultColNames = ["축산개체관리번호","산차","계대","등록구분코드","KPN번호","개체성별코드","생년월일","도체중","등급","도축일"];        
         var searchResultColModel = [
 			            {name:"SRA_INDV_AMNNO"                   , index:"SRA_INDV_AMNNO"               , width:100,  align:'center'},
-			            {name:"MATIME"                           , index:"MATIME"                       , width:50,  align:'center'},
+			            {name:"SRA_INDV_LS_MATIME"               , index:"SRA_INDV_LS_MATIME"           , width:50,  align:'center'},
 			            {name:"SRA_INDV_PASG_QCN"                , index:"SRA_INDV_PASG_QCN"            , width:50,  align:'center'},
 			            {name:"RG_DSC"                           , index:"RG_DSC"                       , width:80,  align:'center'},
-			            {name:"KPN_NO"                           , index:"KPN_NO"                       , width:80,  align:'center'},
+			            {name:"SRA_KPN_NO"                       , index:"SRA_KPN_NO"                   , width:80,  align:'center'},
 			            {name:"INDV_SEX_C"                       , index:"INDV_SEX_C"                   , width:80,  align:'center'},
-			            {name:"BIRTH"                            , index:"BIRTH"                        , width:100,  align:'center'},
+			            {name:"MIF_SRA_INDV_BIRTH"               , index:"MIF_SRA_INDV_BIRTH"           , width:100,  align:'center'},
 			            {name:"METRB_BBDY_WT"                    , index:"METRB_BBDY_WT"                , width:100,  align:'center'},
 			            {name:"METRB_METQLT_GRD"                 , index:"METRB_METQLT_GRD"             , width:100,  align:'center'},
 			            {name:"MIF_BTC_DT"                       , index:"MIF_BTC_DT"                   , width:100,  align:'center'}

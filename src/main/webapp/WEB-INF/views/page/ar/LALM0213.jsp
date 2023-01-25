@@ -299,7 +299,7 @@
             return "99";
         }else{      
             result = setDecrypt(results);
-            return result[0].AUC_PART_LIMIT_YN;
+            return result;
         }
     }
     
@@ -882,12 +882,21 @@
  			if(result){
  				console.log(result)
  				// 불량중도매인 체크
- 				var blackFlag = fn_SearchBadCheck(result.MB_INTG_NO);
+ 				var rVal = fn_SearchBadCheck(result.MB_INTG_NO);
+ 				var blackFlag = rVal[0].AUC_PART_LIMIT_YN ?? '99';
+ 				
  				if(blackFlag != '99'){
  					switch(blackFlag){
  					case "1" :
+ 						let msg = "";
+ 						if (rVal[0].BLACK_CNT > 0) {
+ 							msg = rVal[0].CLNTNM + " 외 " + rVal[0].BLACK_CNT + "건 불량회원(B/L)으로 등록된 중도매인 입니다.<br/>확인 바랍니다.<br/>(불량회원 해지는 '기준정보 > 불량회원[B/L] 관리')";
+ 						} else {
+ 							msg = rVal[0].CLNTNM + "에서 불량회원(B/L)으로 등록된 중도매인 입니다.<br/>확인 바랍니다.<br/>(불량회원 해지는 '기준정보 > 불량회원[B/L] 관리')"
+ 						}
+ 						
  						//경매참여 가능하긴 하지만 불량회원 등록되어 있는 상태이다. 알럿 띄우고 정보 셋팅
- 						MessagePopup('OK',"불량회원(B/L)으로 등록된 중도매인 입니다.<br/>확인 바랍니다.<br/>(불량회원 해지는 '기준정보 > 불량회원[B/L] 관리')", function(){
+ 						MessagePopup('OK', msg, function(){
 	 						$("#trmn_amnno").val(result.TRMN_AMNNO);
 	 		 				$("#sra_mwmnnm").val(result.SRA_MWMNNM);
 	 		 				$("#frlno").val(result.FRLNO);
@@ -955,7 +964,7 @@
                             <col width="180">
                             <col width="80">
                             <col width="*">                            
-                            <col width="100">
+                            <col width="150">
                             <col width="*">
                         </colgroup>
                         <tbody>
@@ -975,7 +984,7 @@
                                 	<input type="text" style="ime-mode:active;width:100px" id="sra_mwmnnm1">
                                 	<button id="pb_sra_mwmnnm1" class="tb_btn white srch"><i class="fa fa-search"></i></button>
                                 </td>
-                                <th scope="row"><span class="tb_dot">불량등록이력</span></th>
+                                <th scope="row"><span class="tb_dot">불량등록이력표시여부</span></th>
                                 <td>                                    
                                     <input type="checkbox" id="cb_grd_MhBadTrmnShow" name="cb_grd_MhBadTrmnShow" value="0">
                                     <h id="grd_MhBadTrmnShow">부</h>                                                                      

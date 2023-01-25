@@ -550,7 +550,7 @@ public class TradeMcaMsgDataController {
             data.append(",\"IO_SDMN_MED_ADR\":\"" + padLeftBlank((String)paraMap.get("IO_SDMN_MED_ADR"), 80) + "\"");
             data.append(",\"IO_TIT\":\"" + padLeftBlank((String)paraMap.get("IO_TIT"), 40) + "\"");
             data.append(",\"KAKAO_TPL_C\":\"" + padLeftBlank((String)paraMap.get("KAKAO_TPL_C"), 30) + "\"");
-            data.append(",\"KAKAO_MSG_CNTN\":\"" + padLeftBlank((String)paraMap.get("KAKAO_MSG_CNTN"), 4000) + "\"");
+            data.append(",\"KAKAO_MSG_CNTN\":\"" + padLeftBlank((String)paraMap.get("KAKAO_MSG_CNTN"), 4000)  + "\"");
             data.append(",\"FBK_UYN\":\"" + padLeftBlank((String)paraMap.get("FBK_UYN"), 1) + "\"");
             data.append(",\"FBK_MSG_DSC\":\"" + padLeftBlank((String)paraMap.get("FBK_MSG_DSC"), 1) + "\"");
             data.append(",\"FBK_TIT\":\"" + padLeftBlank((String)paraMap.get("FBK_TIT"), 20) + "\"");

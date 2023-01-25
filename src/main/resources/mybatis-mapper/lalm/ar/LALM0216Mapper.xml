@@ -102,8 +102,8 @@
          , D.SRA_SRS_DSC                                /* 축산축종구분코드                   */
          , D.FHS_ID_NO                                  /* 농가식별번호                       */
          , D.FARM_AMNNO                                 /* 농장관리번호                       */
-         , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <= 4 AND (A.NA_BZPLC != '8808990656199' OR A.NA_BZPLC != '8808990656434')
-                THEN 4 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 END AS MTCN      /* 월령  */
+         , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) <= 4 AND (A.NA_BZPLC != '8808990656199' OR A.NA_BZPLC != '8808990656434')
+                THEN 4 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) END AS MTCN      /* 월령  */
          , D.MCOW_DSC                                   /* 어미구분코드                       */
          , RTRIM(D.KPN_NO) AS KPN_NO                    /* KPN번호                            */
          , D.INDV_SEX_C                                 /* 개체성별코드                       */
@@ -138,7 +138,7 @@
            else G.BIRTH end AS BIRTH /* 송아지생년월일                     */
          
          , G.KPN_NO      AS "CALF_KPN_NO"         /* 송아지정액번호                     */
-         , TRUNC(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)) +1 AS CALF_MTCN /* 송아지월령 */ 
+         , TRUNC(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)) AS CALF_MTCN /* 송아지월령 */ 
     FROM TB_LA_IS_MH_SOG_COW     A
        , TB_LA_IS_MM_VHC         C
        , TB_LA_IS_MM_FHS         B
@@ -328,7 +328,7 @@
          
          , A.SPAY_YN                                     /* 난소적출여부                      */
          , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) <= 4 AND (A.NA_BZPLC != '8808990656199' OR A.NA_BZPLC != '8808990656434')
-                THEN 4 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) + 1 END AS MTCN      /* 월령  */         
+                THEN 4 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) END AS MTCN      /* 월령  */         
 		 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.CALF_AUC_ATDR_UNT_AM, 10000))
 				WHEN A.AUC_OBJ_DSC = '2' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1))
 				WHEN A.AUC_OBJ_DSC = '3' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.PPGCOW_AUC_ATDR_UNT_AM, 10000))
@@ -526,8 +526,8 @@
             WHEN  G.BIRTH = G.BIRTH THEN         SUBSTR(G.BIRTH,1,4) || '-' || SUBSTR(G.BIRTH,5,2) || '-' || SUBSTR(G.BIRTH,7,2) 
            else G.BIRTH end AS CALF_BIRTH                /* 송아지생년월일                    */
          
-          , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <= 4 AND (A.NA_BZPLC != '8808990656199' OR A.NA_BZPLC != '8808990656434')
-                THEN 4 ELSE to_number(TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH))) +1 END AS MTCN      /* 월령  */ 
+          , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) <= 4 AND (A.NA_BZPLC != '8808990656199' OR A.NA_BZPLC != '8808990656434')
+                THEN 4 ELSE to_number(TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH))) END AS MTCN      /* 월령  */ 
     FROM TB_LA_IS_MH_SOG_COW     A
     LEFT OUTER JOIN TB_LA_IS_MM_VHC C
          ON  A.NA_BZPLC            = C.NA_BZPLC
@@ -725,13 +725,13 @@
          , A.RE_PRODUCT_13_1                             /* 유전능력 등지방두께 등급     - 모개체  */
          , A.RE_PRODUCT_14                               /* 유전능력 근내지방도          - 모개체  */
          , A.RE_PRODUCT_14_1                             /* 유전능력 근내지방도 등급     - 모개체  */
-         , CASE WHEN A.NA_BZPLC = '8808990656199' OR A.NA_BZPLC = '8808990656434' THEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1
-           ELSE CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <= 4 THEN 4
-                ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) + 1 END
+         , CASE WHEN A.NA_BZPLC = '8808990656199' OR A.NA_BZPLC = '8808990656434' THEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH))
+           ELSE CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) <= 4 THEN 4
+                ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) END
            END  AS MTCN      /* 월령  */  
          , TRUNC(TO_DATE(A.AUC_DT,'YYYYMMDD') - TO_DATE(D.BIRTH,'YYYYMMDD')) AS MTCN1      /* 총일수  */   
          , round(mod(mod(months_between(A.AUC_DT, D.BIRTH)/12 ,1)*12,1)*(365/12),0) AS MTCN4      /* 일수  */       
-         , TRUNC(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)) +1 AS CALF_MTCN /* 송아지월령 */       
+         , TRUNC(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)) AS CALF_MTCN /* 송아지월령 */       
 		 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.CALF_AUC_ATDR_UNT_AM, 10000))
 				WHEN A.AUC_OBJ_DSC = '2' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1))
 				WHEN A.AUC_OBJ_DSC = '3' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.PPGCOW_AUC_ATDR_UNT_AM, 10000))

@@ -25,4 +25,6 @@ public interface LALM0212Service {
 	
 	Map<String, Object> LALM0212_delPgm(Map<String, Object> map) throws Exception;
 
+	Map<String, Object> LALM0212_updCommit(Map<String, Object> map) throws Exception;
+
 }

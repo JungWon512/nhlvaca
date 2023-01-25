@@ -266,9 +266,20 @@
              , a.cus_mpno                 as org_cus_mpno
              , a.mb_intg_no
              , nvl(b.dormacc_yn, '0') as dormacc_yn
+             , decode(c.inout_dtm, null, '', to_char(c.inout_dtm, 'YYYY-MM-DD HH24:MI:SS')) as inout_dtm
             from tb_la_is_mm_mwmn a
             left outer join tb_la_is_mm_mbintg b
 		      on ( a.mb_intg_no = b.mb_intg_no and b.mb_intg_gb = '01')
+		    left outer join (
+							select row_number() over(order by conn_dt desc, conn_seq desc ) as n_num
+									 , na_bzplc
+									 , login_id
+									 , inout_dtm
+								 from tb_la_is_mm_conn_hist
+								where na_bzplc = #{ss_na_bzplc}
+								  and login_id = #{trmn_amnno}
+			   ) c
+              on ( a.na_bzplc = c.na_bzplc and a.trmn_amnno = c.login_id and c.n_num = '1' )
             where a.na_bzplc   = #{ss_na_bzplc}
             and   a.trmn_amnno = #{trmn_amnno}
             and   a.del_yn     = '0'
@@ -346,7 +357,7 @@
 	<!-- 중도매인 통합회원정보 신규 저장 -->
 	<insert id="LALM0113_insMbIntgInfo" parameterType="hashMap">
 		<selectKey keyProperty="mb_intg_no" resultType="int" order="BEFORE">
-			SELECT NVL(MAX(MB_INTG_NO) + 1, 1) FROM TB_LA_IS_MM_MBINTG WHERE MB_INTG_GB = '01'
+			SELECT NVL(MAX(MB_INTG_NO), '100000000') + 1 FROM TB_LA_IS_MM_MBINTG WHERE MB_INTG_GB = '01'
 		</selectKey>
 		INSERT INTO TB_LA_IS_MM_MBINTG (
 			MB_INTG_NO
@@ -389,6 +400,17 @@
 			, TO_CHAR(SYSDATE + 365, 'YYYYMMDD')
 		)
 	</insert>
+	
+	<!-- 중도매인 통합회원번호 삭제 -->
+	<update id="LALM0113_delMbIntgNo" parameterType="map">
+		UPDATE TB_LA_IS_MM_MWMN
+		   SET MB_INTG_NO = NULL
+			 , LSCHG_DTM = SYSDATE
+			 , LS_CMENO = #{ss_eno}
+		 WHERE NA_BZPLC = #{ss_na_bzplc}
+		   AND TRMN_AMNNO = #{trmn_amnno}
+	</update>
+	
 </mapper>
 
 

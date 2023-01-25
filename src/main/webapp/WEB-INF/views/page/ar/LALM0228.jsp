@@ -83,7 +83,8 @@
             
             var data = $("#grd_Msg").jqGrid("getRowData", selRowIds)?.MSG_CNTN;
 //             var sHtml = data.replaceAll('\n','<br/>');
-            var sHtml = data.replaceAll('\\n','<br/>');
+			console.log(data);
+            var sHtml = data.replaceAll('\\\\n','<br/>');
     		MessagePopup('OK',sHtml,function(res){
     			return;
     		});
@@ -240,8 +241,10 @@
                 rowdata["AUC_OBJ_DSC"] = $("#auc_obj_dsc").val(); //경매대상
                 rowdata["DPAMN_DSC"]   = $("#obj_gbn").val(); //출하자, 응찰자 구분
                 rowdata["SEL_STS_DSC"] = $('input[name="msg_gbn_radio"]:checked').val(); //SMS용 경매상태(01, 02, 03...)
+                rowdata["RMS_MN_NAME"] = rowdata["REVE_USR_NM"]; // 수신자 명
                 rowdata["SMS_RMS_MPNO"] = rowdata["CUS_MPNO"].replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1'); // 수신자 전화번호
-                rowdata["SMS_TRMS_MPNO"] = rowdata["CLNT_TELNO"].replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1'); // 발신자 전화번호
+                rowdata["IO_TRMSNM"] = rowdata["CLNTNM"]; // 발신자 명
+                rowdata["SMS_TRMS_TELNO"] = rowdata["CLNT_TELNO"].replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1'); // 발신자 전화번호
                 
                 // 인터페이스에 필요한 파라메터
                 rowdata["ADJ_BRC"] = rowdata["ADJ_BRC"]; //사무소코드
@@ -349,7 +352,7 @@
                       {name:"AUC_OBJ_DSC",    	index:"AUC_OBJ_DSC",    	 	hidden:true},
                       {name:"TRMN_AMNNO",     	index:"TRMN_AMNNO",     	 	hidden:true},
                       {name:"CLNT_TELNO",   		index:"CLNT_TELNO",  			hidden:true},
-                      {name:"IO_TRMSNM",      	index:"IO_TRMSNM",      	 	hidden:true},
+                      {name:"CLNTNM",      	index:"CLNTNM",      	 	hidden:true},
                       {name:"FSRG_DTM",       	index:"FSRG_DTM",       	 	hidden:true},
                       {name:"FSRGMN_ENO",     	index:"FSRGMN_ENO",     	 	hidden:true},
                       {name:"LSCHG_DTM",      	index:"LSCHG_DTM",      	 	hidden:true},
@@ -487,6 +490,14 @@
                                     <input type="hidden" id="msg_gbn"/>
                                 </td>
                             </tr>
+<!--                             <tr> -->
+<!--                                 <th>알림톡<p class="dot_allow"></p></th> -->
+<!--                                 <td colspan="4">  -->
+<!--                                     <select name="talk_select" id="talk_select" class="talk_select"> -->
+<!--                                     	<option value="">선택</option> -->
+<!--                                     </select> -->
+<!--                                 </td> -->
+<!--                             </tr> -->
                         </tbody>
                     </table>
                     </form>

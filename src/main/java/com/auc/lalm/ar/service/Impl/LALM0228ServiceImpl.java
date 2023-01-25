@@ -2,18 +2,18 @@ package com.auc.lalm.ar.service.Impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.auc.lalm.ar.service.LALM0228Service;
 import com.auc.lalm.sy.service.Impl.LALM0840Mapper;
 import com.auc.lalm.sy.service.Impl.LALM0899Mapper;
 import com.auc.mca.AlarmTalkForm;
+import com.auc.mca.RestApiJsonController;
 
 @Service("LALM0228Service")
 public class LALM0228ServiceImpl implements LALM0228Service{
@@ -29,6 +29,12 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 	
 	@Autowired
 	AlarmTalkForm alarmForm;
+	
+	@Autowired
+	private RestApiJsonController restApiJsonController;
+	
+	@Value("${server.type}")
+	private String serverType;
 	
 	@Override
 	public List<Map<String, Object>> LALM0228_selAlarmList(Map<String, Object> map) throws Exception {
@@ -84,14 +90,29 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 						templateId = "NHKKO00259";
 						//버튼 파라메터 
 						item.put("BTN_NM", "정산서 보기");
-						//[TO-DO] URL 적용..(파라메터 적용)
-						item.put("BTN_URL", "");
+						
+						// short link 생성을 위한 중도매인 정산서 url
+						StringBuffer sb = new StringBuffer();
+						if ("production".equals(serverType)) {
+							sb.append("https://www.xn--o39an74b9ldx9g.kr/state-acc/mwmn/");
+						}
+						else {
+							sb.append("http://adv-www.xn--e20bw05b.co.kr/state-acc/mwmn/");
+						}
+						sb.append(item.get("NA_BZPLC"));
+						sb.append('/');
+						sb.append(item.get("AUC_DT"));
+						sb.append('/');
+						sb.append(item.get("TRMN_AMNNO"));
+						
+						item.put("BTN_URL", restApiJsonController.createShortLink(sb.toString()));
 					}
 					map.put("code", templateId);
 					tempMap = lalm0840Mapper.LALM0840_selInfo(map);
 					
 					item.put("MSG_CNTN", alarmForm.makeAlarmMsgCntn(item, tempMap.get("TALK_CONTENT").toString()));	
 					item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
+					item.put("KAKAO_TPL_C", templateId);
 				}
 			} else if("2".equals(map.get("obj_gbn")) && "03".equals(map.get("msg_gbn"))){
 				list = lalm0228Mapper.LALM0228_selList4(map);
@@ -110,11 +131,28 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 					
 					//버튼 파라메터 
 					item.put("BTN_NM", "정산서 보기");
-					//[TO-DO] URL 적용..(파라메터 적용)
-					item.put("BTN_URL", "");
+					
+					// short link 생성을 위한 출하주 정산서 url
+					StringBuffer sb = new StringBuffer();
+					if ("production".equals(serverType)) {
+						sb.append("https://www.xn--o39an74b9ldx9g.kr/state-acc/fhs/");
+					}
+					else {
+						sb.append("http://adv-www.xn--e20bw05b.co.kr/state-acc/fhs/");
+					}
+					sb.append(item.get("NA_BZPLC"));
+					sb.append('/');
+					sb.append(item.get("AUC_DT"));
+					sb.append('/');
+					sb.append(item.get("FHS_ID_NO"));
+					sb.append('_');
+					sb.append(item.get("FARM_AMNNO"));
+					
+					item.put("BTN_URL", restApiJsonController.createShortLink(sb.toString()));
 					
 					item.put("MSG_CNTN", alarmForm.makeAlarmMsgCntn(item, tempMap.get("TALK_CONTENT").toString()));	
 					item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
+					item.put("KAKAO_TPL_C", templateId);
 				}
 				
 			} else {
@@ -146,6 +184,7 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 							tempMap = lalm0840Mapper.LALM0840_selInfo(map);
 							item.put("MSG_CNTN", alarmForm.makeAlarmMsgCntn(item, tempMap.get("TALK_CONTENT").toString()));	
 							item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
+							item.put("KAKAO_TPL_C", templateId);
 							
 						}else if("03".equals(map.get("msg_gbn"))) {
 							//경매후 - 최고,최저
@@ -170,6 +209,7 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 							tempMap = lalm0840Mapper.LALM0840_selInfo(map);
 							item.put("MSG_CNTN", alarmForm.makeAlarmMsgCntn(item, tempMap.get("TALK_CONTENT").toString()));	
 							item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
+							item.put("KAKAO_TPL_C", templateId);
 						}
 					}else {
 						if("01".equals(map.get("msg_gbn"))) {

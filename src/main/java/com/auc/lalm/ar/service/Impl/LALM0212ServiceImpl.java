@@ -145,4 +145,18 @@ public class LALM0212ServiceImpl implements LALM0212Service{
 		
 	}
 	
+	@Override
+	public Map<String, Object> LALM0212_updCommit(Map<String, Object> map) throws Exception{
+		
+		Map<String, Object> reMap = new HashMap<String, Object>();		
+		int updateNum = 0;
+
+		updateNum = lalm0212Mapper.LALM0212_updCommit(map);		
+		lalm0212Mapper.LALM0212_updLogPgmSel(map);
+		reMap.put("updateNum", updateNum);		
+
+		return reMap;		
+	}
+	
+	
 }

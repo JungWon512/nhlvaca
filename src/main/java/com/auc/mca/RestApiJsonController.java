@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,7 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.http.HttpHeaders;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.apache.http.HttpStatus;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -24,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import com.auc.common.exception.CusException;
 import com.auc.common.exception.ErrorCode;
@@ -338,7 +345,7 @@ public class RestApiJsonController {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> createShortLink (final Map<String, Object> params) throws CusException, IOException {
+	public Map<String, Object> createShortLinkMap (final Map<String, Object> params) throws CusException, IOException {
 		Map<String, Object> rtnMap = new HashMap<String, Object>();
 		
 		String makeUrl = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyCE1O0S6Kzz4GQKIShVIiL9Nuuwpa2vHUY";
@@ -346,8 +353,8 @@ public class RestApiJsonController {
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
 		
 		try {
-			
 			final String link = ObjectUtils.isEmpty(params.get("TARGET_LINK")) ? "https://www.xn--o39an74b9ldx9g.kr" : params.get("TARGET_LINK").toString();
+			
 			final StringBuffer dynamicLink = new StringBuffer();
 			dynamicLink.append("https://nhauction.page.link/?link=https://nhauction.page.link/dp");		// 고정
 			dynamicLink.append("?urlParam=");					
@@ -401,16 +408,130 @@ public class RestApiJsonController {
 			logger.debug("REST API END"); 
 		}
 		catch (RuntimeException e) {
-			throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+			logger.error(e.getMessage());
 		}
 		catch (Exception e) {
-			logger.debug(e.getMessage());
-			throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");
+			logger.error(e.getMessage());
 		}
 		finally {
 			if (con!= null) con.disconnect();
 		}
 		return rtnMap;
+	}
+	/**
+	 * 
+	 * DynamicLink 생성
+	 * @param params
+	 * @return
+	 * @throws CusException
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unchecked")
+	public String createShortLink (final String targetLink) throws CusException, IOException {
+		Map<String, Object> rtnMap = new HashMap<String, Object>();
+		
+		String makeUrl = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyCE1O0S6Kzz4GQKIShVIiL9Nuuwpa2vHUY";
+		URL url = new URL(makeUrl);
+		HttpURLConnection con = null;
+		String shortLink = "";
+
+		try {
+			HostnameVerifier hv = new HostnameVerifier() {
+				@Override
+				public boolean verify(String arg0, SSLSession arg1) {
+					return true;
+				}
+			};
+			TrustManager[] trustAllCerts = new TrustManager[] {
+				new X509TrustManager() {
+					@Override
+					public X509Certificate[] getAcceptedIssuers() {
+						return null;
+					}
+					
+					@Override
+					public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {return;}
+					
+					@Override
+					public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {return;}
+				}
+			};
+			
+			SSLContext sc = SSLContext.getInstance("SSL");
+			sc.init(null, trustAllCerts, new SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+			HttpsURLConnection.setDefaultHostnameVerifier(hv);
+			
+			con = (HttpURLConnection) url.openConnection();
+			
+			final StringBuffer dynamicLink = new StringBuffer();
+			dynamicLink.append("https://nhauction.page.link/?link=https://nhauction.page.link/dp");		// 고정
+			dynamicLink.append("?urlParam=");					
+			dynamicLink.append(URLEncoder.encode(targetLink, "UTF-8"));		// 이동할 링크 url ( URL Encodin 필요 )
+			dynamicLink.append("&ofl=");						
+			dynamicLink.append(URLEncoder.encode(targetLink, "UTF-8"));		// 안드로이드, IOS외의 플랫폼에서 사용 할 링크 url ( URL Encodin 필요 )
+			dynamicLink.append("&apn=com.nh.cowauction");					// 링크를 여는 데 사용할 Android 앱의 패키지 이름
+			dynamicLink.append("&ibi=com.nh.cow.auction");					// 링크를 여는 데 사용할 iOS 앱의 번들 ID
+			dynamicLink.append("&isi=1588847718");							// 앱이 설치되지 않았을 때 사용자를 App Store로 보내는 데 사용되는 앱의 App Store ID
+			dynamicLink.append("&efr=1");									// Dynamic Link가 열렸을 때 앱 미리보기 페이지를 건너뛰고 대신 앱이나 스토어로 리디렉션(IOS)
+			dynamicLink.append("&st=NH 가축시장");							// Dynamic Link를 공유할 때 사용할 제목
+			dynamicLink.append("&sd=간편하고 스마트하게 경매하는 방법");	// Dynamic Link를 공유할 때 사용할 설명
+			dynamicLink.append("&si=https://www.xn--o39an74b9ldx9g.kr/static/images/guide/new_mo_banner.jpg");	// 링크와 관련된 이미지의 URL( 300X200 이상, 300KB 미만 )
+			
+			final JSONObject jsonObject = new JSONObject();
+			jsonObject.put("longDynamicLink", dynamicLink.toString());
+			byte[] sendData = jsonObject.toString().getBytes("UTF-8");
+			
+			con.setDoOutput(true);
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Cache-Control", "no-cache");
+			con.setRequestProperty("Pragma", "no-cache");
+			con.setRequestProperty("Content-Type", "application/json");
+			con.setRequestProperty("Accept-Charset", "UTF-8");
+			con.setRequestProperty("Content-Length", String.valueOf(sendData.length));
+			con.setConnectTimeout(1000);//서버 접속시 연결시간
+			con.setReadTimeout(5000);//Read시 연결시간
+			con.getOutputStream().write(sendData);
+			con.getOutputStream().flush();
+			con.connect();
+			
+			int responseCode = con.getResponseCode();
+			String responseMessage = con.getResponseMessage();
+			
+			logger.debug("REST API responseCode : " + responseCode);
+			logger.debug("REST API responseMessage : " + responseMessage);
+			
+			if(con.getResponseCode() == HttpStatus.SC_OK) {
+				StringBuffer sb = new StringBuffer();
+				BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+				for(String line; (line = reader.readLine()) != null;)
+				{
+					sb.append(line).append("\n");
+				}
+				responseBody = sb.toString();
+				Gson gson = new Gson();
+				rtnMap = gson.fromJson(responseBody, rtnMap.getClass());
+			}
+			
+			shortLink = rtnMap.getOrDefault("shortLink", targetLink).toString();
+			
+			con.disconnect();
+			logger.debug("REST API END"); 
+		}
+		catch (RuntimeException e) {
+			logger.error(e.getMessage());
+			return targetLink;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			logger.error(e.getMessage());
+			return targetLink;
+		}
+		finally {
+			if (con!= null) con.disconnect();
+		}
+		
+		return shortLink;
 	}
 	
 }

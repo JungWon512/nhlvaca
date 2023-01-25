@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.auc.common.config.ConvertConfig;
 import com.auc.common.exception.CusException;
 import com.auc.common.exception.ErrorCode;
 import com.auc.common.filter.JwtRequestFilter;
@@ -40,6 +41,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 	CommonService commonService;	
 	@Autowired
 	McaUtil mcaUtil;
+	@Autowired
+	ConvertConfig convertConfig;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -75,7 +78,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 		
 		int insertNum = 0;
 		int updateNum = 0;
-		
+		int errCnt=0;
+		StringBuilder sb = new StringBuilder();
 		for(Map<String, Object> map : list) {
 			map.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
 			map.put("ss_userid", inMap.get("ss_userid"));
@@ -111,6 +115,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 		
 		reMap.put("insertNum", insertNum);
 		reMap.put("updateNum", updateNum);
+		reMap.put("errCnt", errCnt);
+		reMap.put("message", sb.toString());
 		
 		return reMap;
 	}
@@ -155,6 +161,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 			result.put("RMK_CNTN", map.get("rmk_cntn"));
 			result.put("DNA_YN_CHK", map.get("dna_yn_chk"));
 			result.put("DNA_YN", map.get("dna_yn"));
+			result.put("SRA_INDV_AMNNO", map.get("sra_indv_amnno"));
 			
 			/* s: 개체정보 / 농가정보 동기화 */
 			List<Map<String, Object>> indvList = lalm0221PMapper.LALM0221P_selList(map);
@@ -202,11 +209,14 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						Iterator<String> keys = dataMap.keySet().iterator();
 						while(keys.hasNext()) {
 							String key = keys.next();
-							Demap.put(key, map.get(key).toString().trim());
+							String value = "";
+							if(dataMap.get(key) != null) value = dataMap.get(key).toString().trim(); 
+							log.debug("inf 4700 obj : "+key+" : "+value);
+							Demap.put(key.toLowerCase(), value);
 						}
 
-						if(!dataMap.get("sra_farm_fzip").equals("") || !dataMap.get("sra_farm_rzip").equals("")) {
-							tmpZip = dataMap.get("sra_farm_fzip") + "-" + dataMap.get("sra_farm_rzip");
+						if(!Demap.get("sra_farm_fzip").equals("") || !Demap.get("sra_farm_rzip").equals("")) {
+							tmpZip = Demap.get("sra_farm_fzip") + "-" + Demap.get("sra_farm_rzip");
 						}
 						if(!Demap.get("sra_farm_amn_atel").equals("") || !Demap.get("sra_farm_amn_htel").equals("") || !Demap.get("sra_farm_amn_stel").equals("")) {
 							tmpTelno = Demap.get("sra_farm_amn_atel") + "-" + Demap.get("sra_farm_amn_htel") + "-" + Demap.get("sra_farm_amn_stel");
@@ -214,7 +224,9 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						if(!Demap.get("sra_fhs_rep_mpsvno").equals("") || !Demap.get("sra_fhs_rep_mphno").equals("") || !Demap.get("sra_fhs_rep_mpsqno").equals("")) {
 							tmpMpno = Demap.get("sra_fhs_rep_mpsvno") + "-" + Demap.get("sra_fhs_rep_mphno") + "-" + Demap.get("sra_fhs_rep_mpsqno");
 						}
-						
+
+						Demap.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
+						Demap.put("ss_usrid", inMap.get("ss_usrid"));
 						Demap.put("zip", tmpZip);
 						Demap.put("telno", tmpTelno);
 						Demap.put("mpno", tmpMpno);
@@ -258,6 +270,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 								
 				}catch(Exception e) {
 					log.debug("개체 인터페이스[4700] 연동중 error..",e);
+					result.put("CHK_VAILD_ERR", "1");
 					result.put("CHK_IF_SRA_INDV", "0");		
 					result.put("CHK_IF_FHS", "0");
 				}
@@ -279,21 +292,92 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 
 				/* s: 분만정보 */
 				try {
-					
+					result.put("MCOW_SRA_INDV_EART_NO", map.get("sra_indv_amnno"));
 					Map<String, Object> infBhPturMap = mcaUtil.tradeMcaMsg("2300", result);
-					Map<String, Object> infBhPturJsonData = (Map<String, Object>) infBhPturMap.get("jsonData");		
+					Map<String, Object> infBhPturJsonData = (Map<String, Object>) infBhPturMap.get("jsonData");	
+					List<Map<String, Object>> infBhPturRptData = (List<Map<String, Object>>) infBhPturJsonData.get("RPT_DATA");
+					if(infBhPturRptData != null && !infBhPturRptData.isEmpty()) {
+						Map<String,Object> tempMap = new HashMap<>();
+						tempMap.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
+						tempMap.put("ss_usrid", inMap.get("ss_usrid"));
+						tempMap.put("p_sra_indv_amnno", map.get("sra_indv_amnno"));
+						lalm0222PMapper.LALM0222P_delChildbirthInf(tempMap);
+						for(Map<String, Object> bhPturMap : infBhPturRptData) {
+							//tempMap.putAll(bhPturMap);
+							bhPturMap = convertConfig.changeKeyLower(bhPturMap);
+							bhPturMap.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
+							bhPturMap.put("ss_usrid", inMap.get("ss_usrid"));
+							bhPturMap.put("p_sra_indv_amnno", map.get("sra_indv_amnno"));
+							Iterator<String> keys = bhPturMap.keySet().iterator();
+							while(keys.hasNext()) {
+								String key = keys.next();
+								String value = "";
+								if(bhPturMap.get(key) != null) value = bhPturMap.get(key).toString().trim();
+								log.debug("분만 정보 : {}", key+" ::: "+value);
+								//tempMap.put(key.toLowerCase(), value);
+							}
+							insertNum += lalm0222PMapper.LALM0222P_insChildbirthInf(bhPturMap);				
+						}	
+					}
 					//TO-DO : 분만정보 INSERT
 				}catch (Exception e) {
+					result.put("CHK_VAILD_ERR", "1");
 					log.debug("분만정보[2300] 연동중 error..",e);
 				}
 				/* e: 분만정보 */
+
+
+				/* s: 교배정보 */
+				try {
+					result.put("MCOW_SRA_INDV_EART_NO", map.get("sra_indv_amnno"));					
+					Map<String, Object> infbhCrossMap = mcaUtil.tradeMcaMsg("2400", result);
+					Map<String, Object> infbhCrossJsonData = (Map<String, Object>) infbhCrossMap.get("jsonData");	
+					List<Map<String, Object>> infbhCrossRptData = (List<Map<String, Object>>) infbhCrossJsonData.get("RPT_DATA");
+					if(infbhCrossRptData != null && !infbhCrossRptData.isEmpty()) {
+						Map<String,Object> tempMap = new HashMap<>();
+						tempMap.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
+						tempMap.put("ss_usrid", inMap.get("ss_usrid"));
+						tempMap.put("p_sra_indv_amnno", map.get("sra_indv_amnno"));
+						lalm0222PMapper.LALM0222P_delMatingInf(tempMap);					
+						for(Map<String, Object> bhCrossMap : infbhCrossRptData) {
+							bhCrossMap = convertConfig.changeKeyLower(bhCrossMap);
+							bhCrossMap.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
+							bhCrossMap.put("ss_usrid", inMap.get("ss_usrid"));
+							bhCrossMap.put("p_sra_indv_amnno", map.get("sra_indv_amnno"));
+							insertNum += lalm0222PMapper.LALM0222P_insMatingInf(bhCrossMap);		
+						}	
+					}
+				}catch (Exception e) {
+					result.put("CHK_VAILD_ERR", "1");
+					log.debug("교배정보[2300] 연동중 error..",e);
+				}
+				/* e: 교배정보 */
 
 				/* s: 후대정보 */
 				try {
 					Map<String, Object> infPostIndvMap = mcaUtil.tradeMcaMsg("4900", result);
 					Map<String, Object> infPostIndvJsonData = (Map<String, Object>) infPostIndvMap.get("jsonData");
-					//TO-DO : 후대정보 INSERT
+					List<Map<String, Object>> infPostIndvRptData = (List<Map<String, Object>>) infPostIndvJsonData.get("RPT_DATA");
+					if(infPostIndvRptData != null && !infPostIndvRptData.isEmpty()) {
+						for(Map<String, Object> indvData : infPostIndvRptData) {
+							Map<String, Object> tempMap = new HashMap<String, Object>();
+							Iterator<String> keys = indvData.keySet().iterator();
+							while(keys.hasNext()) {
+								String key = keys.next();
+								String value = "";
+								if(indvData.get(key) != null) value = indvData.get(key).toString().trim();
+								//log.debug("후대 정보 : {}", key+" ::: "+value);
+								tempMap.put(key.toLowerCase(), value);
+							}
+							tempMap.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
+							tempMap.put("ss_usrid", inMap.get("ss_usrid"));
+							tempMap.put("p_sra_indv_amnno", map.get("sra_indv_amnno"));
+							lalm0222PMapper.LALM0222P_delPostInf(tempMap);
+							insertNum += lalm0222PMapper.LALM0222P_insPostInf(tempMap);						
+						}
+					}
 				}catch (Exception e) {
+					result.put("CHK_VAILD_ERR", "1");
 					log.debug("후대정보 [4900] 연동중 error..",e);
 				}
 				/* e: 후대정보 */
@@ -302,52 +386,91 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				try {
 					Map<String, Object> infSipIndvMap = mcaUtil.tradeMcaMsg("4900", result);
 					Map<String, Object> infSipIndvJsonData = (Map<String, Object>) infSipIndvMap.get("jsonData");
-					//TO-DO : 형매정보 INSERT
+					List<Map<String, Object>> infSipIndvRptData = (List<Map<String, Object>>) infSipIndvJsonData.get("RPT_DATA");
+					if(infSipIndvRptData != null && !infSipIndvRptData.isEmpty()) {
+						for(Map<String, Object> sibIndvData : infSipIndvRptData) {
+							Map<String, Object> tempMap = new HashMap<String, Object>();
+							Iterator<String> keys = sibIndvData.keySet().iterator();
+							while(keys.hasNext()) {
+								String key = keys.next();
+								String value = "";
+								if(sibIndvData.get(key) != null) value = sibIndvData.get(key).toString().trim();
+								//log.debug("형대 정보 : {}", key+" ::: "+value);
+								tempMap.put(key.toLowerCase(), value);
+							}
+							tempMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
+							tempMap.put("ss_usrid", map.get("ss_usrid"));
+							tempMap.put("p_sra_indv_amnno", map.get("sra_indv_amnno"));
+							lalm0222PMapper.LALM0222P_delSibInf(tempMap);
+							insertNum += lalm0222PMapper.LALM0222P_insSibInf(tempMap);						
+						}
+					}
 				}catch (Exception e) {
+					result.put("CHK_VAILD_ERR", "1");
 					log.debug("형매정보 [4900] 연동중 error..",e);
 				}
 				/* e: 형매정보 */
 
 				/* s: OPEN API 연동 */
+
 				Map<String, Object> temp = new HashMap<String, Object>();
 				temp.put("trace_no", result.get("SRA_INDV_AMNNO"));
-				/* s: 이동정보 */
-
-				List<Map<String, Object>> moveList = mcaUtil.getOpenDataApiCattleMove(temp);
+				try {
+					List<Map<String, Object>> cattleMoveList = mcaUtil.getOpenDataApiCattleMove(temp);
+					if(cattleMoveList != null && !cattleMoveList.isEmpty()) {
+						if(cattleMoveList != null && !cattleMoveList.isEmpty()) {
+							lalm0222PMapper.LALM0222P_delCattleMvInf(inMap);
+							for(Map<String, Object> moveInfo : cattleMoveList) {
+								moveInfo.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
+								moveInfo.put("ss_usrid", inMap.get("ss_usrid"));
+								moveInfo.put("p_sra_indv_amnno", inMap.get("sra_indv_amnno"));
+								insertNum += lalm0222PMapper.LALM0222P_insCattleMvInf(moveInfo);				
+							}
+						}
+					}
+				}catch (Exception e) {
+					result.put("CHK_VAILD_ERR", "1");
+					log.debug("이동정보 [OPENAPI] 연동중 error..",e);
+				}
 				//TO-DO : 이동정보 INSERT
 				/* e: 이동정보 */
 				
 
 				/* s: 브루셀라 연동 */
-				Map<String, Object> infAnimalTraceMap = mcaUtil.getOpenDataApi(temp);    
-				if(infAnimalTraceMap != null && !infAnimalTraceMap.isEmpty()) {
-		        	String inspectDt = infAnimalTraceMap.getOrDefault("inspectDt","").toString().trim();
-					result.put("BRCL_ISP_DT", inspectDt);   
-		            // 브루셀라 접종결과 추후 추가 0:수기 1:음성 2:양성 9:미접종 brcl_isp_rzt_c
-		        	String inspectYn = infAnimalTraceMap.getOrDefault("inspectYn","").toString().trim();
-		            if("음성".equals(inspectYn)) {
-		            	//$("#brcl_isp_rzt_c").val("1");  
-						result.put("BRCL_ISP_RZT_C", "1");   
-		            } else if("양성".equals(inspectYn)) {
-						result.put("BRCL_ISP_RZT_C", "2");   
-		            } else {
-						result.put("BRCL_ISP_RZT_C", "0");   
-		            }                    
-		        	String tbcInspctYmd = infAnimalTraceMap.getOrDefault("tbcInspctYmd","").toString().trim();
-					result.put("BOVINE_DT", tbcInspctYmd);
-					
-					result.put("BOVINE_RSLTNM", infAnimalTraceMap.getOrDefault("tbcInspctRsltNm","").toString().trim());
-					
-					//result.put("injectiondayCnt", infAnimalTraceMap.getOrDefault("injectiondayCnt","").toString().trim());
-					result.put("VACN_DT", infAnimalTraceMap.getOrDefault("injectionYmd","").toString().trim());
-					result.put("VACN_ORDER", infAnimalTraceMap.getOrDefault("vaccineorder","").toString().trim());
-				}else {
-					result.put("VACN_DT", "");
-					result.put("VACN_ORDER", "");
-					result.put("BOVINE_DT", "");					
-					result.put("BOVINE_RSLTNM", "");
-					result.put("BRCL_ISP_RZT_C", "9");  
-					result.put("BRCL_ISP_DT", "");					
+				try {
+					Map<String, Object> infAnimalTraceMap = mcaUtil.getOpenDataApi(temp);    
+					if(infAnimalTraceMap != null && !infAnimalTraceMap.isEmpty()) {
+			        	String inspectDt = infAnimalTraceMap.getOrDefault("inspectDt","").toString().trim();
+						result.put("BRCL_ISP_DT", inspectDt);   
+			            // 브루셀라 접종결과 추후 추가 0:수기 1:음성 2:양성 9:미접종 brcl_isp_rzt_c
+			        	String inspectYn = infAnimalTraceMap.getOrDefault("inspectYn","").toString().trim();
+			            if("음성".equals(inspectYn)) {
+			            	//$("#brcl_isp_rzt_c").val("1");  
+							result.put("BRCL_ISP_RZT_C", "1");   
+			            } else if("양성".equals(inspectYn)) {
+							result.put("BRCL_ISP_RZT_C", "2");   
+			            } else {
+							result.put("BRCL_ISP_RZT_C", "0");   
+			            }                    
+			        	String tbcInspctYmd = infAnimalTraceMap.getOrDefault("tbcInspctYmd","").toString().trim();
+						result.put("BOVINE_DT", tbcInspctYmd);
+						
+						result.put("BOVINE_RSLTNM", infAnimalTraceMap.getOrDefault("tbcInspctRsltNm","").toString().trim());
+						
+						//result.put("injectiondayCnt", infAnimalTraceMap.getOrDefault("injectiondayCnt","").toString().trim());
+						result.put("VACN_DT", infAnimalTraceMap.getOrDefault("injectionYmd","").toString().trim());
+						result.put("VACN_ORDER", infAnimalTraceMap.getOrDefault("vaccineorder","").toString().trim());
+					}else {
+						result.put("VACN_DT", "");
+						result.put("VACN_ORDER", "");
+						result.put("BOVINE_DT", "");					
+						result.put("BOVINE_RSLTNM", "");
+						result.put("BRCL_ISP_RZT_C", "9");  
+						result.put("BRCL_ISP_DT", "");					
+					}
+				}catch (Exception e) {
+					result.put("CHK_VAILD_ERR", "1");
+					log.debug("브루셀라연동 [OPENAPI] 연동중 error..",e);
 				}
 				
 				/* e: 브루셀라 연동 */
@@ -369,6 +492,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						result.put("RE_PRODUCT_4_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());					
 					}					
 				}catch (Exception e) {
+					result.put("CHK_VAILD_ERR", "1");
 					log.debug("유전개체[4200] 연동중 error..",e);
 				}
 				
@@ -391,6 +515,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 							result.put("RE_PRODUCT_14_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());						
 						}						
 					}catch (Exception e) {
+						result.put("CHK_VAILD_ERR", "1");
 						log.debug("모 유전개체[4200] 연동중 error..",e);
 					}
 				}
@@ -400,8 +525,66 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 		}
 		
 		reMap.put("resultList", reList);
-		return reMap;
-		
+		return reMap;		
 	}
 
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> LALM0214P3_selSogCowVaild(Map<String, Object> inMap) throws Exception{
+		Map<String, Object> reMap = new HashMap<String, Object>();
+		List<Map<String, Object>> list = (List<Map<String, Object>>) inMap.get("list");
+		
+		int insertNum = 0;
+		int updateNum = 0;
+		int errCnt=0;
+		StringBuilder sb = new StringBuilder();
+		List<Map<String, Object>> reList = new ArrayList<Map<String, Object>>();
+		
+		for(Map<String, Object> map : list) {
+			Map<String,Object> temp = convertConfig.changeKeyUpper(map);
+			temp.put("CHK_VAILD_ERR", "0");
+			temp.put("CHK_ERR_SRA_INDV_AMNNO", "0");
+			temp.put("CHK_ERR_AUC_PRG_SQ", "0");
+			
+			map.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
+			map.put("ss_userid", inMap.get("ss_userid"));
+			map.put("auc_dt", inMap.get("auc_dt"));
+			map.put("auc_obj_dsc", inMap.get("auc_obj_dsc"));
+			map.put("re_indv_no", map.get("sra_indv_amnno"));
+			if(map.get("sra_indv_amnno") !=null && map.get("sra_indv_amnno").toString().length() <= 14) {
+				sb.append("<br/>귀표번호("+map.get("sra_indv_amnno")+") 자릿수를 확인 바랍니다.");
+				errCnt++;
+				temp.put("CHK_VAILD_ERR", "1");
+				temp.put("CHK_ERR_SRA_INDV_AMNNO", "1");
+				//throw new CusException(ErrorCode.CUSTOM_ERROR,"중복된 경매번호("+map.get("auc_prg_sq")+")가 있습니다. 경매번호를 확인 바랍니다.");
+			}
+			
+			List<Map<String, Object>> aucPrgList = lalm0215Mapper.LALM0215_selAucPrg(map);			
+			if(aucPrgList.size() > 0) {
+				sb.append("<br/>중복된 경매번호("+map.get("auc_prg_sq")+")가 있습니다. 경매번호를 확인 바랍니다.");
+				errCnt++;
+				temp.put("CHK_VAILD_ERR", "1");
+				temp.put("CHK_ERR_AUC_PRG_SQ", "1");
+				//throw new CusException(ErrorCode.CUSTOM_ERROR,"중복된 경매번호("+map.get("auc_prg_sq")+")가 있습니다. 경매번호를 확인 바랍니다.");
+			}
+			//귀표번호 체크
+			List<Map<String, Object>> indvAmnnoList = lalm0215Mapper.LALM0215_selIndvAmnno(map);			
+			if(indvAmnnoList.size() > 0) {
+				sb.append("<br/>동일한 경매일자에 동일한 귀표번호("+map.get("sra_indv_amnno")+")는 등록할수 없습니다.");
+				errCnt++;
+				temp.put("CHK_VAILD_ERR", "1");
+				temp.put("CHK_ERR_SRA_INDV_AMNNO", "1");
+				//throw new CusException(ErrorCode.CUSTOM_ERROR,"동일한 경매일자에 동일한 귀표번호("+map.get("sra_indv_amnno")+")는 등록할수 없습니다.");
+			}
+
+			reList.add(temp);
+		}
+		
+		reMap.put("errCnt", errCnt);
+		reMap.put("message", sb.toString());
+		reMap.put("resultList", reList);
+		
+		return reMap;
+	}
 }

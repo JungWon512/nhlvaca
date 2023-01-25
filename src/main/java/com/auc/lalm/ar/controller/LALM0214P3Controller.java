@@ -59,6 +59,20 @@ public class LALM0214P3Controller {
 	
 	@SuppressWarnings("unchecked")
 	@ResponseBody
+	@RequestMapping(value="/LALM0214P3_selSogCowVaild", method=RequestMethod.POST)
+	public Map<String, Object> LALM0214P3_selSogCowVaild(ResolverMap rMap) throws Exception{				
+				
+		Map<String, Object> map   	= convertConfig.conMapWithoutXxs(rMap);
+		
+		Map<String, Object> inMap = lalm0214P3Service.LALM0214P3_selSogCowVaild(map);
+		Map<String, Object> reMap = commonFunc.createResultSetListData((List<Map<String, Object>>)inMap.get("resultList"));
+		
+		return reMap;
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@ResponseBody
 	@RequestMapping(value="/LALM0214P3_selIndvSync", method=RequestMethod.POST)
 	public Map<String, Object> LALM0214P3_selIndvSync(ResolverMap rMap) throws Exception{				
 				

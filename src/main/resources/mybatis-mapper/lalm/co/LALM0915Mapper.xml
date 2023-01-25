@@ -33,18 +33,21 @@
            AND ROWNUM = 1
     </select>
     
+    <select id="LALM0915_selJoinBzPlcInfo" resultType="HashMap">
+    	SELECT US.NA_BZPLC
+		    , US.USRID
+		    , US.USRNM
+		    , US.MPNO
+		    , WMC.BRC AS ADJ_BRC
+		    , BZ.CLNTNM
+		    , BZ.TEL_NO
+		FROM TB_LA_IS_MM_USR US
+		 	INNER JOIN TB_LA_IS_BM_BZLOC BZ
+		 	ON(US.NA_BZPLC = BZ.NA_BZPLC)
+		 	INNER JOIN TB_LA_IS_MM_WMC WMC
+		 	ON(US.NA_BZPLC = WMC.NA_BZPLC)
+		 WHERE USRID = 	#{usrid}
+		 	AND USRNM = #{usrnm}
+		 	AND MPNO = #{mpno}
+    </select>
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
-
-

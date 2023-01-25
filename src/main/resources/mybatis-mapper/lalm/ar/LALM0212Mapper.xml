@@ -26,6 +26,7 @@
 	        , A.FSRGMN_ENO                  	/* 최종변경자개인번호		*/
 	        , A.LSCHG_DTM                   	/* 수송아지(KG) 단가	*/
 	        , A.LS_CMENO	                  	/* 암송아지(KG) 단가	*/
+	        , A.COMMIT_YN
 	    FROM  TB_LA_IS_MH_AUC_QCN A
 	    LEFT JOIN TB_LA_IS_BM_BZLOC B ON A.NA_BZPLC = B.NA_BZPLC
 	   WHERE 1 = 1
@@ -141,6 +142,7 @@
             , LS_CMENO                                	/* 최종변경자개인번호		*/
             , MALE_KG                                 	/* 수송아지(KG) 단가	*/
             , FEMALE_KG                               	/* 암송아지(KG) 단가	*/
+            , COMMIT_YN
         )VALUES(
               #{ss_na_bzplc}                       		/* 경제통합사업장코드		*/
             , #{hd_auc_obj_dsc}             			/* 경매대상구분코드		*/
@@ -160,8 +162,16 @@
             , #{ss_userid}                             	/* 최종변경자개인번호		*/
             , #{female_kg}	                 			/* 수송아지(KG) 단가	*/
             , #{male_kg}               					/* 암송아지(KG) 단가	*/
-        )
     ]]>
+    		<choose>
+	            <when test="'8808990659701'.equals(ss_na_bzplc)">
+	            , '0'
+	            </when>
+	            <otherwise>
+	            , '1'
+	            </otherwise>
+    		</choose>
+        )
     </insert>
     
     <insert id="LALM0212_insLogPgm">
@@ -187,6 +197,7 @@
             , FEMALE_KG                               	/* 암송아지(KG) 단가	*/
             , STATS                                   	/* 사용자등록			*/
             , IP                                      	/* 등록PC IP			*/
+            , COMMIT_YN
         )VALUES(
               #{ss_na_bzplc}                       		/* 경제통합사업장코드		*/
             , #{hd_auc_obj_dsc}             			/* 경매대상구분코드		*/
@@ -208,8 +219,16 @@
             , #{male_kg}               					/* 암송아지(KG) 단가	*/
             , 'UI'                                    	/* 사용자등록			*/
             , ''										/* 등록PC IP			*/
-        )
     ]]>
+    		<choose>
+	            <when test="'8808990659701'.equals(ss_na_bzplc)">
+	            , '0'
+	            </when>
+	            <otherwise>
+	            , '1'
+	            </otherwise>
+    		</choose> 
+        )
     </insert>
     
     <update id="LALM0212_updInsPgm">
@@ -346,6 +365,69 @@
             , 'UD'                                    	/* 사용자등록			*/
             , ''										/* 등록PC IP			*/
         )
+    ]]>
+    </insert>
+    
+    <update id ="LALM0212_updCommit">
+    <![CDATA[
+         UPDATE TB_LA_IS_MH_AUC_QCN SET
+	          COMMIT_YN        = #{commit_yn}
+	        , LSCHG_DTM        = SYSDATE
+	        , LS_CMENO         = #{ss_userid}
+	    WHERE NA_BZPLC         = #{ss_na_bzplc}
+	      AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}
+	      AND AUC_DT           = #{auc_dt}
+    ]]>
+    </update>
+    
+    <insert id="LALM0212_updLogPgmSel">
+    <![CDATA[
+    	INSERT INTO TB_LA_IS_MH_AUC_QCN_LOG(
+              NA_BZPLC                                	/* 경제통합사업장코드		*/
+            , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
+            , AUC_DT                                  	/* 경매일자			*/
+            , QCN                                     	/* 차수				*/
+            , BASE_LMT_AM                             	/* 기초한도금액			*/
+            , CUT_AM                                  	/* 절사단위금액(비육우)	*/
+            , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
+            , DDL_YN                                  	/* 마감여부			*/
+            , TMS_YN                                  	/* 전송여부			*/
+            , DEL_YN                                  	/* 삭제여부			*/
+            , FSRG_DTM                                	/* 최종등록일시			*/
+            , FSRGMN_ENO                              	/* 최초등록자개인번호		*/
+            , LSCHG_DTM                               	/* 최종변경일시			*/
+            , LS_CMENO                                	/* 최종변경자개인번호		*/
+            , MALE_KG                                 	/* 수송아지(KG) 단가	*/
+            , FEMALE_KG                               	/* 암송아지(KG) 단가	*/
+            , STATS                                   	/* 사용자등록			*/
+            , IP                                      	/* 등록PC IP			*/
+            , COMMIT_YN
+        )
+        SELECT
+	          NA_BZPLC                                	/* 경제통합사업장코드		*/
+	        , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
+	        , AUC_DT                                  	/* 경매일자			*/
+	        , QCN                                     	/* 차수				*/
+	        , BASE_LMT_AM                             	/* 기초한도금액			*/
+	        , CUT_AM                                  	/* 절사단위금액(비육우)	*/
+	        , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
+	        , DDL_YN                                  	/* 마감여부			*/
+	        , TMS_YN                                  	/* 전송여부			*/
+	        , DEL_YN                                  	/* 삭제여부			*/
+	        , FSRG_DTM                                	/* 최종등록일시			*/
+	        , FSRGMN_ENO                              	/* 최초등록자개인번호		*/
+	        , LSCHG_DTM                               	/* 최종변경일시			*/
+            , '0212수정'                             		/* 최종변경자개인번호		*/
+            , MALE_KG                					/* 수송아지(KG) 단가	*/
+            , FEMALE_KG               					/* 암송아지(KG) 단가	*/
+            , 'UU'                                    	/* 사용자등록			*/
+            , ''										/* 등록PC IP			*/
+            , COMMIT_YN
+        FROM TB_LA_IS_MH_AUC_QCN
+        WHERE NA_BZPLC = #{ss_na_bzplc}
+        AND AUC_OBJ_DSC = #{hd_auc_obj_dsc}
+        AND AUC_DT = #{auc_dt}
+        AND QCN = #{qcn} 
     ]]>
     </insert>
     

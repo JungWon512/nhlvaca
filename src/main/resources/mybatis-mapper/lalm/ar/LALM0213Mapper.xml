@@ -182,13 +182,16 @@
     
     <select id="LALM0213_selBadCheck" resultType="hashMap">
     	/*LALM0213Mapper.LALM0213_selBadCheck_20221028_수정*/
-    	SELECT MB_INTG_NO
-    		, NVL(MIN(DECODE(NA_BZPLC, #{ss_na_bzplc}, AUC_PART_LIMIT_YN, '1')),'99') AS AUC_PART_LIMIT_YN	/*경매참여제한여부, 1:가능, 0:불가능, 99:불량미등록 중도매인*/
-		FROM TB_LA_IS_MM_BLACKLIST
-		WHERE MB_INTG_NO = #{mb_intg_no}
-			AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN REG_DATE AND LIMIT_DATE 
-			AND DEL_YN = '0'
-		GROUP BY MB_INTG_NO
+    		SELECT A.MB_INTG_NO
+					, MAX(B.CLNTNM) KEEP(DENSE_RANK LAST ORDER BY A.LSCHG_DTM) AS CLNTNM
+              		, NVL(MIN(DECODE(A.NA_BZPLC, #{ss_na_bzplc}, A.AUC_PART_LIMIT_YN, '1') ), '99') AS AUC_PART_LIMIT_YN /*경매참여제한여부, 1:가능, 0:불가능, 99:불량미등록 중도매인*/
+              		, (CASE WHEN COUNT(*)-1 = 0 THEN 0 ELSE COUNT(*)-1 END ) AS BLACK_CNT
+			FROM TB_LA_IS_MM_BLACKLIST A
+			INNER JOIN TB_LA_IS_BM_BZLOC B ON A.NA_BZPLC = B.NA_BZPLC
+		    WHERE A.MB_INTG_NO = #{mb_intg_no}
+				AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN A.REG_DATE AND A.LIMIT_DATE 
+				AND A.DEL_YN = '0'
+			GROUP BY A.MB_INTG_NO
     </select>
     
     <select id="LALM0213_selTrmnAmnNo" resultType="hashMap">

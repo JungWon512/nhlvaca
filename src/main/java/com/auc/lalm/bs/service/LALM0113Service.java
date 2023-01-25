@@ -17,4 +17,11 @@ public interface LALM0113Service {
 
 	Map<String, Object> LALM0113_selDetail(Map<String, Object> map) throws Exception;
 
+	/**
+	 * 중도매인 통합회원번호 삭제
+	 * @param map
+	 * @return
+	 */
+	Map<String, Object> LALM0113_delMbIntgNo(Map<String, Object> map);
+
 }
