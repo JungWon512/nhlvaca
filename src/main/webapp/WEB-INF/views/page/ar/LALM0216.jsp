@@ -692,11 +692,6 @@ var na_bzplc = App_na_bzplc;
             		 // ★전주김제: 8808990656441 전주김제 김제지점: 8808990766485
             		 } else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485') {
    	            		 grid4 = grid4.map((o,i)=>{	
-               				if(o.MTCN4 !='0'){
-   								o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';	            					
-               				}else{
-               					o.MTCN = o.MTCN+'개월';	            					
-               				}
    							if(o.CALF_SRA_INDV_AMNNO){
    								var tempSraNo = o.CALF_SRA_INDV_AMNNO.substr(3);
    								o.CALF_SRA_INDV_AMNNO = tempSraNo.substr(0,3)+'-'+tempSraNo.substr(3);									
@@ -725,11 +720,6 @@ var na_bzplc = App_na_bzplc;
             		 // ★남원 : 8808990227207
             		 } else if(na_bzplc == '8808990227207'){
 	            		 grid4 = grid4.map((o,i)=>{	
-            				if(o.MTCN4 !='0'){
-								o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';	            					
-            				}else{
-            					o.MTCN = '('+o.MTCN+'개월)';	            					
-            				}
 							if(o.CALF_SRA_INDV_AMNNO){
 								var tempSraNo = o.CALF_SRA_INDV_AMNNO.substr(3);
 								o.CALF_SRA_INDV_AMNNO = tempSraNo.substr(0,3)+'-'+tempSraNo.substr(3);									
@@ -746,7 +736,7 @@ var na_bzplc = App_na_bzplc;
             			 
             		 } else {
 	            		 grid4 = grid4.map((o,i)=>{	
-							o.MTCN = '('+o.MTCN+'개월)';
+							o.MTCN = '('+o.MTCN+')';
 							return o;
 						}); 
             			 ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -949,12 +939,7 @@ var na_bzplc = App_na_bzplc;
             			 ReportPopup('LALM0216R3_112',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             		 } else if(na_bzplc == '8808990227207'){
-	            		 grid4 = grid4.map((o,i)=>{	
-							if(o.MTCN4 !='0'){
-								o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';								
-							}else{
-								o.MTCN = '('+o.MTCN+'개월)';
-							}
+	            		 grid4 = grid4.map((o,i)=>{
 							if(o.RG_DSC == '미등록우'){
 								o.RG_DSC = '';
 							}
@@ -967,7 +952,7 @@ var na_bzplc = App_na_bzplc;
              			 
              		 }else {
 	            		 grid4 = grid4.map((o,i)=>{	
-							o.MTCN = '('+o.MTCN+'개월)';
+							o.MTCN = '('+o.MTCN+')';
 							return o;
 						 }); 
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1149,11 +1134,6 @@ var na_bzplc = App_na_bzplc;
              		 // ★전주김제: 8808990656441 전주김제 김제지점: 8808990766485 
              		 } else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485') {
 	   	            		 grid4 = grid4.map((o,i)=>{	
-	               				if(o.MTCN4 !='0'){
-	   								o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';	            					
-	               				}else{
-	               					o.MTCN = o.MTCN+'개월';	            					
-	               				}
 	   							if(o.CALF_SRA_INDV_AMNNO){
 	   								var tempSraNo = o.CALF_SRA_INDV_AMNNO.substr(3);
 	   								o.CALF_SRA_INDV_AMNNO = tempSraNo.substr(0,3)+'-'+tempSraNo.substr(3);									
@@ -1234,7 +1214,7 @@ var na_bzplc = App_na_bzplc;
             		 
              		 } else {
 	            		 grid4 = grid4.map((o,i)=>{
-							o.MTCN = '('+o.MTCN+'개월)';
+							o.MTCN = '('+o.MTCN+')';
 							return o;
 						 }); 
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1326,14 +1306,6 @@ var na_bzplc = App_na_bzplc;
              		 
              		 // ★창녕 8808990656274
              		 } else if(na_bzplc == '8808990656274') {
-             			grid4 = grid4.map((o,i)=>{	
-							if(o.MTCN4 !='0'){
-								o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';								
-							}else{
-								o.MTCN = '('+o.MTCN+'개월)';
-							}
-							return o;
-						 }); 
              			 
              			ReportPopup('LALM0216R3_102',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
@@ -2085,6 +2057,11 @@ var na_bzplc = App_na_bzplc;
 		}
 		var index = 0;
 		$('#'+frmId).getRowData().forEach((o,i)=>{
+			if(o.MTCN4 !='0'){
+				o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';	            					
+			}else{
+				o.MTCN = o.MTCN+'개월';	            					
+			}
 			if(o.SRA_INDV_PASG_QCN == '0'){
 				o.SRA_INDV_PASG_QCN = '';
 			}
