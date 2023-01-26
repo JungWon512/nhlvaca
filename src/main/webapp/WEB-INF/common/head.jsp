@@ -1715,6 +1715,7 @@ function fn_ExcelDownlad(gid, p_title, p_footer){
 		   localStorage.setItem("nhlvaca_token", getCookie('token'));    
 	       var filename = title;
 	       var disposition = xhr.getResponseHeader('Content-Disposition');
+	       disposition = fn_XXSEncode(disposition);
 	       if(disposition && disposition.indexOf("attachment") !== -1){
 	           var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
 	           var matches       = filenameRegex.exec(disposition);
@@ -1729,6 +1730,7 @@ function fn_ExcelDownlad(gid, p_title, p_footer){
 	               }else{
 	                  var downloadLink = window.document.createElement('a');
 	                  var contentTypeHeader = xhr.getResponseHeader("Content-Type");
+					  contentTypeHeader = fn_XXSEncode(contentTypeHeader);
 	                  downloadLink.href = window.URL.createObjectURL(new Blob([blob], {type:contentTypeHeader}));
 	                  downloadLink.download = filename;
 	                  document.body.appendChild(downloadLink);
@@ -1781,6 +1783,7 @@ function fn_fileDownlad(p_title){
            
         var filename = p_title;
         var disposition = xhr.getResponseHeader('Content-Disposition');
+        disposition = fn_XXSEncode(disposition);
         if(disposition && disposition.indexOf("attachment") !== -1){
             var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
             var matches       = filenameRegex.exec(disposition);
@@ -1795,6 +1798,7 @@ function fn_fileDownlad(p_title){
                 }else{
                    var downloadLink = window.document.createElement('a');
                    var contentTypeHeader = xhr.getResponseHeader("Content-Type");
+				   contentTypeHeader = fn_XXSEncode(contentTypeHeader);
                    downloadLink.href = window.URL.createObjectURL(new Blob([blob], {type:contentTypeHeader}));
                    downloadLink.download = filename;
                    document.body.appendChild(downloadLink);
@@ -1807,7 +1811,6 @@ function fn_fileDownlad(p_title){
                    
     xhr.send(param);
 }
-
 //**************************************
 //function  : fn_contrChBox(달력 초기값 셋팅) 
 //paramater : p_bool(체크여부), p_param(체크박스명칭), p_param_text(체크박스텍스트여부), p_param_val(체크박스 Value), p_param_textVal(텍스트에 들어갈 내용) 
@@ -1986,6 +1989,25 @@ function fn_xxsDecode(p_str){
     }else{
     	return p_str;
     }
+}
+
+function fn_XXSEncode(p_str){
+	var result = "";
+	if(p_str != null && typeof p_str == 'string' && p_str != ""){
+		result = p_str;
+		result = result.replace("&", "/&amp");
+		result = result.replace("#", "/&#35");
+		result = result.replace("<", "/&lt");
+		result = result.replace(">", "/&gt");
+		result = result.replace("(", "/&#40");
+		result = result.replace(")", "/&#41");
+		result = result.replace("\"", "/&quot");
+		result = result.replace("'", "/&#x27");
+		return result;
+	}
+	else{
+		return p_str;
+	}
 }
 
 </script>

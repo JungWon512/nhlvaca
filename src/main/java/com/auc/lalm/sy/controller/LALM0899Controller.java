@@ -395,8 +395,8 @@ public class LALM0899Controller {
 			return reMap;
 		}else if("4000".equals((String)map.get("ctgrm_cd"))) {
 			selMap = lalm0899Service.LALM0899_selMca4000(map);
-			Map<String, Object> dataMap = null;
-			if(Integer.parseInt((String)selMap.get("INQ_CN")) > 0) {		
+			Map<String, Object> dataMap = new HashMap<String, Object>();
+			if(Integer.parseInt((String)selMap.get("INQ_CN")) > 0) {
 				
 				Map<String, Object> tmsMap = new HashMap<String, Object>();
 								
@@ -419,25 +419,30 @@ public class LALM0899Controller {
 						tmsCnt = tmsCnt + 50;
 					}
 				}
-				dataMap = (Map<String, Object>) mcaMap.get("jsonData");
-			}else {
-				dataMap = new HashMap<String, Object>();
+				if(mcaMap != null) {
+					dataMap = (Map<String, Object>) mcaMap.get("jsonData");					
+				}
 			}
+			
 			reMap = commonFunc.createResultSetMapData(dataMap);
 			return reMap;
 			
 		//개체이력 농가 조회 수신
 		}else if("4100".equals((String)map.get("ctgrm_cd"))) {
 			mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), map);
-			Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");
-			List<Map<String, Object>> rpt_data = (List<Map<String, Object>>) dataMap.get("RPT_DATA");
-			List<Map<String, Object>> dataList = null;			
-			if(rpt_data != null && !rpt_data.isEmpty()) {
-				dataList = (List<Map<String, Object>>) dataMap.get("RPT_DATA");
-			}else {
-				dataList = new ArrayList<Map<String, Object>>();
-			}
-			reMap = commonFunc.createResultSetListData(dataList); 			
+			if(mcaMap != null) {
+				Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");
+				if(dataMap != null) {
+					List<Map<String, Object>> rpt_data = (List<Map<String, Object>>) dataMap.get("RPT_DATA");
+					List<Map<String, Object>> dataList = null;			
+					if(rpt_data != null && !rpt_data.isEmpty()) {
+						dataList = (List<Map<String, Object>>) dataMap.get("RPT_DATA");
+					}else {
+						dataList = new ArrayList<Map<String, Object>>();
+					}					
+					reMap = commonFunc.createResultSetListData(dataList);
+				}
+			} 			
 			return reMap;	
 		}else if("4200".equals((String)map.get("ctgrm_cd")) || "4300".equals((String)map.get("ctgrm_cd")) || "4500".equals((String)map.get("ctgrm_cd"))) {
 			mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), map);

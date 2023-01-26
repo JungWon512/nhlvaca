@@ -133,6 +133,13 @@
     	var eng = pw.search(/[a-z]/ig);
     	//var spe = pw.search(/['-!@@#$%^&*|\\\'\";:\/?]/gi);
     	 
+    	if(!$( "#io_old_pw" ).attr('disabled') && !$( "#io_old_pw" ).val()){    	
+    		MessagePopup('OK','기존 비밀번호를 입력하세요.',function(){
+                $( "#io_old_pw" ).focus();
+            });
+            return;
+    	}
+    	 
     	if(pw.length < 8 || pw.length > 20){
     		MessagePopup('OK','비밀번호는 8자리 이상 20자리 이내로 입력하세요.',function(){
                 $( "#io_new_pw" ).focus();
@@ -151,6 +158,13 @@
     	}
     	if(pw != $('#cnf_pw').val()){
             MessagePopup('OK','새 비밀번호가 비밀번호 확인란과 불일치 합니다.',function(){
+                $( "#io_new_pw" ).focus();
+            });
+            return;
+        }
+        
+    	if(pw == $('#io_old_pw').val()){
+            MessagePopup('OK','새 비밀번호가 혅재 비밀번호와 일치 합니다.',function(){
                 $( "#io_new_pw" ).focus();
             });
             return;

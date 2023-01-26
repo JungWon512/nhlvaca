@@ -1,5 +1,6 @@
 package com.auc.lalm.co.controller;
 
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class LALM0915Controller {
 		Map<String, Object> map = mapper.readValue(rMap.get("data").toString(), HashMap.class);
 
 		/* 난수발생 */
-		Random r = new Random();
+		Random r = SecureRandom.getInstance("SHA1PRNG");
         r.setSeed(new Date().getTime());        
         String attc_no = ""+ 
         Integer.toHexString(r.nextInt(15)) + 

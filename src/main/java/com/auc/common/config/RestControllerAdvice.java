@@ -3,6 +3,7 @@ package com.auc.common.config;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,7 +59,11 @@ public class RestControllerAdvice<T> implements ResponseBodyAdvice<T> {
 	                String dataPrcDsc = "";
 	                if("sel".equals(arr[1].substring(0,3)) ) {
 	                	dataPrcDsc = "S";
-	        			String param = criptoConfig.decrypt(hsr.getParameter("data"));
+	                	String data = hsr.getParameter("data");
+	                	String param = "";
+	                	if(data != null) {
+		        			param = criptoConfig.decrypt(data);	                		
+	                	}
 	        			
 		    			Map<String, Object> inMap = new HashMap<>();
 		    			inMap.put("ss_na_bzplc", temp.get("ss_bzplc"));
@@ -71,8 +76,9 @@ public class RestControllerAdvice<T> implements ResponseBodyAdvice<T> {
 		    			inMap.put("ss_userid", temp.get("ss_userid"));
 						commonService.Common_insDownloadLog(inMap);
 	                }
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
+				} catch (RuntimeException | SQLException e) {
+					log.error("ControllerAdvice Log 작업중 에러...",e);
+				}	catch (Exception e) {
 					log.error("ControllerAdvice Log 작업중 에러...",e);
 				}	
             }

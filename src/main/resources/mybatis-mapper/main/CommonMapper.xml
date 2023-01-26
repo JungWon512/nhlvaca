@@ -182,19 +182,6 @@
         )
     </insert>
     
-    <select id="Common_selBack" resultType="java.util.LinkedHashMap">
-        ${query_text}
-    </select>
-    <update id="Common_updBack">
-        ${query_text}
-    </update>
-    <insert id="Common_insBack">
-        ${query_text}
-    </insert>    
-    <delete id="Common_delBack">
-        ${query_text}
-    </delete>
-    
     
     <insert id="Common_insDownloadLog">    
 		<selectKey keyProperty="sra_opr_sqno" resultType="int" order="BEFORE">

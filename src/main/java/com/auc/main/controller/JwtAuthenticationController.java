@@ -128,7 +128,8 @@ public class JwtAuthenticationController {
 			if(!"admin".equals((String)loginMap.get("USRID"))) {
 				int updPwerrCnt = userDetailsService.updPwerr_nt(loginMap);
 			}
-			throw new CusException(ErrorCode.CUSTOM_ERROR, "비밀번호를 다시 확인하세요.");
+//			throw new CusException(ErrorCode.CUSTOM_ERROR, "비밀번호를 다시 확인하세요.");
+			throw new CusException(ErrorCode.CUSTOM_ERROR, "로그인정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.");			
 		}
 		if(result == 1) {			
 			//로그인 성공 시 security 인터페이스 해서 값 받음

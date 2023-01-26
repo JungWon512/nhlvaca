@@ -71,6 +71,7 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
 	function setSave(name, value, expiredays){
 		var today = new Date();
 		today.setDate(today.getDate() + expiredays);
+		value = value.replaceAll("\n","").replaceAll("\r","");
 		document.cookie = name + "=" + escape(value) + ";path=/; expires=" + today.toGMTString() + ";";
 	}
 	

@@ -69,7 +69,7 @@ public class CriptoConfig {
 		    keySpec = new SecretKeySpec(keyBytes, "AES");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.debug("CriptoConfig.getAESKey",e);
 		}
 
 	    return keySpec;

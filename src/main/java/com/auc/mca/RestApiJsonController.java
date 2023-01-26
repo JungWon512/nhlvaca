@@ -43,21 +43,18 @@ import com.google.gson.Gson;
 public class RestApiJsonController {
 	
 	private static Logger logger = LoggerFactory.getLogger(RestApiJsonController.class);
-	String ctrn_cd = "";//거래코드
-    String responseBody = "";
     
 	@Value("${mca.ip}")
 	private String mcaIp;
     
 	//전문 보내고 받기
     public Map<String, Object> mcaSendMsg(String ctgrm_cd, int io_all_yn, String ccls_cd, String data) throws Exception {      
-    	responseBody = "";
         //보낸메시지
         String sendMsg = setSendMsg(ctgrm_cd, io_all_yn, ccls_cd, data);
         //전문보내기
-        sendPostJson(sendMsg);
+        String recvMsg = sendPostJson(sendMsg);
         //받은메시지
-        String recvMsg = responseBody;
+        //String recvMsg = responseBody;
         logger.info(recvMsg);
         Map<String, Object> map = new HashMap<String, Object>();
         //받은메시지를 map에 담기
@@ -88,7 +85,7 @@ public class RestApiJsonController {
     
   //전문 header
     public String setSndHeader(String ctgrm_cd, String ccls_cd, int io_all_yn) throws Exception {
-        
+        String ctrn_cd = setData(ctgrm_cd);
         String cspr_cd = "I";
         if("0210".equals(ccls_cd)) {
             cspr_cd = "O";
@@ -101,9 +98,9 @@ public class RestApiJsonController {
         String ccrt_date = new SimpleDateFormat("yyyyMMdd").format(calcDate);
         String ccrt_time = new SimpleDateFormat("HHmmss").format(calcDate);
         String ctgrm_trnsm_datetime = new SimpleDateFormat("yyyyMMddHHmmss").format(calcDate);
-        
-        Random r = new Random();
-        r.setSeed(new Date().getTime());                
+
+		Random r = SecureRandom.getInstance("SHA1PRNG");
+        r.setSeed(new Date().getTime());
         ctgrm_chsnb = "00FD68_" + String.format("%08d", r.nextInt(99999999));
          
         StringBuffer sb = new StringBuffer();
@@ -188,12 +185,13 @@ public class RestApiJsonController {
     }
     
   //전문전송
-    public boolean sendPostJson(String jsonValue) throws Exception{
+    public String sendPostJson(String jsonValue) throws Exception{
 
     	URL url = new URL(mcaIp);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
         boolean result = true;
+        String responseBody = "";
         try {
             logger.debug("REST API START");
             
@@ -246,12 +244,12 @@ public class RestApiJsonController {
             if (con!= null) con.disconnect();
         }
         
-        return result;
+        return responseBody;
     }
     
     //전문유형코드별 설정
-    public void setData(String ctgrm_cd) {
-    	
+    public String setData(String ctgrm_cd) {
+    	String ctrn_cd="";
     	if("1200".equals(ctgrm_cd)) {
             ctrn_cd = "IFLM0012";
         }else if("1300".equals(ctgrm_cd)) {
@@ -337,6 +335,7 @@ public class RestApiJsonController {
         }else if("5600".equals(ctgrm_cd)) {
             ctrn_cd = "IFLM0056";
         }
+    	return ctrn_cd;
     }
 	
 	/**
@@ -353,6 +352,7 @@ public class RestApiJsonController {
 		String makeUrl = "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AIzaSyCE1O0S6Kzz4GQKIShVIiL9Nuuwpa2vHUY";
 		URL url = new URL(makeUrl);
 		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		String responseBody ="";
 		
 		try {
 			final String link = ObjectUtils.isEmpty(params.get("TARGET_LINK")) ? "https://www.xn--o39an74b9ldx9g.kr" : params.get("TARGET_LINK").toString();
@@ -404,6 +404,7 @@ public class RestApiJsonController {
 				responseBody = sb.toString();
 				Gson gson = new Gson();
 				rtnMap = gson.fromJson(responseBody, rtnMap.getClass());
+				rtnMap.put("responseBody", responseBody);
 			}
 			
 			con.disconnect();

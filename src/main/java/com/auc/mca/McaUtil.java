@@ -1,6 +1,7 @@
 package com.auc.mca;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -133,11 +134,8 @@ public class McaUtil {
 		        	}
 		        }	        	
 	        }	        
-		} catch (JSONException e) {
+		} catch (RuntimeException | IOException e) {
 			log.debug("openData 접종정보 연계 중 오류가 발생하였습니다.",e);
-			nodeMap = null;
-        } catch (RuntimeException e) {
-        	log.debug("openData 접종정보 연계 중 오류가 발생하였습니다.",e);
 			nodeMap = null;
         } catch (Exception e) {
         	log.debug("openData 접종정보 연계 중 오류가 발생하였습니다.",e);

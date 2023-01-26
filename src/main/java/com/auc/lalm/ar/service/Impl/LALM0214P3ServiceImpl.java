@@ -1,5 +1,6 @@
 package com.auc.lalm.ar.service.Impl;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -268,6 +269,11 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						
 					}
 								
+				}catch(RuntimeException | SQLException e) {
+					log.debug("개체 인터페이스[4700] 연동중 error..",e);
+					result.put("CHK_VAILD_ERR", "1");
+					result.put("CHK_IF_SRA_INDV", "0");		
+					result.put("CHK_IF_FHS", "0");
 				}catch(Exception e) {
 					log.debug("개체 인터페이스[4700] 연동중 error..",e);
 					result.put("CHK_VAILD_ERR", "1");
@@ -284,6 +290,9 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 					Map<String, Object> infModKpnMap = mcaUtil.tradeMcaMsg("2900", result);
 					Map<String, Object> infModKpnJsonData = (Map<String, Object>) infModKpnMap.get("jsonData");		
 					result.put("MOD_KPN_NO", infModKpnJsonData.getOrDefault("SRA_KPN_NO","").toString().trim());					
+				}catch (RuntimeException | SQLException e) {
+					log.debug("수정 KPN[2900] 연동중 error..",e);
+					result.put("MOD_KPN_NO", "");
 				}catch (Exception e) {
 					log.debug("수정 KPN[2900] 연동중 error..",e);
 					result.put("MOD_KPN_NO", "");
@@ -320,6 +329,9 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						}	
 					}
 					//TO-DO : 분만정보 INSERT
+				}catch (RuntimeException | SQLException e) {
+					result.put("CHK_VAILD_ERR", "1");
+					log.debug("분만정보[2300] 연동중 error..",e);
 				}catch (Exception e) {
 					result.put("CHK_VAILD_ERR", "1");
 					log.debug("분만정보[2300] 연동중 error..",e);
@@ -347,6 +359,9 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 							insertNum += lalm0222PMapper.LALM0222P_insMatingInf(bhCrossMap);		
 						}	
 					}
+				}catch (RuntimeException | SQLException e) {
+					result.put("CHK_VAILD_ERR", "1");
+					log.debug("교배정보[2300] 연동중 error..",e);
 				}catch (Exception e) {
 					result.put("CHK_VAILD_ERR", "1");
 					log.debug("교배정보[2300] 연동중 error..",e);
@@ -376,6 +391,9 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 							insertNum += lalm0222PMapper.LALM0222P_insPostInf(tempMap);						
 						}
 					}
+				}catch (RuntimeException | SQLException e) {
+					result.put("CHK_VAILD_ERR", "1");
+					log.debug("후대정보 [4900] 연동중 error..",e);
 				}catch (Exception e) {
 					result.put("CHK_VAILD_ERR", "1");
 					log.debug("후대정보 [4900] 연동중 error..",e);
@@ -405,6 +423,9 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 							insertNum += lalm0222PMapper.LALM0222P_insSibInf(tempMap);						
 						}
 					}
+				}catch (RuntimeException | SQLException e) {
+					result.put("CHK_VAILD_ERR", "1");
+					log.debug("형매정보 [4900] 연동중 error..",e);
 				}catch (Exception e) {
 					result.put("CHK_VAILD_ERR", "1");
 					log.debug("형매정보 [4900] 연동중 error..",e);
@@ -428,6 +449,9 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 							}
 						}
 					}
+				}catch (RuntimeException | SQLException e) {
+					result.put("CHK_VAILD_ERR", "1");
+					log.debug("이동정보 [OPENAPI] 연동중 error..",e);
 				}catch (Exception e) {
 					result.put("CHK_VAILD_ERR", "1");
 					log.debug("이동정보 [OPENAPI] 연동중 error..",e);
@@ -468,6 +492,9 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						result.put("BRCL_ISP_RZT_C", "9");  
 						result.put("BRCL_ISP_DT", "");					
 					}
+				}catch (RuntimeException e) {
+					result.put("CHK_VAILD_ERR", "1");
+					log.debug("브루셀라연동 [OPENAPI] 연동중 error..",e);
 				}catch (Exception e) {
 					result.put("CHK_VAILD_ERR", "1");
 					log.debug("브루셀라연동 [OPENAPI] 연동중 error..",e);
@@ -491,6 +518,9 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						result.put("RE_PRODUCT_3_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC4","").toString().trim());
 						result.put("RE_PRODUCT_4_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());					
 					}					
+				}catch (RuntimeException | SQLException e) {
+					result.put("CHK_VAILD_ERR", "1");
+					log.debug("유전개체[4200] 연동중 error..",e);
 				}catch (Exception e) {
 					result.put("CHK_VAILD_ERR", "1");
 					log.debug("유전개체[4200] 연동중 error..",e);
@@ -514,6 +544,9 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 							result.put("RE_PRODUCT_13_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC4","").toString().trim());
 							result.put("RE_PRODUCT_14_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());						
 						}						
+					}catch (RuntimeException | SQLException e) {
+						result.put("CHK_VAILD_ERR", "1");
+						log.debug("모 유전개체[4200] 연동중 error..",e);
 					}catch (Exception e) {
 						result.put("CHK_VAILD_ERR", "1");
 						log.debug("모 유전개체[4200] 연동중 error..",e);

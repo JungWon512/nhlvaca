@@ -357,8 +357,10 @@ public class CommonController {
 		
 		}catch (FileNotFoundException fnfe) {
 				log.append("file does not exist.");
+		}catch (RuntimeException | IOException e) {
+			log.append("Sorry. An error has occurred.");
 		}catch (Exception e) {
-				log.append("Sorry. An error has occurred.");
+			log.append("Sorry. An error has occurred.");
 		} finally {
 				try {file.close();} catch (Exception e) {}
 		}

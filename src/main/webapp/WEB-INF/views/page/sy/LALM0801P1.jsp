@@ -388,6 +388,7 @@
            	   localStorage.setItem("nhlvaca_token", getCookie('token'));
     	        var filename =  $("#apdfl_id").val();
     	        var disposition = xhr.getResponseHeader('Content-Disposition');
+			    disposition = fn_XXSEncode(disposition);
     	        if(disposition && disposition.indexOf("attachment") !== -1){
     	            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
     	            var matches       = filenameRegex.exec(disposition);
@@ -402,6 +403,7 @@
     	                }else{
     	                   var downloadLink = window.document.createElement('a');
     	                   var contentTypeHeader = xhr.getResponseHeader("Content-Type");
+				  		   contentTypeHeader = fn_XXSEncode(contentTypeHeader);
     	                   downloadLink.href = window.URL.createObjectURL(new Blob([blob], {type:contentTypeHeader}));
     	                   downloadLink.download = filename;
     	                   document.body.appendChild(downloadLink);
