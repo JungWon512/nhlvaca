@@ -175,5 +175,16 @@ public class LALM0212Controller {
 		return reMap;	
 		
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/LALM0212_selAucDsc", method=RequestMethod.POST)
+	public Map<String, Object> LALM0212_selAucDsc(ResolverMap rMap) throws Exception{				
+		
+		Map<String, Object> map = convertConfig.conMap(rMap);		
+		Map<String, Object> inMap = lalm0212Service.LALM0212_selAucDsc(map);				
+		Map<String, Object> reMap = commonFunc.createResultSetMapData(inMap); 	
+		
+		return reMap;
+	}
 
 }

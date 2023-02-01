@@ -48,6 +48,9 @@ public class BatchController {
 	@Value("${server.type}")
 	private String serverType;
 	
+	@Value("${admin.sms}")
+	private String adminSms;
+	
 	/**
 	 * 중도매인, 출하주(농가) 휴면처리
 	 * 회원통합테이블의 휴면예정일자가 어제인 것 휴면 처리하기 (익일 새벽에 배치 실행하기 때문에)
@@ -189,7 +192,8 @@ public class BatchController {
 				if(allCnt > 0) {
 					for(Map<String, Object> reVo : reList) {
 						try {
-							batchService.sendAlarmTalk_DormacPreUser(reVo);
+							reVo.put("batchFlag", "Y");
+							Map<String, Object> resultMap = batchService.sendAlarmTalk_DormacPreUser(reVo);
 							succCnt++;
 						}catch(Exception e) {
 							e.printStackTrace();
@@ -244,14 +248,14 @@ public class BatchController {
 	 */
 	private void sendSmsBatchFail(Map<String, Object> reMap) throws Exception {
 		//추후 NA_BZPLC 가 확정되면 주석 해제할 예정
-//		if(!"local".equals(serverType)) {
-//			Map<String, Object> map = new HashMap<String, Object>();
-//			map.put("NA_BZPLC", "0000000000000");
-//			map.put("CUS_MPNO", "01049044857");
-//			map.put("USRNM", "정정원");
-//			map.put("MSG_CNTN", "[스마트가축시장-배치에러] "+reMap.get("batch_job_id") +" 배치에 에러 "+ reMap.get("failCnt") +" 건 발생하였습니다. 확인 부탁드립니다.");
-//			Map<String, Object> resultMap = mcaUtil.tradeMcaMsg("3100", map);
-//		}
+		if(!"local".equals(serverType)) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("NA_BZPLC", "8808990499055");
+			map.put("CUS_MPNO", adminSms);
+			map.put("USRNM", "담당자");
+			map.put("MSG_CNTN", "[스마트가축시장-배치에러] "+reMap.get("batch_job_id") +" 배치에 에러 "+ reMap.get("failCnt") +" 건 발생하였습니다. 확인 부탁드립니다.");
+			mcaUtil.tradeMcaMsg("3100", map);
+		}
 	}
 
 	/**

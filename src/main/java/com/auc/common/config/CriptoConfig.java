@@ -68,7 +68,6 @@ public class CriptoConfig {
 		    System.arraycopy(b, 0, keyBytes, 0, len);
 		    keySpec = new SecretKeySpec(keyBytes, "AES");
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			log.debug("CriptoConfig.getAESKey",e);
 		}
 
@@ -86,7 +85,6 @@ public class CriptoConfig {
 		    byte[] encrypted = c.doFinal(str.getBytes("UTF-8"));
 		    enStr = new String(Base64.encodeBase64(encrypted));
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException | UnsupportedEncodingException | IllegalBlockSizeException | BadPaddingException e) {
-			// TODO Auto-generated catch block
 			log.info("Encript Exception");
 			enStr="";
 		}

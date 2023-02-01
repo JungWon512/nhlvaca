@@ -25,7 +25,7 @@
     $(document).ready(function(){
         fn_Init();
         
-        fn_setCodeBox("srch_auc_obj_dsc", "AUC_OBJ_DSC", 1, true, "전체");
+        fn_setCodeBox("srch_auc_obj_dsc", "AUC_OBJ_DSC", 2, true, "전체");
         
     	//날짜 선택
     	$("input[name='srch_month']").change(function(){
@@ -45,19 +45,19 @@
  			$(activeTab).fadeIn();
  			
  			if(activeTab.replace("#", "") =="tab1"){
- 				fn_setCodeBox("srch_auc_obj_dsc", "AUC_OBJ_DSC", 1, true, "전체");
+ 				fn_setCodeBox("srch_auc_obj_dsc", "AUC_OBJ_DSC", 2, true, "전체");
  				$("#month_03").attr("disabled", false);
  				$(".tab1_txt").show();
  				$(".tab2_txt").hide();
  				$(".tab3_txt").hide();
  			}else if(activeTab.replace("#", "") =="tab2"){
- 				fn_setCodeBox("srch_auc_obj_dsc", "AUC_OBJ_DSC", 1, true);
+ 				fn_setCodeBox("srch_auc_obj_dsc", "AUC_OBJ_DSC", 2, true);
  				$("#month_03").attr("disabled", true);
  				$(".tab1_txt").hide();
  				$(".tab2_txt").show();
  				$(".tab3_txt").hide();
  			} else {
- 				fn_setCodeBox("srch_auc_obj_dsc", "AUC_OBJ_DSC", 1, true);
+ 				fn_setCodeBox("srch_auc_obj_dsc", "AUC_OBJ_DSC", 2, true);
  				$("#month_03").attr("disabled", true);
  				$(".tab1_txt").hide();
  				$(".tab2_txt").hide();
@@ -278,11 +278,11 @@
             rowNoValue = data.length;
         }
         var searchResultColNames = ["H사업장코드","H경매일자","H원표번호"
-        	                       ,"경매번호","경매대상","출하자코드","출하자","출하자<br>생년월일","조합원여부","관내외<br>구분","생산자","접수일자","진행상태"
-                                   ,"낙찰자명","참가번호","귀표번호","성별","자가운송여부","생년월일","월령","계대","등록번호","등록구분"
+        	                       ,"경매번호","경매대상","출하자코드","출하자","출하자<br>생년월일", "출하자<br>휴대폰번호","출하자주소","조합원여부","관내외<br>구분","생산자","접수일자","진행상태"
+                                   ,"낙찰자명","낙찰자<br>생년월일","낙찰자<br>휴대폰번호","낙찰자주소","참가번호","귀표번호","성별","자가운송여부","생년월일","월령","계대","등록번호","등록구분"
                                    ,"제각여부","KPN번호","어미귀표번호","어미구분","산차","중량","수송자","수의사","예정가","낙찰단가"
                                    ,"낙찰가","브루셀라<br>검사일자","브루셀라검사<br>증명서제출","예방접종일자","괴사감정여부","괴사여부","임신감정여부","임신여부","임신구분","인공수정일자"
-                                   ,"수정KPN","임신개월","인공수정<br>증명서제출여부","우결핵검사일","전송","주소","휴대폰번호","비고","친자검사결과","친자검사여부"
+                                   ,"수정KPN","임신개월","인공수정<br>증명서제출여부","우결핵검사일","전송","비고","친자검사결과","친자검사여부"
                                    ,"사료미사용여부","추가운송비","사료대금","당일접수비","브랜드명","수의사구분","고능력여부","난소적출여부","등록일시","등록자"
                                    ,"계좌번호","출자금","딸린송아지<br>귀표번호","구분"
                                   
@@ -296,6 +296,8 @@
                                      {name:"FHS_ID_NO",            index:"FHS_ID_NO",            width:70,  sortable:false, align:'center'},
                                      {name:"FTSNM",                index:"FTSNM",                width:80,  sortable:false, align:'center'},
                                      {name:"FHS_BIRTH",            index:"FHS_BIRTH",            width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
+                                     {name:"CUS_MPNO",             index:"CUS_MPNO",             width:120, sortable:false, align:'center'},
+                                     {name:"DONGUP",               index:"DONGUP",               width:150, sortable:false, align:'left'},
                                      {name:"MACO_YN",              index:"MACO_YN",              width:70,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_MACO_YN_DATA}},
                                      {name:"JRDWO_DSC",            index:"JRDWO_DSC",            width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("JRDWO_DSC", 1)}},
                                      {name:"SRA_PDMNM",            index:"SRA_PDMNM",            width:80,  sortable:false, align:'center'},
@@ -303,6 +305,10 @@
                                      {name:"SEL_STS_DSC",          index:"SEL_STS_DSC",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SEL_STS_DSC", 1)}},
                                      
                                      {name:"SRA_MWMNNM",           index:"SRA_MWMNNM",           width:80,  sortable:false, align:'center'},
+                                     {name:"MWMN_CUS_RLNO",            index:"MWMN_CUS_RLNO",            width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
+                                     {name:"MWMN_CUS_MPNO",           index:"MWMN_CUS_MPNO",           width:100,  sortable:false, align:'center'},
+                                     {name:"MWMN_ADDRESS",           index:"MWMN_ADDRESS",           width:100,  sortable:false, align:'center'},
+                                     
                                      {name:"LVST_AUC_PTC_MN_NO",   index:"LVST_AUC_PTC_MN_NO",   width:40,  sortable:false, align:'center'},
                                      {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, sortable:false, align:'center', formatter:'gridIndvFormat'},
                                      {name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
@@ -340,8 +346,6 @@
                                      {name:"AFISM_MOD_CTFW_SMT_YN",index:"AFISM_MOD_CTFW_SMT_YN",width:100, sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"BOVINE_DT",            index:"BOVINE_DT",            width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
                                      {name:"TMS_YN",               index:"TMS_YN",               width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_TMS_YN_DATA}},
-                                     {name:"DONGUP",               index:"DONGUP",               width:150, sortable:false, align:'left'},
-                                     {name:"CUS_MPNO",             index:"CUS_MPNO",             width:120, sortable:false, align:'center'},
                                      {name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable:false, align:'left'},
                                      {name:"DNA_YN",               index:"DNA_YN",               width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_DNA_YN_DATA}},
                                      {name:"DNA_YN_CHK",           index:"DNA_YN_CHK",           width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
@@ -361,7 +365,6 @@
                                      {name:"SRA_PYIVA",            index:"SRA_PYIVA",            width:70,  sortable:false, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"INDV_AMNNO",           index:"INDV_AMNNO",           width:120, sortable:false, align:'center', formatter:'gridIndvFormat'},
                                      {name:"CASE_COW",             index:"CASE_COW",             width:90,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_SOG_COW_DSC", 1)}},
-                                     
                                      
                                     ];
             
@@ -396,8 +399,10 @@
   		
   		if(activeId == "pb_tab1"){
 	    	fn_ExcelDownlad('grd_MhSogCowStatics', '사용자접속현황');
-  		}else{
+  		}else if(activeId == "pb_tab2"){
 	    	fn_ExcelDownlad('grd_MhSogCowRowData', '경매낙찰현황');
+  		} else {
+	    	fn_ExcelDownlad('grd_MhSogCow', '출장우내역');
   		}
     }
     

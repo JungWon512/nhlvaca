@@ -37,8 +37,11 @@
      var mv_cut_am       = "";
 	 var mv_sqno_prc_dsc = "";
 	 var cArray = new Array();	//휴면대상 해제할 사람 선택한 내용
+	 var fArray = new Array();	//휴면대상 선택한 회원 중, 알림톡 이미 발송한 사람 담기
 	 var sArray = new Array();	//이용해지 신청회원 중, 해지할 사람 선택한 내용
      console.log(pageInfos);
+     var userId = App_userId;
+     
      $(document).ready(function(){
     	$(".tab_content").hide();
         $(".tab_content:first").show();
@@ -91,6 +94,7 @@
  	    	
  	    	cArray = new Array();
  	    	sArray = new Array();
+ 	    	fArray = new Array();
  			
  			return false;
  	    });
@@ -174,7 +178,6 @@
     			return;
         	}
         	else{
-        		//TO-DO: 출하주(농가) 삭제는 안 되는 것으로 막아야할지?
         		MessagePopup('YESNO',"선택한 휴면회원 계정을 삭제하시겠습니까?",function(res){
         			if(res){
         				var updDataObj = new Object();
@@ -233,20 +236,29 @@
       	$("#pb_sendSms").unbind("click").click(function(e){
       		e.preventDefault();
       		if(cArray.length <= 0){
-        		MessagePopup('OK','문자 발송할 회원을 선택해주세요.');
+        		MessagePopup('OK','알림톡 발송할 회원을 선택해주세요.');
     			return;
         	}
         	else{
-        		MessagePopup('YESNO',"선택한 회원에게 문자 발송하시겠습니까?",function(res){
+        		var popMessage = "";
+        		if(fArray.length > 0){
+        			popMessage = "선택한 회원 중, 알림톡 발송한 이력이 존재합니다.<br/>해당 회원을 포함하여 선택한 회원에게 알림톡 발송하시겠습니까?";
+        		}else{
+        			popMessage = "선택한 회원에게 알림톡 발송하시겠습니까?";	
+        		}
+        		
+        		MessagePopup('YESNO', popMessage ,function(res){
         			if(res){
         				var updDataObj = new Object();
         				updDataObj["mbintglist"] = cArray;
+        				updDataObj["ss_userid"] = userId;
         				
         				var result = sendAjax(updDataObj, "/LALM0117_sendAlimPreDormcUser", "POST");
         	            if(result.status == RETURN_SUCCESS){
         	            	MessagePopup("OK", "전송하였습니다.");
         	                fn_Search("clear");
         	                cArray = new Array();
+        	                fArray = new Array();
         	            } else {
         	            	showErrorMessage(result);
         	                return;
@@ -359,7 +371,7 @@
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["코드", "이름", "생년월일/<br/>사업자번호", "연락처", "주소", "상세주소","문자발송일자", "휴면예정일자", "남은일수", "통합회원코드"];        
+        var searchResultColNames = ["코드", "이름", "생년월일/<br/>사업자번호", "연락처", "주소", "상세주소","알림톡 발송일자", "휴면예정일자", "남은일수", "통합회원코드"];        
         var searchResultColModel = [						 
 	           {name:"VIEW_CODE",	index:"VIEW_CODE",	width:100, align:'center'},                                     
 	           {name:"MB_INTG_NM",   	index:"MB_INTG_NM", 		width:80, align:'center'},
@@ -367,8 +379,8 @@
 	           {name:"MB_MPNO",     index:"MB_MPNO",      width:100, align:'center'},
 	           {name:"DONGUP",     	index:"DONGUP",      	width:100, align:'center'},
 	           {name:"DONGBW",     	index:"DONGBW",      	width:100, align:'center'},
-	           {name:"SMS_DATE",     	index:"SMS_DATE",      	width:100, align:'center'},
-	           {name:"DORMANCY_DATE",     	index:"DORMANCY_DATE",      	width:100, align:'center'},
+	           {name:"SMS_FWDG_DT",     	index:"SMS_FWDG_DT",      	width:100, align:'center', formatter:'gridDateFormat'},
+	           {name:"DORMANCY_DATE",     	index:"DORMANCY_DATE",      	width:100, align:'center', formatter:'gridDateFormat'},
 	           {name:"CHARGE_DATE",	index:"CHARGE_DATE",	width:100, align:'center'},
 	           {name:"MB_INTG_NO",   index:"MB_INTG_NO",    width:100,  align:'center'}
         ];
@@ -388,16 +400,22 @@
             multiselect:true,	/*체크박스 선택 가능하게끔 하는 속성*/
             onSelectAll: function(aRowids, status){
          		var mb_intg_no;
+         		var sms_fwdg_dt;
             	var v_rowids = aRowids;
             	if(status == true){	//전체 선택했을 때
             		for(var i = 0; i < v_rowids.length; i++){
             			mb_intg_no = $("#grd_MmMbDormEx").jqGrid("getCell", v_rowids[i], "MB_INTG_NO");
+            			sms_fwdg_dt = $("#grd_MmMbDormEx").jqGrid("getCell", v_rowids[i], "SMS_FWDG_DT");
             			if($.inArray(mb_intg_no, cArray) < 0){
 	            			cArray.push(mb_intg_no);
+	            			if(sms_fwdg_dt != "" && sms_fwdg_dt != undefined){
+		            			fArray.push(mb_intg_no);
+	            			}
             			}
             		}
             	}else{	//전체 선택 해제했을 때
             		cArray = new Array();
+            		fArray = new Array();
             	}
             },
             onSelectRow: function(rowid, status, e){
@@ -405,9 +423,13 @@
             	if(status == true){
             		if($.inArray(sel_data.MB_INTG_NO, cArray) < 0){
 		            	cArray.push(sel_data.MB_INTG_NO);
+		            	if(sel_data.SMS_FWDG_DT != "" && sel_data.SMS_FWDG_DT != undefined){
+			            	fArray.push(sel_data.MB_INTG_NO);
+		            	}
             		}
             	}else{
 	            	cArray.pop(sel_data.MB_INTG_NO);
+	            	fArray.pop(sel_data.MB_INTG_NO);
             	}
             },
             colNames: searchResultColNames,

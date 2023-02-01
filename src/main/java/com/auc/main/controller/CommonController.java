@@ -362,7 +362,7 @@ public class CommonController {
 		}catch (Exception e) {
 			log.append("Sorry. An error has occurred.");
 		} finally {
-				try {file.close();} catch (Exception e) {}
+			try {file.close();} catch (Exception e) {}
 		}
 		
 		Map<String, Object> inMap = new HashMap<String, Object>();

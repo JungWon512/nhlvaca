@@ -97,7 +97,7 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 							sb.append("https://www.xn--o39an74b9ldx9g.kr/state-acc/mwmn/");
 						}
 						else {
-							sb.append("http://adv-www.xn--e20bw05b.co.kr/state-acc/mwmn/");
+							sb.append("https://xn--e20bw05b.kr/state-acc/mwmn/");
 						}
 						sb.append(item.get("NA_BZPLC"));
 						sb.append('/');
@@ -138,7 +138,7 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 						sb.append("https://www.xn--o39an74b9ldx9g.kr/state-acc/fhs/");
 					}
 					else {
-						sb.append("http://adv-www.xn--e20bw05b.co.kr/state-acc/fhs/");
+						sb.append("https://xn--e20bw05b.kr/state-acc/fhs/");
 					}
 					sb.append(item.get("NA_BZPLC"));
 					sb.append('/');

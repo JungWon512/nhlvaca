@@ -38,6 +38,8 @@
 	          , hdwk_rg_yn        = nvl(trim(#{HDWK_RG_YN}),'')               /* 수작업여부                       */
 	          , lschg_dtm         = SYSDATE                     /* 최종변경일시                     */
 	          , ls_cmeno          = #{ss_userid}                 /* 최종변경자개인번호               */
+	          , birth 					= nvl(trim(#{BIRTH}),'')		/* 생년월일 */
+	          , mb_intg_no 		= #{mb_intg_no}					/* 통합회원번호 */
 	      where na_bzplc          = #{ss_na_bzplc}
 	        and fhs_id_no         = nvl(trim(#{FHS_ID_NO}),'')
 	        and farm_amnno        = nvl(trim(#{FARM_AMNNO}),'')
@@ -69,6 +71,7 @@
                , lschg_dtm                        /* 최종변경일시                     */
                , ls_cmeno                         /* 최종변경자개인번호               */
                , birth
+               , mb_intg_no
               )values(
                  #{ss_na_bzplc}                /* 경제통합사업장코드               */
                , nvl(trim(#{FHS_ID_NO}),'')                  /* 농가식별번호                     */
@@ -93,6 +96,7 @@
                , SYSDATE                       /* 최종변경일시                     */
                , #{ss_userid}                   /* 최종변경자개인번호               */
                , nvl(trim(#{BIRTH}),'')
+               , #{mb_intg_no}
               )
     </insert>
     
@@ -122,6 +126,8 @@
             , lschg_dtm                           /* 최종변경일시                     */
             , ls_cmeno                            /* 최종변경자개인번호               */
             , SRA_FED_SPY_YN                      /* 사료사용여부                     */
+            , birth									/* 생년월일 */
+            , mb_intg_no							/* 회원통합번호 */
         )values(
               #{ss_na_bzplc}                   /* 경제통합사업장코드               */
             , nvl(trim(#{FHS_ID_NO}),'')                     /* 농가식별번호                     */
@@ -146,6 +152,8 @@
             , SYSDATE                          /* 최종변경일시                     */
             , #{ss_userid}                     /* 최종변경자개인번호               */
             , '0'                              /* 사료사용여부                     */
+            , nvl(trim(#{BIRTH}),'')			/* 생년월일 */
+            , #{mb_intg_no}					/* 회원통합번호 */
         )
     </insert>    
     <!-- 1200 -->

@@ -15,7 +15,6 @@ import com.auc.batch.controller.BatchController;
 import com.auc.common.vo.ResolverMap;
 
 @Component
-@EnableScheduling
 public class TaskBatch {
 
 	private static Logger log = LoggerFactory.getLogger(TaskBatch.class);
@@ -59,7 +58,7 @@ public class TaskBatch {
 	/**
 	 * 대시보드 데이터 수신
 	 */
-	@Scheduled(cron = "0 30 20 * * *")
+	@Scheduled(cron = "0 0 2 * * *")
 	public void batch_BJ_LM_0010() {
 		ResolverMap rMap = new ResolverMap();
 		Map<String, Object> request = new HashMap<String, Object>();
@@ -81,7 +80,7 @@ public class TaskBatch {
 	/**
 	 * 대시보드 통계 저장
 	 */
-	@Scheduled(cron = "0 30 00 * * *")
+	@Scheduled(cron = "0 0 3 * * *")
 	public void batch_BJ_LM_0011() {
 		ResolverMap rMap = new ResolverMap();
 		Map<String, Object> request = new HashMap<String, Object>();
@@ -100,7 +99,7 @@ public class TaskBatch {
 	}
 
 	/**
-	 * 휴면예정자 알림톡 발송 : 매일 오전 8시 30분 (시간은 추후 다시 정해야 함)
+	 * 휴면예정자 알림톡 발송 : 매일 오전 8시 00분
 	 */
 	@Scheduled(cron = "0 30 8 * * *")
 	public void batch_BJ_LM_0020() {

@@ -158,5 +158,10 @@ public class LALM0212ServiceImpl implements LALM0212Service{
 		return reMap;		
 	}
 	
+	@Override
+	public Map<String, Object> LALM0212_selAucDsc(Map<String, Object> map) throws Exception{
+		return lalm0212Mapper.LALM0212_selAucDsc(map);
+		
+	}
 	
 }

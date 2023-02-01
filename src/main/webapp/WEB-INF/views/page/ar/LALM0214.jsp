@@ -507,7 +507,7 @@
             rowNoValue = data.length;
         }
         var searchResultColNames = ["H사업장코드","H경매일자","H원표번호"
-        	                       ,"경매번호","경매대상","출하자코드","출하자","출하자<br>생년월일","조합원여부","관내외<br>구분","생산자","접수일자","진행상태"
+        	                       ,"경매<br/>번호","경매<br/>대상","출하자<br/>코드","출하자","출하자<br>생년월일","조합원<br/>여부","관내외<br>구분","생산자","접수<br/>일자","진행<br/>상태"
                                    ,"낙찰자명","참가번호","귀표번호","성별","자가운송여부","생년월일","월령","계대","등록번호","등록구분"
                                    ,"제각여부","KPN번호","어미귀표번호","어미구분","산차","중량","수송자","수의사","예정가","낙찰단가"
                                    ,"낙찰가","브루셀라<br>검사일자","브루셀라검사<br>증명서제출","예방접종일자","괴사감정여부","괴사여부","임신감정여부","임신여부","임신구분","인공수정일자"
@@ -517,36 +517,36 @@
                                   
                                   ];        
         var searchResultColModel = [
-        	                         {name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,height:30,  sortable:false, align:'center', hidden:true},
+        	                         {name:"NA_BZPLC",             index:"NA_BZPLC",             width:90, height:30,  sortable:false, align:'center', hidden:true},
         	                         {name:"AUC_DT",               index:"AUC_DT",               width:90,  sortable:false, align:'center', hidden:true},
                                      {name:"OSLP_NO",              index:"OSLP_NO",              width:90,  sortable:false, align:'center', hidden:true},
-                                     {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:40,  sortable:false, align:'center', sorttype: "number"},
-                                     {name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
-                                     {name:"FHS_ID_NO",            index:"FHS_ID_NO",            width:70,  sortable:false, align:'center'},
-                                     {name:"FTSNM",                index:"FTSNM",                width:80,  sortable:false, align:'center'},
+                                     {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:50,  sortable:false, align:'center', sorttype: "number"},
+                                     {name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
+                                     {name:"FHS_ID_NO",            index:"FHS_ID_NO",            width:60,  sortable:false, align:'center'},
+                                     {name:"FTSNM",                index:"FTSNM",                width:75,  sortable:false, align:'center'},
                                      {name:"FHS_BIRTH",            index:"FHS_BIRTH",            width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
-                                     {name:"MACO_YN",              index:"MACO_YN",              width:70,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_MACO_YN_DATA}},
+                                     {name:"MACO_YN",              index:"MACO_YN",              width:65,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_MACO_YN_DATA}},
                                      {name:"JRDWO_DSC",            index:"JRDWO_DSC",            width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("JRDWO_DSC", 1)}},
                                      {name:"SRA_PDMNM",            index:"SRA_PDMNM",            width:80,  sortable:false, align:'center'},
                                      {name:"RC_DT",                index:"RC_DT",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
                                      {name:"SEL_STS_DSC",          index:"SEL_STS_DSC",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SEL_STS_DSC", 1)}},
                                      
                                      {name:"SRA_MWMNNM",           index:"SRA_MWMNNM",           width:80,  sortable:false, align:'center'},
-                                     {name:"LVST_AUC_PTC_MN_NO",   index:"LVST_AUC_PTC_MN_NO",   width:40,  sortable:false, align:'center'},
+                                     {name:"LVST_AUC_PTC_MN_NO",   index:"LVST_AUC_PTC_MN_NO",   width:40,  sortable:false, align:'center', sorttype: "number"},
                                      {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, sortable:false, align:'center', formatter:'gridIndvFormat'},
                                      {name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
                                      {name:"TRPCS_PY_YN",          index:"TRPCS_PY_YN",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"BIRTH",                index:"BIRTH",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
-                                     {name:"MTCN",                 index:"MTCN",                 width:40,  sortable:false, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-                                     {name:"SRA_INDV_PASG_QCN",    index:"SRA_INDV_PASG_QCN",    width:40,  sortable:false, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-                                     {name:"SRA_INDV_BRDSRA_RG_NO",index:"SRA_INDV_BRDSRA_RG_NO",width:60,  sortable:false, align:'center'},
+                                     {name:"MTCN",                 index:"MTCN",                 width:40,  sortable:false, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"SRA_INDV_PASG_QCN",    index:"SRA_INDV_PASG_QCN",    width:40,  sortable:false, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"SRA_INDV_BRDSRA_RG_NO",index:"SRA_INDV_BRDSRA_RG_NO",width:60,  sortable:false, align:'center', sorttype: "number"},
                                      {name:"RG_DSC",               index:"RG_DSC",               width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
                                      
                                      {name:"RMHN_YN",              index:"RMHN_YN",              width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"KPN_NO",               index:"KPN_NO",               width:60,  sortable:false, align:'center'},
                                      {name:"MCOW_SRA_INDV_AMNNO",  index:"MCOW_SRA_INDV_AMNNO",  width:110, sortable:false, align:'center', formatter:'gridIndvFormat'},
-                                     {name:"MCOW_DSC",             index:"MCOW_DSC",             width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
-                                     {name:"MATIME",               index:"MATIME",               width:40,  sortable:false, align:'right'},
+                                     {name:"MCOW_DSC",             index:"MCOW_DSC",             width:60,  sortable:false, align:'center', sorttype: "number", edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
+                                     {name:"MATIME",               index:"MATIME",               width:40,  sortable:false, align:'right', sorttype: "number"},
                                      {name:"COW_SOG_WT",           index:"COW_SOG_WT",           width:70,  sortable:false, align:'right', formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"VHC_DRV_CAFFNM",       index:"VHC_DRV_CAFFNM",       width:80,  sortable:false, align:'center'},
                                      {name:"BRKR_NAME",            index:"BRKR_NAME",            width:80,  sortable:false, align:'center'},
@@ -889,18 +889,29 @@
         fn_setGridFooter('grd_MhSogCow_1', arr1); 
         fn_setGridFooter('grd_MhSogCow_2', arr2); 
         
+        /* 정렬 */
         $(".ui-jqgrid-sortable").unbind('click');        
         $(".ui-jqgrid-sortable").on('click',function(e){
+        	$(".s-ico").hide();
         	var tr_nm = e.target.id || e.target.offsetParent.id;
         	if(tr_nm.indexOf('jqgh_grd_MhSogCow_1') >= 0 || tr_nm.indexOf('jqgh_grd_MhSogCow_2') >= 0){
         		var sort_tr = tr_nm.replace('jqgh_grd_MhSogCow_1_','').replace('jqgh_grd_MhSogCow_2_','');
         		var before_tr = $('#grd_MhSogCow_1').jqGrid("getGridParam",'sortname');
         		var sort_order = 'asc';
         		if(sort_tr == before_tr){
-        			if($('#grd_MhSogCow_1').jqGrid("getGridParam",'sortorder') == 'asc')sort_order = 'desc';
+        			if($('#grd_MhSogCow_1').jqGrid("getGridParam",'sortorder') == 'asc') sort_order = 'desc';
         		}        		
                 $('#grd_MhSogCow_1').jqGrid("setGridParam",{sortname:sort_tr,sortorder:sort_order}).trigger('reloadGrid');
-                $('#grd_MhSogCow_2').jqGrid("setGridParam",{sortname:sort_tr,sortorder:sort_order}).trigger('reloadGrid');                 
+                $('#grd_MhSogCow_2').jqGrid("setGridParam",{sortname:sort_tr,sortorder:sort_order}).trigger('reloadGrid');
+                $(this).find(".s-ico").show();
+                if (sort_order == "asc") {
+                	$(this).find(".s-ico").find(".ui-icon-asc").removeClass("ui-state-disabled");
+                	$(this).find(".s-ico").find(".ui-icon-desc").addClass("ui-state-disabled");
+                }
+                else {
+                	$(this).find(".s-ico").find(".ui-icon-asc").addClass("ui-state-disabled");
+                	$(this).find(".s-ico").find(".ui-icon-desc").removeClass("ui-state-disabled");
+                }
         	}
         });        
     }    

@@ -182,7 +182,6 @@
         )
     </insert>
     
-    
     <insert id="Common_insDownloadLog">    
 		<selectKey keyProperty="sra_opr_sqno" resultType="int" order="BEFORE">
 			SELECT NVL(MAX(SRA_OPR_SQNO)+1,1) AS SRA_OPR_SQNO
@@ -359,9 +358,9 @@
 			 , DORMDUE_DT
 		  FROM TB_LA_IS_MM_MBINTG
 		 WHERE MB_INTG_GB = #{mb_intg_gb}
-		   AND REPLACE(TRIM(MB_INTG_NM),' ','') = REPLACE(TRIM(DECODE(#{mb_intg_gb}, '01', #{sra_mwmnnm}, #{ftsnm})),' ','')
-		   AND REPLACE(TRIM(MB_RLNO),' ','') = DECODE(#{mb_intg_gb}, '01', REGEXP_REPLACE(#{cus_rlno}, '[^0-9]'), REGEXP_REPLACE(#{birth}, '[^0-9]'))
-		   AND REGEXP_REPLACE(MB_MPNO, '[^0-9]') = REGEXP_REPLACE(#{cus_mpno}, '[^0-9]')
+		   AND REPLACE(TRIM(MB_INTG_NM),' ','') = REPLACE(TRIM(DECODE(#{mb_intg_gb}, '01', TRIM(#{sra_mwmnnm}), TRIM(#{ftsnm}))),' ','')
+		   AND REPLACE(TRIM(MB_RLNO),' ','') = DECODE(#{mb_intg_gb}, '01', REGEXP_REPLACE(TRIM(#{cus_rlno}), '[^0-9]'), REGEXP_REPLACE(TRIM(#{birth}), '[^0-9]'))
+		   AND REGEXP_REPLACE(MB_MPNO, '[^0-9]') = REGEXP_REPLACE(TRIM(#{cus_mpno}), '[^0-9]')
 	</select>
 	
 	<!-- 농가 식별번호와 농장관리번호로 통합회원코드 조회 -->
@@ -406,9 +405,9 @@
 							  )
 		</when>
 		<otherwise>
-		 WHERE REPLACE(TRIM(A.MB_INTG_NM),' ','') = REPLACE(TRIM(DECODE(#{mb_intg_gb}, '01', #{sra_mwmnnm}, #{ftsnm})),' ','')
-		   AND REPLACE(TRIM(A.MB_RLNO),' ','') = DECODE(#{mb_intg_gb}, '01', REGEXP_REPLACE(#{cus_rlno}, '[^0-9]'), REGEXP_REPLACE(#{birth}, '[^0-9]'))
-		   AND REGEXP_REPLACE(A.MB_MPNO, '[^0-9]') = REGEXP_REPLACE(#{cus_mpno}, '[^0-9]')
+		 WHERE REPLACE(TRIM(A.MB_INTG_NM),' ','') = REPLACE(TRIM(DECODE(#{mb_intg_gb}, '01', TRIM(#{sra_mwmnnm}), TRIM(#{ftsnm}))),' ','')
+		   AND REPLACE(TRIM(A.MB_RLNO),' ','') = DECODE(#{mb_intg_gb}, '01', REGEXP_REPLACE(TRIM(#{cus_rlno}), '[^0-9]'), REGEXP_REPLACE(TRIM(#{birth}), '[^0-9]'))
+		   AND REGEXP_REPLACE(A.MB_MPNO, '[^0-9]') = REGEXP_REPLACE(TRIM(#{cus_mpno}), '[^0-9]')
 		</otherwise>
 		</choose>
 	</select>
@@ -416,7 +415,7 @@
 	<!-- 회원정보 저장 -->
 	<insert id="Common_insMbintgInfo" parameterType="hashMap">
 		<selectKey keyProperty="mb_intg_no" resultType="String" order="BEFORE">
-			SELECT CASE WHEN #{MB_INTG_GB} = '01' THEN NVL(MAX(MB_INTG_NO), '100000000') + 1
+			SELECT CASE WHEN #{mb_intg_gb} = '01' THEN NVL(MAX(MB_INTG_NO), '100000000') + 1
 						ELSE NVL(MAX(MB_INTG_NO), '200000000') + 1
 					END AS MB_INTG_NO
 			  FROM TB_LA_IS_MM_MBINTG
@@ -444,10 +443,10 @@
 		)
 		VALUES (
 			#{mb_intg_no}
-			, DECODE(#{mb_intg_gb}, '01', #{sra_mwmnnm}, #{ftsnm})
-			, DECODE(#{mb_intg_gb}, '01', REGEXP_REPLACE(#{cus_rlno}, '[^0-9]'), REGEXP_REPLACE(#{birth}, '[^0-9]'))
-			, #{ohse_telno}
-			, #{cus_mpno}
+			, DECODE(#{mb_intg_gb}, '01', TRIM(#{sra_mwmnnm}), TRIM(#{ftsnm}))
+			, DECODE(#{mb_intg_gb}, '01', REGEXP_REPLACE(TRIM(#{cus_rlno}), '[^0-9]'), REGEXP_REPLACE(TRIM(#{birth}), '[^0-9]'))
+			, TRIM(#{ohse_telno})
+			, TRIM(#{cus_mpno})
 			, '0'
 			, NULL
 			, '0'

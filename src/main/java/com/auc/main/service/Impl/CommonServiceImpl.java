@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.auc.common.config.ConvertConfig;
+import com.auc.common.util.StringUtils;
 import com.auc.common.vo.ResolverMap;
 import com.auc.main.service.CommonService;
 import com.auc.main.service.LogService;
@@ -490,6 +491,14 @@ public class CommonServiceImpl implements CommonService{
 		// 통합 정보가 있는 경우 통합회원번호 리턴
 		if (!ObjectUtils.isEmpty(info) && !ObjectUtils.isEmpty(info.get("MB_INTG_NO"))) {
 			map.put("mb_intg_no", info.get("MB_INTG_NO"));
+			return map;
+		}
+		
+		// 농가 정보 수기등록(anw_yn값이 9)인데, 이름 / 생년월일 / 휴대전화번호 중 1개라도 없으면 통합을 진행하지 않음
+		// 농가 데이터(tb_la_is_mm_fhs)는 데이터 들어감
+		if("02".equals(map.get("mb_intg_gb")) && !"1".equals(map.get("anw_yn"))
+				&& (ObjectUtils.isEmpty(map.get("ftsnm")) || ObjectUtils.isEmpty(map.get("birth")) || ObjectUtils.isEmpty(map.get("cus_mpno")))
+			) {
 			return map;
 		}
 		

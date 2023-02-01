@@ -37,7 +37,7 @@
 						ELSE REGEXP_REPLACE(MWN.CUS_MPNO, '(.{3})(.*)(.{4})', '\1-****-\3')
 					  END
 			  END CUS_MPNO		/*휴대전화번호, 개인정보 열람권한 있을 때만 값 그대로, 없으면 마스킹 처리*/
-			, BLK.AUC_PART_LIMIT_YN		/*경매참여제한여부*/
+			, NVL(BLK.AUC_PART_LIMIT_YN, '1') AS	AUC_PART_LIMIT_YN	/*경매참여제한여부*/
 			, LOC.CLNTNM				/*사업장명*/
 			, BLK.REG_DATE			/*B/L 등록일자*/
 			, BLK.LIMIT_DATE			/*B/L 거래제한일자*/
@@ -89,7 +89,7 @@
 			, CASE WHEN MWN.SRA_MWMNNM = '***' THEN DMW.SRA_MWMNNM ELSE MWN.SRA_MWMNNM END	SRA_MWMNNM	/*중도매인명*/
 			, CASE WHEN MWN.CUS_RLNO = '***' THEN DMW.CUS_RLNO ELSE MWN.CUS_RLNO END CUS_RLNO		/*앞자리실명번호(생년월일)*/
 			, CASE WHEN MWN.CUS_MPNO = '***' THEN DMW.CUS_MPNO ELSE MWN.CUS_MPNO	END CUS_MPNO		/*휴대전화번호*/
-			, BLK.AUC_PART_LIMIT_YN		/*경매참여제한여부*/
+			, NVL(BLK.AUC_PART_LIMIT_YN, '1')  AS	AUC_PART_LIMIT_YN	/*경매참여제한여부*/
 			, LOC.CLNTNM				/*사업장명*/
 			, BLK.REG_DATE			/*B/L 등록일자*/
 			, BLK.LIMIT_DATE			/*B/L 거래제한일자*/

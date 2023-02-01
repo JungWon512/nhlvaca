@@ -40,5 +40,7 @@ public interface LALM0212Mapper {
 
 	void LALM0212_updLogPgmSel(Map<String, Object> map) throws Exception;
 
+	Map<String, Object> LALM0212_selAucDsc(Map<String, Object> map) throws Exception;
+
 
 }

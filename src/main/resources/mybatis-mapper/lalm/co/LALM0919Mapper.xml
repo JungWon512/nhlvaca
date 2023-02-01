@@ -313,6 +313,11 @@
                      WHEN LENGTH(E.SRA_MWMNNM) = 3 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*'  || SUBSTR(E.SRA_MWMNNM,3,1) 
                      WHEN LENGTH(E.SRA_MWMNNM) = 4 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '**' || SUBSTR(E.SRA_MWMNNM,4,1)  
                      WHEN LENGTH(E.SRA_MWMNNM) >= 5 THEN SUBSTR(E.SRA_MWMNNM,1,2) || '**' || SUBSTR(E.SRA_MWMNNM,5,1)  END AS SRA_MWMNNM  /* 축산중도매인명                        */
+              , E.CUS_RLNO AS MWMN_CUS_RLNO /* 축산중도매인생년월일                        */
+              , CASE WHEN #{ss_security} = '1' THEN REGEXP_REPLACE(E.CUS_MPNO, '(.{3})(.*)(.{4})', '\1-\2-\3')
+				  	ELSE REGEXP_REPLACE(E.CUS_MPNO, '(.{3})(.*)(.{4})', '\1-****-\3')
+				  END AS MWMN_CUS_MPNO /* 축산중도매인전화번호                        */
+			  , E.DONGUP || ' ' || CASE WHEN #{ss_security} = '1' THEN E.DONGBW ELSE LPAD(' ', LENGTH(E.DONGBW), '*') END AS MWMN_ADDRESS /* 축산중도매인주소                        */
 	          , CASE WHEN #{ss_security} = '1' OR LENGTH(F.BRKR_NAME) = 1 THEN F.BRKR_NAME
                      WHEN LENGTH(F.BRKR_NAME) = 2 THEN SUBSTR(F.BRKR_NAME,1,1) || '*' 
                      WHEN LENGTH(F.BRKR_NAME) = 3 THEN SUBSTR(F.BRKR_NAME,1,1) || '*'  || SUBSTR(F.BRKR_NAME,3,1) 

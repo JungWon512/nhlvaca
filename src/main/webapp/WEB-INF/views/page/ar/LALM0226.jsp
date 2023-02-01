@@ -235,7 +235,7 @@
 					fn_CallIndvInfSrch();
 				}
 			}
-			else {
+			else if (e.keyCode != 116 && e.keyCode != 115) {
 				// 기존 정보 초기화
 				fn_contrChBox(false, "recv_can_yn", "");	// 예약취소여부
 				$("#recv_can_dt").val("");					// 예약취소일자
@@ -545,7 +545,7 @@
 		/******************************
 		 * 모근채취여부 checkbox 이벤트
 		 ******************************/
-		 $("#dna_sampled_yn").change(function() {
+		$("#dna_sampled_yn").change(function() {
 			if($("#dna_sampled_yn").is(":checked")) {
 				fn_contrChBox(true, "fed_spy_yn", "");
 				$("#dna_sampled_yn_text").text("여");
@@ -643,17 +643,19 @@
 		
 		//============================================================fn_CheckValidSave Start=========================================================================//
 		if(fn_isNull($("#sra_indv_amnno").val())) {
-			MessagePopup("OK", "귀표번호가 정확하지 않습니다.", function() {$("#sra_indv_amnno").focus();});
+			MessagePopup("OK", "귀표번호가 정확하지 않습니다.");
 			return;
 		}
 		if(("" + $("#hed_indv_no").val() + $("#sra_indv_amnno").val()).length != 12) {
-			MessagePopup("OK", "귀표번호는 12자리를 입력하시기 바랍니다.", function() {$("#sra_indv_amnno").focus();});
+			MessagePopup("OK", "귀표번호는 12자리를 입력하시기 바랍니다.");
 			return;
 		}
 		if($("#indv_sex_c").val().length == 0) {
-			MessagePopup("OK", "개체성별코드를 입력하기 바랍니다.", function() {$("#indv_sex_c").focus();});
+			MessagePopup("OK", "개체성별코드를 입력하기 바랍니다.");
 			return;
 		}
+		
+		console.log($("#fhs_id_no").val(), $("#ftsnm").val());
 		if(fn_isNull($("#fhs_id_no").val()) || fn_isNull($("#ftsnm").val())) {
 			MessagePopup("OK", "출하주가 정확하지 않습니다.");
 			return;
@@ -803,78 +805,75 @@
 		data["sra_indv_amnno"] = cheackParam;
 		
 		fn_CallIndvInfHstPopup(data, checkBoolean, function(result){
-			console.log(result);
 			if(result){
-				console.log(chkBool);
-				if(chkBool == true) {
-					var results = sendAjax(result, "/LALM0222P_updReturnValue", "POST");
-					var returnVal;
+// 				if(chkBool == true) {
+// 					var results = sendAjax(result, "/LALM0222P_updReturnValue", "POST");
+// 					var returnVal;
 					
-					if(results.status != RETURN_SUCCESS) {
-						showErrorMessage(results);
-						return;
-					}
-					else {
+// 					if(results.status != RETURN_SUCCESS) {
+// 						showErrorMessage(results);
+// 						return;
+// 					}
+// 					else {
+// 						returnVal = setDecrypt(results);
+// 						$("#sra_srs_dsc").val(returnVal[0].SRA_SRS_DSC);
 						
-						returnVal = setDecrypt(results);
-						$("#sra_srs_dsc").val(returnVal[0].SRA_SRS_DSC);
+// 						if(!fn_isNull(returnVal[0].SRA_INDV_AMNNO)) {
+// 							$("#hed_indv_no").val()
+// 							$("#sra_indv_amnno").val(returnVal[0].SRA_INDV_AMNNO.substr(6, 12));
+// 						}
 						
-						if(!fn_isNull(returnVal[0].SRA_INDV_AMNNO)) {
-							$("#hed_indv_no").val()
-							$("#sra_indv_amnno").val(returnVal[0].SRA_INDV_AMNNO.substr(6, 12));
-						}
+// 						$("#fhs_id_no").val(returnVal[0].FHS_ID_NO);
+// 						$("#farm_amnno").val(returnVal[0].FARM_AMNNO);
+// 						$("#ftsnm").val(fn_xxsDecode(returnVal[0].FTSNM));
 						
-						$("#fhs_id_no").val(returnVal[0].FHS_ID_NO);
-						$("#farm_amnno").val(returnVal[0].FARM_AMNNO);
-						$("#ftsnm").val(fn_xxsDecode(returnVal[0].FTSNM));
+// 						if(!fn_isNull(returnVal[0].CUS_MPNO)) {
+// 							$("#ohse_telno").val(returnVal[0].CUS_MPNO);
+// 						}
+// 						else {
+// 							$("#ohse_telno").val(returnVal[0].OHSE_TELNO);
+// 						}
 						
-						if(!fn_isNull(returnVal[0].CUS_MPNO)) {
-							$("#ohse_telno").val(returnVal[0].CUS_MPNO);
-						}
-						else {
-							$("#ohse_telno").val(returnVal[0].OHSE_TELNO);
-						}
+// 						if(!fn_isNull(returnVal[0].ZIP)) {
+// 							$("#zip").val(returnVal[0].ZIP.substr(0, 3) + "-" + returnVal[0].ZIP.substr(3, 3));
+// 						}
 						
-						if(!fn_isNull(returnVal[0].ZIP)) {
-							$("#zip").val(returnVal[0].ZIP.substr(0, 3) + "-" + returnVal[0].ZIP.substr(3, 3));
-						}
+// 						$("#dongup").val(fn_xxsDecode(returnVal[0].DONGUP)).trigger("change");
+// 						$("#dongbw").val(fn_xxsDecode(returnVal[0].DONGBW)).trigger("change");
+// 						$("#sra_pdmnm").val(fn_xxsDecode(returnVal[0].FTSNM));
+// 						$("#sra_pd_rgnnm").val(fn_xxsDecode(returnVal[0].DONGUP));
+// 						$("#sog_na_trpl_c").val(returnVal[0].NA_TRPL_C);
+// 						$("#indv_sex_c").val(returnVal[0].INDV_SEX_C);
+// 						$("#birth").val(fn_toDate(returnVal[0].BIRTH)).trigger("change");
+// 						$("#indv_id_no").val(returnVal[0].INDV_ID_NO);
+// 						$("#sra_indv_brdsra_rg_no").val(returnVal[0].SRA_INDV_BRDSRA_RG_NO);
+// 						$("#rg_dsc").val(returnVal[0].RG_DSC);
+// 						$("#kpn_no").val(returnVal[0].KPN_NO);
+// 						$("#mcow_dsc").val(returnVal[0].MCOW_DSC);
+// 						$("#mcow_sra_indv_amnno").val(returnVal[0].MCOW_SRA_INDV_AMNNO);
 						
-						$("#dongup").val(fn_xxsDecode(returnVal[0].DONGUP)).trigger("change");
-						$("#dongbw").val(fn_xxsDecode(returnVal[0].DONGBW)).trigger("change");
-						$("#sra_pdmnm").val(fn_xxsDecode(returnVal[0].FTSNM));
-						$("#sra_pd_rgnnm").val(fn_xxsDecode(returnVal[0].DONGUP));
-						$("#sog_na_trpl_c").val(returnVal[0].NA_TRPL_C);
-						$("#indv_sex_c").val(returnVal[0].INDV_SEX_C);
-						$("#birth").val(fn_toDate(returnVal[0].BIRTH)).trigger("change");
-						$("#indv_id_no").val(returnVal[0].INDV_ID_NO);
-						$("#sra_indv_brdsra_rg_no").val(returnVal[0].SRA_INDV_BRDSRA_RG_NO);
-						$("#rg_dsc").val(returnVal[0].RG_DSC);
-						$("#kpn_no").val(returnVal[0].KPN_NO);
-						$("#mcow_dsc").val(returnVal[0].MCOW_DSC);
-						$("#mcow_sra_indv_amnno").val(returnVal[0].MCOW_SRA_INDV_AMNNO);
+// 						if(!fn_isNull(returnVal[0].MATIME)) {
+// 							$("#matime").val(parseInt(returnVal[0].MATIME));
+// 						}
 						
-						if(!fn_isNull(returnVal[0].MATIME)) {
-							$("#matime").val(parseInt(returnVal[0].MATIME));
-						}
+// 						if(!fn_isNull(returnVal[0].SRA_INDV_PASG_QCN)) {
+// 							$("#sra_indv_pasg_qcn").val(parseInt(returnVal[0].SRA_INDV_PASG_QCN));
+// 						}
 						
-						if(!fn_isNull(returnVal[0].SRA_INDV_PASG_QCN)) {
-							$("#sra_indv_pasg_qcn").val(parseInt(returnVal[0].SRA_INDV_PASG_QCN));
-						}
-						
-						$("#io_sogmn_maco_yn").val(returnVal[0].MACO_YN);
-						$("#sra_farm_acno").val(returnVal[0].SRA_FARM_ACNO);
-					}
-				}
-				else {
+// 						$("#io_sogmn_maco_yn").val(returnVal[0].MACO_YN);
+// 						$("#sra_farm_acno").val(returnVal[0].SRA_FARM_ACNO);
+// 					}
+// 				}
+// 				else {
 					$("#sra_srs_dsc").val(result.SRA_SRS_DSC);
 					
 					if(!fn_isNull(result.SRA_INDV_AMNNO)) {
 						$("#sra_indv_amnno").val(result.SRA_INDV_AMNNO.substr(6, 12));
 					}
 					
-					$("#fhs_id_no").val(result.FHS_ID_NO);
-					$("#farm_amnno").val(result.FARM_AMNNO);
-					$("#ftsnm").val(fn_xxsDecode(result.FTSNM));
+					$("#fhs_id_no").val(result.FHS_ID_NO).prop("disabled", false);
+					$("#farm_amnno").val(result.FARM_AMNNO).prop("disabled", false);
+					$("#ftsnm").val(fn_xxsDecode(result.FTSNM)).prop("disabled", false);
 					
 					if(!fn_isNull(result.CUS_MPNO)) {
 						$("#ohse_telno").val(result.CUS_MPNO);
@@ -910,14 +909,14 @@
 					
 					$("#io_sogmn_maco_yn").val(result.MACO_YN);
 					$("#sra_farm_acno").val(result.SRA_FARM_ACNO);
-				}
+// 				}
 				
 				// 브루셀라검사 조회
 				fn_CallBrclIspSrch();
 				// 친자확인 조회
-// 				fn_CallLsPtntInfSrch();
+				fn_CallLsPtntInfSrch();
 				//유전체 분석 조회
-// 				fn_CallGeneBredrInfSrch();
+				fn_CallGeneBredrInfSrch();
 				// 해당 출장우의 분만정보 조회
 				fn_SelBhCross();
 			}
@@ -1513,7 +1512,7 @@
 	function fn_CallLsPtntInfSrch() {
 		var P_sra_indv_amnno = "";
 		
-		if($("#sra_indv_amnno").val().replace("-", "").length == 12) {
+		if($("#sra_indv_amnno").val().replace("-", "").length == 9) {
 			P_sra_indv_amnno = "410" + $("#hed_indv_no").val() + $("#sra_indv_amnno").val().replace("-", "");
 		}
 		else {
@@ -2393,25 +2392,25 @@
 							<tr>
 								<th scope="row"><span>출하주</span></th>
 								<td>
-									<input disabled="disabled" type="text" id="fhs_id_no" style="width:85px;">
+									<input type="text" id="fhs_id_no" style="width:85px;" readonly="readonly" />
 									<span> - </span>
-									<input disabled="disabled" type="text" id="farm_amnno" style="width:85px;">
+									<input type="text" id="farm_amnno" style="width:85px;" readonly="readonly" />
 									<input type="text" id="ftsnm" style="width:90px; font-weight:bold;">
 									<button id="pb_ftsnm" class="tb_btn white srch"><i class="fa fa-search"></i></button>
 								</td>
 								<th scope="row"><span>자택전화번호</span></th>
 								<td>
-									<input disabled="disabled" type="text" id="ohse_telno">
+									<input type="text" id="ohse_telno" readonly="readonly" />
 								</td>
 								<th scope="row"><span>핸드폰</span></th>
 								<td>
-									<input disabled="disabled" type="text" id="cus_mpno">
+									<input type="text" id="cus_mpno" readonly="readonly" />
 								</td>
 								<th scope="row"><span>사료사용여부</span></th>
 								<td>
 									<input type="checkbox" id="sra_fed_spy_yn" name="sra_fed_spy_yn" value="0">
 									<label id="sra_fed_spy_yn_text" for="sra_fed_spy_yn"> 부</label>
-									<input type="hidden" disabled="disabled" class="number"id="sra_fed_spy_yn_fee" style="width:80px">
+									<input type="hidden" class="number"id="sra_fed_spy_yn_fee" style="width:80px" readonly="readonly" />
 								</td>
 							</tr>
 							<tr>
@@ -2427,7 +2426,7 @@
 								</td>
 								<th scope="row"><span>계좌번호</span></th>
 								<td>
-									<input disabled="disabled" type="text" id="sra_farm_acno">
+									<input type="text" id="sra_farm_acno" readonly="readonly" />
 								</td>
 							</tr>
 						</tbody>

@@ -155,7 +155,6 @@ public class AlarmTalkForm {
 			jobj.put("btn_content_1", appLink +"$|$" + appLink);
 		}
 		
-		log.debug(jobj.toString());
 		// gypark : 따옴표 앞에 역슬래쉬를 하나 더 추가해달라고 하셨음
 		// json 형태를 인터페이스 측에서 받을 수 없는 상황이라.. 구분자로 역슬래쉬 하나씩 더 추가해서 구분하여 받기로 함
 		return jobj.toString().replace("\"", "\\\"");

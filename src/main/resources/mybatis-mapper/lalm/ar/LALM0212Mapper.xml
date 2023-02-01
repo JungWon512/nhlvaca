@@ -431,6 +431,41 @@
     ]]>
     </insert>
     
+
+    <select id="LALM0212_selAucDsc" resultType="hashMap">
+         SELECT 
+			NA_BZPLC
+			, NA_BZPLCNO
+			, NA_BZPLCLOC
+			, CLNTNM
+			, AREAORD
+			, AREANM
+			, AUC_DSC
+			, LAT
+			, LNG
+			, AUC_YN
+			, DEL_YN
+			, RMK_CNTN
+			, TEL_NO
+			, KKO_SVC_ID
+			, KKO_SVC_KEY
+			, KKO_SVC_CNT
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+			, NET_HOST
+			, NET_PORT
+			, WEB_PORT
+			, SMS_AUTH_YN
+			, SMS_BUFFER_2
+			, SMS_BUFFER_1
+			, LOCNM
+			, KIOSK_YN
+			, SBID_SMS_YN
+	    FROM  TB_LA_IS_BM_BZLOC
+	   	WHERE NA_BZPLC    = #{ss_na_bzplc}
+    </select>
 </mapper>
 
 

@@ -8,22 +8,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @MapperScan(basePackages = "com.auc.**.*Impl")
 @SpringBootApplication
-public class BrAucApplication extends SpringBootServletInitializer{
+@EnableScheduling
+public class BrAucApplication{
 
 	public static void main(String[] args) {
-		SpringApplicationBuilder builder = new SpringApplicationBuilder(BrAucApplication.class);
-		SpringApplication app = builder.build();
-		app.run(args);
-			
-	}
-	
-	@Override 
-	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) 
-	{ 
-		return builder.sources(BrAucApplication.class); 
+		SpringApplication.run(BrAucApplication.class, args);
 	}
 	
 	@Bean

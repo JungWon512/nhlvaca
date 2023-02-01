@@ -93,8 +93,20 @@
      		fn_InitFrm('frm_MhAucQcn');
      		fn_DisableFrm('frm_MhAucQcn', false);
      		fn_DisableCut(true, true);
-     		$("#hd_auc_obj_dsc").val("1");
+			
+            var results = sendAjax({}, "/LALM0212_selAucDsc", "POST");        
+            var result;
+            
+            if(results.status == RETURN_SUCCESS){
+                result = setDecrypt(results);                
+                if(result && result.AUC_DSC){
+             		$("#hd_auc_dsc").val(result.AUC_DSC);
+             		if(result.AUC_DSC =='1') $("#auc_dsc_1").attr('checked',true);
+             		else if(result.AUC_DSC =='2') $("#auc_dsc_2").attr('checked',true);             		
+                }
+            }
      		$("#hd_sgno_prc_dsc").val("1");
+     		$("#hd_auc_obj_dsc").val("1");
      		
          });
      	

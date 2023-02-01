@@ -137,7 +137,7 @@
               END TELNO             /* 고객휴대전화번호	*/
 	        , MWN.FRLNO                 /* 앞자리실명번호           */
 	        , '' NA_TRPL_C             /* 경제통합거래처코드       */
-	        , BLK.AUC_PART_LIMIT_YN    /* 거래허용여부             */
+	        , NVL(BLK.AUC_PART_LIMIT_YN, '1') AS AUC_PART_LIMIT_YN   /* 거래허용여부             */
 	        , LOC.CLNTNM             /* 경제통합사업장명         */
 	        , BLK.REG_REASON         /* 사고등록사유내용         */
 			, BLK.FSRG_DTM              /* 최초등록일시             */

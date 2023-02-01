@@ -159,7 +159,8 @@
                     , LSCHG_DTM                                                /* 최종변경일시                        */
                     , LS_CMENO                                                 /* 최종변경자개인번호                  */
                     , NEW_SRA_FARM_ACNO                                        /* 선택시 계좌번호 저장                */
-                    , BIRTH
+                    , BIRTH													/*출하주 생년월일*/
+                    , MB_INTG_NO										/*회원통합번호*/
                 )VALUES(
                       #{ss_na_bzplc}                                         /* 경제통합사업장코드                  */
                     , #{fhs_id_no}                                 /* 농가식별번호                        */
@@ -182,7 +183,8 @@
                     , SYSDATE                                                 /* 최종변경일시                        */
                     , #{ss_userid}                                               /* 최종변경자개인번호                  */
                     , #{sra_farm_acno}                             /* 선택시 계좌번호 저장                */
-                    , #{sra_fhs_birth}
+                    , #{birth}								/*출하주 생년월일*/
+                    , #{mb_intg_no}								/*회원통합번호*/
                 )
     </insert>
     
@@ -240,7 +242,7 @@
                       FARM_ID_NO  = #{farm_id_no}                            /* 농가식별번호                        */
                     , NA_TRPL_C   = #{na_trpl_c}                             /* 출하경제통합거래처코드              */
                     , FTSNM       = #{sra_fhsnm}                             /* 농가명                              */
-                    , BIRTH		  = #{sra_fhs_birth}
+                    , BIRTH		  = #{birth}
 	                <choose>
 	                	<when test="buffer_1 != null and buffer_1 != ''">
 			                <if test='!buffer_1.contains("AD")'>
@@ -284,6 +286,9 @@
                     , ANW_YN      = '1'                                      /* 한우종합등록여부                    */
                     , LSCHG_DTM   = SYSDATE                                  /* 최종변경일시                        */
                     , LS_CMENO    = #{ss_userid}                             /* 최종변경자개인번호                  */
+                    <if test="mb_intg_no != null and mb_intg_no != ''">
+                    , MB_INTG_NO = #{mb_intg_no}					/*회원통합번호*/
+                    </if>
                 WHERE NA_BZPLC    = #{ss_na_bzplc}
                   AND FHS_ID_NO   = #{fhs_id_no}
                   AND FARM_AMNNO  = #{farm_amnno}

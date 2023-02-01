@@ -258,6 +258,7 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
 	                        localStorage.setItem("nhlvaca_usrnm", results.usrnm);
 	                        localStorage.setItem("nhlvaca_grp_c", results.grp_c);
 	                        localStorage.setItem("nhlvaca_strg_dt", results.strg_dt);
+	                        localStorage.setItem("nhlvaca_strg_yn", results.strg_yn);
                       	window.location.href = "/index";
                       }
                   });
@@ -274,6 +275,7 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
               localStorage.setItem("nhlvaca_usrnm", results.usrnm);
               localStorage.setItem("nhlvaca_grp_c", results.grp_c);
               localStorage.setItem("nhlvaca_strg_dt", results.strg_dt);
+              localStorage.setItem("nhlvaca_strg_yn", results.strg_yn);
           	window.location.href = "/index";
           }
      	    

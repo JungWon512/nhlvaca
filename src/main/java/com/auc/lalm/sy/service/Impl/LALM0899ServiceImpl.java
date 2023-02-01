@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.auc.lalm.sy.service.LALM0834Service;
+import com.auc.common.config.ConvertConfig;
 import com.auc.lalm.sy.service.LALM0899Service;
-import com.auc.mca.TradeMcaMsgDataController;
+import com.auc.main.service.CommonService;
 
 @Service("LALM0899Service")
 public class LALM0899ServiceImpl implements LALM0899Service{
@@ -19,6 +19,12 @@ public class LALM0899ServiceImpl implements LALM0899Service{
 	private static Logger log = LoggerFactory.getLogger(LALM0899ServiceImpl.class);
 	@Autowired
 	LALM0899Mapper lalm0899Mapper;
+	
+	@Autowired
+	CommonService commonService;
+	
+	@Autowired
+	ConvertConfig convertConfig;
 
 	@Override
 	public Map<String, Object> LALM0899_selMca1300(Map<String, Object> map) throws Exception {
@@ -212,14 +218,26 @@ public class LALM0899ServiceImpl implements LALM0899Service{
 			//합천축협일경우 or 수기농가일경우
 //			}else {
 			
-			// TODO :: 회원 통합 프로세스 넣어야 함...
+			//농가정보 수신 시, 통합회원정보 생성하기
+			Map <String, Object> lowerMap = new HashMap<String, Object>();
+			lowerMap =  convertConfig.changeKeyLower(inMap);
+			lowerMap.put("mb_intg_gb", "02");
+			lowerMap.put("sra_fhs_id_no", inMap.get("FHS_ID_NO"));
+			commonService.Common_insMbintgInfo(lowerMap);
+			
+			inMap.put("mb_intg_no", lowerMap.get("mb_intg_no"));
 			chk_fhsIdNo = lalm0899Mapper.LALM0899_selMca1200_fhsIdNo(inMap);
 
-			if(chk_fhsIdNo > 0) {
+			//조합코드, 농가식별코드, 농장관리번호로 조회된 데이터가 있으면 update, 없으면 insert
+			if(chk_fhsIdNo > 0) {		
 				updateNum += lalm0899Mapper.LALM0899_updMca1200(inMap);
 			}else {
-				insertNum += lalm0899Mapper.LALM0899_insMca1200_2(inMap); 
+				//휴면복구할 데이터가 있는 경우, 농가 INSERT 하지 않아도 됨, 위 메소드 내부에서 처리함
+				if ("0".equals(inMap.getOrDefault("cur_dorm_cnt", "0"))) {
+					insertNum += lalm0899Mapper.LALM0899_insMca1200_2(inMap);
+				}
 			}
+			
 //			}
 		}		
 		return insertNum;

@@ -21,7 +21,7 @@ public interface BatchService {
 	
 	List<Map<String, Object>> selDormcPreUserMbintgList(Map<String, Object> map) throws Exception;
 
-	void sendAlarmTalk_DormacPreUser(Map<String, Object> reVo) throws Exception;
+	Map<String, Object> sendAlarmTalk_DormacPreUser(Map<String, Object> reVo) throws Exception;
 
 	Map<String, Object> batchDashBoardSave(Map<String, Object> map) throws Exception;
 

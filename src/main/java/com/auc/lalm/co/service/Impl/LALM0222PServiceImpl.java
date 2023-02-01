@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.auc.common.exception.CusException;
 import com.auc.common.exception.ErrorCode;
-import com.auc.common.filter.JwtRequestFilter;
 import com.auc.lalm.co.service.LALM0222PService;
+import com.auc.main.service.CommonService;
 
 @Service("LALM0222PService")
 public class LALM0222PServiceImpl implements LALM0222PService{
@@ -22,6 +22,9 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 	private static Logger log = LoggerFactory.getLogger(LALM0222PServiceImpl.class);
 	@Autowired
 	LALM0222PMapper lalm0222PMapper;	
+	
+	@Autowired
+	CommonService commonService;	
 
 	@Override
 	@SuppressWarnings("unchecked")
@@ -75,8 +78,17 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 			updateNum = lalm0222PMapper.LALM0222P_updIsMmIndv(Demap);
 		}
 		
+		// 농가정보 수신 시, 통합회원정보 생성하기
+		Demap.put("mb_intg_gb", "02");
+		Demap.put("anw_yn", "1");	//한우종합여부 : 1
+		Demap.put("sra_fhs_id_no", Demap.get("fhs_id_no"));
+		commonService.Common_insMbintgInfo(Demap);
+		
 		if(fhsList.size() == 0) {
-			insertNum = lalm0222PMapper.LALM0222P_insIsMmFhs(Demap);
+			//휴면복구할 데이터가 있는 경우, 농가 INSERT 하지 않아도 됨, 위 메소드 내부에서 처리함
+			if ("0".equals(Demap.getOrDefault("cur_dorm_cnt", "0"))) {
+				insertNum = lalm0222PMapper.LALM0222P_insIsMmFhs(Demap);
+			}
 			reMap.put("MACO_YN", "0");
 			reMap.put("DEL_YN", "0");
 			reMap.put("JRDWO_DSC", "2");

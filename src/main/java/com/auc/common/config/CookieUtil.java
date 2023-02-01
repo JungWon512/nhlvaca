@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CookieUtil {
-	
 	/**
 	 * 쿠키 생성
 	 * @param cookieName
@@ -20,14 +19,14 @@ public class CookieUtil {
 		Cookie cookie = new Cookie(cookieName, value);
 //		cookie.setHttpOnly(true);
 		cookie.setMaxAge(60*60*24);
-		cookie.setSecure(true);
+		//cookie.setSecure(true);
 		cookie.setPath("/");
 		return cookie;
 	}
 	public Cookie createCookie(String cookieName, String value,int age) {
 		Cookie cookie = new Cookie(cookieName, value);
 		cookie.setMaxAge(age);
-		cookie.setSecure(true);
+		//cookie.setSecure(true);
 		cookie.setPath("/");
 		return cookie;
 	}

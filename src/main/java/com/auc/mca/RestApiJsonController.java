@@ -366,7 +366,7 @@ public class RestApiJsonController {
 			dynamicLink.append("&apn=com.nh.cowauction");					// 링크를 여는 데 사용할 Android 앱의 패키지 이름
 			dynamicLink.append("&ibi=com.nh.cow.auction");					// 링크를 여는 데 사용할 iOS 앱의 번들 ID
 			dynamicLink.append("&isi=1588847718");							// 앱이 설치되지 않았을 때 사용자를 App Store로 보내는 데 사용되는 앱의 App Store ID
-			dynamicLink.append("&efr=1");									// Dynamic Link가 열렸을 때 앱 미리보기 페이지를 건너뛰고 대신 앱이나 스토어로 리디렉션(IOS)
+//			dynamicLink.append("&efr=1");									// Dynamic Link가 열렸을 때 앱 미리보기 페이지를 건너뛰고 대신 앱이나 스토어로 리디렉션(IOS)
 			dynamicLink.append("&st=NH 가축시장");							// Dynamic Link를 공유할 때 사용할 제목
 			dynamicLink.append("&sd=간편하고 스마트하게 경매하는 방법");	// Dynamic Link를 공유할 때 사용할 설명
 			dynamicLink.append("&si=https://www.xn--o39an74b9ldx9g.kr/static/images/guide/new_mo_banner.jpg");	// 링크와 관련된 이미지의 URL( 300X200 이상, 300KB 미만 )
@@ -445,13 +445,15 @@ public class RestApiJsonController {
 			final StringBuffer dynamicLink = new StringBuffer();
 			dynamicLink.append("https://nhauction.page.link/?link=https://nhauction.page.link/dp");		// 고정
 			dynamicLink.append("?urlParam=");					
-			dynamicLink.append(URLEncoder.encode(targetLink, "UTF-8"));		// 이동할 링크 url ( URL Encodin 필요 )
+//			dynamicLink.append(URLEncoder.encode(targetLink, "UTF-8"));		// 이동할 링크 url ( URL Encodin 필요 )
+			dynamicLink.append(targetLink);									// 이동할 링크 url
 			dynamicLink.append("&ofl=");						
-			dynamicLink.append(URLEncoder.encode(targetLink, "UTF-8"));		// 안드로이드, IOS외의 플랫폼에서 사용 할 링크 url ( URL Encodin 필요 )
+//			dynamicLink.append(URLEncoder.encode(targetLink, "UTF-8"));		// 안드로이드, IOS외의 플랫폼에서 사용 할 링크 url ( URL Encodin 필요 )
+			dynamicLink.append(targetLink);									// 안드로이드, IOS외의 플랫폼에서 사용 할 링크 url
 			dynamicLink.append("&apn=com.nh.cowauction");					// 링크를 여는 데 사용할 Android 앱의 패키지 이름
 			dynamicLink.append("&ibi=com.nh.cow.auction");					// 링크를 여는 데 사용할 iOS 앱의 번들 ID
 			dynamicLink.append("&isi=1588847718");							// 앱이 설치되지 않았을 때 사용자를 App Store로 보내는 데 사용되는 앱의 App Store ID
-			dynamicLink.append("&efr=1");									// Dynamic Link가 열렸을 때 앱 미리보기 페이지를 건너뛰고 대신 앱이나 스토어로 리디렉션(IOS)
+//			dynamicLink.append("&efr=1");									// Dynamic Link가 열렸을 때 앱 미리보기 페이지를 건너뛰고 대신 앱이나 스토어로 리디렉션(IOS)
 			dynamicLink.append("&st=NH 가축시장");							// Dynamic Link를 공유할 때 사용할 제목
 			dynamicLink.append("&sd=간편하고 스마트하게 경매하는 방법");	// Dynamic Link를 공유할 때 사용할 설명
 			dynamicLink.append("&si=https://www.xn--o39an74b9ldx9g.kr/static/images/guide/new_mo_banner.jpg");	// 링크와 관련된 이미지의 URL( 300X200 이상, 300KB 미만 )
@@ -491,6 +493,7 @@ public class RestApiJsonController {
 			}
 			
 			shortLink = rtnMap.getOrDefault("shortLink", targetLink).toString();
+			logger.debug("targetUrl : {}, dynamicLinkLong : {}, shortLink : {}", targetLink, dynamicLink, rtnMap.get("shortLink"));
 			
 			con.disconnect();
 			logger.debug("REST API END"); 

@@ -206,7 +206,10 @@ public class McaUtil {
 	        		nodeList.add(nodeMap);
 		        }	        	
 	        }	        
-		}catch (Exception e) {
+		} catch (RuntimeException | IOException e) {
+			log.debug("openData 접종정보 연계 중 오류가 발생하였습니다.",e);
+			nodeList = null;
+        } catch (Exception e) {
         	log.debug("openData 이동정보 연계 중 오류가 발생하였습니다.",e);
         	nodeList =null;
         	//throw new CusException(ErrorCode.CUSTOM_ERROR,"서버 수행중 오류가 발생하였습니다.");

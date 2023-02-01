@@ -347,8 +347,7 @@ public class LALM0899Controller {
 		}else if("3800".equals((String)map.get("ctgrm_cd"))) {
 			selMap = lalm0899Service.LALM0899_selMca3800(map);
 			Map<String, Object> dataMap = null;
-			if(Integer.parseInt((String)selMap.get("INQ_CN")) > 0) {		
-				
+			if(Integer.parseInt((String)selMap.get("INQ_CN")) > 0) {
 				Map<String, Object> tmsMap = new HashMap<String, Object>();
 								
 				List<Map<String, Object>> tmsList = null; 
@@ -370,8 +369,9 @@ public class LALM0899Controller {
 						tmsCnt = tmsCnt + 20;
 					}
 				}
-				
-				dataMap = (Map<String, Object>) mcaMap.get("jsonData");
+				if(mcaMap != null) {
+					dataMap = (Map<String, Object>) mcaMap.get("jsonData");
+				}
 			}else {
 				dataMap = new HashMap<String, Object>();
 			}
@@ -390,7 +390,7 @@ public class LALM0899Controller {
 				mcaMap = mcaUtil.tradeMcaMsg((String)map.get("ctgrm_cd"), selMap);
 			}
 
-			Map<String, Object> dataMap = (Map<String, Object>) mcaMap.get("jsonData");
+			Map<String, Object> dataMap = (Map<String, Object>)mcaMap.get("jsonData");
 			reMap = commonFunc.createResultSetMapData(dataMap);
 			return reMap;
 		}else if("4000".equals((String)map.get("ctgrm_cd"))) {
@@ -420,7 +420,7 @@ public class LALM0899Controller {
 					}
 				}
 				if(mcaMap != null) {
-					dataMap = (Map<String, Object>) mcaMap.get("jsonData");					
+					dataMap = (Map<String, Object>) mcaMap.get("jsonData");
 				}
 			}
 			

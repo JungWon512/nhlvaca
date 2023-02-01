@@ -180,6 +180,16 @@ var na_bzplc = App_na_bzplc;
                 return;
             }else{
                 result = setDecrypt(results);
+            	if(result){
+            		result.forEach((e,i)=>{
+            			if(e.MTCN && e.MTCN > 0){
+                			e.MTCN = e.MTCN - 1;
+                		}        
+                		if(e.CALF_MTCN && e.CALF_MTCN > 0){
+                			e.CALF_MTCN = e.CALF_MTCN -1;
+                		}
+                	});    		
+            	}
             }  
             result = fn_CreateGrid(result);
      	}else if($("#tab_2").hasClass("on")){
@@ -192,6 +202,13 @@ var na_bzplc = App_na_bzplc;
             	return;
             }else{
             	result = setDecrypt(results);
+            	if(result){
+            		result.forEach((e,i)=>{
+            			if(e.MTCN && e.MTCN > 0){
+                			e.MTCN = e.MTCN - 1;
+                		}
+                	});    		
+            	}
             }        
             fn_CreateGrid_2(result);
         }else if($("#tab_3").hasClass("on")){
@@ -232,6 +249,13 @@ var na_bzplc = App_na_bzplc;
                 return;
             }else{
                 result = setDecrypt(results);
+            	if(result){
+            		result.forEach((e,i)=>{
+            			if(e.MTCN && e.MTCN > 0){
+                			e.MTCN = e.MTCN-1;
+                		}
+                	});    		
+            	}
             }
             
             fn_CreateGrid_4(result);
@@ -1406,20 +1430,20 @@ var na_bzplc = App_na_bzplc;
         	                         {name:"LVST_AUC_PTC_MN_NO",        index:"LVST_AUC_PTC_MN_NO",       width:55, align:'center'   ,hidden:true}, 
         	                         {name:"SRA_INDV_AMNNO",            index:"SRA_INDV_AMNNO",           width:55, align:'center'   ,hidden:true},
                                     
-        	                         {name:"AUC_PRG_SQ",                index:"AUC_PRG_SQ",               width:55, align:'center'  },
+        	                         {name:"AUC_PRG_SQ",                index:"AUC_PRG_SQ",               width:55, align:'center', sorttype: "number"  },
                                      {name:"AUC_OBJ_DSC",               index:"AUC_OBJ_DSC",              width:65, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
                                      {name:"SRA_INDV_AMNNO12",          index:"SRA_INDV_AMNNO12",         width:120, align:'center' },
                                      {name:"BIRTH",                     index:"BIRTH",                    width:70, align:'center'  },
-                                     {name:"MTCN",                      index:"MTCN",                     width:40, align:'center'    , formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"MTCN",                      index:"MTCN",                     width:40, align:'center', sorttype: "number", formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"INDV_SEX_C",                index:"INDV_SEX_C",               width:55, align:'center'   ,edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
-                                     {name:"SRA_INDV_PASG_QCN",         index:"SRA_INDV_PASG_QCN",        width:40, align:'center'  },
-                                     {name:"SRA_INDV_BRDSRA_RG_NO",     index:"SRA_INDV_BRDSRA_RG_NO",    width:70, align:'center'  },
+                                     {name:"SRA_INDV_PASG_QCN",         index:"SRA_INDV_PASG_QCN",        width:40, align:'center', sorttype: "number"},
+                                     {name:"SRA_INDV_BRDSRA_RG_NO",     index:"SRA_INDV_BRDSRA_RG_NO",    width:70, align:'center', sorttype: "number"},
                                      {name:"RG_DSC",                    index:"RG_DSC",                   width:60, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
                                      {name:"RMHN_YN",                   index:"RMHN_YN",                  width:60, align:'center'    , edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"KPN_NO",                    index:"KPN_NO",                   width:60, align:'center'  },
                                      {name:"MCOW_SRA_INDV_AMNNO",       index:"MCOW_SRA_INDV_AMNNO",      width:140, align:'center' },
                                      {name:"MATIME",                    index:"MATIME",                   width:35, align:'center'  },
-                                     {name:"COW_SOG_WT",                index:"COW_SOG_WT",               width:70, align:'right'   , formatter:'interger', formatoptions:{decimalPlaces:2,thousandsSeparator:','}},
+                                     {name:"COW_SOG_WT",                index:"COW_SOG_WT",               width:70, align:'right', sorttype: "number", formatter:'interger', formatoptions:{decimalPlaces:2,thousandsSeparator:','}},
                                      {name:"DONG",                      index:"DONG",                     width:200, align:'left'   },
                                      {name:"FTSNM",                     index:"FTSNM",                    width:60, align:'center'  },
                                      {name:"CUS_MPNO",                  index:"CUS_MPNO",                 width:75, align:'center'  },
@@ -1430,12 +1454,12 @@ var na_bzplc = App_na_bzplc;
                                      {name:"PRNY_JUG_YN",               index:"PRNY_JUG_YN",              width:60, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"PRNY_YN",                   index:"PRNY_YN",                  width:60, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"AFISM_MOD_DT",              index:"AFISM_MOD_DT",             width:60, align:'center'   },
-                                     {name:"PRNY_MTCN",                 index:"PRNY_MTCN",                width:60, align:'right'    , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"PRNY_MTCN",                 index:"PRNY_MTCN",                width:60, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"MOD_KPN_NO",                index:"MOD_KPN_NO",               width:60, align:'center'  },
                                      {name:"CALF_SRA_INDV_AMNNO",       index:"CALF_SRA_INDV_AMNNO",      width:120, align:'center'  ,formatter:'gridIndvFormat'}, 
                                      {name:"CALF_BIRTH",                index:"CALF_BIRTH",               width:100, align:'center'  },
                                      {name:"CALF_INDV_SEX_C",           index:"CALF_INDV_SEX_C",          width:80, align:'center'   ,edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
-                                     {name:"CALF_MTCN",                 index:"CALF_MTCN",                width:80, align:'center'   ,align:'right', formatter:function(cellValue , options, rowData){ if(rowData.CALF_MTCN != null){ return rowData.CALF_MTCN;}}},
+                                     {name:"CALF_MTCN",                 index:"CALF_MTCN",                width:80, align:'center', sorttype: "number",align:'right', formatter:function(cellValue , options, rowData){ if(rowData.CALF_MTCN != null){ return rowData.CALF_MTCN;}}},
                                      {name:"RMK_CNTN",                  index:"RMK_CNTN",                 width:190, align:'left'   }, 
                                      {name:"DNA_YN_CHK",                index:"DNA_YN_CHK",               width:80, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"CASE_COW",                  index:"CASE_COW",                 width:100, align:'center'  , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_SOG_COW_DSC", 1)}},

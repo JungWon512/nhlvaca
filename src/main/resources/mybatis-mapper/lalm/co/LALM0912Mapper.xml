@@ -81,7 +81,6 @@
 	         , C.KKO_SVC_CNT                  /* 카카오서비스카운트          */
 	         , C.SMS_AUTH_YN                  /* SMS인증사용여부 */
 	         , C.SMS_BUFFER_1					/* 출하주 정보 수정 제외항목 */
-	         , C.SMS_BUFFER_2					/* 모바일 업무 간편 비고항목 */
 	         , C.KIOSK_YN                     /* 키오스크 사용여부           */
 	         , C.SBID_SMS_YN                  /* 낙찰 알림톡 자동 발송 여부  */
 	      FROM TB_LA_IS_MM_WMC A
@@ -504,7 +503,6 @@
              , A.SBID_SMS_YN                = #{sbid_sms_yn}   /* 낙찰 알림톡 자동 발송 여부  */
              , A.LSCHG_DTM                  = SYSDATE          /* 최종변경일사                */
              , A.LS_CMENO                   = #{ss_userid}     /* 최종변경자개인번호          */
-             , A.SMS_BUFFER_2 				= #{sms_buffer_2}	/* 모바일 업무 간편 비고 항목 */
          WHEN NOT MATCHED THEN
          INSERT(
                NA_BZPLC                     /* 경제통합사업장코드          */
@@ -531,7 +529,6 @@
              , FSRGMN_ENO                   /* 최초등록자개인번호          */
              , LSCHG_DTM                    /* 최종변경일사                */
              , LS_CMENO                     /* 최종변경자개인번호          */
-             , SMS_BUFFER_2 				/* 모바일 업무 간편 비고 항목 */
         ) VALUES(
                #{na_bzplc}                       /* 경제통합사업장코드          */
              , #{na_bzplcno}                     /* 사업장 번호                 */
@@ -557,7 +554,6 @@
              , #{ss_userid}                      /* 최초등록자개인번호          */
              , SYSDATE                           /* 최종변경일시                */
              , #{ss_userid}                      /* 최종변경자개인번호          */
-             , #{sms_buffer_2}					 /* 모바일 업무 간편 비고 항목 */
         )
     ]]>
     </update>

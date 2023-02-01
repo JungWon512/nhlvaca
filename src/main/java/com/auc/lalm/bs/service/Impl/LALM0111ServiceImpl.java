@@ -42,6 +42,7 @@ public class LALM0111ServiceImpl implements LALM0111Service{
 		map.put("mb_intg_gb", "02");
 		commonService.Common_insMbintgInfo(map);
 
+		//휴면복구할 데이터가 있는 경우, 농가 INSERT 하지 않아도 됨, 위 메소드 내부에서 처리함
 		if (!"0".equals(map.getOrDefault("cur_dorm_cnt", "0"))) {
 			reMap.put("updateNum", map.get("updateNum"));
 			return reMap;

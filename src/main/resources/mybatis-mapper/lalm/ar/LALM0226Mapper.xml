@@ -46,7 +46,7 @@
 			 , A.CCOW_SRA_INDV_AMNNO											/* 송아지 귀표번호 */
 			 , A.LOC_GB															/* 지역구분 */
 			 , B.BIRTH															/* 생년월일 */
-			 , TRUNC(MONTHS_BETWEEN(A.AUC_DT, B.BIRTH)) AS MTCN				/* 월령 */
+			 , TRUNC(MONTHS_BETWEEN(A.AUC_DT, B.BIRTH))+1 AS MTCN				/* 월령 */
 			 , B.MCOW_DSC														/* 어미구분 */
 			 , B.KPN_NO															/* KPN 번호 */
 			 , B.INDV_SEX_C														/* 개체 성별코드 */
@@ -186,7 +186,7 @@
 			 , A.LS_CMENO														/* 최종수정자 개인번호 */
 			 , NVL((SELECT F.USRNM FROM TB_LA_IS_MM_USR F WHERE F.NA_BZPLC = A.NA_BZPLC AND F.USRID = A.LS_CMENO), 'SYSTEM') AS LSCHG_NM	/* 최종수정자 */
 			 , B.BIRTH															/* 생년월일 */
-			 , TRUNC(MONTHS_BETWEEN(A.AUC_DT, B.BIRTH)) AS MTCN				/* 월령 */
+			 , TRUNC(MONTHS_BETWEEN(A.AUC_DT, B.BIRTH))+1 AS MTCN				/* 월령 */
 			 , B.MCOW_DSC														/* 어미구분 */
 			 , B.KPN_NO															/* KPN 번호 */
 			 , B.INDV_SEX_C														/* 개체 성별코드 */

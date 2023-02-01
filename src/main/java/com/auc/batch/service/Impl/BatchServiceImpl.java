@@ -18,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.auc.batch.service.BatchService;
+import com.auc.common.config.CommonFunc;
 import com.auc.common.config.ConvertConfig;
+import com.auc.common.util.StringUtils;
 import com.auc.lalm.bs.service.Impl.LALM0117Mapper;
 import com.auc.lalm.sy.service.LALM0899Service;
 import com.auc.lalm.sy.service.Impl.LALM0840Mapper;
@@ -49,6 +51,9 @@ public class BatchServiceImpl implements BatchService{
 	
 	@Autowired
 	ConvertConfig convertConfig;
+	
+	@Autowired
+	CommonFunc commonFunc;
 
 	@Override
 	public List<Map<String, Object>> selDormaccMmMbintgList(Map<String, Object> map) throws Exception{
@@ -355,7 +360,7 @@ public class BatchServiceImpl implements BatchService{
 	}
 
 	@Override
-	public void sendAlarmTalk_DormacPreUser(Map<String, Object> reVo) throws Exception {
+	public Map<String, Object> sendAlarmTalk_DormacPreUser(Map<String, Object> reVo) throws Exception {
 
 		Map<String, Object> map = new HashMap<String, Object>();	
 		Map<String, Object> msgMap = new HashMap<String, Object>();	
@@ -396,13 +401,14 @@ public class BatchServiceImpl implements BatchService{
 		msgMap.put("IO_TRMSNM", sendPhoneInfo.get("CLNTNM"));		//발신자명 (조합명)
 		msgMap.put("SMS_RMS_MPNO", reVo.get("MB_MPNO"));		// 수신자 전화번호	
 		msgMap.put("SMS_TRMS_TELNO", sendPhoneInfo.get("TEL_NO"));	// 발신자 전화번호
-		msgMap.put("SS_USERID", "BATCH");
+		msgMap.put("SS_USERID", StringUtils.isEmpty(reVo.get("ss_userid")) ? "BATCH" : reVo.get("ss_userid"));
+		msgMap.put("NA_BZPLC", sendPhoneInfo.get("NA_BZPLC"));
 		
 		// 인터페이스에 필요한 파라미터
 		msgMap.put("KAKAO_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, msgMap));
 		msgMap.put("KAKAO_TPL_C", templateId);
 		msgMap.put("ADJ_BRC", sendPhoneInfo.get("ADJ_BRC"));			//사무소 코드 
-		msgMap.put("RLNO", "BATCH");	// RLNO (사용자 사번)
+		msgMap.put("RLNO", StringUtils.isEmpty(reVo.get("ss_userid")) ? "BATCH" : reVo.get("ss_userid"));	// RLNO (사용자 사번)
 		msgMap.put("IO_TIT","");		//제목 : 미사용이라 space로 채움
 		msgMap.put("IO_DPAMN_MED_ADR", reVo.get("MB_MPNO"));		//수신 휴대폰번호
 		msgMap.put("IO_SDMN_MED_ADR", sendPhoneInfo.get("TEL_NO"));			//발신 조합전화번호
@@ -421,7 +427,17 @@ public class BatchServiceImpl implements BatchService{
 		msgMap.put("TMS_YN", dataMap.get("RZTC"));
 		msgMap.put("TMS_TYPE", "02");
 		
-		lalm0899Service.LALM0899_insMca3100(msgMap);
+		int dataCnt = lalm0899Service.LALM0899_insMca3100(msgMap);
+		
+		Map<String, Object> cntMap = new HashMap<String, Object>();
+		cntMap.put("dataCnt", dataCnt);
+		
+		if(StringUtils.isEmpty(reVo.get("batchFlag"))) {
+			Map<String, Object> reMap = commonFunc.createResultSetMapData(cntMap);
+			return reMap;
+		}else {
+			return cntMap;
+		}
 	}
 
 	@Override
