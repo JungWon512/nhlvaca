@@ -1,7 +1,7 @@
 package com.auc.batch.controller;
 
-import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -107,8 +107,16 @@ public class BatchController {
 							inMap = batchService.insUpdDormUserMasking(reVo);
 							reMap = batchService.createResultCUDBatch(inMap);
 							succCnt++;
-						}catch(Exception e) {
-							e.printStackTrace();
+						}
+						catch(RuntimeException | SQLException e) {
+							log.error("BatchController.batch_BJ_LM_0040 : {} ", e);
+							if("".equals(error.toString())) {
+								error.append(this.getExceptionErrorMessage(e));
+							}
+							failCnt++;
+						}
+						catch(Exception e) {
+							log.error("BatchController.batch_BJ_LM_0040 : {} ", e);
 							if("".equals(error.toString())) {
 								error.append(this.getExceptionErrorMessage(e));
 							}
@@ -124,8 +132,14 @@ public class BatchController {
 				failCnt++;
 			}
 		}
+		catch(RuntimeException | SQLException e) {
+			log.error("BatchController.batch_BJ_LM_0040 : {} ", e);
+			error.append(this.getExceptionErrorMessage(e));
+			reMap.put("status", 201);
+			reMap.put("code", "C001");
+		}
 		catch(Exception e) {
-			e.printStackTrace();
+			log.error("BatchController.batch_BJ_LM_0040 : {} ", e);
 			error.append(this.getExceptionErrorMessage(e));
 			reMap.put("status", 201);
 			reMap.put("code", "C001");
@@ -144,8 +158,12 @@ public class BatchController {
 				if(failCnt > 0) {
 					this.sendSmsBatchFail(reMap);
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			}
+			catch (RuntimeException | SQLException e) {
+				log.error("BatchController.batch_BJ_LM_0040 > finally : {} ", e);
+			}
+			catch (Exception e) {
+				log.error("BatchController.batch_BJ_LM_0040 > finally  : {} ", e);
 			}
 		}
 		
@@ -158,6 +176,7 @@ public class BatchController {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unused")
 	@RequestMapping("/batch/batch_BJ_LM_0020")
 	public Map<String, Object> batch_BJ_LM_0020(@RequestParam(required=false) Map<String, Object> request, ResolverMap rMap){	
 		int allCnt = 0, succCnt = 0, failCnt = 0; 
@@ -195,8 +214,16 @@ public class BatchController {
 							reVo.put("batchFlag", "Y");
 							Map<String, Object> resultMap = batchService.sendAlarmTalk_DormacPreUser(reVo);
 							succCnt++;
-						}catch(Exception e) {
-							e.printStackTrace();
+						}
+						catch(RuntimeException | SQLException e) {
+							log.error("BatchController.batch_BJ_LM_0020 : {} ", e);
+							if("".equals(error.toString())) {
+								error.append(this.getExceptionErrorMessage(e));
+							}
+							failCnt++;
+						}
+						catch(Exception e) {
+							log.error("BatchController.batch_BJ_LM_0020 : {} ", e);
 							if("".equals(error.toString())) {
 								error.append(this.getExceptionErrorMessage(e));
 							}
@@ -212,8 +239,14 @@ public class BatchController {
 				failCnt++;
 			}
 		}
+		catch(RuntimeException | SQLException e) {
+			log.error("BatchController.batch_BJ_LM_0020 : {} ", e);
+			error.append(this.getExceptionErrorMessage(e));
+			reMap.put("status", 201);
+			reMap.put("code", "C001");
+		}
 		catch(Exception e) {
-			e.printStackTrace();
+			log.error("BatchController.batch_BJ_LM_0020 : {} ", e);
 			error.append(this.getExceptionErrorMessage(e));
 			reMap.put("status", 201);
 			reMap.put("code", "C001");
@@ -232,8 +265,12 @@ public class BatchController {
 				if(failCnt > 0) {
 					this.sendSmsBatchFail(reMap);
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			}
+			catch (RuntimeException | SQLException e) {
+				log.error("BatchController.batch_BJ_LM_0020 > finally : {} ", e);
+			}
+			catch (Exception e) {
+				log.error("BatchController.batch_BJ_LM_0020 > finally  : {} ", e);
 			}
 		}
 		
@@ -286,7 +323,6 @@ public class BatchController {
 		int errorTxtLen = 0, errorSubstrLen = 500;
 		String result = "";
 		StringWriter errors = new StringWriter();
-		e.printStackTrace(new PrintWriter(errors));
 		errorTxtLen = errors.toString().length();
 
 		if(errorTxtLen > errorSubstrLen) {
@@ -331,8 +367,12 @@ public class BatchController {
 			resultMap.put("exec_flag", exec_flag);
 			resultMap.put("bat_act_dt", bat_act_dt);
 			
-		} catch (Exception e) {
-			e.printStackTrace();
+		}
+		catch (RuntimeException e) {
+			log.error("BatchController.getParameterReqMap : {} ", e);
+		}
+		catch (Exception e) {
+			log.error("BatchController.getParameterReqMap : {} ", e);
 		}
 		
 		return resultMap;
@@ -344,6 +384,7 @@ public class BatchController {
 	 * @return
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public Map<String, Object> conMap(ResolverMap rMap) throws Exception{
 		
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -510,7 +551,14 @@ public class BatchController {
 				failCnt++;
 			}
 		}
+		catch(RuntimeException | SQLException e) {
+			log.error("BatchController.commonBatch : {} ", e);
+			error.append(this.getExceptionErrorMessage(e));
+			reMap.put("status", 201);
+			reMap.put("code", "C001");
+		}
 		catch(Exception e) {
+			log.error("BatchController.commonBatch : {} ", e);
 			error.append(this.getExceptionErrorMessage(e));
 			reMap.put("status", 201);
 			reMap.put("code", "C001");
@@ -529,8 +577,12 @@ public class BatchController {
 				if(failCnt > 0) {
 					this.sendSmsBatchFail(reMap);
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			}
+			catch (RuntimeException | SQLException e) {
+				log.error("BatchController.commonBatch > finally : {} ", e);
+			}
+			catch (Exception e) {
+				log.error("BatchController.commonBatch > finally : {} ", e);
 			}
 		}
 		

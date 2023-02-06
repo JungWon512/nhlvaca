@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +26,7 @@ public class TaskBatch {
 	
 	private boolean isProdServerType() {
 		boolean isProdFlag = false;
-		if("production".equals(serverType)) {
+		if(!"local".equals(serverType)) {
 			isProdFlag = true;
 		}
 		return isProdFlag; 
@@ -49,8 +48,12 @@ public class TaskBatch {
 		
 			batchController.batch_BJ_LM_0040(request, rMap);
 			
-		} catch (Exception e) {
-			e.printStackTrace();
+		}
+		catch (RuntimeException e) {
+			log.error("TaskBatch.batch_BJ_LM_0040 : {} ", e);
+		}
+		catch (Exception e) {
+			log.error("TaskBatch.batch_BJ_LM_0040 : {} ", e);
 		}
 	}
 
@@ -71,8 +74,12 @@ public class TaskBatch {
 		
 			batchController.commonBatch("BJLM0010",request, rMap);
 			
-		} catch (Exception e) {
-			e.printStackTrace();
+		}
+		catch (RuntimeException e) {
+			log.error("TaskBatch.batch_BJ_LM_0010 : {} ", e);
+		}
+		catch (Exception e) {
+			log.error("TaskBatch.batch_BJ_LM_0010 : {} ", e);
 		}
 	}
 
@@ -93,8 +100,12 @@ public class TaskBatch {
 		
 			batchController.commonBatch("BJLM0011",request, rMap);
 			
-		} catch (Exception e) {
-			e.printStackTrace();
+		}
+		catch (RuntimeException e) {
+			log.error("TaskBatch.batch_BJ_LM_0011 : {} ", e);
+		}
+		catch (Exception e) {
+			log.error("TaskBatch.batch_BJ_LM_0011 : {} ", e);
 		}
 	}
 
@@ -114,8 +125,12 @@ public class TaskBatch {
 		
 			batchController.batch_BJ_LM_0020(request, rMap);
 			
-		} catch (Exception e) {
-			e.printStackTrace();
+		}
+		catch (RuntimeException e) {
+			log.error("TaskBatch.batch_BJ_LM_0020 : {} ", e);
+		}
+		catch (Exception e) {
+			log.error("TaskBatch.batch_BJ_LM_0020 : {} ", e);
 		}
 	}
 }

@@ -341,7 +341,7 @@ var isFrmOrgData = null;
 		var searchResultColNames = ["경제통합사업장코드", "농가식별번호", "농가식별번호_sra", "통합회원번호", "농장관리번호","경제통합거래처코드"
 									, "농가명", "조합원여부", "관내외구분", "우편번호", "동이상주소"
 									, "동이하주소", "전화번호", "휴대전화번호", "계좌번호", "생년월일"
-									, "비고내용", "농장식별번호", "한우종합여부", "사료사용여부", "삭제여부"];
+									, "비고내용", "SMS인증번호","농장식별번호", "한우종합여부", "사료사용여부", "삭제여부"];
 		
 		var searchResultColModel = [
 									{name:"NA_BZPLC",         index:"NA_BZPLC",         width:60, align:'center', hidden:true},
@@ -357,10 +357,11 @@ var isFrmOrgData = null;
 									{name:"DONGUP",           index:"DONGUP",           width:120, align:'left'},
 									{name:"DONGBW",           index:"DONGBW",           width:100, align:'left'},
 									{name:"OHSE_TELNO",       index:"OHSE_TELNO",       width:60, align:'center'},
-									{name:"CUS_MPNO",         index:"CUS_MPNO",         width:60, align:'center'},
+									{name:"CUS_MPNO",         index:"CUS_MPNO",         width:70, align:'center'},
 									{name:"SRA_FARM_ACNO",    index:"SRA_FARM_ACNO",    width:80, align:'left'},
 									{name:"BIRTH",            index:"BIRTH",            width:60, align:'center', formatter:'gridDateFormat'},
 									{name:"RMK_CNTN",         index:"RMK_CNTN",         width:120,  align:'left'},
+									{name:"SMS_NO",         index:"SMS_NO",         width:60,  align:'center'},
 									{name:"FARM_ID_NO",       index:"FARM_ID_NO",       width:100, align:'center', hidden:true},
 									{name:"ANW_YN",           index:"ANW_YN",           width:100, align:'center', hidden:true},
 									{name:"SRA_FED_SPY_YN",   index:"SRA_FED_SPY_YN",   width:50,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
@@ -735,7 +736,13 @@ var isFrmOrgData = null;
                                         <input type="text" id="mb_intg_no" name="mb_intg_no" readonly="readonly" />
                                     </div>
                                 </td>
-                                <td colspan="7"></td>
+                                <th scope="row">SMS인증번호</th>
+                                <td>
+	                                <div>
+                                        <input type="text" id="sms_no" name="sms_no" readonly="readonly" />
+                                    </div>
+                                </td>
+                                <td colspan="5"></td>
                             </tr>
                         </tbody>
                     </table>

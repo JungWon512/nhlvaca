@@ -24,6 +24,7 @@ import com.auc.common.exception.ErrorCode;
 import com.auc.common.vo.JwtUser;
 import com.auc.common.vo.ResolverMap;
 import com.auc.lalm.sy.service.LALM0899Service;
+import com.auc.mca.AlarmTalkForm;
 import com.auc.mca.McaUtil;
 import com.auc.mca.RestApiJsonController;
 
@@ -41,6 +42,8 @@ public class LALM0899Controller {
 	LALM0899Service lalm0899Service;
 	@Autowired
 	RestApiJsonController restApiJsonController;
+	@Autowired
+	AlarmTalkForm alarmTalkForm;
 	
 	@ResponseBody
 	@RequestMapping(value="/LALM0899_selIfTotCnt", method=RequestMethod.POST)
@@ -468,6 +471,7 @@ public class LALM0899Controller {
 			for(int i = 0; i < msgList.size(); i++) {
 				Map<String, Object> msgMap = msgList.get(i);				
 				Map<String, Object> tempMap = lalm0899Service.LALM0899_selMca5100AlarmTalkId(msgMap);
+				msgMap.put("KAKAO_MSG_CNTN", alarmTalkForm.getAlarmTalkTemplateToJson((String) msgMap.get("KAKAO_TPL_C"), msgMap));
 				// IO_TGRM_KEY (SEQ - 전문키 YYMMDD + 연번4자리)
 				msgMap.put("IO_TGRM_KEY", tempMap.get("IO_TGRM_KEY"));
 				// RLNO (사용자 사번)

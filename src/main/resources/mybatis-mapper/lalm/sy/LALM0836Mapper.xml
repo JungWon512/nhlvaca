@@ -31,6 +31,7 @@
 		CLNTNM          /* 사업장명           */ 
 		,NA_BZPLCNO /* 사업장 번호           */ 
 		,NA_BZPLC      /*사업장 코드*/
+		,AREANM /*지역명*/
 	FROM TB_LA_IS_BM_BZLOC
 	WHERE NA_BZPLCLOC = #{na_bzplcloc}
 	ORDER BY CLNTNM
@@ -161,13 +162,13 @@ INSERT INTO TB_LA_IS_MM_BZSCHDET(
 		          WHEN B.AUC_OBJ_DSC = '2' THEN '비육우'
 		          WHEN B.AUC_OBJ_DSC = '3' THEN '번식우' 
 		          ELSE '일괄' END HD_AUC_OBJ_DSC		
-		,CASE WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT = '1' THEN '일요일'								/* 요일   */
-			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT = '2' THEN '월요일'
-			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT = '3' THEN '화요일'
-			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT = '4' THEN '수요일'
-			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT = '5' THEN '목요일'
-			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT = '6' THEN '금요일'
-			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT = '7' THEN '토요일'
+		,CASE WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT_ORI = '1' THEN '일요일'								/* 요일   */
+			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT_ORI = '2' THEN '월요일'
+			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT_ORI = '3' THEN '화요일'
+			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT_ORI = '4' THEN '수요일'
+			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT_ORI = '5' THEN '목요일'
+			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT_ORI = '6' THEN '금요일'
+			 WHEN A.SCHE_DT_GB = '2' AND  B.SCHE_DT_ORI = '7' THEN '토요일'
 		ELSE B.SCHE_DT END AUC_DATE
 		, B.SCHE_WEEK																												            	/* 가공된 주    */
 		, B.SCHE_WEEK_ORI																														/* 가공안된 주   */
@@ -189,10 +190,10 @@ INSERT INTO TB_LA_IS_MM_BZSCHDET(
 			  , AUC_OBJ_DSC
 			  , REGEXP_REPLACE(LISTAGG(SCHE_WEEK,',')WITHIN GROUP (ORDER BY SCHE_WEEK),'([^,]+)(,\1)*(,|$)','\1\3')AS SCHE_WEEK
 			  , REGEXP_REPLACE(LISTAGG(SCHE_WEEK_ORI,',')WITHIN GROUP (ORDER BY SCHE_WEEK),'([^,]+)(,\1)*(,|$)','\1\3')AS SCHE_WEEK_ORI
-			  , REGEXP_REPLACE(LISTAGG(SCHE_DT,',')WITHIN GROUP (ORDER BY SCHE_DT),'([^,]+)(,\1)*(,|$)','\1\3') AS SCHE_DT
+			  , REGEXP_REPLACE(LISTAGG(SCHE_DT,'일,')WITHIN GROUP (ORDER BY SCHE_DT),'([^,]+)(,\1)*(,|$)','\1\3')||'일' AS SCHE_DT
 			  , REGEXP_REPLACE(LISTAGG(SCHE_DT_ORI,',')WITHIN GROUP (ORDER BY SCHE_DT),'([^,]+)(,\1)*(,|$)','\1\3') AS SCHE_DT_ORI
 		FROM (
-			SELECT A.NA_BZPLC, B.AUC_OBJ_DSC
+			SELECT A.NA_BZPLC, B.AUC_OBJ_DSC 
 				,CASE 
 					WHEN A.SCHE_DT_GB = '1' THEN '지정일'
 					WHEN A.SCHE_DT_GB = '2' THEN B.SCHE_WEEK || '주'
@@ -202,12 +203,12 @@ INSERT INTO TB_LA_IS_MM_BZSCHDET(
 					WHEN A.SCHE_DT_GB = '2' THEN B.SCHE_WEEK
 				ELSE '' END SCHE_WEEK_ORI
 				,CASE 
-					WHEN A.SCHE_DT_GB = '1' THEN TO_CHAR(B.SCHE_DT)||'일'
-					WHEN A.SCHE_DT_GB = '2' THEN B.SCHE_DOTW
+					WHEN A.SCHE_DT_GB = '1' THEN B.SCHE_DT
+					WHEN A.SCHE_DT_GB = '2' THEN TO_NUMBER(B.SCHE_DOTW)
 				ELSE '' END SCHE_DT
 				,CASE 
-					WHEN A.SCHE_DT_GB = '1' THEN TO_CHAR(B.SCHE_DT)
-					WHEN A.SCHE_DT_GB = '2' THEN B.SCHE_DOTW
+					WHEN A.SCHE_DT_GB = '1' THEN B.SCHE_DT
+					WHEN A.SCHE_DT_GB = '2' THEN TO_NUMBER(B.SCHE_DOTW)
 				ELSE '' END SCHE_DT_ORI
 				FROM TB_LA_IS_MM_BZSCH A
 					LEFT OUTER JOIN TB_LA_IS_MM_BZSCHDET B 

@@ -30,12 +30,6 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 	@Autowired
 	AlarmTalkForm alarmForm;
 	
-	@Autowired
-	private RestApiJsonController restApiJsonController;
-	
-	@Value("${server.type}")
-	private String serverType;
-	
 	@Override
 	public List<Map<String, Object>> LALM0228_selAlarmList(Map<String, Object> map) throws Exception {
 		int cntSize = 0;
@@ -71,7 +65,7 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 					tempMap = lalm0840Mapper.LALM0840_selInfo(map);
 					
 					item.put("MSG_CNTN", alarmForm.makeAlarmMsgCntn(item, tempMap.get("TALK_CONTENT").toString()));	
-					item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
+//					item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
 					item.put("KAKAO_TPL_C", templateId);
 				}
 			} else if("1".equals(map.get("obj_gbn")) && ("05".equals(map.get("msg_gbn")) || "06".equals(map.get("msg_gbn")))){
@@ -88,30 +82,12 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 						templateId = "NHKKO00253";
 					} else {
 						templateId = "NHKKO00259";
-						//버튼 파라메터 
-						item.put("BTN_NM", "정산서 보기");
-						
-						// short link 생성을 위한 중도매인 정산서 url
-						StringBuffer sb = new StringBuffer();
-						if ("production".equals(serverType)) {
-							sb.append("https://www.xn--o39an74b9ldx9g.kr/state-acc/mwmn/");
-						}
-						else {
-							sb.append("https://xn--e20bw05b.kr/state-acc/mwmn/");
-						}
-						sb.append(item.get("NA_BZPLC"));
-						sb.append('/');
-						sb.append(item.get("AUC_DT"));
-						sb.append('/');
-						sb.append(item.get("TRMN_AMNNO"));
-						
-						item.put("BTN_URL", restApiJsonController.createShortLink(sb.toString()));
 					}
 					map.put("code", templateId);
 					tempMap = lalm0840Mapper.LALM0840_selInfo(map);
 					
 					item.put("MSG_CNTN", alarmForm.makeAlarmMsgCntn(item, tempMap.get("TALK_CONTENT").toString()));	
-					item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
+//					item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
 					item.put("KAKAO_TPL_C", templateId);
 				}
 			} else if("2".equals(map.get("obj_gbn")) && "03".equals(map.get("msg_gbn"))){
@@ -123,35 +99,13 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 				for (Map<String, Object> item : list) {
 					//템플릿 파라메터
 					item.put("MSG", " 출하주 정산금액을  ");
-					item.put("COW_INFO1", "출하두수 : "+item.get("TOT_CNT")+"두(낙찰:"+ item.get("TOT_CNT_NAK")+"두, 유찰:"+item.get("TOT_CNT_YOU")+"두)");
-					item.put("COW_INFO2", "총낙찰금액 : "+item.get("TOT_SRA_SBID_AM").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+"원");
-					item.put("COW_INFO3", "총수수료 : "+item.get("TOT_SRA_TR_FEE").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+"원");
-					item.put("COW_INFO4", "받으실 금액 : "+item.get("TOT_AM").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+"원");
-					item.put("COW_INFO5", "계좌번호 : "+item.get("BANK_NM")+", "+item.get("ACNO"));
-					
-					//버튼 파라메터 
-					item.put("BTN_NM", "정산서 보기");
-					
-					// short link 생성을 위한 출하주 정산서 url
-					StringBuffer sb = new StringBuffer();
-					if ("production".equals(serverType)) {
-						sb.append("https://www.xn--o39an74b9ldx9g.kr/state-acc/fhs/");
-					}
-					else {
-						sb.append("https://xn--e20bw05b.kr/state-acc/fhs/");
-					}
-					sb.append(item.get("NA_BZPLC"));
-					sb.append('/');
-					sb.append(item.get("AUC_DT"));
-					sb.append('/');
-					sb.append(item.get("FHS_ID_NO"));
-					sb.append('_');
-					sb.append(item.get("FARM_AMNNO"));
-					
-					item.put("BTN_URL", restApiJsonController.createShortLink(sb.toString()));
-					
+					item.put("COW_INFO1", "출하주 : "+item.get("REVE_USR_NM"));
+					item.put("COW_INFO2", "출하두수 : "+item.get("TOT_CNT")+"두(낙찰:"+ item.get("TOT_CNT_NAK")+"두, 유찰:"+item.get("TOT_CNT_YOU")+"두)");
+					item.put("COW_INFO3", "총낙찰금액 : "+item.get("TOT_SRA_SBID_AM").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+"원");
+					item.put("COW_INFO4", "총수수료 : "+item.get("TOT_SRA_TR_FEE").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+"원");
+					item.put("COW_INFO5", "받으실 금액 : "+item.get("TOT_AM").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+"원");
 					item.put("MSG_CNTN", alarmForm.makeAlarmMsgCntn(item, tempMap.get("TALK_CONTENT").toString()));	
-					item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
+//					item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
 					item.put("KAKAO_TPL_C", templateId);
 				}
 				
@@ -183,7 +137,7 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 							map.put("code", templateId);
 							tempMap = lalm0840Mapper.LALM0840_selInfo(map);
 							item.put("MSG_CNTN", alarmForm.makeAlarmMsgCntn(item, tempMap.get("TALK_CONTENT").toString()));	
-							item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
+//							item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
 							item.put("KAKAO_TPL_C", templateId);
 							
 						}else if("03".equals(map.get("msg_gbn"))) {
@@ -208,7 +162,7 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 							map.put("code", templateId);
 							tempMap = lalm0840Mapper.LALM0840_selInfo(map);
 							item.put("MSG_CNTN", alarmForm.makeAlarmMsgCntn(item, tempMap.get("TALK_CONTENT").toString()));	
-							item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
+//							item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
 							item.put("KAKAO_TPL_C", templateId);
 						}
 					}else {
@@ -232,7 +186,7 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 						map.put("code", templateId);
 						tempMap = lalm0840Mapper.LALM0840_selInfo(map);
 						item.put("MSG_CNTN", alarmForm.makeAlarmMsgCntn(item, tempMap.get("TALK_CONTENT").toString()));	
-						item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
+//						item.put("SEND_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, item));
 						item.put("KAKAO_TPL_C", templateId);
 					}
 				}

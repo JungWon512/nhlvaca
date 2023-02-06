@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -27,6 +29,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.apache.http.HttpStatus;
+import org.apache.tomcat.util.buf.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,12 +50,24 @@ public class RestApiJsonController {
 	@Value("${mca.ip}")
 	private String mcaIp;
     
+	@Value("${server.type}")
+	private String serverType;
+	
 	//전문 보내고 받기
     public Map<String, Object> mcaSendMsg(String ctgrm_cd, int io_all_yn, String ccls_cd, String data) throws Exception {      
         //보낸메시지
         String sendMsg = setSendMsg(ctgrm_cd, io_all_yn, ccls_cd, data);
         //전문보내기
         String recvMsg = sendPostJson(sendMsg);
+        
+        //local에서 필요할 때만 주석 해제하기
+//     String recvMsg = "";
+//     if ("local".equals(serverType)) {
+//			recvMsg = this.localResponse(ctgrm_cd);
+//		}else {
+//			recvMsg = sendPostJson(sendMsg);
+//		}
+        
         //받은메시지
         //String recvMsg = responseBody;
         logger.info(recvMsg);
@@ -64,11 +79,12 @@ public class RestApiJsonController {
             map.put("jsonHeader", "Error");
             map.put("dataCnt", "0");
             map.put("jsonList", null);
+            map.put("jsonData", null);
         }
         return map;
     }
     
-    //전문 전체(header + body)
+	//전문 전체(header + body)
     public String setSendMsg(String ctgrm_cd, int io_all_yn, String ccls_cd, String data) throws Exception {
         String header = setSndHeader(ctgrm_cd, ccls_cd, io_all_yn);        
         StringBuffer str = new StringBuffer();
@@ -190,7 +206,6 @@ public class RestApiJsonController {
     	URL url = new URL(mcaIp);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
-        boolean result = true;
         String responseBody = "";
         try {
             logger.debug("REST API START");
@@ -360,9 +375,11 @@ public class RestApiJsonController {
 			final StringBuffer dynamicLink = new StringBuffer();
 			dynamicLink.append("https://nhauction.page.link/?link=https://nhauction.page.link/dp");		// 고정
 			dynamicLink.append("?urlParam=");					
-			dynamicLink.append(URLEncoder.encode(link, "UTF-8"));			// 이동할 링크 url ( URL Encodin 필요 )
+			dynamicLink.append(link);										// 이동할 링크 url
+//			dynamicLink.append(URLEncoder.encode(link, "UTF-8"));			// 이동할 링크 url ( URL Encodin 필요 )
 			dynamicLink.append("&ofl=");						
-			dynamicLink.append(URLEncoder.encode(link, "UTF-8"));			// 안드로이드, IOS외의 플랫폼에서 사용 할 링크 url ( URL Encodin 필요 )
+			dynamicLink.append(link);										// 안드로이드, IOS외의 플랫폼에서 사용 할 링크 url
+//			dynamicLink.append(URLEncoder.encode(link, "UTF-8"));			// 안드로이드, IOS외의 플랫폼에서 사용 할 링크 url ( URL Encodin 필요 )
 			dynamicLink.append("&apn=com.nh.cowauction");					// 링크를 여는 데 사용할 Android 앱의 패키지 이름
 			dynamicLink.append("&ibi=com.nh.cow.auction");					// 링크를 여는 데 사용할 iOS 앱의 번들 ID
 			dynamicLink.append("&isi=1588847718");							// 앱이 설치되지 않았을 때 사용자를 App Store로 보내는 데 사용되는 앱의 App Store ID
@@ -493,7 +510,6 @@ public class RestApiJsonController {
 			}
 			
 			shortLink = rtnMap.getOrDefault("shortLink", targetLink).toString();
-			logger.debug("targetUrl : {}, dynamicLinkLong : {}, shortLink : {}", targetLink, dynamicLink, rtnMap.get("shortLink"));
 			
 			con.disconnect();
 			logger.debug("REST API END"); 
@@ -503,7 +519,6 @@ public class RestApiJsonController {
 			return targetLink;
 		}
 		catch (Exception e) {
-			e.printStackTrace();
 			logger.error(e.getMessage());
 			return targetLink;
 		}
@@ -515,6 +530,7 @@ public class RestApiJsonController {
 	}
 	
 	private void SSLVaildBypass() throws NoSuchAlgorithmException, KeyManagementException {
+		if("production".equals(serverType)) return ;
 		HostnameVerifier hv = new HostnameVerifier() {
 			@Override
 			public boolean verify(String arg0, SSLSession arg1) {
@@ -540,6 +556,18 @@ public class RestApiJsonController {
 		sc.init(null, trustAllCerts, new SecureRandom());
 		HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 		HttpsURLConnection.setDefaultHostnameVerifier(hv);
+	}
+	
+	private String localResponse(String ctgrm_cd) {
+		final String fileResource = "C:\\workspace\\nhlva\\src\\main\\resources\\static\\json\\" + ctgrm_cd + ".json";
+		String str = "";;
+		try {
+			str = StringUtils.join(Files.readAllLines(Paths.get(fileResource)), ' ');
+		} catch (IOException e) {
+			logger.error("RestApiJsonController.localResponse : {} ", e);
+			return "";
+		}
+		return str;
 	}
 }
 

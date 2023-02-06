@@ -223,6 +223,7 @@ public class LALM0899ServiceImpl implements LALM0899Service{
 			lowerMap =  convertConfig.changeKeyLower(inMap);
 			lowerMap.put("mb_intg_gb", "02");
 			lowerMap.put("sra_fhs_id_no", inMap.get("FHS_ID_NO"));
+			lowerMap.put("ss_eno", inMap.get("ss_userid"));
 			commonService.Common_insMbintgInfo(lowerMap);
 			
 			inMap.put("mb_intg_no", lowerMap.get("mb_intg_no"));

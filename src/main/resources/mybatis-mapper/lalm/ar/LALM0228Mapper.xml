@@ -43,7 +43,7 @@
 				, NVL(F.SMS_FWDG_DT, '') AS SMS_FWDG_DT
 				, C.SRA_MWMNNM
 				, G.TELNO CLNT_TELNO
-				, A.AUC_DT || LPAD(A.OSLP_NO, 4, '0') SMS_SEND_KEY
+				, A.AUC_DT || LPAD(A.OSLP_NO, 4, '0') || NVL(#{sms_key},0) SMS_SEND_KEY
 				, G.BRC AS ADJ_BRC
 		FROM
 			TB_LA_IS_MH_SOG_COW A
@@ -59,7 +59,7 @@
 			INNER JOIN TB_LA_IS_MM_WMC G ON A.NA_BZPLC = G.NA_BZPLC
 			LEFT JOIN TB_LA_IS_MM_SMS F ON A.NA_BZPLC = F.NA_BZPLC
 														AND A.AUC_OBJ_DSC = F.AUC_OBJ_DSC
-														AND F.TRMN_AMNNO = A.AUC_DT || LPAD(A.OSLP_NO, 4, '0')
+														AND F.TRMN_AMNNO = A.AUC_DT || LPAD(A.OSLP_NO, 4, '0') || NVL(#{sms_key},0)
 														AND F.DPAMN_DSC = #{obj_gbn}
 														AND TMS_TYPE = '02'
 			WHERE A.NA_BZPLC = #{ss_na_bzplc}
@@ -69,6 +69,7 @@
 					AND A.SEL_STS_DSC = '22'
 				</if>
 				AND LENGTH(NVL(DECODE(#{obj_gbn},'2',D.CUS_MPNO,C.CUS_MPNO),'')) <![CDATA[>=]]> 10	
+				AND LENGTH(REGEXP_REPLACE(NVL(DECODE(#{obj_gbn},'2',D.CUS_MPNO,C.CUS_MPNO),''), '[^0-9]')) <![CDATA[>=]]> 10
 	</select>
 	
 
@@ -84,7 +85,7 @@
 			, NVL(F.TMS_YN, 'N') AS TMS_YN
 			, NVL(F.SMS_FWDG_DT, '') AS SMS_FWDG_DT
 			, NVL(C.CUS_MPNO,'') CUS_MPNO
-			, #{auc_dt} || LPAD(C.TRMN_AMNNO, 5, '0') SMS_SEND_KEY
+			, #{auc_dt} || LPAD(C.TRMN_AMNNO, 4, '0') || NVL(#{sms_key},0) SMS_SEND_KEY
 			, G.BRC AS ADJ_BRC
 		FROM TB_LA_IS_MM_MWMN C 
 		INNER JOIN TB_LA_IS_MH_AUC_QCN D ON C.NA_BZPLC = D.NA_BZPLC
@@ -94,11 +95,12 @@
 		INNER JOIN TB_LA_IS_MM_WMC G ON C.NA_BZPLC = G.NA_BZPLC
 		LEFT JOIN TB_LA_IS_MM_SMS F ON C.NA_BZPLC = F.NA_BZPLC
 									AND F.AUC_OBJ_DSC = #{auc_obj_dsc}
-									AND F.TRMN_AMNNO = #{auc_dt} || LPAD(C.TRMN_AMNNO, 5, '0')
+									AND F.TRMN_AMNNO = #{auc_dt} || LPAD(C.TRMN_AMNNO, 4, '0') || NVL(#{sms_key},0)
 									AND F.DPAMN_DSC = '1'
 									AND F.TMS_TYPE = '02'
 		WHERE C.NA_BZPLC = #{ss_na_bzplc}
 			AND LENGTH(REPLACE(NVL(C.CUS_MPNO,''), '-', '')) <![CDATA[>=]]> 10	
+			AND LENGTH(REGEXP_REPLACE(NVL(C.CUS_MPNO,''), '[^0-9]')) <![CDATA[>=]]> 10
 	</select>
 	
 	<!-- 알림톡 템플릿 리스트 조회 응찰자 정산서 -->
@@ -116,6 +118,7 @@
 				, NVL(D.CUS_MPNO,'') AS CUS_MPNO
 				, NVL(TRIM(D.SRA_MWMNNM),'') AS REVE_USR_NM
 				, T.TOT_SRA_SBID_AM + T.TOT_SRA_TR_FEE AS TOT_AM
+				, T.AUC_DT || LPAD(T.TRMN_AMNNO, 4, '0') || NVL(#{sms_key},0) SMS_SEND_KEY
 		FROM (
 					SELECT A.NA_BZPLC
 							, A.AUC_OBJ_DSC
@@ -161,14 +164,14 @@
 			INNER JOIN TB_LA_IS_MM_WMC G ON T.NA_BZPLC = G.NA_BZPLC
 			LEFT JOIN TB_LA_IS_MM_SMS F ON T.NA_BZPLC = F.NA_BZPLC
 													AND T.AUC_OBJ_DSC = F.AUC_OBJ_DSC
-													AND T.TRMN_AMNNO = F.TRMN_AMNNO
-													AND F.TRMN_AMNNO = T.AUC_DT || LPAD(T.TRMN_AMNNO, 4, '0')
-													AND F.DPAMN_DSC = '2'
+													AND F.TRMN_AMNNO = T.AUC_DT || LPAD(T.TRMN_AMNNO, 4, '0') || NVL(#{sms_key},0)
+													AND F.DPAMN_DSC = '1'
 													AND TMS_TYPE = '02'
 			LEFT JOIN TB_LA_IS_MH_COMN_APL C ON C.SIMP_C = G.REP_BNK_C
 															AND C.SIMP_TPC = 'BNK_C'
 															AND C.SIMP_C_GRP_SQNO = '1'
 		WHERE LENGTH(REPLACE(NVL(D.CUS_MPNO,''), '-', '')) <![CDATA[>=]]> 10	
+			AND LENGTH(REGEXP_REPLACE(NVL(D.CUS_MPNO,''), '[^0-9]')) <![CDATA[>=]]> 10
 	</select>
 	
 	<!-- 알림톡 템플릿 리스트 조회 출하자 정산서 -->
@@ -186,10 +189,14 @@
 				, NVL(D.CUS_MPNO,'') AS CUS_MPNO
 				, NVL(TRIM(D.FTSNM),'') AS REVE_USR_NM
 				, T.TOT_SRA_SBID_AM - T.TOT_SRA_TR_FEE AS TOT_AM
+				, T.AUC_DT || LPAD(T.RNUM, 4, '0') || NVL(#{sms_key},0) SMS_SEND_KEY
 		FROM (
-					SELECT A.NA_BZPLC
+					SELECT ROW_NUMBER() OVER(ORDER BY A.NA_BZPLC,A.AUC_OBJ_DSC,A.AUC_DT,A.FHS_ID_NO,A.FARM_AMNNO) AS RNUM
+							, A.NA_BZPLC
 							, A.AUC_OBJ_DSC
-							, A.AUC_DT, A.FHS_ID_NO, A.FARM_AMNNO
+							, A.AUC_DT
+							, A.FHS_ID_NO
+							, A.FARM_AMNNO
 							, COUNT(*) AS TOT_CNT
 							, COUNT(DECODE(A.SEL_STS_DSC,'22',1)) AS TOT_CNT_NAK
 							, COUNT(DECODE(A.SEL_STS_DSC,'22',NULL,1)) AS TOT_CNT_YOU
@@ -233,13 +240,14 @@
 				INNER JOIN TB_LA_IS_MM_WMC G ON T.NA_BZPLC = G.NA_BZPLC
 				LEFT JOIN TB_LA_IS_MM_SMS F ON T.NA_BZPLC = F.NA_BZPLC
 														AND T.AUC_OBJ_DSC = F.AUC_OBJ_DSC
-														AND F.TRMN_AMNNO = T.AUC_DT || LPAD(T.FHS_ID_NO, 4, '0')
+														AND F.TRMN_AMNNO = T.AUC_DT || LPAD(T.RNUM, 4, '0') || NVL(#{sms_key},0)
 														AND F.DPAMN_DSC = '2'
 														AND TMS_TYPE = '02'
 				LEFT JOIN TB_LA_IS_MH_COMN_APL C ON C.SIMP_C = G.REP_BNK_C
 																AND C.SIMP_TPC = 'BNK_C'
 																AND C.SIMP_C_GRP_SQNO = '1'
 			WHERE LENGTH(REPLACE(NVL(D.CUS_MPNO,''), '-', '')) <![CDATA[>=]]> 10	
+					AND LENGTH(REGEXP_REPLACE(NVL(D.CUS_MPNO,''), '[^0-9]')) <![CDATA[>=]]> 10
 	</select>
 	
 	

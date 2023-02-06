@@ -29,7 +29,7 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> LALM0222P_updReturnValue(Map<String, Object> map) throws Exception {
-		
+
 		Map<String, Object> reMap = new HashMap<String, Object>();
 		Map<String, Object> Demap = new HashMap<String, Object>();
 		List<Map<String, Object>> indvList = null;
@@ -82,6 +82,8 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 		Demap.put("mb_intg_gb", "02");
 		Demap.put("anw_yn", "1");	//한우종합여부 : 1
 		Demap.put("sra_fhs_id_no", Demap.get("fhs_id_no"));
+		Demap.put("ftsnm", Demap.get("sra_fhsnm"));
+		Demap.put("cus_mpno", Demap.get("mpno"));
 		commonService.Common_insMbintgInfo(Demap);
 		
 		if(fhsList.size() == 0) {

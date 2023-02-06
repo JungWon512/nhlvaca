@@ -73,6 +73,7 @@
             , a.DONGBW            as ORG_DONGBW
             , a.DEL_YN            as DEL_YN
             , a.MB_INTG_NO
+            , a.SMS_NO
          FROM tb_la_is_mm_fhs a
          left outer join tb_la_is_mm_mbintg b
 		   on ( a.mb_intg_no = b.mb_intg_no and b.mb_intg_gb = '02')
@@ -272,6 +273,7 @@
             , DONGBW            as ORG_DONGBW
             , DEL_YN            as DEL_YN
             , MB_INTG_NO
+            , SMS_NO
          FROM tb_la_is_mm_fhs
         WHERE fhs_id_no  = #{sra_fhs_id_no}
           AND farm_amnno = #{farm_amnno}

@@ -1635,7 +1635,7 @@ function fn_ExcelDownlad(gid, p_title, p_footer){
    
    MessagePopup('YESNO', message, function(res){
 	   if(res){
-		   if(parent.inputRn.length < 2){
+		   if((parent.inputRn?.length ?? 0) < 2){
 			   MessagePopup('OK','다운로드사유를 2글자 이상 입력해주세요.');
 			   return;
 		   }

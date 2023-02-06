@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -38,13 +40,15 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.Base64;
 import com.auc.common.util.StringUtils;
 import com.auc.lalm.ar.service.LALM0215Service;
+import com.auc.lalm.bs.service.Impl.LALM0117ServiceImpl;
 import com.auc.main.service.LogService;
 import com.auc.main.service.Impl.LogMapper;
 
 @Service("LALM0215Service")
 @SuppressWarnings({"unused", "unchecked"})
 public class LALM0215ServiceImpl implements LALM0215Service{
-
+	private static Logger log = LoggerFactory.getLogger(LALM0215ServiceImpl.class);
+	
 	@Value("${bucket.endPoint}")
 	private String endPoint;
 	
@@ -574,7 +578,7 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		        
 		        map.put("ENCODE_FILE", "data:image/png;base64,"+encodeFile);
 			}catch (RuntimeException | IOException re) {
-				re.printStackTrace();
+				log.error("e : LALM0215_selImgList : ",re);
 			}finally {
 				if(inputStream != null)inputStream.close();
 		        if(byteOutStream != null)byteOutStream.close();
@@ -634,13 +638,13 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 //			this.LALM0215_selImgList(reMap);
 		}
 		catch (AmazonS3Exception e) {
-			e.printStackTrace();
+			log.error("e: 이미지 네이버 클라우드 업로드 ",e);
 		}
 		catch(SdkClientException e) {
-			e.printStackTrace();
+			log.error("e: 이미지 네이버 클라우드 업로드 ",e);
 		}
 		catch(IOException e) {
-			e.printStackTrace();
+			log.error("e: 이미지 네이버 클라우드 업로드 ",e);
 		}
 		
 		return reMap;
@@ -659,9 +663,9 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 			s3.deleteObject(bucketName, key);
 		
 		} catch (AmazonS3Exception e) {
-		    e.printStackTrace();
+			log.error("e : LALM0215_delImgList : ",e);
 		} catch(SdkClientException e) {
-		    e.printStackTrace();
+			log.error("e : LALM0215_delImgList : ",e);
 		}
 		
 		return reMap;
@@ -732,11 +736,11 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 				s3.putObject(oriPutObjectRequest);
 			}
 			catch (AmazonS3Exception e) {
-				e.printStackTrace();
+				log.error("e : imgUploadPrc : ",e);
 				isSuccess = false;
 			}
 			catch(SdkClientException e) {
-				e.printStackTrace();
+				log.error("e : imgUploadPrc : ",e);
 				isSuccess = false;
 			}
 			

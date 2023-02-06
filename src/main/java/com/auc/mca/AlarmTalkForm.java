@@ -5,6 +5,8 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -12,6 +14,12 @@ import org.springframework.util.StringUtils;
 public class AlarmTalkForm {
 
 	private static Logger log = LoggerFactory.getLogger(AlarmTalkForm.class);
+	
+	@Autowired
+	private RestApiJsonController restApiJsonController;
+	
+	@Value("${server.type}")
+	private String serverType;
 	
 	@Deprecated
 	public String getAlarmTalkTemplate(String templateCode, Map<String, Object> paramMap) {
@@ -141,17 +149,39 @@ public class AlarmTalkForm {
 	
 	public String getAlarmTalkTemplateToJson(String templateCode, Map<String, Object> paramMap) {
 		JSONObject jobj = new JSONObject();
+		String appLink = "";
 		
 		// java단에서 알람톡 템플릿을 사용하지않음
 		//jobj.put("msg_content", this.getAlarmTalkTemplate(templateCode, paramMap));
-		
 		jobj.put("msg_content", paramMap.get("MSG_CNTN"));
 		// NHKKO00259 : 출하주, NHKKO00260 : 중도매인
 		if ("NHKKO00259".equals(templateCode) || "NHKKO00260".equals(templateCode)) {
-			jobj.put("btn_name_1", paramMap.getOrDefault("BTN_NM","버튼명"));
-			jobj.put("btn_type_1", "AL");
+			try {
+				// short link 생성을 위한 중도매인 정산서 url
+				StringBuffer sb = new StringBuffer();
+				if ("production".equals(serverType)) {
+					sb.append("https://www.xn--o39an74b9ldx9g.kr/state-acc/mwmn/");
+				}
+				else {
+					sb.append("http://adv-www.xn--e20bw05b.co.kr/state-acc/mwmn/");
+				}
+				sb.append(paramMap.get("NA_BZPLC"));
+				sb.append('/');
+				sb.append(paramMap.get("AUC_DT"));
+				sb.append('/');
+				sb.append(paramMap.get("TRMN_AMNNO"));
+				
+				jobj.put("btn_name_1", "정산서 보기");
+				jobj.put("btn_type_1", "AL");
+				
+				appLink = restApiJsonController.createShortLink(sb.toString());
+//				String appLink = paramMap.getOrDefault("BTN_URL", "https://nhauction.page.link/JwzKzHb6hMzbEXk88").toString();
+			} catch (RuntimeException e) {
+				appLink = "https://nhauction.page.link/JwzKzHb6hMzbEXk88";
+			}catch (Exception e) {
+				appLink = "https://nhauction.page.link/JwzKzHb6hMzbEXk88";
+			}
 			
-			String appLink = paramMap.getOrDefault("BTN_URL", "https://nhauction.page.link/JwzKzHb6hMzbEXk88").toString();
 			jobj.put("btn_content_1", appLink +"$|$" + appLink);
 		}
 		

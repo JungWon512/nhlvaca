@@ -2,16 +2,13 @@ package com.auc.batch.service.Impl;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +48,10 @@ public class BatchServiceImpl implements BatchService{
 	
 	@Autowired
 	ConvertConfig convertConfig;
-	
+
 	@Autowired
 	CommonFunc commonFunc;
-
+	
 	@Override
 	public List<Map<String, Object>> selDormaccMmMbintgList(Map<String, Object> map) throws Exception{
 		return batchMapper.selDormaccMmMbintgList(map);
@@ -185,8 +182,16 @@ public class BatchServiceImpl implements BatchService{
 					try {
 						insertNum += batchMapper.insDashBoardAucEntr(aucEntrMap);
 						succCnt++;
-					}catch(Exception e) {
-						log.error("message", e);
+					}
+					catch(RuntimeException | SQLException e) {
+						log.error("BatchServiceImpl.batchDashBoardFor5400 : {}", e);
+						if("".equals(error.toString())) {
+							error.append(this.getExceptionErrorMessage(e));
+						}
+						failCnt++;
+					}
+					catch(Exception e) {
+						log.error("BatchServiceImpl.batchDashBoardFor5400 : {}", e);
 						if("".equals(error.toString())) {
 							error.append(this.getExceptionErrorMessage(e));
 						}
@@ -194,8 +199,16 @@ public class BatchServiceImpl implements BatchService{
 					}
 				}
 			}
-		}catch(Exception e) {
-			log.error("message", e);
+		}
+		catch(RuntimeException | SQLException e) {
+			log.error("BatchServiceImpl.batchDashBoardFor5400 : {}", e);
+			if("".equals(error.toString())) {
+				error.append(this.getExceptionErrorMessage(e));
+			}
+			failCnt++;
+		}
+		catch(Exception e) {
+			log.error("BatchServiceImpl.batchDashBoardFor5400 : {}", e);
 			if("".equals(error.toString())) {
 				error.append(this.getExceptionErrorMessage(e));
 			}
@@ -248,8 +261,16 @@ public class BatchServiceImpl implements BatchService{
 							//개체 추가할지 출장우 컬럼추가할지 미정
 							insertNum += batchMapper.insDashBoardIndv(sogCowMap);
 							succCnt++;
-						}catch(Exception e) {
-							log.error("message 5200inf Sql error ", e);
+						}
+						catch(RuntimeException | SQLException e) {
+							log.error("BatchServiceImpl.batchDashBoardFor5200 : {} ", e);
+							if("".equals(error.toString())) {
+								error.append(this.getExceptionErrorMessage(e));
+							}
+							failCnt++;
+						}
+						catch(Exception e) {
+							log.error("BatchServiceImpl.batchDashBoardFor5200 : {} ", e);
 							if("".equals(error.toString())) {
 								error.append(this.getExceptionErrorMessage(e));
 							}
@@ -257,8 +278,17 @@ public class BatchServiceImpl implements BatchService{
 						}
 					}
 				}
-			}catch(Exception e) {
-				log.error("message 5200 inf error ", e);
+			}
+			catch(RuntimeException | SQLException e) {
+				log.error("BatchServiceImpl.batchDashBoardFor5200 : {} ", e);
+				if("".equals(error.toString())) {
+					error.append(this.getExceptionErrorMessage(e));
+				}
+				failCnt++;
+				break;
+			}
+			catch(Exception e) {
+				log.error("BatchServiceImpl.batchDashBoardFor5200 : {} ", e);
 				if("".equals(error.toString())) {
 					error.append(this.getExceptionErrorMessage(e));
 				}
@@ -308,8 +338,17 @@ public class BatchServiceImpl implements BatchService{
 						//임시로 데이터 경매구분 단일로해서 등록
 						insertNum += batchMapper.insDashBoardAucQcn(aucQcnMap);
 						succCnt++;
-					}catch(Exception e) {
-						log.error("message", e);
+					}
+					catch(RuntimeException | SQLException e) {
+						log.error("BatchServiceImpl.batchDashBoardFor5300 : {} ", e);
+						if("".equals(error.toString())) {
+							error.append(this.getExceptionErrorMessage(e));
+						}
+						failCnt++;
+						throw e;
+					}
+					catch(Exception e) {
+						log.error("BatchServiceImpl.batchDashBoardFor5300 : {} ", e);
 						if("".equals(error.toString())) {
 							error.append(this.getExceptionErrorMessage(e));
 						}
@@ -318,8 +357,16 @@ public class BatchServiceImpl implements BatchService{
 					}
 				}
 			}
-		}catch(Exception e) {
-			log.error("message", e);
+		}
+		catch(RuntimeException | SQLException e) {
+			log.error("BatchServiceImpl.batchDashBoardFor5300 : {} ", e);
+			if("".equals(error.toString())) {
+				error.append(this.getExceptionErrorMessage(e));
+			}
+			failCnt++;
+		}
+		catch(Exception e) {
+			log.error("BatchServiceImpl.batchDashBoardFor5300 : {} ", e);
 			if("".equals(error.toString())) {
 				error.append(this.getExceptionErrorMessage(e));
 			}
@@ -343,7 +390,6 @@ public class BatchServiceImpl implements BatchService{
 		int errorTxtLen = 0, errorSubstrLen = 500;
 		String result = "";
 		StringWriter errors = new StringWriter();
-		e.printStackTrace(new PrintWriter(errors));
 		errorTxtLen = errors.toString().length();
 
 		if(errorTxtLen > errorSubstrLen) {
@@ -503,8 +549,17 @@ public class BatchServiceImpl implements BatchService{
 					//임시로 데이터 경매구분 단일로해서 등록
 					insertNum += batchMapper.insDashBoardBtc(btcMap);
 					succCnt++;
-				}catch(Exception e) {
-					log.error("message", e);
+				}
+				catch(RuntimeException | SQLException e) {
+					log.error("BatchServiceImpl.batchDashBoardBtc : {} ", e);
+					if("".equals(error.toString())) {
+						error.append(this.getExceptionErrorMessage(e));
+					}
+					failCnt++;
+					throw e;
+				}
+				catch(Exception e) {
+					log.error("BatchServiceImpl.batchDashBoardBtc : {} ", e);
 					if("".equals(error.toString())) {
 						error.append(this.getExceptionErrorMessage(e));
 					}
@@ -552,8 +607,17 @@ public class BatchServiceImpl implements BatchService{
 					//임시로 데이터 경매구분 단일로해서 등록
 					insertNum += batchMapper.insDashBoardBtcAuc(btcAucMap);
 					succCnt++;
-				}catch(Exception e) {
-					log.error("message", e);
+				}
+				catch(RuntimeException | SQLException e) {
+					log.error("BatchServiceImpl.batchDashBoardBtAuc : {} ", e);
+					if("".equals(error.toString())) {
+						error.append(this.getExceptionErrorMessage(e));
+					}
+					failCnt++;
+					throw e;
+				}
+				catch(Exception e) {
+					log.error("BatchServiceImpl.batchDashBoardBtAuc : {} ", e);
 					if("".equals(error.toString())) {
 						error.append(this.getExceptionErrorMessage(e));
 					}

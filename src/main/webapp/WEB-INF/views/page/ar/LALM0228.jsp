@@ -83,8 +83,7 @@
             
             var data = $("#grd_Msg").jqGrid("getRowData", selRowIds)?.MSG_CNTN;
 //             var sHtml = data.replaceAll('\n','<br/>');
-			console.log(data);
-            var sHtml = data.replaceAll('\\\\n','<br/>');
+            var sHtml = data.replaceAll('\\n','<br/>');
     		MessagePopup('OK',sHtml,function(res){
     			return;
     		});
@@ -141,6 +140,7 @@
         srchData["auc_obj_dsc"]  = $("#auc_obj_dsc").val();
         srchData["auc_dt"]       = fn_dateToData($("#auc_dt").val());
         srchData["obj_gbn"]      = $("#obj_gbn").val();
+        srchData["sms_key"]      = $('input[name="msg_gbn_radio"]:checked').val().replaceAll("0","");
         srchData["msg_gbn"]      = $('input[name="msg_gbn_radio"]:checked').val();
             	 
     	var results = sendAjax(srchData, "/LALM0228_selList", "POST");        

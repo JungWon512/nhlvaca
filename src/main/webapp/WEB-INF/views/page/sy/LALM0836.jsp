@@ -377,6 +377,7 @@ let scheDtGb = "";
 			onSelectRow: function(rowid, status, e){
 			    var sel_data = $("#mainGrid").getRowData(rowid);
 			    setRowStatus = "U";
+			    
 			    fn_setFrm_AucInfo(sel_data);    
 			}
 		});    
@@ -407,7 +408,8 @@ let scheDtGb = "";
 	         // 체크박스 초기화
 	         $('input[name="sche_week"]').removeAttr("checked");
 			 $('input[name="sche_dotw"]').removeAttr("checked"); 
-	 
+			 $("select[name='sche_dt']").val(0);
+			 
 	       	// 경매구분 라디오.
 	        fn_setChgRadio("hd_auc_obj_dsc", sel_data.AUC_OBJ_DSC);
 	        fn_setRadioChecked("hd_auc_obj_dsc");
@@ -429,8 +431,7 @@ let scheDtGb = "";
 			         
 			// 지정일자 셀렉트박스 
 			if( sel_data.SCHE_DT_GB == '1') {
-			    sche_dt_month();
-			    
+// 			    sche_dt_month(); 
 				const week_dt= sel_data.SCHE_DT_ORI ;
 				const arr2 = week_dt.split(',');
 			    
@@ -525,7 +526,7 @@ let scheDtGb = "";
 	    $("#na_bzplc").innerHTML="";
 	    
 		for( let r of result) {
-			$("#na_bzplc").append( '<option  id="'+ r.NA_BZPLCNO +'" name="na_bzplcnoVal" value="' + r.NA_BZPLC + '">' + r.CLNTNM + '</option>' );
+			$("#na_bzplc").append( '<option  id="'+ r.NA_BZPLCNO +'" name="na_bzplcnoVal" value="' + r.NA_BZPLC + '">' + r.CLNTNM + '(' + r.AREANM +')' + '</option>' );
 		}
     }
 	
@@ -554,7 +555,7 @@ let scheDtGb = "";
 	function sche_dt_month(){
 	 	$("select[name='sche_dt']").val(0);
 		var name = 'sche_dt';
-		for(var j = 1; j< 5; j++) {
+		for(var j = 1; j< 7; j++) {
 			for(var i = 1; i<32; i++){
 				$('#'+name+j).append('<option name="optionDate" value="' + i + '">' + i +"일"+ '</option>') ;
 			}
@@ -683,10 +684,12 @@ let scheDtGb = "";
 	                            	</th>	
 	                            	<td  colspan="5">
 	                            		<input type="hidden"  id="sche_dt" name="sche_dt_arr"> 
-	                                    <select id="sche_dt1"  name="sche_dt" class="sche_dt"  style="width:18%;"><option value="0" disabled selected hidden>1회</option></select>
-	                                    <select id="sche_dt2"  name="sche_dt" class="sche_dt"  style="width:18%;"><option value="0" disabled selected hidden>2회</option></select>
-	                                    <select id="sche_dt3"  name="sche_dt"  class="sche_dt" style="width:18%;"><option value="0" disabled selected hidden>3회</option></select>
-	                                    <select id="sche_dt4"  name="sche_dt" class="sche_dt"  style="width:18%;"><option value="0" disabled selected hidden>4회</option></select>
+	                                    <select id="sche_dt1"  name="sche_dt" class="sche_dt"  style="width:15%;"><option value="0" disabled selected hidden>1회</option></select>
+	                                    <select id="sche_dt2"  name="sche_dt" class="sche_dt"  style="width:15%;"><option value="0" disabled selected hidden>2회</option></select>
+	                                    <select id="sche_dt3"  name="sche_dt"  class="sche_dt" style="width:15%;"><option value="0" disabled selected hidden>3회</option></select>
+	                                    <select id="sche_dt4"  name="sche_dt" class="sche_dt"  style="width:15%;"><option value="0" disabled selected hidden>4회</option></select>
+	                                    <select id="sche_dt5"  name="sche_dt" class="sche_dt"  style="width:15%;"><option value="0" disabled selected hidden>5회</option></select>
+	                                    <select id="sche_dt6"  name="sche_dt" class="sche_dt"  style="width:15%;"><option value="0" disabled selected hidden>6회</option></select>
 	                            	</td>
 	                            </tr>
 	                            <tr>

@@ -759,14 +759,8 @@ var na_bzplc = App_na_bzplc;
             			 ReportPopup('LALM0216R3_5_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
-	            		 grid4 = grid4.map((o,i)=>{	
-							o.MTCN = '('+o.MTCN+')';
-							return o;
-						}); 
-            			 ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-            			 
-            		 }
-            	 
+						ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 }            	 
             	 } else if($("#prto_tpc_4").is(":checked")) { //세로2형식
             		 // ★함평: 8808990656601 영암: 8808990689760 테스트: 8808990643625
             		 if(na_bzplc == '8808990656946' || na_bzplc == '8808990689760') {
@@ -963,7 +957,7 @@ var na_bzplc = App_na_bzplc;
             			 ReportPopup('LALM0216R3_112',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             		 } else if(na_bzplc == '8808990227207'){
-	            		 grid4 = grid4.map((o,i)=>{
+	            		 grid4 = grid4.map((o,i)=>{	
 							if(o.RG_DSC == '미등록우'){
 								o.RG_DSC = '';
 							}
@@ -975,10 +969,6 @@ var na_bzplc = App_na_bzplc;
              			 ReportPopup('LALM0216R3_6_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 }else {
-	            		 grid4 = grid4.map((o,i)=>{	
-							o.MTCN = '('+o.MTCN+')';
-							return o;
-						 }); 
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 }
@@ -993,8 +983,7 @@ var na_bzplc = App_na_bzplc;
              			ReportPopup('LALM0216R3_20',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               		 // ★영광축협: 8808990811710 테스트: 8808990643625
               		 } else if(na_bzplc == '8808990811710') {
-              			 ReportPopup('LALM0216R3_81',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-              			 
+              			 ReportPopup('LALM0216R3_81',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
               		 // ★하동축협: 8808990656656
               		 } else if(na_bzplc == '8808990656656') {
              			 ReportPopup('LALM0216R3_94',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1004,9 +993,8 @@ var na_bzplc = App_na_bzplc;
              			 ReportPopup('LALM0216R3_96',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		// ★순정축협(순창): 8808990656960
              		 }  else if(na_bzplc == '8808990656960') {
-             			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-             		
-             		 }else {
+             			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             		 } else {
               			 ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
               		 }
@@ -1238,7 +1226,6 @@ var na_bzplc = App_na_bzplc;
             		 
              		 } else {
 	            		 grid4 = grid4.map((o,i)=>{
-							o.MTCN = '('+o.MTCN+')';
 							return o;
 						 }); 
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1330,7 +1317,6 @@ var na_bzplc = App_na_bzplc;
              		 
              		 // ★창녕 8808990656274
              		 } else if(na_bzplc == '8808990656274') {
-             			 
              			ReportPopup('LALM0216R3_102',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 } else {

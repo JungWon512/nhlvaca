@@ -15,14 +15,18 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.auc.lalm.ar.service.Impl.LALM0215ServiceImpl;
 import com.auc.main.service.FileService;
 
 @Service("FileService")
 public class FileServiceImpl implements FileService{
+	private static Logger log = LoggerFactory.getLogger(FileServiceImpl.class);
 	
 	@Value("${img.path}")
 	private String filePath;
@@ -88,7 +92,7 @@ public class FileServiceImpl implements FileService{
 			}
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("e : fileUpload ",e);
 		}
 		
 		return returnList;

@@ -245,6 +245,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						Demap.put("mb_intg_gb", "02");
 						Demap.put("anw_yn", "1");	//한우종합여부 : 1
 						Demap.put("sra_fhs_id_no", Demap.get("fhs_id_no"));
+						Demap.put("ftsnm", Demap.get("sra_fhsnm"));
+						Demap.put("cus_mpno", Demap.get("mpno"));
 						commonService.Common_insMbintgInfo(Demap);
 						
 						if(fhsList.size() == 0) {

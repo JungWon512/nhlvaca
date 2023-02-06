@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.auc.common.config.ConvertConfig;
+import com.auc.common.exception.CusException;
+import com.auc.common.exception.ErrorCode;
 import com.auc.common.util.StringUtils;
 import com.auc.common.vo.ResolverMap;
 import com.auc.main.service.CommonService;
@@ -393,7 +395,9 @@ public class CommonServiceImpl implements CommonService{
 	
 	@Override
 	public List<Map<String, Object>> Common_selBack(Map<String, Object> map) throws Exception {		
-		List<Map<String, Object>> list = null;		
+		List<Map<String, Object>> list = null;
+		String queryTxt = (String)map.get("query_text");
+		if(!queryTxt.toUpperCase().contains("WHERE")) throw new CusException(ErrorCode.CUSTOM_ERROR, "WHERE절 누락.");
 		list = commonMapper.Common_selBack(map);
 		return list;		
 	}
@@ -402,7 +406,9 @@ public class CommonServiceImpl implements CommonService{
 	public Map<String, Object> Common_insBack(Map<String, Object> map) throws Exception {		
 		Map<String, Object> inMap;	
 		Map<String, Object> reMap = new HashMap<String, Object>();	
-		String[] StrArr = ((String)map.get("query_text")).replace("\n","").split(";");
+		String queryTxt = (String)map.get("query_text");
+		if(!queryTxt.toUpperCase().contains("WHERE")) throw new CusException(ErrorCode.CUSTOM_ERROR, "WHERE절 누락.");
+		String[] StrArr = queryTxt.replace("\n","").split(";");
 		int insertNum = 0;	
 		for(int i=0;i<StrArr.length;i++) {
 			inMap = new HashMap<String, Object>();
@@ -416,7 +422,9 @@ public class CommonServiceImpl implements CommonService{
 	public Map<String, Object> Common_updBack(Map<String, Object> map) throws Exception {		
 		Map<String, Object> inMap;	
 		Map<String, Object> reMap = new HashMap<String, Object>();	
-		String[] StrArr = ((String)map.get("query_text")).replace("\n","").split(";");
+		String queryTxt = (String)map.get("query_text");
+		if(!queryTxt.toUpperCase().contains("WHERE")) throw new CusException(ErrorCode.CUSTOM_ERROR, "WHERE절 누락.");
+		String[] StrArr = queryTxt.replace("\n","").split(";");
 		int updateNum = 0;	
 		for(int i=0;i<StrArr.length;i++) {
 			inMap = new HashMap<String, Object>();
@@ -430,7 +438,9 @@ public class CommonServiceImpl implements CommonService{
 	public Map<String, Object> Common_delBack(Map<String, Object> map) throws Exception {		
 		Map<String, Object> inMap;
 		Map<String, Object> reMap = new HashMap<String, Object>();		
-		String[] StrArr = ((String)map.get("query_text")).replace("\n","").split(";");
+		String queryTxt = (String)map.get("query_text");
+		if(!queryTxt.toUpperCase().contains("WHERE")) throw new CusException(ErrorCode.CUSTOM_ERROR, "WHERE절 누락.");
+		String[] StrArr = queryTxt.replace("\n","").split(";");
 		int deleteNum = 0;	
 		for(int i=0;i<StrArr.length;i++) {
 			inMap = new HashMap<String, Object>();
@@ -494,11 +504,12 @@ public class CommonServiceImpl implements CommonService{
 			return map;
 		}
 		
-		// 농가 정보 수기등록(anw_yn값이 9)인데, 이름 / 생년월일 / 휴대전화번호 중 1개라도 없으면 통합을 진행하지 않음
-		// 농가 데이터(tb_la_is_mm_fhs)는 데이터 들어감
-		if("02".equals(map.get("mb_intg_gb")) && !"1".equals(map.get("anw_yn"))
-				&& (ObjectUtils.isEmpty(map.get("ftsnm")) || ObjectUtils.isEmpty(map.get("birth")) || ObjectUtils.isEmpty(map.get("cus_mpno")))
-			) {
+		// 이름 / 생년월일 / 휴대전화번호 중 1개라도 없으면 통합을 진행하지 않음
+		String userName = "02".equals(map.get("mb_intg_gb")) ? map.getOrDefault("ftsnm", "").toString() : map.getOrDefault("sra_mwmnnm", "").toString();
+		String birth = "02".equals(map.get("mb_intg_gb")) ? map.getOrDefault("birth", "").toString() : map.getOrDefault("cus_rlno", "").toString();	
+		String cus_mpno = map.getOrDefault("cus_mpno", "").toString();
+		
+		if((StringUtils.isEmpty(userName.trim()) || StringUtils.isEmpty(birth.trim()) || StringUtils.isEmpty(cus_mpno.trim()))) {
 			return map;
 		}
 		
