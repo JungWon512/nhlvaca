@@ -95,6 +95,42 @@
             
         });
         
+        /******************************
+         * 조합Logo 미리보기
+         ******************************/
+        $("#pb_LogoImgView").on('click',function(e){
+            e.preventDefault();
+            this.blur();
+            
+            var encrypt = setEncrypt(setFrmToData('frm_MmWmc'));
+            var result;
+            
+            $.ajax({
+                url: '/LALM0912_selLogoImg',
+                type: 'POST',
+                dataType:'TEXT',
+                async: false,
+                headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
+                data:{
+                       data : encrypt.toString()
+                },
+                success:function(data) {        
+                    if(data.length > 0 && data != null){
+                    	document.getElementById("preeview-image").src = data;
+                    	var obj = $("#pb_LogoImgView").offset();
+                    	
+                    	$('#imageView').css({"top":obj.top+"px","left":(obj.left + $("#pb_SealImgView").width()) + "px"});
+                    	$('#imageView').show();
+                    }                                    
+                },
+                error:function(response){
+                	MessagePopup("OK", "이미지를 다운로드하지 못하였습니다.");
+                    return;
+                }
+            }); 
+            
+        });
+        
         
         
     });    
@@ -109,6 +145,7 @@
         fn_InitFrm('frm_MmWmc');
         $('#na_bzplc').attr("disabled",false);
         $("#pb_SealImgView").hide();
+        $("#pb_LogoImgView").hide();
         g_newFlg = true;
         if(App_grp_c != '001')fn_Search();
     }
@@ -148,6 +185,8 @@
             $('#na_bzplc').attr("disabled",true);
             if(result.SEAL_IMG_FLNM != ""){
             	$("#pb_SealImgView").show();
+            }else if(result.LOGO_IMG_FLNM != ''){
+            	$("#pb_LogoImgView").show();
             }
             g_newFlg = false;
         }                       
@@ -384,12 +423,19 @@
                                 </td>
                             </tr>                         
                             <tr>
-                                
                                 <th scope="row">직인정보</th>
-                                <td colspan="3" >
+                                <td>
                                     <div class="cellBox">
                                         <div class="cell" style="width:500px;"><input type="file" id="seal_img_flnm"  name="seal_img_flnm" title="파일첨부" accept=".gif,.jpg,.png"/></div>
                                         <div class="cell"><button class="tb_btn" id="pb_SealImgView" >이미지보기</button></div>
+                                    </div>
+                                    
+                                </td>
+                                <th scope="row">조합 Logo</th>
+                                <td>
+                                    <div class="cellBox">
+                                        <div class="cell" style="width:500px;"><input type="file" id="logo_img_flnm"  name="logo_img_flnm" title="파일첨부" accept=".gif,.jpg,.png"/></div>
+                                        <div class="cell"><button class="tb_btn" id="pb_LogoImgView" >이미지보기</button></div>
                                     </div>
                                     
                                 </td>

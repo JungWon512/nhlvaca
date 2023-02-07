@@ -11,5 +11,8 @@ public interface LALM0912Service {
 	
 	Map<String, Object> LALM0912_updSealImg(Map<String, Object> map) throws Exception;
 	Map<String, Object> LALM0912_selSealImg(Map<String, Object> map) throws Exception;
+	
+	Map<String, Object> LALM0912_updLogoImg(Map<String, Object> map) throws Exception;
+	Map<String, Object> LALM0912_selLogoImg(Map<String, Object> map) throws Exception;
 
 }

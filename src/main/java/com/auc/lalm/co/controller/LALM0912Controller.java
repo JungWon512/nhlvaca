@@ -86,6 +86,14 @@ public class LALM0912Controller {
 		inMap.put("seal_img_cntn", mf.getBytes());
 				
 		Map<String, Object> map = lalm0912Service.LALM0912_updSealImg(inMap);
+		
+		// 로그정보 insert
+		Map<String, Object> logoMap = new HashMap<>();
+		logoMap.put("na_bzplc", na_bzplc);
+		logoMap.put("logo_img_flnm", reqeust.getFile("logo_img_flnm"));
+		
+		lalm0912Service.LALM0912_updLogoImg(logoMap);
+		
 		Map<String, Object> reMap = commonFunc.createResultCUD(map);
 		return reMap;	
 	}
