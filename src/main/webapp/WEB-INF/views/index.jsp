@@ -424,7 +424,7 @@ function setUserInfo(){
 	$("#user-panel_name").text(App_userNm);
 	$("#user-panel_bzplnm").html(App_na_bzplnm);
     //상단메뉴
-    $("#nav_menu_userInfo").html('[' + App_na_bzplnm + '] ' + App_userNm );
+    $(".user_name").html('[' + App_na_bzplnm + '] ' + App_userNm );
     $("#nav_menu_userInfo").attr('na_bzplc',App_na_bzplc);
     <% if("127.0.0.1".equals((request.getHeader("X-Forwarded-For") ==  null)?request.getRemoteAddr():request.getHeader("X-Forwarded-For"))) { %>
     $("#nav_systemInfo").text('[로컬]');
@@ -986,8 +986,8 @@ function fn_sendIFrameDataReport(id, data){
                     <!-- User Account -->
                     <li class="user-menu">
                         <p>
-                            <img src="/images/common/ico_header_person.svg" class="user-image" alt="User Image">
-                            <span class="user_name" id="nav_menu_userInfo"></span>
+                            <img src="/images/common/ico_header_person.svg" class="user-image" alt="User Image" id="nav_menu_userInfo" />
+                            <span class="user_name"></span>
                         </p>
                     </li>
                     <li>
