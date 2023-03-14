@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +51,33 @@ public class BatchController {
 	
 	@Value("${admin.sms}")
 	private String adminSms;
+
+	/**
+	 * 외부 API실행용 BATCH
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/api/batch/{pathNm}")
+	public Map<String, Object> apiBatch(@PathVariable String pathNm, @RequestParam(required=false) Map<String, Object> request, ResolverMap rMap){
+		Map<String, Object> reMap = new HashMap<String, Object>();
+		//String pathNm = (String)rMap.get("pathNm");
+		switch (pathNm) {
+		case "BJ-LM-0010":
+			reMap = this.batch_BJ_LM_0010(request, rMap);			
+			break;
+		case "BJ-LM-0011":
+			reMap = this.batch_BJ_LM_0011(request, rMap);			
+			break;
+		case "BJ-LM-0020":
+			reMap = this.batch_BJ_LM_0020(request, rMap);			
+			break;
+		case "BJ-LM-0040":
+			reMap = this.batch_BJ_LM_0040(request, rMap);			
+			break;
+		}
+		return reMap;		
+	}
 	
 	/**
 	 * 중도매인, 출하주(농가) 휴면처리
@@ -533,6 +561,8 @@ public class BatchController {
 					succCnt += (int) tempMap.get("succCnt");
 					error.append(tempMap.get("error"));	
 
+					map.put("BTC_DT", rMap.get("BTC_DT"));
+					map.put("AUC_DT", rMap.get("BTC_DT"));
 					tempMap = batchService.batchDashBoardBtc(map);
 					failCnt += (int) tempMap.get("failCnt");
 					succCnt += (int) tempMap.get("succCnt");
@@ -575,6 +605,7 @@ public class BatchController {
 				reMap.put("updateNum", updateNum);
 				
 				if(failCnt > 0) {
+					reMap.put("failCnt", failCnt);
 					this.sendSmsBatchFail(reMap);
 				}
 			}

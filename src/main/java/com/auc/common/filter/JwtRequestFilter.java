@@ -76,7 +76,7 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 		if(refresh_token == null || "".equals(refresh_token)) {
     		//세션 리프레쉬토큰 없을경우 부적합한 사용자 안내
 			log.info("JWT Session Refresh Token is None");
-			request.setAttribute("exception", ErrorCode.EXPIERD_SESSION.getCode());            		
+			request.setAttribute("exception", ErrorCode.EXPIERD_REFRESH.getCode());            		
     	}else if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             accessToken = requestTokenHeader.substring(7);
             try { 
@@ -89,12 +89,13 @@ public class JwtRequestFilter extends OncePerRequestFilter{
         			Map<String, String> map = jwtUserDetailsService.signIn(tempMap);			            
 		            /* 관리자 권한일시 중복로그인 제어 */			
 					//리프레쉬 토큰 DB조회후 세션 토큰값과 비교해서 일치한지 비교(DB값이 없을경우 부적합한 사용자로 안내) 
-					if("001".equals(refresh_claims.get("grp_c"))
-							&& (map == null || "".equals(map.getOrDefault("TOKEN","")) || !refresh_token.equals(map.getOrDefault("TOKEN","")))
+					if( //"001".equals(refresh_claims.get("grp_c"))&& 
+						(map == null || "".equals(map.getOrDefault("TOKEN","")) || !refresh_token.equals(map.getOrDefault("TOKEN","")))
 					) {
 						username = null;
 						log.info("JWT Refresh Token is Invalid");
-						request.setAttribute("exception", ErrorCode.INVALID_TOKEN.getCode());
+						//request.setAttribute("exception", ErrorCode.INVALID_TOKEN.getCode());
+						request.setAttribute("exception", ErrorCode.EXPIERD_REFRESH.getCode());						
 					}else if(jwtTokenUtil.isTokenExpired(refresh_token)) {
 						//리프레쉬 토큰 만료시 만료된 사용자로 안내
 						username = null;
@@ -104,7 +105,8 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 						//엑세스 토큰만 만료시 리프레쉬토큰,엑세스토큰 신규생성하여 토큰 갱신
 			            log.info("JWT Access Token new Generate");
 		            	/* s: 신규 엑세스토큰/리프레시토큰 생성*/
-			            String tokenName = map.getOrDefault("USRID","")+"|"+map.getOrDefault("NA_BZPLC","");
+			            String tokenName = jwtTokenUtil.getUsernameFromToken(refresh_token) + "|" + refresh_claims.get("na_bzplc");
+			            //String tokenName = map.getOrDefault("USRID","")+"|"+map.getOrDefault("NA_BZPLC","");
 			            
 			            JwtUser detail= (JwtUser) jwtUserDetailsService.loadUserByUsername(tokenName);
 			        	detail.setApl_ed_dtm((String)refresh_claims.get("apl_ed_dtm"));        	
@@ -142,12 +144,13 @@ public class JwtRequestFilter extends OncePerRequestFilter{
         			Map<String, String> map = jwtUserDetailsService.signIn(tempMap);
         			
 					//리프레쉬 토큰 조회후 토크값이 상이하거나 없으면면 부적합한 사용자로 안내
-					if("001".equals(refresh_claims.get("grp_c")) && (map == null || "".equals(map.get("TOKEN")) 
-							|| !refresh_token.equals(map.get("TOKEN")))
+					if( //"001".equals(refresh_claims.get("grp_c")) && 
+						(map == null || "".equals(map.get("TOKEN")) || !refresh_token.equals(map.get("TOKEN")))
 					){
 						username = null;
 						log.info("JWT Refresh Token is Invalid");
-						request.setAttribute("exception", ErrorCode.INVALID_TOKEN.getCode());						
+						//request.setAttribute("exception", ErrorCode.INVALID_TOKEN.getCode());			
+						request.setAttribute("exception", ErrorCode.EXPIERD_REFRESH.getCode());			
 					}else {
 						//기존 엑세스토큰 미만료시 토큰 validate 체크를 위한 값 저장(claims,username)
 	                    claims   = jwtTokenUtil.getAllClaimsFromTokenClaim(accessToken);
@@ -159,13 +162,13 @@ public class JwtRequestFilter extends OncePerRequestFilter{
         		//리프레쉬 토큰의 경우 암화하하여 쿠키에 저장
             	response.addCookie(cookieUtil.createCookie("refresh_token", criptoConfig.encript(refresh_token)));
             } catch (IllegalArgumentException e) {
-            	log.info("Unable to get JWT Token");
+            	log.info("Unable to get JWT Token",e);
             	request.setAttribute("exception", ErrorCode.UNABLE_TOKEN.getCode());
             } catch (ExpiredJwtException e) {
-            	log.info("JWT Token has expired");
+            	log.info("JWT Token has expired",e);
             	request.setAttribute("exception", ErrorCode.EXPIERD_TOKEN.getCode());
             } catch (JwtException e) {
-            	log.info("invalid token");
+            	log.info("invalid token",e);
             	request.setAttribute("exception", ErrorCode.INVALID_TOKEN.getCode());            	
             }catch (Exception ex) {
 				log.info("JwtToken SQL Error",ex);

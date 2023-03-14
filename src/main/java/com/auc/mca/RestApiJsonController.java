@@ -530,7 +530,6 @@ public class RestApiJsonController {
 	}
 	
 	private void SSLVaildBypass() throws NoSuchAlgorithmException, KeyManagementException {
-		if("production".equals(serverType)) return ;
 		HostnameVerifier hv = new HostnameVerifier() {
 			@Override
 			public boolean verify(String arg0, SSLSession arg1) {

@@ -5,19 +5,23 @@
 <html>
 <head>
 <!-- 암호화 -->
-<%@ include file="/WEB-INF/common/serviceCall.jsp" %>
-<%@ include file="/WEB-INF/common/head.jsp" %>
-
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <!-- Tell the browser to be responsive to screen width -->
  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 </head>
 <style>
-#fileDiv {
-	text-overflow:ellipsis;
-	overflow:hidden;
-	white-space:nowrap;
+div.fileDiv {
+	width: 15%;
+	height: 100%;
+	float: left;
+	margin: 12px;
+}
+
+button.delIndvImg {
+	position: relative;
+	top: 0;
+	right: 0;
 }
 
 </style>
@@ -30,31 +34,33 @@ $(document).ready(function (){
 		e.preventDefault();
 		
 		$("#uploadImg").val("");
-		$(".uploadImg").empty();
+		$("#imagePreview").empty();
 	});
 	
 	$(document).on("click",".delIndvImg", function(e){
 		e.preventDefault();
-		$(this).closest("div").parent("li").remove();
+		$(this).parent("div").remove();
 	});
 });
 </script>
 <body>
 	<section class="content">
-		<div class="btn_area">
-			<button type="button" class="tb_btn" id="addImg">파일 추가</button>
-			<button type="button" class="tb_btn" id="delAllImg">파일 일괄 삭제</button>
-		</div>
-		<br>
-		<br>
-		<div class="img_area">
-			<div style="display:none;">
-				<input type="file" id="uploadImg" name="uploadImg" class="uploadImg" accept="image/*" multiple="multiple" />
+		<form id="frm_img" name="frm_img">
+<!-- 			<div class="btn_area"> -->
+<!-- 				<button type="button" class="tb_btn" id="addImg">파일 추가</button> -->
+<!-- 				<button type="button" class="tb_btn" id="delAllImg">파일 일괄 삭제</button> -->
+<!-- 			</div> -->
+			<br>
+			<br>
+			<div class="img_area">
+				<div style="display:none;">
+					<input type="file" id="uploadImg" name="uploadImg" class="uploadImg" accept="image/*" multiple="multiple" />
+				</div>
+				<div id="imagePreview">
+<!-- 					<ul id="imagePreview" class="uploadImg"></ul> -->
+				</div>
 			</div>
-			<div>
-				<ul id="imagePreview" class="uploadImg"></ul>
-			</div>
-		</div>
+		</form>
 	</section>
 </body>
 </html>

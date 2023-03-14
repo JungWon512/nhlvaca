@@ -1,19 +1,14 @@
 package com.auc.lalm.co.service.Impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -41,11 +36,12 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.util.Base64;
 import com.amazonaws.util.IOUtils;
-import com.auc.common.util.StringUtils;
+import com.auc.lalm.ar.service.Impl.LALM0215ServiceImpl;
 import com.auc.lalm.co.service.LALM0912Service;
 
 @Service("LALM0912Service")
 public class LALM0912ServiceImpl implements LALM0912Service{
+	private static Logger log = LoggerFactory.getLogger(LALM0215ServiceImpl.class);
 
 	@Autowired
 	LALM0912Mapper lalm0912Mapper;	
@@ -69,6 +65,12 @@ public class LALM0912ServiceImpl implements LALM0912Service{
 	public Map<String, Object> LALM0912_selData(Map<String, Object> map) throws Exception {
 		
 		Map<String, Object> outMap = lalm0912Mapper.LALM0912_selData(map);
+//		if(!ObjectUtils.isEmpty(outMap.get("NA_BZPLC"))) outMap.put("na_bzplc", outMap.get("NA_BZPLC"));
+//		Map<String, Object> tempMap = this.LALM0912_selLogoImg(outMap);
+//		if (!ObjectUtils.isEmpty(tempMap)) {
+//			outMap.put("LOGO_IMG_FLNM", (String) tempMap.getOrDefault("file_nm",""));
+//		}
+		
 		return outMap;
 		
 	}
@@ -126,7 +128,7 @@ public class LALM0912ServiceImpl implements LALM0912Service{
 	public Map<String, Object> LALM0912_updLogoImg(Map<String, Object> map) throws Exception {		
 		Map<String, Object> reMap = new HashMap<String, Object>();	
 		int updateNum = 0;
-		this.LALM0912_insImgList(map);
+		this.LALM0912_insImg(map);
 		reMap.put("updateNum", updateNum);		
 		return reMap;
 	}
@@ -137,7 +139,7 @@ public class LALM0912ServiceImpl implements LALM0912Service{
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> LALM0912_insImgList(Map<String, Object> map) {
+	public Map<String, Object> LALM0912_insImg(Map<String, Object> map) {
 		final Map<String, Object> rtnMap = new HashMap<>();
 		
 		// S3 client
@@ -162,55 +164,69 @@ public class LALM0912ServiceImpl implements LALM0912Service{
 
 		s3.setBucketCrossOriginConfiguration(bucketName, new BucketCrossOriginConfiguration().withRules(rules));
 		
-		final String naBzplc = map.get("na_bzplc").toString();
+		final String naBzplc = map.getOrDefault("na_bzplc", "ss_na_bzplc").toString();
 		final String filePath = "logo/";
 		final String fileExtNm = ".png";
 		
-		final List<String> files = (List<String>)map.get("logo_img_flnm");
+		final MultipartFile file = (MultipartFile) map.get("logo_img_flnm");
 		
-		if (ObjectUtils.isEmpty(files)) return null;
+		if (ObjectUtils.isEmpty(file)) {
+			return null;
+		} else {
+			// 기존파일 삭제처리
+			this.LALM0912_delImg(naBzplc);
+		}
 		
-		for (String file : files) {
-			boolean isSuccess = true;
-			String fileNm = naBzplc;
-
-			// origin 파일이 없는 경우 or 값이 data:image로 시작하지 않는 경우 pass
-			if (ObjectUtils.isEmpty(file)
-			|| !file.startsWith("data:image")) continue;
-
-			String[] base64Arr = file.split(",");
-			byte[] imgByte = Base64.decode(base64Arr[1]);
-			InputStream bis = new ByteArrayInputStream(imgByte);
-
-			ObjectMetadata bjectMetadata = new ObjectMetadata();
-			bjectMetadata.setContentLength(imgByte.length);
-			bjectMetadata.setContentType(MediaType.IMAGE_PNG_VALUE);
-			PutObjectRequest oriPutObjectRequest = new PutObjectRequest(bucketName, filePath + fileNm + fileExtNm, bis, bjectMetadata);
-
-			try {
-				oriPutObjectRequest.setAccessControlList(accessControlList);
-				s3.putObject(oriPutObjectRequest);
-			}
-			catch (AmazonS3Exception e) {
-				e.printStackTrace();
-				isSuccess = false;
-			}
-			catch(SdkClientException e) {
-				e.printStackTrace();
-				isSuccess = false;
-			}
+		boolean isSuccess = true;
+		String fileNm = naBzplc;
+		
+		try {
+			ObjectMetadata objectMetadata = new ObjectMetadata();
+			objectMetadata.setContentType(MediaType.IMAGE_PNG_VALUE);
+			objectMetadata.setContentLength(file.getBytes().length);
+	
+			PutObjectRequest oriPutObjectRequest = new PutObjectRequest(bucketName, filePath + fileNm + fileExtNm, file.getInputStream(), objectMetadata);
 			
-			if (isSuccess) {
-				rtnMap.put("na_bzplc", naBzplc);
-			}
+			oriPutObjectRequest.setAccessControlList(accessControlList);
+			s3.putObject(oriPutObjectRequest);
+		}
+		catch (IOException e) {
+			log.error("e : LALM0912_insImgList : ",e);
+			isSuccess = false;
+		}
+		catch (AmazonS3Exception e) {
+			log.error("e : LALM0912_insImgList : ",e);
+			isSuccess = false;
+		}
+		catch(SdkClientException e) {
+			log.error("e : LALM0912_insImgList : ",e);
+			isSuccess = false;
+		}
+		
+		if (isSuccess) {
+			rtnMap.put("na_bzplc", naBzplc);
 		}
 		
 		return rtnMap;
 	}
 	
+	public void LALM0912_delImg(String naBzPlc) {
+		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+			    .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+			    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+			    .build();
+		try {
+		    s3.deleteObject(bucketName, naBzPlc);
+		} catch (AmazonS3Exception e) {
+			log.error("e : LALM0912_delImg : ",e);
+		} catch(SdkClientException e) {
+			log.error("e : LALM0912_delImg : ",e);
+		}
+	}
 	
-	public List<Map<String, Object>> lalm0912_logoImgList() throws SQLException, IOException {
-		List<Map<String, Object>> reList = new ArrayList<>();
+	@Override
+	public Map<String, Object> LALM0912_selLogoImg(Map<String, Object> map) throws SQLException, IOException {
+		Map<String, Object> reMap = new HashMap<>();
 		
 		// S3 client
 		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
@@ -218,37 +234,29 @@ public class LALM0912ServiceImpl implements LALM0912Service{
 		    .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
 		    .build();
 	
-		// top level folders and files in the bucket
 		try {
 		    String filePath = "logo/";
 		    
 		    ObjectListing objectListing = s3.listObjects(bucketName, filePath);
 	
 		    for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-		    	Map<String, Object> reMap = new HashMap<>();
 			    S3Object s3Object = s3.getObject(bucketName, objectSummary.getKey());
 			    S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
 			    byte[] sourceBytes = IOUtils.toByteArray(s3ObjectInputStream);
-			    reMap.put("file_nm", objectSummary.getKey());
-			    reMap.put("file_src","data:image/png;base64," + Base64.encodeAsString(sourceBytes)); 
+			    if (map.getOrDefault("na_bzplc", "ss_na_bzplc").toString().equals(objectSummary.getKey())) {
+			    	reMap.put("file_nm", objectSummary.getKey());
+			    	reMap.put("file_src","data:image/png;base64," + Base64.encodeAsString(sourceBytes)); 			    	
+			    }
 			    
 				s3ObjectInputStream.close();
-			    reList.add(reMap);
 		    }
 		} catch (AmazonS3Exception e) {
-		    e.printStackTrace();
+			log.error("e : LALM0912_selLogoImg : ",e);
 		} catch(SdkClientException e) {
-		    e.printStackTrace();
+			log.error("e : LALM0912_selLogoImg : ",e);
 		}
 		
-		return reList;
+		return reMap;
 	}
-
-	@Override
-	public Map<String, Object> LALM0912_selLogoImg(Map<String, Object> map) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 
 }

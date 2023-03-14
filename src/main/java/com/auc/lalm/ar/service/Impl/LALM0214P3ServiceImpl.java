@@ -70,6 +70,16 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 		return reList;
 				
 	}
+
+	//@SuppressWarnings("unchecked")
+	//@Override
+	//public Map<String, Object> LALM0214P3_insFhs(Map<String, Object> params) throws Exception{
+	//	Map<String, Object> reMap = new HashMap<String, Object>();
+	//	int insertNum = lalm0214P3Mapper.LALM0214P3_insFhs(params);
+	//	reMap.put("insertNum", insertNum);
+	//	return reMap;
+	//			
+	//}
 	
 	@Override
 	@SuppressWarnings("unchecked")
@@ -163,7 +173,12 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 			result.put("DNA_YN_CHK", map.get("dna_yn_chk"));
 			result.put("DNA_YN", map.get("dna_yn"));
 			result.put("SRA_INDV_AMNNO", map.get("sra_indv_amnno"));
+			result.put("FTSNM", map.get("ftsnm"));
 			
+			result.put("CHK_INF_ERR", "0");
+			result.put("CHK_VAILD_ERR", "0");
+			result.put("CHK_ERR_SRA_INDV_AMNNO", "0");
+			result.put("CHK_ERR_AUC_PRG_SQ", "0");
 			/* s: 개체정보 / 농가정보 동기화 */
 			List<Map<String, Object>> indvList = lalm0221PMapper.LALM0221P_selList(map);
 			if(indvList != null && indvList.size() == 1) {
@@ -178,7 +193,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				result.put("MCOW_SRA_INDV_AMNNO", indvList.get(0).get("MCOW_SRA_INDV_AMNNO"));
 				result.put("CHK_IF_SRA_INDV", "1");
 				map.put("fhs_id_no", indvList.get(0).get("FHS_ID_NO"));
-				map.put("farm_amnno", indvList.get(0).get("farm_amnno"));
+				map.put("farm_amnno", indvList.get(0).get("FARM_AMNNO"));
 				List<Map<String, Object>> fhsList = lalm0215Mapper.LALM0215_selFhsIdNo(map);
 				if(fhsList != null && fhsList.size() == 1) {
 					result.put("FHS_ID_NO", fhsList.get(0).get("FHS_ID_NO"));
@@ -192,7 +207,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 					result.put("FTSNM", map.get("ftsnm"));
 					result.put("CHK_IF_FHS", "0");
 				}
-			}else if(indvList == null || indvList.size() < 1){
+			}
+			else if(indvList == null || indvList.size() < 1){
 				//인터페이스 
 				try {
 					map.put("sra_indv_amnno", map.get("sra_indv_amnno"));
@@ -207,87 +223,99 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 					String tmpTelno = "";
 					String tmpMpno = "";
 					if(dataMap != null) {
-						Iterator<String> keys = dataMap.keySet().iterator();
-						while(keys.hasNext()) {
-							String key = keys.next();
-							String value = "";
-							if(dataMap.get(key) != null) value = dataMap.get(key).toString().trim(); 
-							log.debug("inf 4700 obj : "+key+" : "+value);
-							Demap.put(key.toLowerCase(), value);
-						}
-
-						if(!Demap.get("sra_farm_fzip").equals("") || !Demap.get("sra_farm_rzip").equals("")) {
-							tmpZip = Demap.get("sra_farm_fzip") + "-" + Demap.get("sra_farm_rzip");
-						}
-						if(!Demap.get("sra_farm_amn_atel").equals("") || !Demap.get("sra_farm_amn_htel").equals("") || !Demap.get("sra_farm_amn_stel").equals("")) {
-							tmpTelno = Demap.get("sra_farm_amn_atel") + "-" + Demap.get("sra_farm_amn_htel") + "-" + Demap.get("sra_farm_amn_stel");
-						}
-						if(!Demap.get("sra_fhs_rep_mpsvno").equals("") || !Demap.get("sra_fhs_rep_mphno").equals("") || !Demap.get("sra_fhs_rep_mpsqno").equals("")) {
-							tmpMpno = Demap.get("sra_fhs_rep_mpsvno") + "-" + Demap.get("sra_fhs_rep_mphno") + "-" + Demap.get("sra_fhs_rep_mpsqno");
-						}
-
-						Demap.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
-						Demap.put("ss_usrid", inMap.get("ss_usrid"));
-						Demap.put("zip", tmpZip);
-						Demap.put("telno", tmpTelno);
-						Demap.put("mpno", tmpMpno);
-						
-						infIndvList = lalm0222PMapper.LALM0222P_selTmpIndv(Demap);
-						fhsList = lalm0222PMapper.LALM0222P_selTmpFhs(Demap);
-						
-						if(infIndvList.size() == 0) {
-							insertNum += lalm0222PMapper.LALM0222P_insIsMmIndv(Demap);
-						} else {
-							updateNum += lalm0222PMapper.LALM0222P_updIsMmIndv(Demap);
-						}
-						
-						// 농가정보 수신 시, 통합회원정보 생성하기
-						Demap.put("mb_intg_gb", "02");
-						Demap.put("anw_yn", "1");	//한우종합여부 : 1
-						Demap.put("sra_fhs_id_no", Demap.get("fhs_id_no"));
-						Demap.put("ftsnm", Demap.get("sra_fhsnm"));
-						Demap.put("cus_mpno", Demap.get("mpno"));
-						commonService.Common_insMbintgInfo(Demap);
-						
-						if(fhsList.size() == 0) {
-							//휴면복구할 데이터가 있는 경우, 농가 INSERT 하지 않아도 됨, 위 메소드 내부에서 처리함
-							if ("0".equals(Demap.getOrDefault("cur_dorm_cnt", "0"))) {
-								insertNum += lalm0222PMapper.LALM0222P_insIsMmFhs(Demap);					
+						int inqCn = Integer.valueOf((String)dataMap.get("INQ_CN"));
+						if(inqCn > 0) {
+							Iterator<String> keys = dataMap.keySet().iterator();
+							while(keys.hasNext()) {
+								String key = keys.next();
+								String value = "";
+								if(dataMap.get(key) != null) value = dataMap.get(key).toString().trim(); 
+								//log.debug("inf 4700 obj : "+key+" : "+value);
+								Demap.put(key.toLowerCase(), value);
 							}
-						}else {				
-							Map<String, Object> bzLoc = lalm0222PMapper.LALM0222P_selBmBzloc(Demap);
-							if(fhsList.get(0).get("JRDWO_DSC") == null || fhsList.get(0).get("JRDWO_DSC").equals("")) {
-								throw new CusException(ErrorCode.CUSTOM_ERROR,"농가의 관내 구분이 없습니다.<br>농가관리에서 관내구분을 설정해 주세요.");
-							}
-							if(bzLoc.get("SMS_BUFFER_1") != null) Demap.put("buffer_1", bzLoc.get("SMS_BUFFER_1"));
-							else Demap.put("buffer_1", "");
-							
-							Demap.put("maco_yn", fhsList.get(0).get("MACO_YN"));
-							Demap.put("jrdwo_dsc", fhsList.get(0).get("JRDWO_DSC"));
-							
-							updateNum += lalm0222PMapper.LALM0222P_updIsMmFhs(Demap);			
-						}
 
-						result.put("SRA_INDV_AMNNO",Demap.get("sra_indv_amnno"));
-						result.put("MCOW_SRA_INDV_AMNNO", Demap.get("mcow_sra_indv_eart_no"));
-						result.put("CHK_IF_SRA_INDV", "1");
-						result.put("SRA_INDV_AMNNO", Demap.get("sra_indv_amnno"));	
-						result.put("FTSNM", Demap.get("sra_fhsnm"));	
-						result.put("FHS_ID_NO", Demap.get("fhs_id_no"));	
-						result.put("FARM_AMNNO", Demap.get("farm_amnno"));	
-						result.put("SRA_PDMNM", Demap.get("sra_fhsnm"));	
-						result.put("SRA_PD_RGNNM", Demap.get("sra_farm_dongup"));		
-						
+							if(!Demap.get("sra_farm_fzip").equals("") || !Demap.get("sra_farm_rzip").equals("")) {
+								tmpZip = Demap.get("sra_farm_fzip") + "-" + Demap.get("sra_farm_rzip");
+							}
+							if(!Demap.get("sra_farm_amn_atel").equals("") || !Demap.get("sra_farm_amn_htel").equals("") || !Demap.get("sra_farm_amn_stel").equals("")) {
+								tmpTelno = Demap.get("sra_farm_amn_atel") + "-" + Demap.get("sra_farm_amn_htel") + "-" + Demap.get("sra_farm_amn_stel");
+							}
+							if(!Demap.get("sra_fhs_rep_mpsvno").equals("") || !Demap.get("sra_fhs_rep_mphno").equals("") || !Demap.get("sra_fhs_rep_mpsqno").equals("")) {
+								tmpMpno = Demap.get("sra_fhs_rep_mpsvno") + "-" + Demap.get("sra_fhs_rep_mphno") + "-" + Demap.get("sra_fhs_rep_mpsqno");
+							}
+
+							Demap.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
+							Demap.put("ss_usrid", inMap.get("ss_usrid"));
+							Demap.put("zip", tmpZip);
+							Demap.put("telno", tmpTelno);
+							Demap.put("mpno", tmpMpno);
+							
+							infIndvList = lalm0222PMapper.LALM0222P_selTmpIndv(Demap);
+							fhsList = lalm0222PMapper.LALM0222P_selTmpFhs(Demap);
+							
+							if(infIndvList.size() == 0) {
+								insertNum += lalm0222PMapper.LALM0222P_insIsMmIndv(Demap);
+							} else {
+								updateNum += lalm0222PMapper.LALM0222P_updIsMmIndv(Demap);
+							}
+							
+							//TODO : 농가를 아예 통합회원에서 제거하게 되면 수정 or 제거해야 할 부분
+							// 농가정보 수신 시, 통합회원정보 생성하기
+							Demap.put("mb_intg_gb", "02");
+							Demap.put("anw_yn", "1");	//한우종합여부 : 1
+							Demap.put("sra_fhs_id_no", Demap.get("fhs_id_no"));
+							Demap.put("ftsnm", Demap.get("sra_fhsnm"));
+							Demap.put("cus_mpno", Demap.get("mpno"));
+							commonService.Common_insMbintgInfo(Demap);
+							
+							if(fhsList.size() == 0) {
+								//휴면복구할 데이터가 있는 경우, 농가 INSERT 하지 않아도 됨, 위 메소드 내부에서 처리함
+								if ("0".equals(Demap.getOrDefault("cur_dorm_cnt", "0"))) {
+									insertNum += lalm0222PMapper.LALM0222P_insIsMmFhs(Demap);					
+								}
+							}else {				
+								Map<String, Object> bzLoc = lalm0222PMapper.LALM0222P_selBmBzloc(Demap);
+								if(fhsList.get(0).get("JRDWO_DSC") == null || fhsList.get(0).get("JRDWO_DSC").equals("")) {
+									throw new CusException(ErrorCode.CUSTOM_ERROR,"농가의 관내 구분이 없습니다.<br>농가관리에서 관내구분을 설정해 주세요.");
+								}
+								if(bzLoc.get("SMS_BUFFER_1") != null) Demap.put("buffer_1", bzLoc.get("SMS_BUFFER_1"));
+								else Demap.put("buffer_1", "");
+								
+								Demap.put("maco_yn", fhsList.get(0).get("MACO_YN"));
+								Demap.put("jrdwo_dsc", fhsList.get(0).get("JRDWO_DSC"));
+								
+								updateNum += lalm0222PMapper.LALM0222P_updIsMmFhs(Demap);			
+							}
+
+							result.put("SRA_INDV_AMNNO",Demap.get("sra_indv_amnno"));
+							result.put("MCOW_SRA_INDV_AMNNO", Demap.get("mcow_sra_indv_eart_no"));
+							result.put("CHK_IF_SRA_INDV", "1");
+							result.put("CHK_IF_FHS", "1");							
+							result.put("SRA_INDV_AMNNO", Demap.get("sra_indv_amnno"));	
+							result.put("FTSNM", Demap.get("sra_fhsnm"));	
+							result.put("FHS_ID_NO", Demap.get("fhs_id_no"));	
+							result.put("FARM_AMNNO", Demap.get("farm_amnno"));	
+							result.put("SRA_PDMNM", Demap.get("sra_fhsnm"));	
+							result.put("SRA_PD_RGNNM", Demap.get("sra_farm_dongup"));
+						}else {
+							log.debug("개체 인터페이스[4700] 데이터 없음..");
+							result.put("CHK_IF_SRA_INDV", "0");		
+							result.put("CHK_IF_FHS", "0");							
+						}
+					}else {
+						log.debug("개체 인터페이스[4700] 데이터 없음..");
+						result.put("CHK_IF_SRA_INDV", "0");		
+						result.put("CHK_IF_FHS", "0");						
 					}
 								
 				}catch(RuntimeException | SQLException e) {
 					log.debug("개체 인터페이스[4700] 연동중 error..",e);
-					result.put("CHK_VAILD_ERR", "1");
+					result.put("CHK_INF_ERR", "1");
 					result.put("CHK_IF_SRA_INDV", "0");		
 					result.put("CHK_IF_FHS", "0");
 				}catch(Exception e) {
 					log.debug("개체 인터페이스[4700] 연동중 error..",e);
-					result.put("CHK_VAILD_ERR", "1");
+					result.put("CHK_INF_ERR", "1");
 					result.put("CHK_IF_SRA_INDV", "0");		
 					result.put("CHK_IF_FHS", "0");
 				}
@@ -310,7 +338,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				}
 				/* e: 수정KPN */			
 
-				/* s: 분만정보 */
+				/* s: 분만정보 
 				try {
 					result.put("MCOW_SRA_INDV_EART_NO", map.get("sra_indv_amnno"));
 					Map<String, Object> infBhPturMap = mcaUtil.tradeMcaMsg("2300", result);
@@ -322,6 +350,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						tempMap.put("ss_usrid", inMap.get("ss_usrid"));
 						tempMap.put("p_sra_indv_amnno", map.get("sra_indv_amnno"));
 						lalm0222PMapper.LALM0222P_delChildbirthInf(tempMap);
+						int bhPturIdx = 0;
 						for(Map<String, Object> bhPturMap : infBhPturRptData) {
 							//tempMap.putAll(bhPturMap);
 							bhPturMap = convertConfig.changeKeyLower(bhPturMap);
@@ -336,6 +365,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 								log.debug("분만 정보 : {}", key+" ::: "+value);
 								//tempMap.put(key.toLowerCase(), value);
 							}
+							bhPturMap.put("ptur_sqno", ++bhPturIdx);
 							insertNum += lalm0222PMapper.LALM0222P_insChildbirthInf(bhPturMap);				
 						}	
 					}
@@ -347,10 +377,10 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 					result.put("CHK_VAILD_ERR", "1");
 					log.debug("분만정보[2300] 연동중 error..",e);
 				}
-				/* e: 분만정보 */
-
-
-				/* s: 교배정보 */
+				 e: 분만정보 */
+                
+                
+				/* s: 교배정보 
 				try {
 					result.put("MCOW_SRA_INDV_EART_NO", map.get("sra_indv_amnno"));					
 					Map<String, Object> infbhCrossMap = mcaUtil.tradeMcaMsg("2400", result);
@@ -362,24 +392,26 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						tempMap.put("ss_usrid", inMap.get("ss_usrid"));
 						tempMap.put("p_sra_indv_amnno", map.get("sra_indv_amnno"));
 						lalm0222PMapper.LALM0222P_delMatingInf(tempMap);					
+						int bhCrossIdx = 0;
 						for(Map<String, Object> bhCrossMap : infbhCrossRptData) {
 							bhCrossMap = convertConfig.changeKeyLower(bhCrossMap);
 							bhCrossMap.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
 							bhCrossMap.put("ss_usrid", inMap.get("ss_usrid"));
 							bhCrossMap.put("p_sra_indv_amnno", map.get("sra_indv_amnno"));
+							bhCrossMap.put("crsbd_qcn", ++bhCrossIdx);			
 							insertNum += lalm0222PMapper.LALM0222P_insMatingInf(bhCrossMap);		
 						}	
 					}
 				}catch (RuntimeException | SQLException e) {
 					result.put("CHK_VAILD_ERR", "1");
-					log.debug("교배정보[2300] 연동중 error..",e);
+					log.debug("교배정보[2400] 연동중 error..",e);
 				}catch (Exception e) {
 					result.put("CHK_VAILD_ERR", "1");
-					log.debug("교배정보[2300] 연동중 error..",e);
+					log.debug("교배정보[2400] 연동중 error..",e);
 				}
-				/* e: 교배정보 */
+				 e: 교배정보 */
 
-				/* s: 후대정보 */
+				/* s: 후대정보 
 				try {
 					Map<String, Object> infPostIndvMap = mcaUtil.tradeMcaMsg("4900", result);
 					Map<String, Object> infPostIndvJsonData = (Map<String, Object>) infPostIndvMap.get("jsonData");
@@ -403,15 +435,13 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						}
 					}
 				}catch (RuntimeException | SQLException e) {
-					result.put("CHK_VAILD_ERR", "1");
 					log.debug("후대정보 [4900] 연동중 error..",e);
 				}catch (Exception e) {
-					result.put("CHK_VAILD_ERR", "1");
 					log.debug("후대정보 [4900] 연동중 error..",e);
 				}
-				/* e: 후대정보 */
+				 e: 후대정보 */
 
-				/* s: 형매정보 */
+				/* s: 형매정보 
 				try {
 					Map<String, Object> infSipIndvMap = mcaUtil.tradeMcaMsg("4900", result);
 					Map<String, Object> infSipIndvJsonData = (Map<String, Object>) infSipIndvMap.get("jsonData");
@@ -435,13 +465,11 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						}
 					}
 				}catch (RuntimeException | SQLException e) {
-					result.put("CHK_VAILD_ERR", "1");
 					log.debug("형매정보 [4900] 연동중 error..",e);
 				}catch (Exception e) {
-					result.put("CHK_VAILD_ERR", "1");
 					log.debug("형매정보 [4900] 연동중 error..",e);
 				}
-				/* e: 형매정보 */
+				 e: 형매정보 */
 
 				/* s: OPEN API 연동 */
 
@@ -451,23 +479,25 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 					List<Map<String, Object>> cattleMoveList = mcaUtil.getOpenDataApiCattleMove(temp);
 					if(cattleMoveList != null && !cattleMoveList.isEmpty()) {
 						if(cattleMoveList != null && !cattleMoveList.isEmpty()) {
-							lalm0222PMapper.LALM0222P_delCattleMvInf(inMap);
+							int mvSeq = 0;
+							lalm0222PMapper.LALM0222P_delCattleMvInf(map);
 							for(Map<String, Object> moveInfo : cattleMoveList) {
 								moveInfo.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
 								moveInfo.put("ss_usrid", inMap.get("ss_usrid"));
-								moveInfo.put("p_sra_indv_amnno", inMap.get("sra_indv_amnno"));
+								moveInfo.put("sra_indv_amnno", map.get("sra_indv_amnno"));
+								moveInfo.put("mv_seq", ++mvSeq);
+								moveInfo = convertConfig.changeKeyLower(moveInfo);
 								insertNum += lalm0222PMapper.LALM0222P_insCattleMvInf(moveInfo);				
 							}
 						}
 					}
 				}catch (RuntimeException | SQLException e) {
-					result.put("CHK_VAILD_ERR", "1");
+					result.put("CHK_INF_ERR", "1");
 					log.debug("이동정보 [OPENAPI] 연동중 error..",e);
 				}catch (Exception e) {
-					result.put("CHK_VAILD_ERR", "1");
+					result.put("CHK_INF_ERR", "1");
 					log.debug("이동정보 [OPENAPI] 연동중 error..",e);
 				}
-				//TO-DO : 이동정보 INSERT
 				/* e: 이동정보 */
 				
 
@@ -504,10 +534,10 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						result.put("BRCL_ISP_DT", "");					
 					}
 				}catch (RuntimeException e) {
-					result.put("CHK_VAILD_ERR", "1");
+					result.put("CHK_INF_ERR", "1");
 					log.debug("브루셀라연동 [OPENAPI] 연동중 error..",e);
 				}catch (Exception e) {
-					result.put("CHK_VAILD_ERR", "1");
+					result.put("CHK_INF_ERR", "1");
 					log.debug("브루셀라연동 [OPENAPI] 연동중 error..",e);
 				}
 				
@@ -530,10 +560,10 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						result.put("RE_PRODUCT_4_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());					
 					}					
 				}catch (RuntimeException | SQLException e) {
-					result.put("CHK_VAILD_ERR", "1");
+					result.put("CHK_INF_ERR", "1");
 					log.debug("유전개체[4200] 연동중 error..",e);
 				}catch (Exception e) {
-					result.put("CHK_VAILD_ERR", "1");
+					result.put("CHK_INF_ERR", "1");
 					log.debug("유전개체[4200] 연동중 error..",e);
 				}
 				
@@ -556,10 +586,10 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 							result.put("RE_PRODUCT_14_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());						
 						}						
 					}catch (RuntimeException | SQLException e) {
-						result.put("CHK_VAILD_ERR", "1");
+						result.put("CHK_INF_ERR", "1");
 						log.debug("모 유전개체[4200] 연동중 error..",e);
 					}catch (Exception e) {
-						result.put("CHK_VAILD_ERR", "1");
+						result.put("CHK_INF_ERR", "1");
 						log.debug("모 유전개체[4200] 연동중 error..",e);
 					}
 				}

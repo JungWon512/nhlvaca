@@ -35,12 +35,11 @@ public class LALM0214P3Controller {
 
 		Map<String, Object> map = convertConfig.conMap(rMap);
 		
-		List<Map<String, Object>> reList = lalm0214P3Service.LALM0214P3_insFhs(map);
+		//Map<String, Object> inMap = lalm0214P3Service.LALM0214P3_insFhs(map);
+		//Map<String, Object> reMap = commonFunc.createResultSetMapData(inMap);
 		
-		
-		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-		
-		return reMap;	
+		//return reMap;
+		return null;
 		
 	}
 	

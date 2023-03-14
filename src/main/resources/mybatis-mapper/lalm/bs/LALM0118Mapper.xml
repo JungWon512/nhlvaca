@@ -47,18 +47,12 @@
 			INNER JOIN TB_LA_IS_MM_MWMN MWN
 			ON(BLK.NA_BZPLC = MWN.NA_BZPLC
 				AND BLK.TRMN_AMNNO = MWN.TRMN_AMNNO
-				AND BLK.MB_INTG_NO = MWN.MB_INTG_NO
 			)
 			INNER JOIN TB_LA_IS_BM_BZLOC LOC
 			ON(BLK.NA_BZPLC = LOC.NA_BZPLC)
-			INNER JOIN TB_LA_IS_MM_MBINTG MBT
-			ON(BLK.MB_INTG_NO = MBT.MB_INTG_NO
-				AND MBT.DELACC_YN = '0'
-			)
 			LEFT OUTER JOIN TB_LA_IS_BK_DORM_MWMN DMW
 			ON(BLK.NA_BZPLC = DMW.NA_BZPLC
 				AND BLK.TRMN_AMNNO = DMW.TRMN_AMNNO
-				AND BLK.MB_INTG_NO = BLK.MB_INTG_NO
 			)
 		WHERE TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN BLK.REG_DATE AND BLK.LIMIT_DATE
 			AND BLK.DEL_YN = '0'
@@ -101,18 +95,12 @@
 			INNER JOIN TB_LA_IS_MM_MWMN MWN
 			ON(BLK.NA_BZPLC = MWN.NA_BZPLC
 				AND BLK.TRMN_AMNNO = MWN.TRMN_AMNNO
-				AND BLK.MB_INTG_NO = MWN.MB_INTG_NO
 			)
 			INNER JOIN TB_LA_IS_BM_BZLOC LOC
 			ON(BLK.NA_BZPLC = LOC.NA_BZPLC)
-			INNER JOIN TB_LA_IS_MM_MBINTG MBT
-			ON(BLK.MB_INTG_NO = MBT.MB_INTG_NO
-				AND MBT.DELACC_YN = '0'
-			)
 			LEFT OUTER JOIN TB_LA_IS_BK_DORM_MWMN DMW
 			ON(BLK.NA_BZPLC = DMW.NA_BZPLC
 				AND BLK.TRMN_AMNNO = DMW.TRMN_AMNNO
-				AND BLK.MB_INTG_NO = BLK.MB_INTG_NO
 			)
 		WHERE BLK.NA_BZPLC = #{na_bzplc}
 			AND BLK.REG_SEQ = #{reg_seq}
@@ -145,6 +133,7 @@
     		, FSRGMN_ENO
     		, LSCHG_DTM
     		, LS_CMENO
+    		, DEL_YN
     	)
 		VALUES (
 			#{ss_na_bzplc}
@@ -159,6 +148,7 @@
             , #{ss_userid}          /* 최초등록자개인번호         */             
             , SYSDATE               /* 최종변경일시               */             
             , #{ss_userid}          /* 최종변경자개인번호         */ 
+            , '0'
 		)    	
     </insert>
     

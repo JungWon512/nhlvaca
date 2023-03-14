@@ -42,8 +42,8 @@
                     <button class="tb_btn" id="pb_minusRow">행삭제</button>
                 </div>
                 
-                <div class="fl_R" id="tab3_text"><!--  //버튼 모두 우측정렬 -->   
-                    <label id="msg_Sbid" style="color: red;font: message-box;">이미지는 최대 8개까지 등록가능합니다.</label>
+                <div class="fl_R" id="tab3_text">
+                    <label id="msg_Sbid" style="color: red;font: message-box;">이미지는 최대 8장입니다.</label>
                 </div>
 			</div>
              
@@ -118,9 +118,9 @@
 		                                </td>
 		                                <th scope="row"><span>경매번호기준</span></th>
 		                                <td>
-		                            		<input type="radio" id="rd_gvno_bascd_0"  name="rd_gvno_bascd" value="0" checked> 순번
-		                                    <input type="radio" id="rd_gvno_bascd_1"  name="rd_gvno_bascd" value="1"> 짝수
-		                                    <input type="radio" id="rd_gvno_bascd_2"  name="rd_gvno_bascd" value="2"> 홀수
+		                            		<input type="radio" id="rd_gvno_bascd_0"  name="rd_gvno_bascd" value="0" checked> 순번 &nbsp;
+		                                    <input type="radio" id="rd_gvno_bascd_1"  name="rd_gvno_bascd" value="1"> 짝수 &nbsp;
+		                                    <input type="radio" id="rd_gvno_bascd_2"  name="rd_gvno_bascd" value="2"> 홀수 &nbsp;
 		                                    <input type="hidden" id="gvno_bascd" name="gvno_bascd">                                                   
 		                                </td>
 		                                <th scope="row"><span>개체이월</span></th>
@@ -366,22 +366,15 @@
 						<table>
 							<colgroup>
 							    <col width="120">
+							    <col width="*">
 							    <col width="120">
-							    <col width="130">
-							    <col width="80">
-							    <col width="80">
-							    <col width="100">
+							    <col width="*">
 							    <col width="120">
-							    <col width="80">
-							    <col width="100">
-							    <col width="100">
-							    <col width="80">
-							    <col width="100">
-							    <col width="100">
-							    <col width="80">
-							    <col width="100">
-							    <col width="100">
-							    <col width="40">
+							    <col width="*">
+							    <col width="120">
+							    <col width="*">
+							    <col width="120">
+							    <col width="*">
 							</colgroup>
 							<tbody> 
 	                            <tr>
@@ -392,31 +385,30 @@
 	                                    </div>
 	                            	</td>
 	                            	<th scope="row" colspan=><span>브루셀라<br/>검사증제출여부</span></th>
-	                            	<td colspan='2'>
+	                            	<td>
 	                            		<input type="checkbox" id="brcl_isp_ctfw_smt_yn" name="brcl_isp_ctfw_smt_yn" value="0">
 	                            		<label id="brcl_isp_ctfw_smt_yn_text" for="brcl_isp_ctfw_smt_yn"> 부</label>
 	                            		<input type="hidden" class="number" id="brcl_isp_rzt_c" maxlength="1">
 	                            	</td>
 	                            	<th scope="row" colspan=1><span>구제역<br/>접종차수</span></th>
-	                            	<td colspan=1>
+	                            	<td>
                            				<input type="text" id="vacn_order" name="vacn_order" value=""></input>
 	                            	</td>
 	                            	<th scope="row" colspan=1><span>구제역<br/>예방접종일</span></th>
-	                            	<td colspan=2>
+	                            	<td>
 	                            		<div class="cellBox">
 	                                        <div class="cell"><input type="text" class="date" id="vacn_dt" style="font-weight:bold;"></div>                                        
 	                                    </div>
 	                            	</td>
 	                        		<th scope="row"><span>우결핵<br/>검사일</span></th>
-	                        		<td colspan=2>
+	                        		<td>
 	                            		<div class="cellBox">
 	                                        <div class="cell"><input type="text" class="date" id="bovine_dt"></div>                                        
 	                                    </div>
 	                            	</td>
-	                            	<td colspan=2>
+	                            	<td>
                            				<input type="text" id="bovine_rsltnm" name="bovine_rsltnm" value=""></input>
 	                            	</td>
-	                            	<td colspan=3></td>
 	                            </tr>
 							</tbody>
 						</table>
@@ -432,7 +424,7 @@
 	                            <col width="130">
 	                            <col width="80">
 	                            <col width="80">
-	                            <col width="100">
+	                            <col width="110">
 	                            <col width="120">
 	                            <col width="80">
 	                            <col width="100">
@@ -538,8 +530,8 @@
 	                                        <div class="cell"><input type="text" class="date" id="afism_mod_dt"></div>                                        
 	                                    </div>
 	                            	</td>
-	                            	<th scope="row" colspan=2><span>인공수정증명서 제출여부</span></th>
-	                            	<td colspan=2>
+	                            	<th scope="row" colspan="1"><span>인공수정증명서<br/>제출여부</span></th>
+	                            	<td colspan="1">
 	                            		<input type="checkbox" id="afism_mod_ctfw_smt_yn" name="afism_mod_ctfw_smt_yn" value="0">
 	                            		<label id="afism_mod_ctfw_smt_yn_text" for="afism_mod_ctfw_smt_yn"> 부</label>
 	                            	</td>
@@ -559,12 +551,12 @@
 	                            		<input type="text" class="number" id="prny_mtcn" maxlength="2">
 	                            	</td>
 	                            	<th scope="row"><span>임신감정여부</span></th>
-	                            	<td colspan=3>
+	                            	<td colspan="2">
 	                            		<input type="checkbox" id="prny_jug_yn" name="prny_jug_yn" value="0">
 	                            		<label id="prny_jug_yn_text" for="prny_jug_yn"> 부</label>
 	                            	</td>
 	                            	<th scope="row"><span>임신여부</span></th>
-	                            	<td colspan=2>
+	                            	<td colspan="1">
 	                            		<input type="checkbox" id="prny_yn" name="prny_yn" value="0">
 	                            		<label id="prny_yn_text" for="prny_yn"> 부</label>
 	                            	</td>

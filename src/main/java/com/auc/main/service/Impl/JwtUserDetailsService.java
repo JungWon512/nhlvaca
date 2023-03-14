@@ -1,9 +1,11 @@
 package com.auc.main.service.Impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -77,6 +79,7 @@ public class JwtUserDetailsService implements UserDetailsService{
 		else {
 			chkPw = mainMapper.selChkPw(usrid, user_pw);
 		}
+		//chkPw = mainMapper.selChkPw(usrid, user_pw);
 		return chkPw;
 	}
 
@@ -86,6 +89,7 @@ public class JwtUserDetailsService implements UserDetailsService{
 
 	public int delUser(Map<String, String> loginMap) {
 	    return mainMapper.delUser(loginMap);
+		
 	}
 
 	public int selChkPw(Map<String, Object> map) {

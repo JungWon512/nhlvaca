@@ -288,7 +288,10 @@
          FROM TB_LA_IS_MM_FHS
          WHERE NA_BZPLC       = #{ss_na_bzplc} 
            AND FHS_ID_NO = #{fhs_id_no}
-	]]>
+	]]>  
+           <if test="farm_amnno != null and farm_amnno != ''"> 
+				AND FARM_AMNNO = #{farm_amnno}
+           </if>       
     </select>
     
     <select id="LALM0215_selAmnno" resultType="hashMap">
@@ -1056,8 +1059,8 @@
 				, A.FSRGMN_ENO
 				, A.LSCHG_DTM
 				, A.LS_CMENO
-				, 'https://kr.object.ncloudstorage.com/test-tt12/'||FILE_PATH||FILE_NM||FILE_EXT_NM AS FILE_URL
-			 	, 'https://kr.object.ncloudstorage.com/test-tt12/'||FILE_PATH||'thumb/'||FILE_NM||FILE_EXT_NM AS THUMB_FILE_URL
+				, #{imgDomain}||FILE_PATH||FILE_NM||FILE_EXT_NM AS FILE_URL
+			 	, #{imgDomain}||FILE_PATH||'thumb/'||FILE_NM||FILE_EXT_NM AS THUMB_FILE_URL
 		FROM TB_LA_IS_MM_COW_IMG A
 		WHERE A.NA_BZPLC = #{na_bzplc}
 				AND A.SRA_INDV_AMNNO = #{sra_indv_amnno}

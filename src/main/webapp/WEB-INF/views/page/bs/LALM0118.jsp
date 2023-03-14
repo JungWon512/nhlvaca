@@ -7,7 +7,7 @@
 <!-- 암호화 -->
 <%@ include file="/WEB-INF/common/serviceCall.jsp" %>
 <%@ include file="/WEB-INF/common/head.jsp" %>
-
+ 
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <!-- Tell the browser to be responsive to screen width -->
@@ -426,6 +426,7 @@ var LALM0412_isFrmOrgData = null;
  			$("#mb_intg_no").attr("disabled", false);
  			$("#reg_seq").attr("disabled", false);
  			$("#btn_Delete").attr("disabled", false);
+ 			$("#btn_Save").attr("disabled", false);
  		});
  	}
     ////////////////////////////////////////////////////////////////////////////////

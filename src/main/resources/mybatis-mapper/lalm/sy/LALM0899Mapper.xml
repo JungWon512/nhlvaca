@@ -585,8 +585,8 @@
 				,FSRGMN_ENO
 				,TO_CHAR(LSCHG_DTM, 'YYYYMMDDHH24MISS') AS LSCHG_DTM
 				,LS_CMENO
-				,NVL(BDLN_VAL,'') BDLN_VAL
-				,NVL(BDHT_VAL,'') BDHT_VAL
+				,NVL(BDLN_VAL,'0') BDLN_VAL
+				,NVL(BDHT_VAL,'0') BDHT_VAL
 			FROM TB_LA_IS_MH_SOG_COW
 		   WHERE NA_BZPLC = #{ss_na_bzplc}
 		     AND AUC_OBJ_DSC in ('1', '2', '3')
@@ -1007,10 +1007,10 @@
                                                      end
                                         group by auc_obj_dsc
                                 ))
-	                      || '암(최저' || TO_CHAR(ROUND(TO_NUMBER(c.am_min / 10000))) || '만.최고'
-	                      || TO_CHAR(TO_NUMBER(c.am_max / 10000)) || '만)'
-	                      || '수(최저' || TO_CHAR(ROUND(TO_NUMBER(d.su_min / 10000))) || '만.최고'
-	                      || TO_CHAR(TO_NUMBER(d.su_max / 10000)) || '만) 입니다.'
+	                      || '암(최저' || TO_CHAR(ROUND(TO_NUMBER(NVL(c.am_min,0) / 10000))) || '만.최고'
+	                      || TO_CHAR(TO_NUMBER(NVL(c.am_max,0) / 10000)) || '만)'
+	                      || '수(최저' || TO_CHAR(ROUND(TO_NUMBER(NVL(c.su_min,0) / 10000))) || '만.최고'
+	                      || TO_CHAR(TO_NUMBER(NVL(c.su_max,0) / 10000)) || '만) 입니다.'
 	                         as msg_cntn          /* 메세지내용   */
                , E.TMS_YN
                , E.SMS_FWDG_DT
@@ -1025,8 +1025,10 @@
 	       , (select
 	                a.na_bzplc
 	              , a.auc_dt
-	              , min(a.sra_sbid_am) as am_min
-	              , max(a.sra_sbid_am) as am_max
+	              , min(case when b.indv_sex_c in ('1','4','6') then a.sra_sbid_am end) as am_min
+				  , max(case when b.indv_sex_c in ('1','4','6') then a.sra_sbid_am end) as am_max
+				  , min(case when b.indv_sex_c not in ('1','4','6') then a.sra_sbid_am end) as su_min
+				  , max(case when b.indv_sex_c not in ('1','4','6') then a.sra_sbid_am end) as su_max
 	          from tb_la_is_mh_sog_cow a
 	             , tb_la_is_mm_indv    b
 	          where  a.na_bzplc            = #{ss_na_bzplc}
@@ -1041,31 +1043,8 @@
 	            and  a.na_bzplc            = b.na_bzplc
 	            and  a.sra_indv_amnno      = b.sra_indv_amnno
 	            and  a.sra_srs_dsc         = b.sra_srs_dsc
-	            and  b.indv_sex_c          in ('1', '4', '6')
 	          group by a.na_bzplc, a.auc_dt
 	         ) c
-	       , (select
-	                a.na_bzplc
-	              , a.auc_dt
-	              , min(a.sra_sbid_am) as su_min
-	              , max(a.sra_sbid_am) as su_max
-	          from tb_la_is_mh_sog_cow a
-	             , tb_la_is_mm_indv    b
-	          where  a.na_bzplc            = #{ss_na_bzplc}
-	            and  a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
-	                                              when #{auc_obj_dsc} = '2' then '2'
-	                                              when #{auc_obj_dsc} = '3' then '3'
-	                                              else a.auc_obj_dsc
-	                                         end
-	            and  a.auc_dt              = #{auc_dt}
-	            and  a.sel_sts_dsc         = '22'
-	            and  a.del_yn              = '0'
-	            and  a.na_bzplc            = b.na_bzplc
-	            and  a.sra_indv_amnno      = b.sra_indv_amnno
-	            and  a.sra_srs_dsc         = b.sra_srs_dsc
-	            and  b.indv_sex_c         not in ('1', '4', '6')
-	          group by a.na_bzplc, a.auc_dt
-	         ) d
           , tb_la_is_mm_sms e
 	    where  a.na_bzplc            = #{ss_na_bzplc}
 	      and  a.del_yn              = '0'
@@ -1535,7 +1514,7 @@
         , TO_CHAR(a.ls_cmeno)                     as ls_cmeno
         , TO_CHAR(a.maco_yn)                      as maco_yn              
         , TO_CHAR(b.brc)                          as brc
-        , TO_CHAR(a.sra_farm_acno)                as sra_farm_acno
+        , TO_CHAR(NVL(TRIM(a.sra_farm_acno),TRIM(a.new_sra_farm_acno)))                as sra_farm_acno
     from tb_la_is_mm_fhs   a
        , tb_la_is_mm_wmc   b
     where a.na_bzplc    = #{ss_na_bzplc}

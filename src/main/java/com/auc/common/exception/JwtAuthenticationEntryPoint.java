@@ -54,6 +54,12 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
 			return;
 		}
 
+		/*리프레쉬 토큰이 만료될 경우 */
+		if(exception.equals(ErrorCode.EXPIERD_REFRESH.getCode())) {
+			setResponse(request,response,ErrorCode.EXPIERD_REFRESH);
+			return;
+		}
+
 		/*토큰이 아닐경우 */
 		if(exception.equals(ErrorCode.UNABLE_TOKEN.getCode())) {
 			setResponse(request,response,ErrorCode.UNABLE_TOKEN);

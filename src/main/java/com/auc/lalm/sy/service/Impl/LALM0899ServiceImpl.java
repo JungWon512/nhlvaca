@@ -218,6 +218,7 @@ public class LALM0899ServiceImpl implements LALM0899Service{
 			//합천축협일경우 or 수기농가일경우
 //			}else {
 			
+			//TODO : 농가를 아예 통합회원에서 제거하게 되면 수정 or 제거해야 할 부분
 			//농가정보 수신 시, 통합회원정보 생성하기
 			Map <String, Object> lowerMap = new HashMap<String, Object>();
 			lowerMap =  convertConfig.changeKeyLower(inMap);

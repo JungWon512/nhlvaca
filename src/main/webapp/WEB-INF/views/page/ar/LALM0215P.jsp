@@ -83,6 +83,14 @@
         $("#grd_MmFhs").jqGrid("hideCol","NA_TRPL_C");         
     });    
     
+	// enter로 조회
+	$('#ftsnm').on('keydown',function(e){
+		if(e.keyCode==13){
+			 fn_Search();
+	    	return;
+		}
+	});
+    
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 초기화 함수
      * 2. 입 력 변 수 : N/A

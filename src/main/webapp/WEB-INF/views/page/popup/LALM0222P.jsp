@@ -417,8 +417,8 @@
          	$("#grd_CattleMove").jqGrid("clearGridData", true);
          	
          	selresult = setDecrypt(results);
-         	
-         	if(selresult.INQ_CN == "0") {
+         	var inqCn = new Number(selresult.INQ_CN);
+         	if(!fn_isNum(selresult.INQ_CN) || inqCn == "0") {
          		MessagePopup('OK',"조회된 내역이 없습니다.");
         		return;
          	} else {

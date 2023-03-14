@@ -824,7 +824,8 @@
                                     <input type="hidden" id="hd_sgno_prc_dsc" name="hd_sgno_prc_dsc">
                                 </td>
                             </tr>
-                            <tr>
+<!-- 경매안내문구 / 경매방식 일단 사용안함.
+                             <tr>
                                 <th scope="row">경매안내문구</th>
                                 <td>
                                     <input type="text" class="input_auc" id="auc_infmsg" maxlength="30">
@@ -849,6 +850,7 @@
                                     <input type="text" id="male_kg">
                                 </td>
                             </tr>
+-->
                         </tbody>
                     </table>
                     </form>

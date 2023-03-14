@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.auc.lalm.ar.service.LALM0213Service;
 
@@ -41,7 +42,11 @@ public class LALM0213ServiceImpl implements LALM0213Service{
 	@Override
 	public List<Map<String, Object>> LALM0213_selBadCheck(Map<String, Object> map) throws Exception {
 		List<Map<String, Object>> list = null;
-		list = lalm0213Mapper.LALM0213_selBadCheck(map);
+		if(ObjectUtils.isEmpty(map.get("mb_intg_no"))) {
+			list = lalm0213Mapper.LALM0213_selBadCheckMwmn(map);
+		}else {
+			list = lalm0213Mapper.LALM0213_selBadCheck(map);
+		}
 		return list;
 	}
 	

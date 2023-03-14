@@ -162,6 +162,16 @@ public class LALM0212Controller {
 		Map<String, Object> reMap = commonFunc.createResultSetListData(reList); 	
 		
 		return reMap;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/LALM0212_selDisabledAucDsc", method=RequestMethod.POST)
+	public Map<String, Object> LALM0212_selDisabledAucDsc(ResolverMap rMap) throws Exception{				
+		Map<String, Object> map = convertConfig.conMap(rMap);		
+		List<Map<String, Object>> reList = lalm0212Service.LALM0212_selDisabledAucDsc(map);				
+		Map<String, Object> reMap = commonFunc.createResultSetListData(reList); 	
+		
+		return reMap;
 	}	
 	
 	@ResponseBody

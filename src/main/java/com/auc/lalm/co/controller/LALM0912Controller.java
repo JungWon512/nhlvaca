@@ -70,7 +70,7 @@ public class LALM0912Controller {
 		return reMap;	
 	}
 	
-	@ResponseBody   
+	@ResponseBody
 	@RequestMapping(value="/LALM0912_updSealImg", method=RequestMethod.POST)
 	public Map<String, Object> LALM0912_updSealImg(MultipartHttpServletRequest reqeust) throws Exception{				
 		
@@ -87,12 +87,12 @@ public class LALM0912Controller {
 				
 		Map<String, Object> map = lalm0912Service.LALM0912_updSealImg(inMap);
 		
-		// 로그정보 insert
-		Map<String, Object> logoMap = new HashMap<>();
-		logoMap.put("na_bzplc", na_bzplc);
-		logoMap.put("logo_img_flnm", reqeust.getFile("logo_img_flnm"));
-		
-		lalm0912Service.LALM0912_updLogoImg(logoMap);
+		// 조합 Logo insert
+//		Map<String, Object> logoMap = new HashMap<>();
+//		logoMap.put("na_bzplc", na_bzplc);
+//		logoMap.put("logo_img_flnm", reqeust.getFile("logo_img_flnm"));
+//		
+//		lalm0912Service.LALM0912_updLogoImg(logoMap);
 		
 		Map<String, Object> reMap = commonFunc.createResultCUD(map);
 		return reMap;	
@@ -117,6 +117,20 @@ public class LALM0912Controller {
 		}
 	}
 	
-	
+	@ResponseBody
+	@RequestMapping(value="/LALM0912_selLogoImg", method=RequestMethod.POST)
+	public String LALM0912_selLogoImg(ResolverMap rMap) throws Exception{				
+		
+		Map<String, Object> map = convertConfig.conMap(rMap);
+		
+		Map<String, Object> outMap = lalm0912Service.LALM0912_selLogoImg(map);
+		if( outMap != null ) {
+			String base64Encode = (String) outMap.getOrDefault("file_src","");
+			return base64Encode;
+		}else {
+			
+			return "";
+		}
+	}
 
 }

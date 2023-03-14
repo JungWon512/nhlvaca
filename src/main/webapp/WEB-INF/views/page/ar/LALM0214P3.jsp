@@ -178,27 +178,70 @@
 	        
 	        var param = {list : rowData,auc_obj_dsc : $('#auc_obj_dsc').val() ,auc_dt : aucDt.replaceAll('-','') ,rc_dt: rcDt.replaceAll('-','')};
 	        
-	        var result = sendAjax(param, '/LALM0214P3_selIndvSync', 'POST');	       
-        	 console.log(result);
-	         if(result.status != RETURN_SUCCESS){
+	        var result = sendAjaxAsync(param, '/LALM0214P3_selIndvSync', 'POST',function(result){	        	
 	        	 showErrorMessage(result);
-	        	 return;
-	         } else {
+	        },function(result){
 	        	 var decResult = setDecrypt(result);
-      			 fn_CreateGrid(decResult);
-      			 $('#grd_MmInsSogCow').getDataIDs().forEach((rowid,i)=>{
-              	 	if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR') == '1'){
-              	 		$("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
-            	        $("#grd_MmInsSogCow").setRowData(rowid,false,{background:"#ff0000",color:"#fff"});
-            	 	}else if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_SRA_INDV') == '1' && $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '1'){
-             	         $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '*');
-             	         $("#grd_MmInsSogCow").setRowData(rowid,false,{background:"rgb(253 241 187)",color:""});
-             	 	}else{
-             	         $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
-           				$("#grd_MmInsSogCow").setRowData(rowid,false,{background:"",color:""});
-             	 	}      				
-      			 });
-	         }
+     			 fn_CreateGrid(decResult);
+     			 $('#grd_MmInsSogCow').getDataIDs().forEach((rowid,i)=>{
+             	 	if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_INF_ERR') == '1'){
+						$("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
+						$("#grd_MmInsSogCow").setRowData(rowid,false,{background:"#ff0000",color:"#000"});
+           	 		}else if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_SRA_INDV') == '0' || $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '0'){
+						$("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
+						if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_SRA_INDV') == '0'){
+	           	 			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_INDV_AMNNO', $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'SRA_INDV_AMNNO'),{background:"rgb(255 0 0)"});							
+						}
+						if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '0'){
+	           	 			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO', $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'FHS_ID_NO'),{background:"rgb(255 0 0)"});
+	           	 			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO', $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'FARM_AMNNO'),{background:"rgb(255 0 0)"});
+	           	 			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM', $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'FTSNM'),{background:"rgb(255 0 0)"});							
+						}
+	    	 		}else if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_SRA_INDV') == '1' && $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '1'){
+						$("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '*');
+						$("#grd_MmInsSogCow").setRowData(rowid,false,{background:"rgb(253 241 187)",color:""});
+	        	 	}else{
+            	         $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
+          				$("#grd_MmInsSogCow").setRowData(rowid,false,{background:"",color:""});
+            	 	}      				
+     			 });
+	        	
+	        });
+
+	        function sendAjaxAsync(objData, sendUrl, methodType,errCallBack,succCallBack){
+	            var encrypt = setEncrypt(objData);                    
+	            var result;
+	            $.ajax({
+	                url: sendUrl,
+	                type: methodType,
+	                dataType:'json',
+	                async: true,
+	                headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
+	                data:{
+	                       data : encrypt.toString()
+	                },
+	                beforeSend:function(){
+	                	setTimeout(showLodingImg,0);
+	                },
+	                success:function(data) {
+	                	result = data;    
+	                	if(succCallBack instanceof Function) succCallBack(result);   
+	                },
+	                error:function(response){
+	                	if(response.status == 404){
+	                        result = "";
+	                    }else {
+	                        result = JSON.parse(response.responseText); 
+	                    }
+	                	if(errCallBack instanceof Function) errCallBack(result);
+	                },
+	                complete:function(data){
+						localStorage.setItem("nhlvaca_token", (getCookie('token')||localStorage.getItem('nhlvaca_token')));
+						setTimeout(hideLodingImg,0);
+	                }
+	            });         
+	            return result;
+	        }
     	});
 
     	$('#pb_allVaildChk').click((e)=>{
@@ -254,18 +297,26 @@
 			
 			$("#grd_MmInsSogCow").jqGrid("clearGridData", true);
             fn_CreateGrid(data);
+ 			 
   			$('#grd_MmInsSogCow').getDataIDs().forEach((rowid,i)=>{
 				if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR') == '1'){
              	    $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '');
              	    if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_ERR_AUC_PRG_SQ') == '1'){
              	    	var aucPrgSq = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'AUC_PRG_SQ');
                  	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'AUC_PRG_SQ', aucPrgSq,{background:"rgb(255 0 0)"});             	        	
-					}
-             	    if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_ERR_SRA_INDV_AMNNO') =='1'){
+					}else if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_ERR_SRA_INDV_AMNNO') =='1'){
              	    	var sraIndvAmnno = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'SRA_INDV_AMNNO');
                   	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_INDV_AMNNO', sraIndvAmnno,{background:"rgb(255 0 0)"});             	        	
+					}else{
+						$("#grd_MmInsSogCow").setRowData(rowid,false,{background:"#ff0000",color:"#000"});
 					}
-				}
+				}else if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '0'){
+					$("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_');
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM', "",{background:"#ff0000",color:"#000"});
+  	 			}else if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_SRA_INDV') == '1' && $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '1'){
+	       	         $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '*');
+	    	         $("#grd_MmInsSogCow").setRowData(rowid,false,{background:"rgb(253 241 187)",color:""});
+	    	 	}
 			});
     	});
         $("#pb_addRow").click(()=>{
@@ -452,20 +503,28 @@
 		if(!fn_isNull(ftsnm)) {
         	//fn_CallFtsnmPopup(true);
      		var data = new Object();
-     		data['ftsnm'] = ftsnm;
-            
-            fn_CallFtsnm0127Popup(data,true,function(result) {
-            	if(result){
-            	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO', result.FARM_AMNNO);
-            	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO', result.FHS_ID_NO);
-            	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM', result.FTSNM);
-            	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_FHS', 1);
-                 } else {
-            	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO');
-            	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO');
-            	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FTSNM');
-                 }
-             });
+            data['flag'] = '2';
+            data['sra_fhsnm'] = ftsnm;
+
+            fn_CallFhsPopup(data, false, function(fhsData){
+            	if(fhsData){
+            		var sendObj = new Object();
+            		fhsData.ZIP = fhsData.SRA_FHS_FZIP.trim() + '-' + fhsData.SRA_FHS_RZIP.trim();
+            		fhsData.TELNO = fhsData.SRA_FHS_ATEL.trim() + '-' + fhsData.SRA_FHS_HTEL.trim() + '-' + fhsData.SRA_FHS_STEL.trim();
+            		fhsData.MPNO = result.SRA_FHS_REP_MPSVNO.trim() + '-' + result.SRA_FHS_REP_MPHNO.trim() + '-' + result.SRA_FHS_REP_MPSQNO.trim();
+
+            		$("#grd_MmInsSogCow").jqGrid('setCell', rowid, 'FHS_ID_NO', fhsData.FHS_ID_NO);
+            		$("#grd_MmInsSogCow").jqGrid('setCell', rowid, 'FARM_AMNNO', fhsData.FARM_AMNNO);
+            		$("#grd_MmInsSogCow").jqGrid('setCell', rowid, 'FTSNM', fhsData.SRA_FHSNM);
+            		var resultsTmpIndv = sendAjax(fhsData, "/LALM0214P3_insFhs", "POST");
+            		var result;
+            		if(results.status == RETURN_SUCCESS) {            			
+            		}else {
+                        showErrorMessage(results);
+                        return;
+                    }            		
+            	}
+            });
         }
 		
 		if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_SRA_INDV') == '1' && $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_IF_FHS') == '1'){
@@ -618,7 +677,8 @@
  	//**************************************
  	function fn_CallIndvInfSrchSet(p_sra_indv_amnno,rowid) {
  		var fhs_id_no = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'FHS_ID_NO');
- 		var resultsFhsIdNo = sendAjax({fhs_id_no: fhs_id_no}, "/LALM0215_selFhsIdNo", "POST");        
+ 		var farm_amnno = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'FARM_AMNNO');
+ 		var resultsFhsIdNo = sendAjax({fhs_id_no: fhs_id_no,farm_amnno: farm_amnno}, "/LALM0215_selFhsIdNo", "POST");        
         var resultFhsIdNo;
         
         if(resultsFhsIdNo.status == RETURN_SUCCESS) {
@@ -852,8 +912,9 @@
         }
         
         var searchResultColNames = ["","* 경매대상","* 개체관리번호","","* 농가<br/>식별번호","* 농장<br/>관리번호","* 농가명"
+//         	,""
         							,"* 경매번호","자가운송여부","운송비","출자금","사료공급금액"
-        	                        ,"당일접수비용","구제역 접종일자","구제역 검사결과","우결핵 접종일자","우결핵 백신차수", "브루셀라<br>검사일자","브루셀라 검사결과 코드","브루셀라검사증<br>확인여부","제각여부", "12개월이상여부","12개월이상<br>수수료","* 임신구분","인공수정일자","인공수정증명서<br>제출여부"
+        	                        ,"당일접수비용","우결핵 접종일자","우결핵 백신차수","구제역 접종일자","구제역 검사결과", "브루셀라<br>검사일자","브루셀라 검사결과 코드","브루셀라검사증<br>확인여부","제각여부", "12개월이상여부","12개월이상<br>수수료","* 임신구분","인공수정일자","인공수정증명서<br>제출여부"
         	                        ,"수정KPN","인심개월수","* 임신감정여부","임신여부","괴사감정여부","괴사여부","친자확인결과","친자검사여부","비고","생산자명","생산지역명"
         	                        ,"어미소귀표번호"
         	                        ,"냉도체중(EPD)","배최장근단면적(EPD)","등지방두께(EPD)","근내지방도(EPD)"
@@ -870,7 +931,7 @@
                                      {name:"FHS_ID_NO",            index:"FHS_ID_NO",            width:80,  align:'center', sortable : false },
                                      {name:"FARM_AMNNO",           index:"FARM_AMNNO",           width:80,  align:'center', sortable : false },
                                      {name:"FTSNM",                index:"FTSNM",                width:80,  align:'center', sortable : false, editable:false },
-//                                      {name:"BTN_FTSNM",            index:"BTN_FTSNM",            width:45,  align:'center', sortable : false, editable:false, formatter :gridSchboxFormat},
+// 									 {name:"BTN_FTSNM",            index:"BTN_FTSNM",            width:45,  align:'center', sortable : false, editable:false, formatter :gridSchboxFormat},
                                      {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:100, align:'left'  , sortable : false, editable:true , formatter:'integer', formatoptions:{thousandsSeparator:''}},
                                      {name:"TRPCS_PY_YN",          index:"TRPCS_PY_YN",          width:100, align:'left'  , sortable : false, editable:false , edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"SRA_TRPCS",            index:"SRA_TRPCS",            width:90,  align:'center', sortable : false, editable:false , formatter:'integer'},

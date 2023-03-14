@@ -35,7 +35,23 @@
     var setRowStatus           = "";
  	// init시 저장 후 init인지 아닌지 체크
     var mv_InitBoolean         = true;
+    var mv_Tab_Boolean		   = false;
     var rowId                  = "";
+    
+//    const endpoint = new AWS.Endpoint('https://kr.object.ncloudstorage.com');
+//	const region = 'kr-standard';
+//	const bucket_name = 'smartauction-storage';
+//	const access_key = 'LBIYVr5QNEVHjiMOha3w';
+//	const secret_key = 'NB06umoPLA89ODh48DlVs7n2OTlKjDs0c4IOArif';
+//	
+//	const S3 = new AWS.S3({
+//		endpoint: endpoint,
+//		region: region,
+//		credentials: {
+//			accessKeyId : access_key,
+//			secretAccessKey: secret_key
+//		}
+//	});
     
 	$(document).ready(function(){
 		if(parent.envList[0] == null) {
@@ -520,8 +536,9 @@
 	       	if(results.status != RETURN_SUCCESS){
 	            showErrorMessage(results);
 	            mv_InitBoolean = true;
+	            mv_Tab_Boolean = false;
 	            fn_Init();
-	            fn_selCowImg;
+//	            fn_selCowImg();
 	            $("#btn_Delete").attr("disabled", true);
 	            return;
 	        } else {
@@ -1096,6 +1113,9 @@
     		$("#tab1_text").hide();
     		$("#tab2_text").hide();
     		$("#tab3_text").show();
+    		
+    		mv_Tab_Boolean = true;
+    		fn_selCowImg();
         });
 
     	/******************************
@@ -1137,6 +1157,7 @@
    	 			if(res){
    	 				fn_Reset();
    	 				mv_InitBoolean = true;
+   	 				mv_Tab_Boolean = false;
    	     		} else {    			
    	     			MessagePopup('OK','취소되었습니다.');
    	     			return;
@@ -1154,7 +1175,6 @@
 		
     	mv_RunMode = "2";
 		fn_SelList();
-		fn_selCowImg();
 				
 		$("#re_indv_no").val("410"+$("#sra_indv_amnno").val());
 		
@@ -1200,7 +1220,7 @@
     		MessagePopup("OK", "귀표번호는 12자리를 입력하시기 바랍니다.");
 			return;
     	}
-    	if($("#indv_sex_c").val().length == 0) {
+    	if(($("#indv_sex_c").val()?.length||0) == 0) {
     		MessagePopup("OK", "개체성별코드를 입력하기 바랍니다.");
 			return;
     	}
@@ -1314,12 +1334,12 @@
 			}
 		}
 		else {
-// 			if(!fn_isNull($("#trmn_amnno").val())) {
-// 				MessagePopup('OK','낙찰이 아닌경우 중도매인을 입력할수 없습니다.');
-// 				$("#trmn_amnno").val("");
-// 				$("#sra_mwmnnm").val("");
-// 				return;
-// 			}
+			//if(!fn_isNull($("#trmn_amnno").val())) {
+			//	MessagePopup('OK','낙찰이 아닌경우 중도매인을 입력할수 없습니다.');
+			//	$("#trmn_amnno").val("");
+			//	$("#sra_mwmnnm").val("");
+			//	return;
+			//}
 			
 			if($("#sra_sbid_am").val() != "0") {
 				MessagePopup('OK','낙찰이 아닌경우 낙찰금액을 입력할수 없습니다.');
@@ -1808,10 +1828,29 @@
     						result = sendAjax(srchData, "/LALM0215_insPgm", "POST");
     						
     						if(result.status == RETURN_SUCCESS){
-    							var status = fn_UploadImage(setDecrypt(result));
-   	                    		if (status){
-   									MessagePopup("OK", "저장되었습니다.",function(res){
-   					            		mv_RunMode = 3;
+								if (mv_Tab_Boolean) {
+	    							var status = fn_UploadImage(setDecrypt(result));
+	   	                    		if (status){
+	   									MessagePopup("OK", "저장되었습니다.",function(res){
+	   					            		mv_RunMode = 3;
+	   										mv_auc_dt = $("#auc_dt").val();
+	   										mv_auc_obj_dsc = $("#auc_obj_dsc").val();
+	   										
+	   										if(fn_isNull($("gvno_bascd").val())) {
+	   											mv_gvno_bascd = 0;
+	   										} else {
+	   											mv_gvno_bascd = $("#gvno_bascd").val();
+	   										}
+	   										mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
+	   										
+	   										mv_InitBoolean = true;
+	   										mv_Tab_Boolean = false;
+	   										fn_Init();
+	   					            	});
+	   								} 									
+								} else {
+									MessagePopup("OK", "저장되었습니다.",function(res){
+   										mv_RunMode = 3;
    										mv_auc_dt = $("#auc_dt").val();
    										mv_auc_obj_dsc = $("#auc_obj_dsc").val();
    										
@@ -1823,9 +1862,10 @@
    										mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
    										
    										mv_InitBoolean = true;
+   										mv_Tab_Boolean = false;
    										fn_Init();
-   					            	});
-   								} 
+   									});
+								}
     			            } else {
     			            	showErrorMessage(result);
     			                return;
@@ -1842,9 +1882,28 @@
     						result = sendAjax(srchData, "/LALM0215_updPgm", "POST");
     						
     						if(result.status == RETURN_SUCCESS){
-								var status = fn_UploadImage(setDecrypt(result));
-   	                    		if (status){
-   									MessagePopup("OK", "저장되었습니다.",function(res){
+								if (mv_Tab_Boolean) {
+									var status = fn_UploadImage(setDecrypt(result));
+	   	                    		if (status){
+	   									MessagePopup("OK", "저장되었습니다.",function(res){
+	   										mv_RunMode = 3;
+	   										mv_auc_dt = $("#auc_dt").val();
+	   										mv_auc_obj_dsc = $("#auc_obj_dsc").val();
+	   										
+	   										if(fn_isNull($("gvno_bascd").val())) {
+	   											mv_gvno_bascd = 0;
+	   										} else {
+	   											mv_gvno_bascd = $("#gvno_bascd").val();
+	   										}
+	   										mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
+	   										
+	   										mv_InitBoolean = true;
+	   										mv_Tab_Boolean = false;
+	   										fn_Init();
+	   									});
+	                       			}
+								} else {
+									MessagePopup("OK", "저장되었습니다.",function(res){
    										mv_RunMode = 3;
    										mv_auc_dt = $("#auc_dt").val();
    										mv_auc_obj_dsc = $("#auc_obj_dsc").val();
@@ -1857,9 +1916,10 @@
    										mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
    										
    										mv_InitBoolean = true;
+   										mv_Tab_Boolean = false;
    										fn_Init();
    									});
-                       			}
+								}
     			            } else {
     			            	showErrorMessage(result);
     			                return;
@@ -2322,6 +2382,7 @@
 						mv_lvst_mkt_trpl_amnno = $("#lvst_mkt_trpl_amnno").val();
 						
 						mv_InitBoolean = true;
+						mv_Tab_Boolean = false;
 						fn_Init();
 		            } else {
 		            	showErrorMessage(result);
@@ -2561,7 +2622,7 @@
 		
 		// 이미지 영역도 초기화
 		$("#uploadImg").val("");
-		$(".uploadImg").empty();
+		$("#imagePreview").empty();
  	}
     
  	//**************************************
@@ -3182,6 +3243,7 @@
     function fn_SelList() {
     	 if(mv_RunMode == 1) {
     		 mv_InitBoolean = true;
+    		 mv_Tab_Boolean = false;
     		 fn_Init();
     	 } else {
     		 var results = sendAjaxFrm("frm_Hdn", "/LALM0215_selList", "POST");
@@ -3190,11 +3252,12 @@
              if(results.status == RETURN_SUCCESS){
              	result = setDecrypt(results);
                 fn_SetData(result);
-                fn_selCowImg();
+//                fn_selCowImg();
                 
              }else {
                  showErrorMessage(results);
                  mv_InitBoolean = true;
+                 mv_Tab_Boolean = false;
         		 fn_Init();
         		 $("#btn_Delete").attr("disabled", true);
                  return;
@@ -3897,8 +3960,8 @@
         	
         	$("#vacn_order").val($.trim(result["vaccineorder"]));        	
         	$("#vacn_dt").val(fn_toDate($.trim(result["injectionYmd"])));
-        	$("#bovine_dt").val(fn_toDate($.trim(result["tbcInspectYmd"])));
-        	$("#bovine_rsltnm").val($.trim(result["tbcInspectRsltNm"]));
+        	$("#bovine_dt").val(fn_toDate($.trim(result["tbcInspctYmd"])));
+        	$("#bovine_rsltnm").val($.trim(result["tbcInspctRsltNm"]));
         }
     }
     
@@ -4156,10 +4219,10 @@
             	$("#imagePreview").empty();
 	            let sHtml = '';
 	      		for (const item of imgList) {
-	      			sHtml += '<li id="'+ item.NA_BZPLC + '_' + item.OSLP_NO +'" style="display:inline-block;width:200px;height:200px;">';
-	      			sHtml += '	<div class="fileDiv"><button type="button" class="tb_btn delIndvImg">파일삭제</button>';
-	      			sHtml += '	<img src="'+ item.ENCODE_FILE +'" />';
-	      			sHtml += '</li>';			
+	      			sHtml += '	<div id="'+ item.FILE_NM +'"_"' + item.IMG_SQNO +'" class="fileDiv">';
+//					sHtml += '		<button type="button" class="tb_btn delIndvImg">파일삭제</button>';
+					sHtml += '		<img src="'+ item.FILE_URL +'" data-file="'+ item.FILE_NM +'" />';
+					sHtml += '</div>';	
 	      		}            	
 	      		$("#imagePreview").append(sHtml);
             }
@@ -4174,7 +4237,7 @@
 	function fn_ImageFiles(e){
 		const uploadFiles = [];
 		const files = e.currentTarget.files;
-		const fileImg = $("ul#imagePreview li");
+		const fileImg = $("div#imagePreview div.fileDiv");
 		const imagePreview = document.querySelector("#imagePreview");
 		
 		// 파일 갯수 처리
@@ -4191,6 +4254,12 @@
 				$("#uploadImg").val("");
 				return;
 			}
+			
+//			if (file.size > 2000000) {
+//				MessagePopup('OK','2MB이하의 이미지만 등록할 수 있습니다.');
+//				$("#uploadImg").val("");
+//				return;
+//			}
 			
 			// 이미지 미리보기 처리
 			if ([...files].length < 9 || [...files].length + fileImg.length < 9) {
@@ -4213,52 +4282,194 @@
 	function fn_CreateImgElement(e, file) {
 		let sHtml = '';
 
-		sHtml += '<li id="'+ file.name + '_' + file.size +'" style="display:inline-block;width:200px;height:200px;">';
-		sHtml += '	<div class="fileDiv"><button type="button" class="tb_btn delIndvImg">파일삭제</button>';
-		sHtml += '	<img src="'+ e.target.result +'" data-file="'+ file.name +'" />';
-		sHtml += '</li>';
+		sHtml += '	<div id="'+ file.name + '_' + file.size +'" class="fileDiv">';
+		sHtml += '		<button type="button" class="tb_btn delIndvImg">파일삭제</button>';
+		sHtml += '		<img src="'+ e.target.result +'" data-file="'+ file.name +'" />';
+		sHtml += '</div>';
 
 		return sHtml;						
 	}
 	
 	//**************************************
-	// function  : fn_UploadImage(이미지 등록) 
+	// function  : fn_UploadImage(이미지 등록 - base64 버전) 
+	// paramater : event, file
+	// result   : N/A
+	//**************************************
+//	function fn_UploadImage(data) {
+//		var result;
+//		var sendData = new Object();
+//		sendData["na_bzplc"] = localStorage.getItem("nhlvaca_na_bzplc");
+//		sendData["auc_dt"] = fn_dateToData($("#auc_dt").val());
+//		sendData["auc_obj_dsc"] = $("#auc_obj_dsc").val()
+//		sendData["oslp_no"] = fn_isNull(data.rtnData) ? $("#oslp_no").val() : data.rtnData;
+//		sendData["led_sqno"] = "1";
+//		sendData["sra_indv_amnno"] = "410" + $("#sra_indv_amnno").val();
+//		
+//		var files = [];
+//// 		var fileList = $(".fileDiv").siblings("img");
+//		var fileList = $(".fileDiv img")
+//		$(fileList).each(function(){
+//			var src = $(this).attr("src");
+//// 			if (src.indexOf("base64") < 0) {
+//// 				files.push(getBase64Image($(this)[0]));
+//// 			} else {
+//				files.push(src);
+//// 			}
+//		});
+//		
+//		sendData["files"] = files;
+//		
+//		var results = sendAjax(sendData, "/LALM0215_insImgPgm", "POST")
+//		if(results.status != RETURN_SUCCESS){
+//            showErrorMessage(results);
+//            return false;
+//        }else{      
+//			return true;
+//        }
+//	}
+	
+	//**************************************
+	// function  : fn_UploadImage(이미지 등록 - multipart버전) 
+	// paramater : event, file
+	// result   : N/A
+	//**************************************
+//	function fn_UploadImage(data) {
+//		var result = false;
+//		
+//		const dataTransfer = new DataTransfer();
+//		let trans = $("#uploadImg")[0].files;
+//		let fileArray = Array.from(trans);
+//		
+//		var fileList = $(".fileDiv img");
+//		$(fileList).each(function(){
+//			var src = $(this).attr("src");
+//			var fileNm = $(this).attr("data-file");
+//			dataTransfer.items.add(dataURLtoFile(src, fileNm));
+//		});
+//		
+//		$("#uploadImg")[0].files = dataTransfer.files;
+//		
+//		// formData 만들기
+//		var formData = new FormData($("#frm_img")[0]);
+//		
+//		formData.append("na_bzplc", localStorage.getItem("nhlvaca_na_bzplc"));
+//		formData.append("auc_dt", fn_dateToData($("#auc_dt").val()));
+//		formData.append("auc_obj_dsc", $("#auc_obj_dsc").val());
+//		formData.append("oslp_no", fn_isNull(data.rtnData) ? $("#oslp_no").val() : data.rtnData);
+//		formData.append("led_sqno", "1");
+//		formData.append("sra_indv_amnno", "410" + $("#sra_indv_amnno").val());
+//		
+//		Array.from($("#uploadImg")[0].files).map((e, i) => formData.append('file_'+i, e));
+//		
+//		$.ajax({
+//            url: "/LALM0215_insImgPgm",
+//            type: "POST",
+//            enctype:"multipart/form-data",
+//            processData:false,
+//            contentType:false,
+//            data: formData,
+//            async: false,
+//            headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
+//            success:function(data) {    
+//            	result = true;            
+//            },
+//            error:function(response){            
+//				showErrorMessage(JSON.parse(response.responseText));
+//				result = false;
+//            }
+//        }); 
+//        return result;
+//	}
+
+	//**************************************
+	// function  : fn_UploadImage(이미지 등록 - script버전) 
 	// paramater : event, file
 	// result   : N/A
 	//**************************************
 	function fn_UploadImage(data) {
-		var result;
-		var sendData = new Object();
-		sendData["na_bzplc"] = localStorage.getItem("nhlvaca_na_bzplc");
-		sendData["auc_dt"] = fn_dateToData($("#auc_dt").val());
-		sendData["auc_obj_dsc"] = $("#auc_obj_dsc").val()
-		sendData["oslp_no"] = fn_isNull(data.rtnData) ? $("#oslp_no").val() : data.rtnData;
-		sendData["led_sqno"] = "1";
-		sendData["sra_indv_amnno"] = "410" + $("#sra_indv_amnno").val();
+		var result = true;
+//		
+//		var sendData = new Object();
+//		sendData["na_bzplc"] = localStorage.getItem("nhlvaca_na_bzplc");
+//		sendData["auc_dt"] = fn_dateToData($("#auc_dt").val());
+//		sendData["auc_obj_dsc"] = $("#auc_obj_dsc").val()
+//		sendData["oslp_no"] = fn_isNull(data.rtnData) ? $("#oslp_no").val() : data.rtnData;
+//		sendData["led_sqno"] = "1";
+//		sendData["sra_indv_amnno"] = "410" + $("#sra_indv_amnno").val();
+//		
+//		var uploadList = [];
+//		
+//		var upload = (async () => {
+//		var fileList = $(".fileDiv img");
+//			$(fileList).each(function(){
+//				// 파일 파라메터 처리
+//				var objectPath = [localStorage.getItem("nhlvaca_na_bzplc"), "410" + $("#sra_indv_amnno").val()];
+//				var folderName = objectPath.join("/");
+//				var fileDataUrl = $(this).attr("src");
+//				var fileNm = $(this).attr("data-file");
+//				var fileName = self.crypto.randomUUID();
+//				var objectName = folderName + "/" + fileName + ".png";
+//				
+//				// upload file
+//				await S3.putObject({Bucket: bucket_name, Key: objectName,ACL: 'public-read',// ACL을 지우면 전체 공개되지 않습니다.
+//									Body: dataURLtoBlob(fileDataUrl)
+//				})
+//				.promise()
+//				.then(() => {
+//					var thumbnail = thumbNode.find("div." + name).find("canvas")[0].toDataURL("image/png");
+//					var thumbObjectName = folderName + "/thumb/" + fileName + ".png";
+//						S3.putObject({Bucket: bucket_name, Key: thumbObjectName, ACL: 'public-read',// ACL을 지우면 전체 공개되지 않습니다.
+//									Body: dataURLtoBlob(thumbnail)
+//					}).promise();
+//				})
+//				.then(()=>{
+//					console.log("upload success");
+//					var obj = new Object();
+//					obj["filePath"] = folderName + "/";
+//					obj["fileNm"] = fileName;
+//					obj["fileExtNm"] = ".png"
+//					uploadList.push(obj);
+//				});
+//			});
+//		})();
+//		
+//		sendData["uploadList"] = uploadList
+//		
+//		upload.then(()=>{
+//			$.ajax({
+//	            url: "/LALM0215_insImgPgm",
+//	            type: "POST",
+//	            enctype:"multipart/form-data",
+//	            processData:false,
+//	            contentType:false,
+//	            data: sendData,
+//	            async: false,
+//	            headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
+//	            success:function(data) {    
+//	            	result = true;            
+//	            },
+//	            error:function(response){            
+//					showErrorMessage(JSON.parse(response.responseText));
+//					result = false;
+//	            }
+//	        }); 
+//		});
 		
-		var files = [];
-// 		var fileList = $(".fileDiv").siblings("img");
-		var fileList = $(".fileDiv img")
-		$(fileList).each(function(){
-			var src = $(this).attr("src");
-// 			if (src.indexOf("base64") < 0) {
-// 				files.push(getBase64Image($(this)[0]));
-// 			} else {
-				files.push(src);
-// 			}
-		});
+        return result;
+	}
+	
+	function dataURLtoFile(dataurl, filename) {
+		var arr = dataurl.split(','),
+					mime = arr[0].match(/:(.*?);/)[1],
+					bstr = atob(arr[1]),
+					n = bstr.length
+					u8arr = new Uint8Array(n);
+					
+		while(n--){
+			u8arr[n] = bstr.charCodeAt(n);
+		}
 		
-		sendData["files"] = files;
-		console.log(sendData);
-		
-		var results = sendAjax(sendData, "/LALM0215_insImgPgm", "POST")
-		console.log(results);
-		if(results.status != RETURN_SUCCESS){
-            showErrorMessage(results);
-            return false;
-        }else{      
-			return true;
-        }
+		return new File([u8arr], filename, {type:mime});
 	}
 	
 	function getBase64Image(img) {

@@ -17,7 +17,7 @@
     <div class="pop_warp">
         <div class="tab_box btn_area clearfix">
             <ul class="tab_list fl_L">
-                <li><p class="dot_allow" >검색조건</p></li>
+                <li><p class="dot_allow" >검색조건 </p></li>
             </ul>
             <%@ include file="/WEB-INF/common/popupBtn.jsp" %>
         </div>
@@ -86,6 +86,14 @@
             fn_Init();
         }        
         
+        // enter로 조회
+    	$('#sra_mwmnnm').on('keydown',function(e){
+			if(e.keyCode==13){
+				 fn_Search();
+		    	return;
+			}
+		});
+        
         /******************************
          * 폼변경시 클리어 이벤트
          ******************************/   
@@ -122,7 +130,9 @@
 	 	$( "#v_trmn_amnno" ).val().clear;
 	 	
     	if (fn_isNull($("#sra_mwmnnm").val())){
-        		MessagePopup('OK','중도매인명을 한글자 이상입력하세요.');
+        		MessagePopup('OK','중도매인명을 한글자 이상입력하세요.', function(){
+	        		$("#sra_mwmnnm").focus();
+        		});
                 return;
        	}	 
 	 	

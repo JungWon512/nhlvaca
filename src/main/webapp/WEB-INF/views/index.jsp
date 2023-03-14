@@ -187,6 +187,7 @@ $(document).ready(function() {
         }
     }
 
+	const HC_MENU = ["000225", "000226"];
     $.each(menuList, function(i){
         if(menuList[i].MENU_LVL_C == "2"){
             var scd_menu_id = menuList[i].SCD_MENU_ID;            
@@ -202,6 +203,10 @@ $(document).ready(function() {
             var depMenu = '<ul class="treeview-menu depth2">';
             for(var j = 0; j < menuList.length; j++){
                 if(menuList[j].MENU_LVL_C == "3" && scd_menu_id == menuList[j].SCD_MENU_ID){
+                	// 출장우 예약 접수, 예약 리스트는 합천에서만 노출되도록
+                	if(App_grp_c != "001" && HC_MENU.includes(menuList[j].MENU_ID) && App_na_bzplc != "8808990656236") continue;
+//                 	if(App_grp_c != "001" && HC_MENU.includes(menuList[j].MENU_ID) && App_na_bzplc != "8808990661315") continue;
+                		
                     depMenu += '<li>'
                              + '<a href="javascript:;" id="' + menuList[j].MENU_ID + '" pgid="' + menuList[j].PGID + '" pgmnm="' + menuList[j].PGMNM + '" flnm="' + menuList[j].FLNM + '" >'
                              + '<i class="fa fa-circle-o"></i> '

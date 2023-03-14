@@ -86,7 +86,7 @@
         }
         var searchResultColNames = ["조합","조작일자","화면ID","검색조건","조회 건수","기능유형","IP 주소","조작 사유","등록일시","등록자"];        
         var searchResultColModel = [
-									{name:"CLNTNM",				index:"CLNTNM",				width:60},
+									{name:"CLNTNM",				index:"CLNTNM",				width:60,  sortable:false, align:'center'},
             						{name:"OPR_DT",				index:"OPR_DT",				width:60,  sortable:false, align:'center',formatter:'gridDateFormat'},
             						{name:"PGID",           	index:"WK_GRP_C",           width:50,  sortable:false, align:'center'},
                                     {name:"SRCH_CND_CNTRN",     index:"SRCH_CND_CNTRN",     width:70,  sortable:false, align:'left'},

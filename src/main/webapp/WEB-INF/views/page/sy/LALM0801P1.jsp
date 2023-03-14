@@ -290,7 +290,7 @@
                     return;
                                 
                 },complete:function(data){
-                	   localStorage.setItem("nhlvaca_token", getCookie('token'));
+                	localStorage.setItem("nhlvaca_token", (getCookie('token')||localStorage.getItem('nhlvaca_token')));
     			}
             });
             
@@ -385,7 +385,7 @@
     	    xhr.setRequestHeader("Content-Type",  "application/json; charset=UTF-8");
     	                         
     	    xhr.onload = function(e){
-           	   localStorage.setItem("nhlvaca_token", getCookie('token'));
+    	    	localStorage.setItem("nhlvaca_token", (getCookie('token')||localStorage.getItem('nhlvaca_token')));
     	        var filename =  $("#apdfl_id").val();
     	        var disposition = xhr.getResponseHeader('Content-Disposition');
 			    disposition = fn_XXSEncode(disposition);

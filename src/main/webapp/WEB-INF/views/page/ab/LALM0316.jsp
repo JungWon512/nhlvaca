@@ -65,7 +65,6 @@
 	 ------------------------------------------------------------------------------*/
 	function fn_Search() {
 		//프로그램 리스트              
-
 		var results = sendAjaxFrm("frm_Search", "/LALM0316_selList", "POST");
 		var result;
 		if (results.status != RETURN_SUCCESS) {
@@ -79,31 +78,28 @@
 		var result_2;
 		var results_2 = null;
 		
-		//if (results.length > 0) {
+// 		if (results.length > 0) {
 			results_2 = sendAjaxFrm("frm_Search", "/Lalm0316_selList_MhAucQcn","POST");
 			if (results_2.status != RETURN_SUCCESS) {
-				showErrorMessage(results_2);
+// 				showErrorMessage(results_2);
 				return;
 			} else {
 				result_2 = setDecrypt(results_2);
 			//	$("#grd_MhSogCow1").jqGrid("clearGridData", true);
 			}
 				$("#qcn").val(result_2[0].QCN);
-		//}
+// 		}
 		var result_3;
 		var results_3 = null;
 		if (results.length > 0) {
 			results_3 = sendAjaxFrm("frm_Search", "/Lalm0316_selList2","POST");
 			if (results_3.status != RETURN_SUCCESS) {
-				showErrorMessage(results_3);
+// 				showErrorMessage(results_3);
 				return;
 			} else {
 				result_3 = setDecrypt(results_3);
 			}
 		}
-		
-		
-		
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
@@ -111,9 +107,6 @@
 	////////////////////////////////////////////////////////////////////////////////
 	//그리드 생성
 	function fn_CreateMainGrid(data) {
-
-		
-
 		var rowNoValue = 0;
 		if (data != null) {
 			rowNoValue = data.length;

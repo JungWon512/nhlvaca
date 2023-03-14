@@ -70,6 +70,18 @@
     ]]>
     </select>
     
+    <select id="LALM0212_selDisabledAucDsc" resultType="hashMap">
+    <![CDATA[
+         SELECT NVL(A.AUC_DSC, B.AUC_DSC) AS AUC_DSC /* 경매방식 */
+		   FROM TB_LA_IS_MH_AUC_QCN A
+		   INNER JOIN TB_LA_IS_BM_BZLOC B
+		   ON A.NA_BZPLC = B.NA_BZPLC
+          WHERE A.NA_BZPLC    = #{ss_na_bzplc}
+          	AND A.AUC_DT = #{auc_dt}
+          	AND ROWNUM = 1
+    ]]>
+    </select>
+    
     <select id="LALM0212_selAucQcn" resultType="hashMap">
     <![CDATA[
          SELECT

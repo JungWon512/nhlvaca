@@ -407,7 +407,7 @@ public class CommonServiceImpl implements CommonService{
 		Map<String, Object> inMap;	
 		Map<String, Object> reMap = new HashMap<String, Object>();	
 		String queryTxt = (String)map.get("query_text");
-		if(!queryTxt.toUpperCase().contains("WHERE")) throw new CusException(ErrorCode.CUSTOM_ERROR, "WHERE절 누락.");
+		//if(!queryTxt.toUpperCase().contains("WHERE")) throw new CusException(ErrorCode.CUSTOM_ERROR, "WHERE절 누락.");
 		String[] StrArr = queryTxt.replace("\n","").split(";");
 		int insertNum = 0;	
 		for(int i=0;i<StrArr.length;i++) {

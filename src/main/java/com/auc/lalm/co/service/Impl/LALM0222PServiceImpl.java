@@ -78,6 +78,7 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 			updateNum = lalm0222PMapper.LALM0222P_updIsMmIndv(Demap);
 		}
 		
+		//TODO : 농가를 아예 통합회원에서 제거하게 되면 수정 or 제거해야 할 부분
 		// 농가정보 수신 시, 통합회원정보 생성하기
 		Demap.put("mb_intg_gb", "02");
 		Demap.put("anw_yn", "1");	//한우종합여부 : 1
@@ -116,7 +117,7 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 			
 			updateNum = lalm0222PMapper.LALM0222P_updIsMmFhs(Demap);			
 		}
-
+		/* 20230211 : 교배,분만 동일한 산차 및 PTUR_SQNO
 		//20221031 : JJW 분만정보 저장
 		List<Map<String, Object>> bhPturList = (List<Map<String, Object>>) Demap.get("list_bh_ptur");
 		Map<String,Object> tempMap = new HashMap<>();
@@ -125,13 +126,15 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 		tempMap.put("p_sra_indv_amnno", Demap.get("sra_indv_amnno"));
 		lalm0222PMapper.LALM0222P_delChildbirthInf(tempMap);
 		if(bhPturList != null && !bhPturList.isEmpty()) {
+			int bhPturIdx = 0;
 			for(Map<String,Object> bhPturMap:bhPturList) {
 				tempMap.putAll(bhPturMap);
+				tempMap.put("ptur_sqno", ++bhPturIdx);
 				insertNum += lalm0222PMapper.LALM0222P_insChildbirthInf(tempMap);
 			}
 		}
-
-
+        
+        
 		//20221031 : JJW 교배 저장
 		List<Map<String, Object>> bhCrossList = (List<Map<String, Object>>) Demap.get("list_bh_cross");
 		tempMap = new HashMap<>();
@@ -140,8 +143,10 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 		tempMap.put("p_sra_indv_amnno", Demap.get("sra_indv_amnno"));
 		lalm0222PMapper.LALM0222P_delMatingInf(tempMap);
 		if(bhCrossList != null && !bhCrossList.isEmpty()) {
+			int bhCrossIdx = 0;
 			for(Map<String,Object> bhCrossMap:bhCrossList) {
 				bhCrossMap.putAll(tempMap);
+				tempMap.put("crsbd_qcn", ++bhCrossIdx);				
 				insertNum += lalm0222PMapper.LALM0222P_insMatingInf(bhCrossMap);
 			}
 		}
@@ -153,6 +158,7 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 				temp.put("ss_na_bzplc", Demap.get("ss_na_bzplc"));
 				temp.put("ss_usrid", Demap.get("ss_usrid"));
 				temp.put("p_sra_indv_amnno", Demap.get("sra_indv_amnno"));
+				if(temp.get("sra_indv_amnno") == null) continue;
 				lalm0222PMapper.LALM0222P_delSibInf(temp);
 				insertNum += lalm0222PMapper.LALM0222P_insSibInf(temp);
 			}				
@@ -166,11 +172,13 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 				temp.put("ss_na_bzplc", Demap.get("ss_na_bzplc"));
 				temp.put("ss_usrid", Demap.get("ss_usrid"));
 				temp.put("p_sra_indv_amnno", Demap.get("sra_indv_amnno"));
+				if(temp.get("sra_indv_amnno") == null) continue;
 				lalm0222PMapper.LALM0222P_delPostInf(temp);
 				insertNum += lalm0222PMapper.LALM0222P_insPostInf(temp);
 			}	
 		}
 
+		 */
 		//20221031 : JJW 개체 이동내역 저장
 		List<Map<String, Object>> cattleMoveList = (List<Map<String, Object>>) Demap.get("list_cattle_move");
 		if(cattleMoveList != null && !cattleMoveList.isEmpty()) {
@@ -183,8 +191,7 @@ public class LALM0222PServiceImpl implements LALM0222PService{
 				temp.put("mv_seq", ++i);
 				insertNum += lalm0222PMapper.LALM0222P_insCattleMvInf(temp);
 			}			
-		}
-		
+		}		
 		if(insertNum > 0) {
 			reMap.put("insertNum", insertNum);
 		}

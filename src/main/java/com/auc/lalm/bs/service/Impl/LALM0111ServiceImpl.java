@@ -38,6 +38,7 @@ public class LALM0111ServiceImpl implements LALM0111Service{
 			return reMap;
 		}
 		
+		//TODO : 농가를 아예 통합회원에서 제거하게 되면 수정 or 제거해야 할 부분
 		// 통합회원정보 저장
 		map.put("mb_intg_gb", "02");
 		commonService.Common_insMbintgInfo(map);
@@ -60,6 +61,7 @@ public class LALM0111ServiceImpl implements LALM0111Service{
 	public Map<String, Object> LALM0111_updFarm(Map<String, Object> map) throws Exception {
 		final Map<String, Object> reMap = new HashMap<String, Object>();
 		int updateNum = 0;
+		//TODO : 농가를 아예 통합회원에서 제거하게 되면 수정 or 제거해야 할 부분
 		// 통합회원정보 저장
 		map.put("mb_intg_gb", "02");
 		commonService.Common_insMbintgInfo(map);

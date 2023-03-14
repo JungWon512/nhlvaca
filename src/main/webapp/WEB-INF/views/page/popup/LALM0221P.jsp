@@ -102,6 +102,14 @@
     
     });    
     
+	// enter로 조회
+	$('#sra_indv_amnno').on('keydown',function(e){
+		if(e.keyCode==13){
+			 fn_Search();
+	    	return;
+		}
+	});
+    
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 초기화 함수
      * 2. 입 력 변 수 : N/A
@@ -131,7 +139,9 @@
 		}	 	
 	 	
     	if (fn_isNull($("#sra_indv_amnno").val())){
-    		MessagePopup('OK','개체번호는 4글자 이상입력하세요.');
+    		MessagePopup('OK','개체번호는 4글자 이상입력하세요.', function(){
+    			$("#sra_indv_amnno").focus();
+    		});
             return;
      	}		 	
         //정합성체크        

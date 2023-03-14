@@ -2,7 +2,6 @@ package com.auc.lalm.ar.service.Impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -40,7 +39,6 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.Base64;
 import com.auc.common.util.StringUtils;
 import com.auc.lalm.ar.service.LALM0215Service;
-import com.auc.lalm.bs.service.Impl.LALM0117ServiceImpl;
 import com.auc.main.service.LogService;
 import com.auc.main.service.Impl.LogMapper;
 
@@ -553,103 +551,43 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		paramMap.put("auc_dt", param.get("auc_dt"));
 		paramMap.put("oslp_no", param.get("oslp_no"));
 		paramMap.put("led_sqno", param.get("led_sqno"));
+		paramMap.put("imgDomain", endPoint + "/" + bucketName + "/");
 		reList = lalm0215Mapper.LALM0215_selSogCowImg(paramMap);
 
-		for(Map<String, Object> map : reList) {
-			String url = map.get("FILE_URL").toString();
-			InputStream inputStream = null;
-			ByteArrayOutputStream byteOutStream = null;
-			URL oUrl = new URL(url);
-			try{
-				int len = 0;
-				File file = new File(url);
-				inputStream = oUrl.openStream();
-				byteOutStream = new ByteArrayOutputStream();
-
-				byte[] buf = new byte[1024];
-				
-		        while ((len = inputStream.read(buf)) != -1) {
-		             byteOutStream.write(buf, 0, len);
-		        }
-
-		        byte[] fileArray = byteOutStream.toByteArray();
-
-		        String  encodeFile = StringUtils.byteToBase64(fileArray);
-		        
-		        map.put("ENCODE_FILE", "data:image/png;base64,"+encodeFile);
-			}catch (RuntimeException | IOException re) {
-				log.error("e : LALM0215_selImgList : ",re);
-			}finally {
-				if(inputStream != null)inputStream.close();
-		        if(byteOutStream != null)byteOutStream.close();
-			}
-		};
+		if (reList.size() > 0) {
+			for(Map<String, Object> map : reList) {
+				String url = map.get("FILE_URL").toString();
+				InputStream inputStream = null;
+				ByteArrayOutputStream byteOutStream = null;
+				URL oUrl = new URL(url);
+				try{
+					int len = 0;
+					File file = new File(url);
+					inputStream = oUrl.openStream();
+					byteOutStream = new ByteArrayOutputStream();
+					
+					byte[] buf = new byte[1024];
+					
+					while ((len = inputStream.read(buf)) != -1) {
+						byteOutStream.write(buf, 0, len);
+					}
+					
+					byte[] fileArray = byteOutStream.toByteArray();
+					
+					String  encodeFile = StringUtils.byteToBase64(fileArray);
+					
+					map.put("ENCODE_FILE", "data:image/png;base64,"+encodeFile);
+				}catch (RuntimeException | IOException re) {
+					log.error("e : LALM0215_selImgList : ",re);
+				}finally {
+					if(inputStream != null)inputStream.close();
+					if(byteOutStream != null)byteOutStream.close();
+				}
+			};		
+		}
 		
 		return reList;
 	}
-	
-	/**
-	 * MultipartFile 이미지 네이버 클라우드 업로드 
-	 * @param paramMap
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public Map<String, Object> LALM0215_insImgList(Map<String, Object> paramMap) {
-		final Map<String, Object> reMap = new HashMap<>();
-		try {
-			// S3 client
-			final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-													 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
-													 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
-													 .build();
-			
-			// ACL 설정 : 파일마다 읽기 권한을 설정
-			final AccessControlList accessControlList = new AccessControlList();
-			accessControlList.grantPermission(GroupGrantee.AllUsers, Permission.Read);
-			
-			// CORS 설정 : 이미지 업로드 페이지에서 이미지 url로 fetch 후 canvas 형태로 append 하는 형식이기 때문에 CORS 세팅이 필요
-			final List<CORSRule.AllowedMethods> methodRule = Arrays.asList(CORSRule.AllowedMethods.PUT, CORSRule.AllowedMethods.GET, CORSRule.AllowedMethods.POST);
-			final CORSRule rule = new CORSRule().withId("CORSRule")
-												.withAllowedMethods(methodRule)
-												.withAllowedHeaders(Arrays.asList(new String[] { "*" }))
-												.withAllowedOrigins(Arrays.asList(new String[] { "*" }))
-												.withMaxAgeSeconds(3000);
-	
-			final List<CORSRule> rules = Arrays.asList(rule);
-	
-			s3.setBucketCrossOriginConfiguration(bucketName, new BucketCrossOriginConfiguration().withRules(rules));
-			
-			final String folderName = paramMap.get("na_bzplc") + "/" + paramMap.get("sra_indv_amnno") + "/";
-			List<MultipartFile> files = (List<MultipartFile>)paramMap.get("files");
-			
-			for (MultipartFile file : files) {
-				// upload parameter file
-				String objectName = UUID.randomUUID().toString() + ".png";
-				
-				ObjectMetadata objectMetadata = new ObjectMetadata();
-				objectMetadata.setContentType(MediaType.IMAGE_PNG_VALUE);
-				objectMetadata.setContentLength(file.getBytes().length);
-				PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, folderName + objectName, file.getInputStream(), objectMetadata);
-				putObjectRequest.setAccessControlList(accessControlList);
-				
-				s3.putObject(putObjectRequest);
-			}
-
-//			this.LALM0215_selImgList(reMap);
-		}
-		catch (AmazonS3Exception e) {
-			log.error("e: 이미지 네이버 클라우드 업로드 ",e);
-		}
-		catch(SdkClientException e) {
-			log.error("e: 이미지 네이버 클라우드 업로드 ",e);
-		}
-		catch(IOException e) {
-			log.error("e: 이미지 네이버 클라우드 업로드 ",e);
-		}
-		
-		return reMap;
-	}
-	
 	
 	public Map<String, Object> LALM0215_delImgList(Map<String, Object> map) {
 		Map<String, Object> reMap = new HashMap<>();
@@ -708,6 +646,7 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		final String filePath = naBzplc + "/" + sraIndvAmnno + "/";
 		final String fileExtNm = ".png";
 		
+		// base64형태로 처리
 		final List<String> files = (List<String>)map.get("files");
 		
 		if (ObjectUtils.isEmpty(files)) return null;
@@ -761,6 +700,97 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		
 		return rtnList;
 	}
+	
+	/**
+	 * Multipart 이미지 클라우드 업로드
+	 * @param map
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> imgUploadPrcMultipart(Map<String, Object> map) {
+		final List<Map<String, Object>> rtnList = new ArrayList<Map<String, Object>>();
+		
+		// S3 client
+		final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+				.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endPoint, regionName))
+				.withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+				.build();
+		
+		// ACL 설정 : 파일마다 읽기 권한을 설정
+		final AccessControlList accessControlList = new AccessControlList();
+		accessControlList.grantPermission(GroupGrantee.AllUsers, Permission.Read);
+		
+		// CORS 설정 : 이미지 업로드 페이지에서 이미지 url로 fetch 후 canvas 형태로 append 하는 형식이기 때문에 CORS 세팅이 필요
+		final List<CORSRule.AllowedMethods> methodRule = Arrays.asList(CORSRule.AllowedMethods.PUT, CORSRule.AllowedMethods.GET, CORSRule.AllowedMethods.POST);
+		final CORSRule rule = new CORSRule().withId("CORSRule")
+				.withAllowedMethods(methodRule)
+				.withAllowedHeaders(Arrays.asList(new String[] { "*" }))
+				.withAllowedOrigins(Arrays.asList(new String[] { "*" }))
+				.withMaxAgeSeconds(3000);
+		
+		final List<CORSRule> rules = Arrays.asList(rule);
+		
+		s3.setBucketCrossOriginConfiguration(bucketName, new BucketCrossOriginConfiguration().withRules(rules));
+		
+		final String naBzplc = map.get("na_bzplc").toString();
+		final String aucDt = map.get("auc_dt").toString();
+		final String sraIndvAmnno = map.get("sra_indv_amnno").toString();
+		final String filePath = naBzplc + "/" + sraIndvAmnno + "/";
+		final String fileExtNm = ".png";
+		
+		// multipart형태로 처리
+		final List<MultipartFile> files = (List<MultipartFile>)map.get("uploadImg");
+
+		if (ObjectUtils.isEmpty(files)) return null;
+		
+		for (MultipartFile file : files) {
+			boolean isSuccess = true;
+			String fileNm = "";
+			
+			// origin 파일이 없는 경우 or 값이 data:image로 시작하지 않는 경우 pass
+			if (ObjectUtils.isEmpty(file)) continue;
+			
+			fileNm = UUID.randomUUID().toString();
+
+			try {
+				ObjectMetadata bjectMetadata = new ObjectMetadata();
+				bjectMetadata.setContentLength(file.getBytes().length);
+				bjectMetadata.setContentType(MediaType.IMAGE_PNG_VALUE);
+				PutObjectRequest oriPutObjectRequest = new PutObjectRequest(bucketName, filePath + fileNm + fileExtNm, file.getInputStream(), bjectMetadata);
+				
+				oriPutObjectRequest.setAccessControlList(accessControlList);
+				s3.putObject(oriPutObjectRequest);
+			}
+			catch (IOException e) {
+				log.error("e : imgUploadPrcMultipart : ",e);
+				isSuccess = false;
+			}
+			catch (AmazonS3Exception e) {
+				log.error("e : imgUploadPrcMultipart : ",e);
+				isSuccess = false;
+			}
+			catch(SdkClientException e) {
+				log.error("e : imgUploadPrcMultipart : ",e);
+				isSuccess = false;
+			}
+			
+			if (isSuccess) {
+				Map<String, Object> rtn = new HashMap<String, Object>();
+				rtn.put("na_bzplc", naBzplc);
+				rtn.put("auc_dt", aucDt);
+				rtn.put("auc_obj_dsc", map.get("auc_obj_dsc"));
+				rtn.put("oslp_no", map.get("oslp_no"));
+				rtn.put("led_sqno", map.get("led_sqno"));
+				rtn.put("sra_indv_amnno", sraIndvAmnno);
+				rtn.put("file_path", filePath);
+				rtn.put("file_nm", fileNm);
+				rtn.put("file_ext_nm", fileExtNm);
+				rtnList.add(rtn);
+			}
+		}
+		
+		return rtnList;
+	}
 
 	/**
 	 * 출장우 이미지 저장 
@@ -774,7 +804,8 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		int updateNum = 0;
 		final Map<String, Object> reMap = new HashMap<String, Object>();
 		// 파일이 없을시 db delete
-		final List<String> files = (List<String>)rMap.get("files");
+//		final List<String> files = (List<String>)rMap.get("files");
+		final List<MultipartFile> files = (List<MultipartFile>)rMap.get("files");
 		if (ObjectUtils.isEmpty(files)) {
 			updateNum += lalm0215Mapper.LALM0215_delImgPgm(rMap);
 			reMap.put("updateNum", updateNum);
@@ -782,7 +813,8 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 		}
 		
 		// 클라우드 업로드 후 성공한 리스트 가져오기
-		final List<Map<String, Object>> resList = this.imgUploadPrc(rMap);
+//		final List<Map<String, Object>> resList = this.imgUploadPrc(rMap);
+		final List<Map<String, Object>> resList = this.imgUploadPrcMultipart(rMap);
 		int imgSqno = 1;
 		if (ObjectUtils.isEmpty(resList)) {
 			reMap.put("inserNum", insertNum);

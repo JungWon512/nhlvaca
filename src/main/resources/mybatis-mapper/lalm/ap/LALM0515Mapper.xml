@@ -19,7 +19,8 @@
 	                WHEN LENGTH(D.FTSNM) = 4 THEN SUBSTR(D.FTSNM,1,1) || '**' || SUBSTR(D.FTSNM,4,1)  
                     WHEN LENGTH(D.FTSNM) = 5 THEN SUBSTR(D.FTSNM,1,2) || '**' || SUBSTR(D.FTSNM,5,1)  
                     WHEN LENGTH(D.FTSNM) > 5 THEN SUBSTR(D.FTSNM,1,2) || '**' || SUBSTR(D.FTSNM,5,1)
-               ELSE '**' END AS FTSNM  /* 출하자명                     */ 
+               ELSE '**' END AS FTSNM  /* 출하자명                     */         
+	         , CASE WHEN LENGTH(D.BIRTH) = 8 THEN SUBSTR(D.BIRTH, 1, 4) || '-' || SUBSTR(D.BIRTH, 5, 2) || '-' || SUBSTR(D.BIRTH, 7, 2) ELSE '-' END  AS FHS_BIRTH
 	         , CASE WHEN D.MACO_YN   = '1' THEN '조합원' ELSE '비조합원' END	 AS MACO_YN                  /* 조합원여부                 */
 	         , CASE WHEN D.JRDWO_DSC = '1' THEN '관내' ELSE '관외' END	         AS JRDWO_DSC                /* 관내외구분                 */                        
 	         , A.AUC_PRG_SQ                                         AS AUC_PRG_SQ               /* 경매진행순서                 */

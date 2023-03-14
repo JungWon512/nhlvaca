@@ -124,7 +124,7 @@
     	$("#grd_MhSogCowRowData").jqGrid("clearGridData", true);
     	$("#grd_MhSogCow").jqGrid("clearGridData", true);
     	
-    	//기간 설정 : 사용자접속현황은 최대 1년, 경매낙찰현황은 최대 3개월
+    	//기간 설정 : 참가자현황은 최대 1년, 경매낙찰현황은 최대 3개월
         var st_dt = $("input[name='st_dt']").val().replaceAll("-", "");
      	var en_dt = $("input[name='en_dt']").val().replaceAll("-", "");
         var searchStMonth = new Date(st_dt.substr(0,4), st_dt.substr(4,2) - 1, st_dt.substr(6,2));
@@ -173,7 +173,7 @@
         }                  
     } 
     
-    //사용자접속현황
+    //참가자현황
 	function fn_CreateGridMhSogCowStatics(data){              
         
         var rowNoValue = 0;     
@@ -181,7 +181,7 @@
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["조합코드","조합명","경매일자","출장우<br/>두수", "낙찰두수", "낙찰율", "응찰참여<br/>매수인", "낙찰<br/>매수인", "참여율"];        
+        var searchResultColNames = ["조합코드","조합명","경매일자","출장<br/>두수", "낙찰두수", "낙찰율", "응찰참여<br/>매수인", "낙찰<br/>매수인", "응찰율"];        
         var searchResultColModel = [						 
 	           {name:"NA_BZPLC",	index:"NA_BZPLC",	width:100, align:'center'},                                     
 	           {name:"CLNTNM",	index:"CLNTNM",	width:100, align:'center'},                                     
@@ -221,7 +221,7 @@
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["경매일자","경매대상", "경매순번", "출하자", "우편번호", "주소", "귀표번호", "생일", "산차", "계대", "KPN번호", "등록구분", "성별", "어미귀표", "어미구분", "중량(Kg)", "예정가", "낙찰가", "낙찰단가", "제각여부", "수송자", "참가번호", "낙찰자", "낙찰자<br/>연락처", "출하자수수료", "낙찰자수수료"];         
+        var searchResultColNames = ["경매일자","경매대상", "경매번호", "출하자", "우편번호", "주소", "귀표번호", "생일", "산차", "계대", "KPN번호", "등록구분", "성별", "어미귀표", "어미구분", "중량(Kg)", "예정가", "낙찰가", "낙찰단가", "제각여부", "수송자", "참가번호", "낙찰자명", "낙찰자<br/>연락처", "출하수수료", "판매수수료"];         
         var searchResultColModel = [						 
         	   {name:"AUC_DT",   	index:"AUC_DT", 		width:80, align:'center',formatter:'gridDateFormat'},                                   
 	           {name:"AUC_OBJ_DSC",	index:"AUC_OBJ_DSC",	width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},   
@@ -398,7 +398,7 @@
     	var activeId = tabEvt.attr("id");
   		
   		if(activeId == "pb_tab1"){
-	    	fn_ExcelDownlad('grd_MhSogCowStatics', '사용자접속현황');
+	    	fn_ExcelDownlad('grd_MhSogCowStatics', '참가자현황');
   		}else if(activeId == "pb_tab2"){
 	    	fn_ExcelDownlad('grd_MhSogCowRowData', '경매낙찰현황');
   		} else {
@@ -596,7 +596,7 @@
             
             <div class="tab_box clearfix line">
 				<ul class="tab_list fl_L">
-					<li><a href="#tab1" id="pb_tab1" class="on">사용자접속현황</a></li>
+					<li><a href="#tab1" id="pb_tab1" class="on">참가자현황</a></li>
 					<li><a href="#tab2" id="pb_tab2">경매낙찰현황</a></li>
 					<li><a href="#tab3" id="pb_tab3">출장우내역</a></li>
 				</ul>

@@ -15,7 +15,6 @@ public class CookieUtil {
 	 * @return
 	 */
 	public Cookie createCookie(String cookieName, String value) {
-		value = value.replaceAll("\r", "").replaceAll("\n", "");
 		Cookie cookie = new Cookie(cookieName, value);
 //		cookie.setHttpOnly(true);
 		cookie.setMaxAge(60*60*24);

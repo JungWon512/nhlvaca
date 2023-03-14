@@ -400,7 +400,7 @@
 					<!--  //버튼 모두 우측정렬 -->
 					<label id="msg_Sbid"
 						style="font-size: 15px; color: blue; font: message-box;">※
-						체크한 수신자 전화번호가 10자리보다 작을시 전송되지 않습니다. 발송 메시지가 80자 초과시 2회로 나뉘어 전송됩니다.</label>
+						체크한 수신자 전화번호가 10자리보다 작을시 전송되지 않습니다. 발송 메시지는 LMS로 전송됩니다.</label>
 				</div>
 				<div class="fl_R">
 					<!--  //버튼 모두 우측정렬 -->

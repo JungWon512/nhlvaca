@@ -23,7 +23,7 @@
 			, ls_cmeno          /* 최종변경자개인번호 */
 			from TB_LA_IS_MH_AUC_QCN
 			where na_bzplc       =  #{ss_na_bzplc}
-			AND AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+			AND DECODE(AUC_OBJ_DSC,'0',#{auc_obj_dsc},AUC_OBJ_DSC) = #{auc_obj_dsc}
 			and auc_dt         =  #{auc_dt}
 	</select>
 	

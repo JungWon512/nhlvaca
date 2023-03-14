@@ -216,8 +216,9 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
         			}
         		});        		
         	}
-        }else{
-        	MessagePopup("OK",'로그인정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
+        }else{        	
+        	MessagePopup("OK",'로그인 아이디와 비밀번호를 확인하세요.');
+        	//MessagePopup("OK",'로그인정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
         	return;
         }
     }
@@ -232,8 +233,9 @@ localStorage.setItem("nhlvaca_iv", '${iv}');
                   results.iv     == null || results.iv     == '' ||
                   results.userId == null || results.userId == '' 
       	){
-      		MessagePopup("OK",'로그인정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
-      	}else if(results.na_bzplc == null || results.na_bzplc == ''){
+      		MessagePopup("OK",'로그인 아이디와 비밀번호를 확인하세요.');
+      		//MessagePopup("OK",'로그인정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
+      	}else if(results.na_bzplc == null || results.na_bzplc == ''){      		
               MessagePopup("OK",'사업장정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
       	}else if(results.grp_c == null || results.grp_c == ''){
               MessagePopup("OK",'권한정보를 찾을수 없습니다.<br>시스템담당자에게 문의하세요.');
@@ -487,8 +489,8 @@ function offBeforeunload(){
 			<div class="inner">
 				<form id="frm_login">
 				    <div class="ttl">
-		                <h1 style="font-size: 36px;">로그인</h1>
-		                <h2>스마트가축시장</h2>
+		                <h1 style="font-size: 36px;">업무정산</h1>
+		                <h2>스마트가축시장 로그인</h2>
 		            </div>
 		            <!-- <select id="na_bzplc"></select> -->
 		            <input type="text" placeholder="아이디" id="user_id" onkeypress="javascript:if(event.keyCode==13){getLogin('frm_login');return false;}"/>
@@ -497,7 +499,7 @@ function offBeforeunload(){
 		            <p class="err_txt" id="err_pw">* 비밀번호를 입력해주세요.</p>
 		            <span class="inp_saveID"><input type="checkbox" id="saveId" class="chkInput"><label for="saveId">아이디저장</label></span>
 		            <button type="button" class="btn btn_login"  onClick="getLogin('frm_login');return false;">로그인</button>
-                    <button type="button" class="btn btn_login"  id="resetPw" >패스워드 초기화</button>
+                    <button type="button" class="btn btn_login"  id="resetPw" >비밀번호 초기화</button>
                     <input type="hidden" id="RSAKey"      value="${RSAKey }"/>
                     <input type="hidden" id="RSAModulus"  value="${RSAModulus }"/>
                     <input type="hidden" id="RSAExponent" value="${RSAExponent }"/>

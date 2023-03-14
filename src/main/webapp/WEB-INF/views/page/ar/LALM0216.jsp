@@ -180,16 +180,6 @@ var na_bzplc = App_na_bzplc;
                 return;
             }else{
                 result = setDecrypt(results);
-            	if(result){
-            		result.forEach((e,i)=>{
-            			if(e.MTCN && e.MTCN > 0){
-                			e.MTCN = e.MTCN - 1;
-                		}        
-                		if(e.CALF_MTCN && e.CALF_MTCN > 0){
-                			e.CALF_MTCN = e.CALF_MTCN -1;
-                		}
-                	});    		
-            	}
             }  
             result = fn_CreateGrid(result);
      	}else if($("#tab_2").hasClass("on")){
@@ -202,13 +192,6 @@ var na_bzplc = App_na_bzplc;
             	return;
             }else{
             	result = setDecrypt(results);
-            	if(result){
-            		result.forEach((e,i)=>{
-            			if(e.MTCN && e.MTCN > 0){
-                			e.MTCN = e.MTCN - 1;
-                		}
-                	});    		
-            	}
             }        
             fn_CreateGrid_2(result);
         }else if($("#tab_3").hasClass("on")){
@@ -233,7 +216,7 @@ var na_bzplc = App_na_bzplc;
                 result_6 = setDecrypt(results_6);
                  
             }	
-            	$("#qcn").val(result_6[0].QCN)	
+           	$("#qcn").val(result_6[0].QCN)	
           
             fn_CreateGrid_3(result);
           
@@ -249,13 +232,6 @@ var na_bzplc = App_na_bzplc;
                 return;
             }else{
                 result = setDecrypt(results);
-            	if(result){
-            		result.forEach((e,i)=>{
-            			if(e.MTCN && e.MTCN > 0){
-                			e.MTCN = e.MTCN-1;
-                		}
-                	});    		
-            	}
             }
             
             fn_CreateGrid_4(result);
@@ -452,7 +428,8 @@ var na_bzplc = App_na_bzplc;
             			 ReportPopup('LALM0216R0_18',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             		 } else {
-            			 ReportPopup('LALM0216R0_1',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 var gridData = fnSetGridData1('grd_MhSogCow1');
+            			 ReportPopup('LALM0216R0_1',TitleData, gridData, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }
 				 // 비육우, 번식우
             	 } else {
@@ -789,7 +766,10 @@ var na_bzplc = App_na_bzplc;
             		 // ★고령성주: 8808990659695 테스트: 8808990643625
             		 } else if(na_bzplc == '8808990659695') {
             			 ReportPopup('LALM0216R3_99',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
-            		 // ★순정축협(순창): 8808990656960
+            		 // 밀양축협 : 8808990656663
+             		 } else if(na_bzplc == '8808990656663') {
+             			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             		 // ★순정축협(순창): 8808990656960
              		 }  else if(na_bzplc == '8808990656960') {
              			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
              		 } else {
@@ -993,10 +973,12 @@ var na_bzplc = App_na_bzplc;
              			 ReportPopup('LALM0216R3_96',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		// ★순정축협(순창): 8808990656960
              		 }  else if(na_bzplc == '8808990656960') {
-             			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             		// 밀양축협 : 8808990656663
+             		 } else if(na_bzplc == '8808990656663') {
+             			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
              		 } else {
-              			 ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-              			 
+              			 ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
               		 }
             		 
             	 } else if($("#prto_tpc_5").is(":checked")) {
@@ -1264,8 +1246,11 @@ var na_bzplc = App_na_bzplc;
              			ReportPopup('LALM0216R3_107',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 // ★순정축협(순창): 8808990656960
              		 }  else if(na_bzplc == '8808990656960') {
-             			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
-             		 }else  {
+             			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             		// 밀양축협 : 8808990656663
+             		 } else if(na_bzplc == '8808990656663') {
+             			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             		 } else  {
              			ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
@@ -1394,7 +1379,8 @@ var na_bzplc = App_na_bzplc;
         
         
         
-        var searchResultColNames = ["H낙찰자","H인공수정표","H부KPN","H임신일수","H큰소구분","H수송자","H동이상주소","H낙찰가","H수송자","H낙찰자","H귀표번호","H어미귀표번호","경매<br>번호", "경매대상", "귀표번호", "생년월일"
+        var searchResultColNames = ["H낙찰자","H인공수정표","H부KPN","H임신일수","H큰소구분","H수송자","H동이상주소","H낙찰가","H수송자","H낙찰자","H낙찰번호","H귀표번호","H월령일수"
+        	,"경매<br>번호", "경매대상", "귀표번호", "생년월일"
                                   , "월령", "성별", "계대", "등록번호", "등록구분", "제각여부"
                                   , "KPN번호", "어미귀표번호","산차","중량","주소","성명","휴대폰"
                                   ,"예정가","브루셀라<br>검사일자","예방접종일자","우결핵<br>검사일자"
@@ -1414,7 +1400,8 @@ var na_bzplc = App_na_bzplc;
         	                         {name:"VHC_DRV_CAFFNM",            index:"VHC_DRV_CAFFNM",           width:55, align:'center'   ,hidden:true},
         	                         {name:"SRA_MWMNNM",                index:"SRA_MWMNNM",               width:55, align:'center'   ,hidden:true},
         	                         {name:"LVST_AUC_PTC_MN_NO",        index:"LVST_AUC_PTC_MN_NO",       width:55, align:'center'   ,hidden:true}, 
-        	                         {name:"SRA_INDV_AMNNO",            index:"SRA_INDV_AMNNO",           width:55, align:'center'   ,hidden:true},
+        	                         {name:"SRA_INDV_AMNNO",            index:"SRA_INDV_AMNNO",           width:55, align:'center'   ,hidden:true}, 
+        	                         {name:"MTCN_DAYS",      	        index:"MTCN_DAYS",           	  width:55, align:'center'   ,hidden:true},
                                     
         	                         {name:"AUC_PRG_SQ",                index:"AUC_PRG_SQ",               width:55, align:'center', sorttype: "number"  },
                                      {name:"AUC_OBJ_DSC",               index:"AUC_OBJ_DSC",              width:65, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
@@ -2067,10 +2054,12 @@ var na_bzplc = App_na_bzplc;
 		}
 		var index = 0;
 		$('#'+frmId).getRowData().forEach((o,i)=>{
-			if(o.MTCN4 !='0'){
-				o.MTCN = (o.MTCN)+'개월 '+o.MTCN4+'일';	            					
-			}else{
+			//영암:8808990689760 | 익산:8808990227283 | 밀양 : 8808990656663 일시 이력제월령 표기
+			if(na_bzplc == '8808990227283' | na_bzplc == '8808990656663' ){
 				o.MTCN = o.MTCN+'개월';	            					
+			}else{
+				//TO-DO 만월령 쿼리 추가
+				o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';
 			}
 			if(o.SRA_INDV_PASG_QCN == '0'){
 				o.SRA_INDV_PASG_QCN = '';
@@ -2138,6 +2127,44 @@ var na_bzplc = App_na_bzplc;
 		return result;
     }
     
+	//응찰자용
+    function fnSetGridData1(frmId){
+    
+        gridSaveRow(frmId);
+        var colModel    = $('#'+frmId).jqGrid('getGridParam', 'colModel');
+        var gridData    = $('#'+frmId).jqGrid('getGridParam', 'data');        
+		var result = new Array();        
+        if (gridData.length == 0) {
+           MessagePopup("OK", '조회된 데이터가 없습니다.');
+           return result;
+        }
+		for (var i = 0, len = colModel.length; i < len; i++) {
+		   if (colModel[i].hidden === true) {
+		       continue;
+		   }
+		   
+		   if (colModel[i].formatter == 'select') {
+		       $('#'+frmId).jqGrid('setColProp', colModel[i].name, {
+		           unformat: gridUnfmt
+		       });
+		   }
+		}
+		var index = 0;
+		$('#'+frmId).getRowData().forEach((o,i)=>{		
+			o.DONG = (o.DONG||'').split(' ').filter(function(e,i){if(i<3) return e;}).join(' ');
+			o.MTCN4 = (o.MTCN-1)+'개월 '+o.MTCN_DAYS+'일';
+			result.push(cloneObj(o));			
+			function cloneObj(source) {
+			  var target = {};
+			  for (let i in source) {			    
+			      target[i] = source[i];
+			  }
+			  return target;
+			}
+		}); 
+		
+		return result;
+    }
     </script>
 
 <body>
@@ -2234,30 +2261,30 @@ var na_bzplc = App_na_bzplc;
 								<tr>
 									<th class="tb_dot" rowspan="2" width="150px">인쇄형식(거치대)</th>
 									<td id="radio" class="radio" colspan='12'>
-									    <input type="radio" name="radio" id="prto_tpc_1" value="1"><span>가로</span>
-										<input type="radio" name="radio" id="prto_tpc_2" value="2"><span>세로</span>
-										<input type="radio" name="radio" id="prto_tpc_3" value="3"><span>가로(2형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_4" value="4"><span>세로(2형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_5" value="5"><span>가로(3형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_6" value="6"><span>세로(3형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_7" value="7"><span>가로(4형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_8" value="8"><span>세로(4형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_9" value="9"><span>가로(5형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_10" value="10"><span>세로(5형식)</span>
+									    <input type="radio" name="radio" id="prto_tpc_1" value="1"><span>가로&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_2" value="2"><span>세로&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_3" value="3"><span>가로(2형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_4" value="4"><span>세로(2형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_5" value="5"><span>가로(3형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_6" value="6"><span>세로(3형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_7" value="7"><span>가로(4형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_8" value="8"><span>세로(4형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_9" value="9"><span>가로(5형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_10" value="10"><span>세로(5형식)&nbsp;</span>
 									</td>
 								</tr>
 								<tr>
 									<td id="radio" class="radio" colspan='12'>
-										<input type="radio" name="radio" id="prto_tpc_11" value="11"><span>가로(6형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_12" value="12"><span>세로(6형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_13" value="13"><span>가로(7형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_14" value="14"><span>세로(7형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_15" value="15"><span>가로(8형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_17" value="17"><span>가로(9형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_19" value="19"><span>가로(10형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_21" value="21"><span>가로(11형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_22" value="22"><span>세로(11형식)</span>
-										<input type="radio" name="radio" id="prto_tpc_23" value="23"><span>가로(12형식)</span>
+										<input type="radio" name="radio" id="prto_tpc_11" value="11"><span>가로(6형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_12" value="12"><span>세로(6형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_13" value="13"><span>가로(7형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_14" value="14"><span>세로(7형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_15" value="15"><span>가로(8형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_17" value="17"><span>가로(9형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_19" value="19"><span>가로(10형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_21" value="21"><span>가로(11형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_22" value="22"><span>세로(11형식)&nbsp;</span>
+										<input type="radio" name="radio" id="prto_tpc_23" value="23"><span>가로(12형식)&nbsp;</span>
 									</td>
 								</tr>
 							</tbody>

@@ -10,5 +10,7 @@ public interface LALM0214P3Mapper {
 
 	List<Map<String, Object>> lalm0214P3_selFhs(Map<String, Object> map);
 
+	int LALM0214P3_insFhs(Map<String, Object> map);
+	
 	int LALM0214P3_insSogCow(Map<String, Object> map);
 }

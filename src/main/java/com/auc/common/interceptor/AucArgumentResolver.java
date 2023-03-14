@@ -49,7 +49,7 @@ public class AucArgumentResolver implements HandlerMethodArgumentResolver{
 		
 		Iterator<String> iter = webRequest.getParameterNames();		
 		
-		if(!uri.equals("/signIn") && !uri.contains("/batch") && !uri.equals("/co/getNaBzPlc")) {
+		if(!uri.equals("/signIn") && !uri.equals("/api/batch/") && !uri.equals("/co/getNaBzPlc")) {
 			while(iter.hasNext()) {
 				String paraName = iter.next();
 				String paraValue = criptoConfig.decrypt(webRequest.getParameter(paraName));

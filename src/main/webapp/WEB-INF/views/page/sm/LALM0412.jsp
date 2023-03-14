@@ -1247,11 +1247,8 @@ var mCnt = 0;
 			if (na_bzplc == '8808990687094') {   
 				p_param.title = "일반가축경매(" + $('#auc_obj_dsc option:checked').text().replace(/[^가-힣]/g,'') +")개별정산서 제"+$('#auc_dt').val() +"차";
 				ReportPopup('LALM0412R0_8',p_param, p_grid, 'V');	
-			// 거창:8808990659701
-			//} else if (na_bzplc == '8808990659701') {   
-			//	ReportPopup('LALM0412R0_16',p_param, p_grid, 'V');
-			// 전주김제완주 보은옥천 옥천지점:8808990671086 파주연천:8808990659787 거창:8808990659701
-			} else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485' || na_bzplc == '8808990671086' || na_bzplc == '8808990659787' || na_bzplc == '8808990659701'){
+			// 전주김제완주 보은옥천 옥천지점:8808990671086 파주연천:8808990659787 거창(번식우 제외):8808990659701, 영암:8808990689760
+			} else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485' || na_bzplc == '8808990671086' || na_bzplc == '8808990659787' || (na_bzplc == '8808990689760' && $("#auc_obj_dsc").val() != '3' ) || (na_bzplc == '8808990659701' && $("#auc_obj_dsc").val() != '3')){
 				ReportPopup('LALM0412R0_9',p_param, p_grid, 'T');//원본
 				//ReportPopup('LALM0412R0_1_3',p_param, p_grid, 'V');
 			} else{
@@ -1268,6 +1265,8 @@ var mCnt = 0;
    				ReportPopup('LALM0412R0_5_5',p_param, p_grid, 'V');    	
 			}else if(na_bzplc == '8808990227207') { //남원
    				ReportPopup('LALM0412R0_5_6',p_param, p_grid, 'V');
+   			}else if(na_bzplc == '8808990661315') { //화순
+   				ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'V');
    			} else {	
    				//ReportPopup('LALM0412R0_5_3',p_param, p_grid, 'V');
    				ReportPopup('LALM0412R0_0_1',p_param, p_grid, 'V');

@@ -87,7 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             //로그인관련 추가
             .antMatchers("/html/**").permitAll()
             .antMatchers("/co/**").permitAll()
-            .antMatchers("/batch/**").permitAll()
+            .antMatchers("/api/batch/**").permitAll()
             .anyRequest().authenticated()
             .and().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

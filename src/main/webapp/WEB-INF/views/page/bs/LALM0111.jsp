@@ -51,8 +51,11 @@ var isFrmOrgData = null;
 				}
 			} 
 		});
-
-		$("#birth").datepicker();
+		
+		// 생년월일의 년도 셀렉트박스가 2013~2033년만 노출되어, 셀렉트박스 노출옵션 수정.
+		$("#birth").datepicker({
+			yearRange : 'c-100:c'
+		});
 		
 		/******************************
 		* 주소 검색
@@ -148,12 +151,12 @@ var isFrmOrgData = null;
 			});
 			return;
 		}
-		if($("#birth").val() == "") {
-			MessagePopup('OK','생년월일을 입력하세요.', function() {
-				$("#birth").focus();
-			});
-			return;
-		}
+// 		if($("#birth").val() == "") {
+// 			MessagePopup('OK','생년월일을 입력하세요.', function() {
+// 				$("#birth").focus();
+// 			});
+// 			return;
+// 		}
 		if($("#dongup").val() == "") {
 			MessagePopup('OK','동이상주소를 입력하세요.', function() {
 				$("#dongup").focus();

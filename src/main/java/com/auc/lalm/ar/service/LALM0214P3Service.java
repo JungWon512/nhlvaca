@@ -6,6 +6,7 @@ import java.util.Map;
 public interface LALM0214P3Service {
 
 	List<Map<String, Object>> LALM0214P3_insFhs(Map<String, Object> map) throws Exception;
+	//Map<String, Object> LALM0214P3_insFhs(Map<String, Object> params) throws Exception;
 
 	Map<String, Object> LALM0214P3_insSogCow(Map<String, Object> map) throws Exception;
 

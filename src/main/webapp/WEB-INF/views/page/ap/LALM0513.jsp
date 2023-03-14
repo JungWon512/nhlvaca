@@ -107,7 +107,7 @@
 		$(document).on("click", "#pb_name", function(e) {
             e.preventDefault();
             this.blur();
-            fn_CallSraSrchPopup(false);
+            fn_CallSraSrchPopup(true);
         });
     	
     	// 이름 검색 팝업 호출 이벤트
@@ -197,6 +197,14 @@
 				fn_contrChBox(false, "MhSogCow11_Chk", "");
 			}
         });
+	    
+	    $(document).on("click", "#chk_no_bid", function(e) {
+	    	if($("#chk_no_bid").is(":checked")) {
+	    		fn_contrChBox(true, "chk_no_bid", "");
+			} else {
+				fn_contrChBox(false, "chk_no_bid", "");
+			}
+        });
         
  		fn_Init();
  		
@@ -213,7 +221,12 @@
     	 mv_RunMode = "0";
     	 // 탭 체크
     	 fn_tabCheck();
-    	 $("#tab8_sub").hide();
+    	 if($('#pb_tab8').hasClass('on')){
+        	 $("#tab8_sub").show();
+        	 $("div#tab8_sub input").val('');    		 
+    	 }else{
+        	 $("#tab8_sub").hide();    		 
+    	 }
     	 
     	 if(na_bzplc == "8808990656274" || na_bzplc == "8808990643625") {
     		 $("#pb_tab15").show();
@@ -233,7 +246,7 @@
          } else {
          	$("#grd_MhSogCow5").jqGrid("showCol", "SRA_TR_FEE2").trigger('reloadGrid');
          }
-      	 
+         //pb_tab8
          mv_RunMode = "1";
     }
     
@@ -3333,6 +3346,9 @@ function fn_CreateHdnGrid_13(data){
                             	  '</td>';
 	                          	  
 
+		var temp_noBidChk = '<th scope="row" id="t_MhSogCow8_Chk"><span class="tb_dot">결장우 미포함</span></th>';
+		temp_noBidChk += '<td><input type="checkbox" id="chk_no_bid" name="chk_no_bid" value="0"><label id="chk_no_bid_text" for="chk_no_bid"> 부</label></td>';
+
 		fn_hideFrm("frm_Search", true);
 		$("#tab8_sub").hide();
 		
@@ -3398,7 +3414,7 @@ function fn_CreateHdnGrid_13(data){
 		} else if($("#pb_tab8").hasClass("on") || p_param == "8") {
 			$("#dynamicTr").remove();
 			addSearchText = "";
-			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + '</tr>';
+			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_noBidChk + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
             $("#tab8_sub").show();
             
@@ -3749,6 +3765,11 @@ function fn_CreateHdnGrid_13(data){
 	                            	<td>
 	                            		<input type="text" id="count_fee">
 	                            		
+	                            	</td>
+	                            	<th scope="row" id="t_MhSogCow9_Chk"><span class="tb_dot">결장우 미포함</span></th>
+	                            	<td>
+	                            		<input type="checkbox" id="chk_no_bid" name="chk_no_bid" value="0">
+	                            		<label id="chk_no_bid_text" for="chk_no_bid"> 부</label>
 	                            	</td>
 					            </tr>
 				            </tbody>

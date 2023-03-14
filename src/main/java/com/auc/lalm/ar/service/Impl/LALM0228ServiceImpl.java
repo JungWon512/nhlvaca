@@ -119,9 +119,9 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 							item.put("MSG", " 낙찰 평균을 ");
 							for(Map<String,Object> cntItem:cntList) {
 								StringBuffer sb = new StringBuffer();
-								sb.append(cntItem.get("AUC_OBJ_DSC_NAME")+" : 총 "+cntItem.get("TOT_CNT")+"두 평균 : "+cntItem.get("AVG_SRA_SBID_AM").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT"));
-								sb.append(" (암 "+cntItem.get("SEX_W_CNT")+"두 평균 : "+cntItem.get("AVG_SRA_SBID_AM_M").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT"));
-								sb.append(", 수 "+cntItem.get("SEX_M_CNT")+"두 평균 : "+cntItem.get("AVG_SRA_SBID_AM_W").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT")+")");
+								sb.append(cntItem.get("AUC_OBJ_DSC_NAME")+" : 총 "+cntItem.get("TOT_CNT")+"두 평균 : "+cntItem.get("AVG_SRA_SBID_AM").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+"원");
+								sb.append(" (암 "+cntItem.get("SEX_W_CNT")+"두 평균 : "+cntItem.get("AVG_SRA_SBID_AM_W").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT"));
+								sb.append(", 수 "+cntItem.get("SEX_M_CNT")+"두 평균 : "+cntItem.get("AVG_SRA_SBID_AM_M").toString().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",")+cntItem.get("UNIT")+")");
 								item.put("COW_INFO"+cntSize, sb.toString());
 							}
 							if(cntSize == 1) {
@@ -174,6 +174,13 @@ public class LALM0228ServiceImpl implements LALM0228Service{
 							item.put("COW_INFO3", "개체번호 : "+item.get("SRA_INDV_AMNNO_FORMAT"));
 							item.put("COW_INFO4", "예정가 : "+item.get("LOWS_SBID_LMT_AM_FORMAT")+"원");
 							templateId = "NHKKO00252";
+						}else if("00".equals(map.get("msg_gbn"))) {
+							// 예정가산정전(출하주)
+							item.put("MSG", " 출장우 정보를 ");
+							item.put("COW_INFO1", "경매번호 : "+item.get("AUC_PRG_SQ")+"번");
+							item.put("COW_INFO2", "등록구분 : "+item.get("AUC_OBJ_DSC_NM")+"("+item.get("INDV_SEX_C_NM")+")");
+							item.put("COW_INFO3", "개체번호 : "+item.get("SRA_INDV_AMNNO_FORMAT"));
+							templateId = "NHKKO00251";
 						}else if("02".equals(map.get("msg_gbn"))) {
 							//경매후 - 낙/유찰 전송 천단위 콤마
 							item.put("MSG", " 낙찰내역을 ");

@@ -12,7 +12,12 @@
 <!-- Tell the browser to be responsive to screen width -->
  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 </head>
-
+<style>
+.ui-jqgrid tr.jqgrow td, .ui-jqgrid tr.jqgroup td{
+	    font-size: 13px;
+	     height: 25px;
+}
+</style>
 
 <script type="text/javascript">
 (function($){
@@ -216,6 +221,7 @@
         fn_InitFrm('frm_Search');
         fn_DisableFrm('frm_Search', false);
         $("#fhs_id_no").attr("disabled", true);
+        $("#btn_allLowsSbidLmtAmMinus").attr("disabled", false);
         $("#auc_dt").datepicker().datepicker("setDate", fn_getToday());
         $("#mainGrid").jqGrid("clearGridData", true);
         
@@ -550,13 +556,13 @@
                                     <input type="text" id="ftsnm" style="width:150px;" maxlength="50">
                                     <button id="pb_search_ftsnm" class="tb_btn white srch"><i class="fa fa-search"></i></button>
                                     
-                                    <label for="ch_rmk_cntn"><span id="ch_rmk_cntn_title">비고만저장</span></label>
+                                    <label for="ch_rmk_cntn"><span id="ch_rmk_cntn_title">&nbsp;&nbsp;&nbsp;비고만저장</span></label>
                                     <input type="checkbox" class="chk_save_type" id="ch_rmk_cntn" name="ch_rmk_cntn" value="0">                                    
-                                    <label for="ch_cow_wt"><span id="ch_cow_wt_title">중량만저장</span></label>
+                                    <label for="ch_cow_wt"><span id="ch_cow_wt_title">&nbsp;&nbsp;&nbsp;중량만저장</span></label>
                                     <input type="checkbox" class="chk_save_type" id="ch_cow_wt" name="ch_cow_wt" value="W">
-                                    <label for="ch_lows_sbid_am"><span id="ch_lows_sbid_am_title">예정가만저장</span></label>
+                                    <label for="ch_lows_sbid_am"><span id="ch_lows_sbid_am_title">&nbsp;&nbsp;&nbsp;예정가만저장</span></label>
                                     <input type="checkbox" class="chk_save_type" id="ch_lows_sbid_am" name="ch_lows_sbid_am" value="L">
-                                    <label for="ch_modl_no"><span id="ch_rmk_cntn_title">거치대변경</span></label>
+                                    <label for="ch_modl_no"><span id="ch_rmk_cntn_title">&nbsp;&nbsp;&nbsp;거치대변경</span></label>
                                     <input type="checkbox" class="chk_save_type" id="ch_modl_no" name="ch_modl_no" value="0">
                                     
                                     <input type="hidden" id="calf_auc_atdr_unt_am">

@@ -95,6 +95,14 @@
             e.preventDefault();
         });
         
+       	// enter로 조회
+		$('#clntnm').on('keydown',function(e){
+			if(e.keyCode==13){
+				 fn_Search();
+		    	return;
+			}
+		});
+        
         /******************************
          * 폼변경시 클리어 이벤트
          ******************************/   
@@ -121,6 +129,12 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Search(){   
+      	 if(fn_isNull( $('#clntnm').val() )){
+ 			MessagePopup('OK', '검색정보를 입력해주세요.', function(){
+		 				$( "#clntnm" ).focus();
+		 			});
+		 			return;
+		 	 }
     	     	 
         //정합성체크
         var srchData = new Object();

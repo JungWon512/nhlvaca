@@ -39,7 +39,8 @@
     //mv_RunMode = '1':최초로딩, '2':조회, '3':저장/삭제, '4':기타설정
     var mv_RunMode = 0;
     var mv_CheckQcnMsg = 0;
-    var setRowStatus = "";    
+    var setRowStatus = "";
+    const lmt_lvst_auc_ptc_mn_no = 500;
     
 	$(document).ready(function(){
 		
@@ -287,10 +288,11 @@
      * 2. 입 력 변 수 : N/A
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
-    function fn_SearchBadCheck(mb_intg_no){    	 
+    function fn_SearchBadCheck(result){    	 
 
     	var param      = new Object();
-        param["mb_intg_no"] = mb_intg_no;
+        param["trmn_amnno"] = result.TRMN_AMNNO;
+        param["mb_intg_no"] = result.MB_INTG_NO;
     	
     	var results = sendAjax(param, "/LALM0213_selBadCheck", "POST");        
         var result;
@@ -331,8 +333,14 @@
         	MessagePopup('OK','참가번호는 숫자만 입력하세요.',function(){
         		$("#lvst_auc_ptc_mn_no").focus();
         	});
-            return;    		
+            return;
     	}
+        else if(Number($("#lvst_auc_ptc_mn_no").val()) > lmt_lvst_auc_ptc_mn_no) {
+        	MessagePopup('OK','참가번호는 ' + lmt_lvst_auc_ptc_mn_no + '이하 숫자만 입력하세요.',function(){
+        		$("#lvst_auc_ptc_mn_no").focus();
+        	});
+            return;
+        }
         if(fn_isNull($( "#auc_date" ).val())){
         	MessagePopup('OK','경매일자를 선택하세요.',function(){
         		$( "#auc_date" ).focus();
@@ -696,6 +704,7 @@
          	ot_auc_obj_dsc = result[0]["AUC_OBJ_DSC"].concat(",", result[0]["OT_AUC_OBJ_DSC"]).split(",");
          	var arrOtAucObjDsc = result[0]["OT_AUC_OBJ_DSC"].split(",");
          	for (var aucObjDsc of arrOtAucObjDsc) {
+         		if(!aucObjDsc) continue;
          		fn_contrChBox(true, "cb_auc_obj_dsc" + aucObjDsc, "");
          	}
          } else {
@@ -717,6 +726,7 @@
 	function fn_DisableCbAuc(p_param){
 		if (p_param != 0) {
 			for (var auc_obj_dsc of ot_auc_obj_dsc) {
+				if(!auc_obj_dsc) continue;
 				fn_contrChBox(true, "cb_auc_obj_dsc" + auc_obj_dsc, "");
 			}
 		}
@@ -806,10 +816,10 @@
 		
 		$("#auc_date").datepicker().datepicker("setDate", $("#auc_dt").val());
 		$("input[name='hd_auc_obj_dsc_radio']:radio[value='" + $("#cb_auc_obj_dsc").val() + "']").prop("checked", true);
-		$("input[name='rd_rtrn_yn']:radio[value='0']").prop("checked", true);
+		$("input[name='rd_rtrn_yn']:radio[value='1']").prop("checked", true);
 		$("input[name='rd_tr_dfn_yn']:radio[value='0']").prop("checked", true);
 		$("#hd_auc_obj_dsc").val($("#cb_auc_obj_dsc").val());
-		$("#hd_rtrn_yn").val("0");
+		$("#hd_rtrn_yn").val("1");
 		$("#hd_tr_dfn_yn").val("0");
 		
 		mv_RunMode = 1;
@@ -880,9 +890,8 @@
         
  		fn_CallMwmnnmPopup(data,checkBoolean,function(result) {
  			if(result){
- 				console.log(result)
  				// 불량중도매인 체크
- 				var rVal = fn_SearchBadCheck(result.MB_INTG_NO);
+ 				var rVal = fn_SearchBadCheck(result);
  				var blackFlag = rVal[0].AUC_PART_LIMIT_YN ?? '99';
  				
  				if(blackFlag != '99'){
@@ -908,7 +917,15 @@
  						break;
  					case "0" : 
  						//경매참여도 불가능한 상태라 알럿만 띄우고 참가번호 등록 안됨
- 						MessagePopup('OK','경매참여 불가 회원입니다. 기준정보 > 불량회원[B/L] 관리에서 참여제한을 해제하세요');
+ 						MessagePopup('OK','경매참여 불가 회원입니다. 기준정보 > 불량회원[B/L] 관리에서 참여제한을 해제하세요', function(){
+ 							$("#trmn_amnno").val("");
+ 			 				$("#sra_mwmnnm").val("");
+ 			 				$("#frlno").val("");
+ 			 				$("#smsNo").val("");
+ 			 				$("#cus_mpno").val("");
+ 			 				$("#dongup").val("");
+ 			 				$("#rmk_cntn").val("");
+ 						});
  						break;
  					}
  				}
@@ -984,11 +1001,11 @@
                                 	<input type="text" style="ime-mode:active;width:100px" id="sra_mwmnnm1">
                                 	<button id="pb_sra_mwmnnm1" class="tb_btn white srch"><i class="fa fa-search"></i></button>
                                 </td>
-                                <th scope="row"><span class="tb_dot">불량등록이력표시여부</span></th>
-                                <td>                                    
-                                    <input type="checkbox" id="cb_grd_MhBadTrmnShow" name="cb_grd_MhBadTrmnShow" value="0">
-                                    <h id="grd_MhBadTrmnShow">부</h>                                                                      
-                                </td>
+<!--                                 <th scope="row"><span class="tb_dot">불량등록이력표시여부</span></th> -->
+<!--                                 <td>                                     -->
+<!--                                     <input type="checkbox" id="cb_grd_MhBadTrmnShow" name="cb_grd_MhBadTrmnShow" value="0"> -->
+<!--                                     <h id="grd_MhBadTrmnShow">부</h>                                                                       -->
+<!--                                 </td> -->
                             </tr>
                         </tbody>
                     </table>
@@ -1000,7 +1017,9 @@
                 <ul class="tab_list fl_L">
                     <li><p class="dot_allow">경매참가 정보</p></li>
                 </ul> 
-                
+                <div class="pl2 fl_L">
+					<label id="msg_Sbid" style="font-size: 15px; color: blue; font: message-box;">※참가번호는 500번 이하의 숫자만 입력 가능합니다.</label>
+				</div>
                 <div class="fl_R"><!--  //버튼 모두 우측정렬 -->   
                     <button class="tb_btn" name="pb_Init" value="입력초기화">입력초기화</button>
                 </div>  
@@ -1049,7 +1068,7 @@
                             <tr>
                             	<th scope="row"><span>참가번호</span></th>
                             	<td>
-                            		<input type="text" id="lvst_auc_ptc_mn_no" maxlength="5">                            		
+                            		<input type="text" id="lvst_auc_ptc_mn_no" maxlength="3" class="digit">                            		
                             	</td>
                             	<th scope="row"><span>중도매인</span></th>
                             	<td colspan=3>

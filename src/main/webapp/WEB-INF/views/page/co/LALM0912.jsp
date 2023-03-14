@@ -104,6 +104,9 @@
             
             var encrypt = setEncrypt(setFrmToData('frm_MmWmc'));
             var result;
+        	
+        	$('#imageView2').css({"top":obj.top +"px","left":(obj.left - 300 + $("#pb_LogoImgView").width()) + "px"});
+        	$('#imageView2').show();
             
             $.ajax({
                 url: '/LALM0912_selLogoImg',
@@ -116,11 +119,11 @@
                 },
                 success:function(data) {        
                     if(data.length > 0 && data != null){
-                    	document.getElementById("preeview-image").src = data;
+                    	document.getElementById("preeview-image2").src = data;
                     	var obj = $("#pb_LogoImgView").offset();
                     	
-                    	$('#imageView').css({"top":obj.top+"px","left":(obj.left + $("#pb_SealImgView").width()) + "px"});
-                    	$('#imageView').show();
+                    	$('#imageView2').css({"top":obj.top + 300+"px","left":(obj.left - 300 + $("#pb_LogoImgView").width()) + "px"});
+                    	$('#imageView2').show();
                     }                                    
                 },
                 error:function(response){
@@ -164,6 +167,7 @@
             return;
         }else{      
             result = setDecrypt(results);
+            result.TELNO = $.trim(result.TELNO); 
             fn_setFrmByObject("frm_MmWmc", result);
             var smsBuffer1 = result.SMS_BUFFER_1.split(',');
             result.SMS_BUFFER_1.split(',').forEach((o,i)=>{
@@ -185,9 +189,10 @@
             $('#na_bzplc').attr("disabled",true);
             if(result.SEAL_IMG_FLNM != ""){
             	$("#pb_SealImgView").show();
-            }else if(result.LOGO_IMG_FLNM != ''){
-            	$("#pb_LogoImgView").show();
             }
+//             else if(result.LOGO_IMG_FLNM != ''){
+            	$("#pb_LogoImgView").show();
+//             }
             g_newFlg = false;
         }                       
     } 
@@ -235,7 +240,7 @@
                          showErrorMessage(results);
                          return;
                      }else{  
-                    	 if($("#seal_img_flnm").val() != ""){
+                    	 if($("#seal_img_flnm").val() != "" || $("#logo_img_flnm").val() != ""){
                     		 g_newFlg = false;
                              if(fileUpload() == true){
                                  MessagePopup("OK", "신규등록되었습니다.<br>시스템 적용하기위해서는 재시작 하셔야 합니다.",function(res){
@@ -262,7 +267,7 @@
                         showErrorMessage(results);
                         return;
                     }else{
-                    	if($("#seal_img_flnm").val() != ""){
+                    	if($("#seal_img_flnm").val() != "" || $("#logo_img_flnm").val() != ""){
                     		if(fileUpload() == true){
                                 MessagePopup("OK", "수정되었습니다.<br>시스템 적용하기위해서는 재시작 하셔야 합니다.",function(res){
                                 	fn_Search();
@@ -345,6 +350,10 @@
     	$('#imageView').hide();
     }
     
+    function fn_closeImage2(){
+    	$('#imageView2').hide();
+    }
+    
     
 </script>
 
@@ -405,7 +414,7 @@
                                 </td>
                                 <th scope="row">대표전화번호</th>
                                 <td >
-                                    <input type="text" id="telno" class="digit" maxlength="14">
+                                    <input type="text" id="telno" class="telno" maxlength="14">
                                 </td>
                             </tr>
                             <tr>
@@ -424,21 +433,19 @@
                             </tr>                         
                             <tr>
                                 <th scope="row">직인정보</th>
-                                <td>
+                                <td colspan="3">
                                     <div class="cellBox">
                                         <div class="cell" style="width:500px;"><input type="file" id="seal_img_flnm"  name="seal_img_flnm" title="파일첨부" accept=".gif,.jpg,.png"/></div>
                                         <div class="cell"><button class="tb_btn" id="pb_SealImgView" >이미지보기</button></div>
                                     </div>
-                                    
                                 </td>
-                                <th scope="row">조합 Logo</th>
-                                <td>
-                                    <div class="cellBox">
-                                        <div class="cell" style="width:500px;"><input type="file" id="logo_img_flnm"  name="logo_img_flnm" title="파일첨부" accept=".gif,.jpg,.png"/></div>
-                                        <div class="cell"><button class="tb_btn" id="pb_LogoImgView" >이미지보기</button></div>
-                                    </div>
-                                    
-                                </td>
+<!--                                 <th scope="row">조합 Logo</th> -->
+<!--                                 <td> -->
+<!--                                     <div class="cellBox"> -->
+<!--                                         <div class="cell" style="width:500px;"><input type="file" id="logo_img_flnm"  name="logo_img_flnm" title="파일첨부" accept=".gif,.jpg,.png"/></div> -->
+<!--                                         <div class="cell"><button class="tb_btn" id="pb_LogoImgView" >이미지보기</button></div> -->
+<!--                                     </div> -->
+<!--                                 </td> -->
                             </tr>                      
                             <tr>
                                 <th scope="row">결제계좌은행</th>
@@ -787,7 +794,7 @@
                                 </td>                                
                                 <th scope="row">전화번호</th>
                                 <td>
-                                    <input type="text" id="tel_no" maxlength="14">
+                                    <input type="text" id="tel_no" class="telno" maxlength="14">
                                 </td>
                             </tr>                            
                             <tr>
@@ -859,6 +866,10 @@
     <div id="imageView" style="overflow: hidden;-webkit-overflow-scrolling: touch;display:none;position: fixed;top:0;left:0;width:250px;height:250px;border:2px solid;background:white" >
        <img id="preeview-image">
        <button class="tb_btn" onclick="javascript:fn_closeImage();return false;" style="position: absolute;top: 210px; left: 170px;">닫기</button>
+    </div>
+    <div id="imageView2" style="overflow: hidden;-webkit-overflow-scrolling: touch;display:none;position: fixed;top:0;left:0;width:300px;height:300px;border:2px solid;background:white" >
+       <img id="preeview-image2">
+       <button class="tb_btn" onclick="javascript:fn_closeImage2();return false;" style="position: absolute;top: 210px; left: 170px;">닫기</button>
     </div>
 </body>
 </html>

@@ -469,9 +469,9 @@ public class LALM0899Controller {
 			int msgInsCnt = 0;
 			List<Map<String, Object>> msgList = (List<Map<String, Object>>) map.get("rpt_data");
 			for(int i = 0; i < msgList.size(); i++) {
-				Map<String, Object> msgMap = msgList.get(i);				
+				Map<String, Object> msgMap = msgList.get(i);
 				Map<String, Object> tempMap = lalm0899Service.LALM0899_selMca5100AlarmTalkId(msgMap);
-				msgMap.put("KAKAO_MSG_CNTN", alarmTalkForm.getAlarmTalkTemplateToJson((String) msgMap.get("KAKAO_TPL_C"), msgMap));
+				msgMap.put("KAKAO_MSG_CNTN", alarmTalkForm.getAlarmTalkTemplateToJson((String) msgMap.get("kakao_tpl_c"), msgMap));
 				// IO_TGRM_KEY (SEQ - 전문키 YYMMDD + 연번4자리)
 				msgMap.put("IO_TGRM_KEY", tempMap.get("IO_TGRM_KEY"));
 				// RLNO (사용자 사번)

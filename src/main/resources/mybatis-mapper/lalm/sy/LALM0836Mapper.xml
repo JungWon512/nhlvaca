@@ -156,7 +156,7 @@ INSERT INTO TB_LA_IS_MM_BZSCHDET(
   
   <!-- 쿼리그리드 조회 -->
 <select id="LALM0836_SelAucInfo" resultType="hashMap" parameterType="Map">
-	SELECT    C.AREANM    																																	/* 지역이름   */
+	SELECT  C.LOCNM																																	/* 지역이름   */
 		, C.CLNTNM																																	/* 조합이름   */
 		, CASE WHEN B.AUC_OBJ_DSC = '1' THEN '송아지' 																/* 경매구분 이름   */
 		          WHEN B.AUC_OBJ_DSC = '2' THEN '비육우'

@@ -367,7 +367,7 @@
                             <col width="150">                                                                                                                                                          
                             <col width="40"> 
                             <col width="40">
-                            <col width="200">
+                            <col width="150">
                             <col width="*">                            
 
                         </colgroup>

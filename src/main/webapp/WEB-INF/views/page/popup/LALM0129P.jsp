@@ -17,7 +17,7 @@
     <div class="pop_warp">
         <div class="tab_box btn_area clearfix">
             <ul class="tab_list fl_L">
-                <li><p class="dot_allow" >검색조건</p></li>
+                <li><p class="dot_allow" >검색조건 </p></li>
             </ul>
             <%@ include file="/WEB-INF/common/popupBtn.jsp" %>
         </div>
@@ -82,6 +82,9 @@
     $(document).ready(function(){
     	fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 2, true);
 //    	$( "#auc_dt"   ).datepicker().datepicker("setDate", fn_getToday());
+
+ //       ******** 검색 결과가 1개 시 자동선택 기능 ********
+// 		result_flag = "" ;
     	//그리드 초기화
         fn_CreateGrid();
         
@@ -108,6 +111,14 @@
         }else {
             fn_Init();
         }
+        
+    	// enter로 조회
+		$('#sra_mwmnnm').on('keydown',function(e){
+			if(e.keyCode==13){
+				 fn_Search();
+		    	return;
+			}
+		});
         
         /******************************
          * 폼변경시 클리어 이벤트
@@ -150,6 +161,13 @@
      ------------------------------------------------------------------------------*/
     function fn_Search(){   
   
+    	 if(fn_isNull( $('#sra_mwmnnm').val() )){
+    			MessagePopup('OK', '중도매인명을 입력해주세요.', function(){
+    				$( "#sra_mwmnnm" ).focus();
+    			});
+    			return;
+    	 }
+    	 
 	 	$( "#v_trmn_amnno" ).val().clear;
 	 	if( fn_isNum($( "#sra_mwmnnm" ).val()) && fn_isChar($( "#sra_mwmnnm" ).val()) ){
 	     	$( "#v_trmn_amnno" ).val('2');
@@ -158,7 +176,7 @@
 	    }else{
 	     	$( "#v_trmn_amnno" ).val('2');
 	    }        
-        //정합성체크   
+	 	
         //정합성체크        
         var results = sendAjaxFrm("frm_Search", "/LALM0129P_selList", "POST");        
         var result;
@@ -170,7 +188,12 @@
         }else{      
             result = setDecrypt(results);
         }        
-        fn_CreateGrid(result);                 
+        fn_CreateGrid(result); 
+ //       ******** 검색 결과가 1개 시 자동선택 기능 ********
+//         if(result.length == 1){
+//         	 result_flag = 1 ;
+//         	 fn_Select(result_flag);
+//         }
     } 
     
     /*------------------------------------------------------------------------------
@@ -178,10 +201,14 @@
      * 2. 입 력 변 수 : N/A
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
-    function fn_Select(){     
-        var sel_rowid = $("#grd_MmMwmnNo").jqGrid("getGridParam", "selrow");        
-        pageInfo.returnValue = $("#grd_MmMwmnNo").jqGrid("getRowData", sel_rowid);
-        
+    function fn_Select(sel_rowid){     
+ //       ******** 검색 결과가 1개 시 자동선택 기능 ********
+//         if(result_flag == 1){
+//      	   pageInfo.returnValue = $("#grd_MmMwmnNo").jqGrid("getRowData", 1);
+//         } else {
+	        var sel_rowid = $("#grd_MmMwmnNo").jqGrid("getGridParam", "selrow");        
+//         }
+       	pageInfo.returnValue = $("#grd_MmMwmnNo").jqGrid("getRowData", sel_rowid);
         var parentInput =  parent.$("#pop_result_" + pageInfo.popup_info.PGID );
         parentInput.val(true).trigger('change');
     }  

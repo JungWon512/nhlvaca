@@ -194,7 +194,53 @@
              TitleData.unit = "";
              TitleData.srch_condition =  '[경매일자 : '+ $('#auc_dt').val() + ']'
                                       +  '/ [경매대상 : '+ $( "#auc_obj_dsc option:selected").text()  + ']';
-             ReportPopup('LALM0214R0',TitleData, 'grd_MhSogCow', 'V');//V:가로 , H:세로
+             var gridData = fnSetGridData('grd_MhSogCow');
+
+             function fnSetGridData(frmId){
+             
+                 gridSaveRow(frmId);
+                 var colModel    = $('#'+frmId).jqGrid('getGridParam', 'colModel');
+                 var gridData    = $('#'+frmId).jqGrid('getGridParam', 'data');        
+         		var result = new Array();        
+                 if (gridData.length == 0) {
+                    MessagePopup("OK", '조회된 데이터가 없습니다.');
+                    return result;
+                 }
+         		for (var i = 0, len = colModel.length; i < len; i++) {
+         		   if (colModel[i].hidden === true) {
+         		       continue;
+         		   }
+         		   
+         		   if (colModel[i].formatter == 'select') {
+         		       $('#'+frmId).jqGrid('setColProp', colModel[i].name, {
+         		           unformat: gridUnfmt
+         		       });
+         		   }
+         		}
+         		var index = 0;
+         		$('#'+frmId).getRowData().forEach((o,i)=>{
+         				//TO-DO 만월령 쿼리 추가
+        			if(o.COW_SOG_WT == '0'){
+        				o.COW_SOG_WT ='-';
+        			}
+        			
+        			result.push(cloneObj(o));
+         			if($('#bothPrint:checked').val() == 'Y'){
+         				result.push(cloneObj(o));
+         			}
+         			
+         			function cloneObj(source) {
+         			  var target = {};
+         			  for (let i in source) {			    
+         			      target[i] = source[i];
+         			  }
+         			  return target;
+         			}
+         		}); 
+         		
+         		return result;
+             }
+             ReportPopup('LALM0214R0',TitleData, gridData, 'V');//V:가로 , H:세로
          });
 
          /******************************

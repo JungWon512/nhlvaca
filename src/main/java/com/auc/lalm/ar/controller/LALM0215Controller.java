@@ -1,15 +1,19 @@
 package com.auc.lalm.ar.controller;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.auc.common.config.CommonFunc;
@@ -322,14 +326,49 @@ public class LALM0215Controller {
 	 * @return
 	 * @throws Exception
 	 */
-	@ResponseBody
-	@RequestMapping(value="/LALM0215_insImgPgm", method=RequestMethod.POST)
-	public Map<String, Object> LALM0215_insImgPgm(ResolverMap rMap) throws Exception{
-		Map<String, Object> map = convertConfig.conMap(rMap);
-		Map<String, Object> inMap = lalm0215Service.LALM0215_insImgPgm(map);
-		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
-		return reMap;
-	}
+//	@ResponseBody
+//	@RequestMapping(value="/LALM0215_insImgPgm", method=RequestMethod.POST)
+//	public Map<String, Object> LALM0215_insImgPgm(ResolverMap rMap) throws Exception{
+//		Map<String, Object> map = convertConfig.conMap(rMap);
+//		Map<String, Object> inMap = lalm0215Service.LALM0215_insImgPgm(map);
+//		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
+//		return reMap;
+//	}
+	
+	/**
+	 * 경매준비관리 > 출장우 내역등록 > 이미지 탭 > 출장우 이미지 저장 (멀티파트)
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
+//	@ResponseBody
+//	@RequestMapping(value="/LALM0215_insImgPgm", method=RequestMethod.POST)
+//	public Map<String, Object> LALM0215_insImgPgm(MultipartHttpServletRequest request, @RequestParam HashMap<String, Object> params) throws Exception{
+//		Map<String, Object> map = new HashMap<>();
+//		
+//		map.put("na_bzplc", params.get("na_bzplc"));
+//		map.put("auc_dt", params.get("auc_dt"));
+//		map.put("auc_obj_dsc", params.get("auc_obj_dsc"));
+//		map.put("oslp_no", params.get("oslp_no"));
+//		map.put("led_sqno", params.get("led_sqno"));
+//		map.put("sra_indv_amnno", params.get("sra_indv_amnno"));
+//		
+//		List<MultipartFile> files = new ArrayList<>(); 
+//
+//		if (!ObjectUtils.isEmpty(request.getFile("file_0"))) {
+//			for (int i = 0; i < 8; i++) {
+//				if (!ObjectUtils.isEmpty(request.getFile("file_"+i))) {
+//					files.add(request.getFile("file_"+i));
+//				}
+//			}			
+//		}
+//		
+//		map.put("files", files);
+//		
+//		Map<String, Object> inMap = lalm0215Service.LALM0215_insImgPgm(map);
+//		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
+//		return reMap;
+//	}
 	
 	/**
 	 * 경매준비관리 > 출장우 내역등록 > 이미지 탭 > 출장우 이미지 삭제

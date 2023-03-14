@@ -171,7 +171,6 @@
             , mtgrfa_sra_kpn_no         = #{mtgrfa_sra_kpn_no}
             , mtgrfa_sra_indv_eart_no   = #{mtgrfa_sra_indv_eart_no}
             , mtgrmo_sra_indv_eart_no   = #{mtgrmo_sra_indv_eart_no}
-            , metrb_metqlt_grd          = #{metrb_metqlt_grd}
             , lschg_dtm                 = SYSDATE
             , ls_cmeno                  = #{ss_userid}
         where na_bzplc                  = #{ss_na_bzplc}

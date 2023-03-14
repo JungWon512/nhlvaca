@@ -228,8 +228,8 @@
 		}
 		else {
 			showErrorMessage(result);
-			mv_InitBoolean = true;
-			fn_Init();
+// 			mv_InitBoolean = true;
+// 			fn_Init();
 			return;
 		}
 		

@@ -17,7 +17,7 @@
     <div class="pop_warp">
         <div class="tab_box btn_area clearfix">
             <ul class="tab_list fl_L">
-                <li><p class="dot_allow" >검색조건</p></li>
+                <li><p class="dot_allow" >검색조건 </p></li>
             </ul>
             <%@ include file="/WEB-INF/common/popupBtn.jsp" %>
         </div>
@@ -80,6 +80,14 @@
             fn_Init();
         }   
         
+     // enter로 조회
+		$('#vhc_drv_caffnm').on('keydown',function(e){
+			if(e.keyCode==13){
+				 fn_Search();
+		    	return;
+			}
+		});
+        
         /******************************
          * 폼변경시 클리어 이벤트
          ******************************/   
@@ -113,6 +121,13 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Search(){   
+    	 
+   	 if(fn_isNull( $('#vhc_drv_caffnm').val() )){
+			MessagePopup('OK', '수송자코드/명을 입력해주세요.', function(){
+				$( "#vhc_drv_caffnm" ).focus();
+			});
+			return;
+	 }
 
 	 	$( "#vhc_drv_caffnm_c" ).val().clear;
 	 	if( fn_isNum($( "#vhc_drv_caffnm" ).val()) && fn_isChar($( "#vhc_drv_caffnm" ).val()) ){

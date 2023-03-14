@@ -138,7 +138,8 @@
            else G.BIRTH end AS BIRTH /* 송아지생년월일                     */
          
          , G.KPN_NO      AS "CALF_KPN_NO"         /* 송아지정액번호                     */
-         , TRUNC(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)) +1 AS CALF_MTCN /* 송아지월령 */ 
+         , TRUNC(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)) +1 AS CALF_MTCN /* 송아지월령 */
+         , ROUND(MOD(MOD(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)/12 ,1)*12,1)*(365/12),0) AS MTCN_DAYS      /* 일수  */ 
     FROM TB_LA_IS_MH_SOG_COW     A
        , TB_LA_IS_MM_VHC         C
        , TB_LA_IS_MM_FHS         B
@@ -327,7 +328,7 @@
            else G.BIRTH end AS CALF_BIRTH  /* 송아지생년월일                    */
          
          , A.SPAY_YN                                     /* 난소적출여부                      */
-         , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) <= 4 AND (A.NA_BZPLC != '8808990656199' OR A.NA_BZPLC != '8808990656434')
+         , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <= 4 AND (A.NA_BZPLC != '8808990656199' OR A.NA_BZPLC != '8808990656434')
                 THEN 4 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) + 1 END AS MTCN      /* 월령  */         
 		 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.CALF_AUC_ATDR_UNT_AM, 10000))
 				WHEN A.AUC_OBJ_DSC = '2' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1))
@@ -728,7 +729,8 @@
          , CASE WHEN A.NA_BZPLC = '8808990656199' OR A.NA_BZPLC = '8808990656434' THEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1
            ELSE CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <= 4 THEN 4
                 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) + 1 END
-           END  AS MTCN      /* 월령  */  
+           END  AS MTCN      /* 월령  */
+         , TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH))  AS MTCN_A      /* 만 월령  */  
          , TRUNC(TO_DATE(A.AUC_DT,'YYYYMMDD') - TO_DATE(D.BIRTH,'YYYYMMDD')) AS MTCN1      /* 총일수  */   
          , round(mod(mod(months_between(A.AUC_DT, D.BIRTH)/12 ,1)*12,1)*(365/12),0) AS MTCN4      /* 일수  */       
          , TRUNC(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)) +1 AS CALF_MTCN /* 송아지월령 */       

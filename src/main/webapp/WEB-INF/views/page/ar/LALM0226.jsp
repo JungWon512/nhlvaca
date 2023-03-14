@@ -1473,7 +1473,7 @@
 	// result   : N/A
 	//**************************************
 	function fn_CallBrclIspSrch() {
-		if ($("#brcl_chk_yn").val() != "0") return;
+		if ($("#brcl_chk_yn").is(":checked")) return;
 		
 		var srchData = new Object();
 		var P_sra_indv_amnno = "";
@@ -1500,7 +1500,8 @@
 		}
 		else {
 			result = setDecrypt(results);
-			$("#brcl_isp_dt").val(fn_toDate($.trim(result["insepctDt"])));
+			$("#brcl_isp_dt").val(fn_toDate($.trim(result["inspectDt"])));
+			$("#vacn_dt").val(fn_toDate($.trim(result["injectionYmd"])));
 		}
 	}
 
@@ -1800,7 +1801,7 @@
 									{name:"AUC_RECV_DT",          index:"AUC_RECV_DT",          width:90, align:'center', formatter:'gridDateFormat', sorttype: "number"},
 									{name:"AUC_RECV_NO",          index:"AUC_RECV_NO",          width:40, align:'center', sorttype: "number"},
 									{name:"RECV_CAN_YN",          index:"RECV_CAN_YN",          width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"RECV_CAN_DT",          index:"RECV_CAN_DT",          width:90, align:'center', sorttype: "number"},
+									{name:"RECV_CAN_DT",          index:"RECV_CAN_DT",          width:90, align:'center', formatter:'gridDateFormat', sorttype: "number"},
 									{name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, align:'center', formatter:'gridIndvFormat'},
 									{name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
 									{name:"FTSNM",                index:"FTSNM",                width:80, align:'center'},

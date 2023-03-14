@@ -135,7 +135,7 @@
                 }
             },
             complete:function(data){
-         	  localStorage.setItem("nhlvaca_token", getCookie('token'));
+            	localStorage.setItem("nhlvaca_token", (getCookie('token')||localStorage.getItem('nhlvaca_token')));
               setTimeout(hideLodingImg,0);
             }
         });         
@@ -176,7 +176,7 @@
             	}            
             },
             complete:function(data){
-         	   localStorage.setItem("nhlvaca_token", getCookie('token'));
+            	localStorage.setItem("nhlvaca_token", (getCookie('token')||localStorage.getItem('nhlvaca_token')));
             	setTimeout(hideLodingImg,0);
             }
         });        

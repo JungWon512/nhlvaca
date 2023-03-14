@@ -23,18 +23,9 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/    
     $(document).ready(function(){
-    	
     	fn_CreateGrid();
-    	
-    	//경주, 무진장
-    	if("8808990659008" == App_na_bzplc || "8808990657202" == App_na_bzplc){
-    		fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 2, true);	
-    	}else{
-    		fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 1, true);	
-    	}   
-    	
+   		fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 2, true);	
     	fn_Init();
-    	
     	
     	/******************************
          * 대상 라디오박스 이벤트
@@ -70,7 +61,7 @@
         
         $('#pb_talk_popup').on('click',(e)=>{
             e.preventDefault();
-            var idsLen = $(".cbox:checked").length;
+            var idsLen = $(".cbox:not(:first):checked").length;
             var selRowIds = $("#grd_Msg").jqGrid("getGridParam", "selrow");
 			
             if (idsLen < 1) {
@@ -237,7 +228,10 @@
             if($("input:checkbox[id='jqg_grd_Msg_"+rowId+"']").is(":checked")){
                 var rowdata = $("#grd_Msg").jqGrid('getRowData', rowId);
                 // SMS 로그테이블(TB_LA_IS_MM_SMS) 에 필요한 파라메터
+               	rowdata["TRMN_AMNNO_NO"] = rowdata["TRMN_AMNNO"]; //TRMN_AMNNO
                	rowdata["TRMN_AMNNO"] = rowdata["SMS_SEND_KEY"]; //2022082300001 => 로그 테이블에 trmn_amnno 컬럼에 저장
+               	rowdata["FHS_ID_NO"] = rowdata["FHS_ID_NO"]; 
+               	rowdata["FARM_AMNNO"] = rowdata["FARM_AMNNO"]; 
                 rowdata["AUC_OBJ_DSC"] = $("#auc_obj_dsc").val(); //경매대상
                 rowdata["DPAMN_DSC"]   = $("#obj_gbn").val(); //출하자, 응찰자 구분
                 rowdata["SEL_STS_DSC"] = $('input[name="msg_gbn_radio"]:checked').val(); //SMS용 경매상태(01, 02, 03...)
@@ -247,11 +241,11 @@
                 rowdata["SMS_TRMS_TELNO"] = rowdata["CLNT_TELNO"].replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1'); // 발신자 전화번호
                 
                 // 인터페이스에 필요한 파라메터
+                rowdata["AUC_DT"] = rowdata["AUC_DT"]; //경매일자
                 rowdata["ADJ_BRC"] = rowdata["ADJ_BRC"]; //사무소코드
                 rowdata["KAKAO_TPL_C"] = rowdata["KAKAO_TPL_C"]; //템플릿코드
                 rowdata["IO_DPAMN_MED_ADR"] = rowdata["CUS_MPNO"].replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1'); //수신매체주소
                 rowdata["IO_SDMN_MED_ADR"]   = rowdata["CLNT_TELNO"].replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1'); //송신매체주소
-                rowdata["KAKAO_MSG_CNTN"] = rowdata["SEND_MSG_CNTN"]; //알림톡메시지정보
                 rowdata["UMS_FWDG_CNTN"] = rowdata["MSG_CNTN"]; //fail-back 메시지 (LMS로 발송되는 메시지)
                 
                 if(!rowdata.SMS_RMS_MPNO.replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1').length < 10){
@@ -314,16 +308,21 @@
 			                        +"<input type='radio' id='msg_gbn_05' name='msg_gbn_radio' value='05'/>"
 			                        +"<label for='msg_gbn_05' style='margin-right:10px;'>정산서</label>"        		
 			                        +"<input type='radio' id='msg_gbn_06' name='msg_gbn_radio' value='06'/>"
-			                        +"<label for='msg_gbn_06' style='margin-right:10px;'>정산서(링크버튼)</label>");        		
+			                        +"<label for='msg_gbn_06' style='margin-right:10px;'>정산서(링크버튼)</label>"
+			                        );        		
         	}
         //출하자
         }else{
-        	$("#msg_div").append("<input type='radio' id='msg_gbn_01' name='msg_gbn_radio' value='01'/>"
+        	// 20230215 ymcho 문자메세지쪽에 있던 예정가 이전의 정보를 발송하는 템플릿 추가
+        	$("#msg_div").append("<input type='radio' id='msg_gbn_00' name='msg_gbn_radio' value='00'/>"
+			                    +"<label for='msg_gbn_00' style='margin-right:10px;'>예정가산정전(출하주)</label>"
+        						+"<input type='radio' id='msg_gbn_01' name='msg_gbn_radio' value='01'/>"
 			                    +"<label for='msg_gbn_01' style='margin-right:10px;'>경매전(출하주)</label>"
 			                    +"<input type='radio' id='msg_gbn_02' name='msg_gbn_radio' value='02'/>"
 			                    +"<label for='msg_gbn_02' style='margin-right:10px;'>경매후(낙찰가)</label>"
 			                    +"<input type='radio' id='msg_gbn_03' name='msg_gbn_radio' value='03'/>"
-			                    +"<label for='msg_gbn_03' style='margin-right:10px;'>정산서</label>");
+			                    +"<label for='msg_gbn_03' style='margin-right:10px;'>정산서</label>"
+			                    );
         }
     	
         fn_setChgRadio("msg_gbn", "01");
@@ -338,8 +337,8 @@
         }
         
         var searchResultColNames = ["전송일자","수신자명","수신자전화번호","메세지내용","전송여부",
-        							"사업장코드","전송일련번호","경매대상구분","전송번호","발신자전화번호","발신자명",
-        	                        "최초등록일시","최초등록자개인번호","최종변경일시","최종변경자개인번호","SMS ID","송신메시지 전문","템플릿코드","정산사무소코드"
+        							"사업장코드","전송일련번호","경매대상구분","전송번호","전송번호","전송번호","발신자전화번호","발신자명",
+        	                        "최초등록일시","최초등록자개인번호","최종변경일시","최종변경자개인번호","SMS ID","송신메시지 전문","템플릿코드","정산사무소코드", "경매일자"
                                    ];        
         var searchResultColModel = [
                       {name:"SMS_FWDG_DT",    	index:"SMS_FWDG_DT",    	width:80, align:'center', formatter:'gridDateFormat'},
@@ -351,6 +350,8 @@
                       {name:"SMS_FWDG_SQNO", index:"SMS_FWDG_SQNO",		hidden:true},
                       {name:"AUC_OBJ_DSC",    	index:"AUC_OBJ_DSC",    	 	hidden:true},
                       {name:"TRMN_AMNNO",     	index:"TRMN_AMNNO",     	 	hidden:true},
+                      {name:"FHS_ID_NO",     	index:"FHS_ID_NO",     	 	hidden:true},
+                      {name:"FARM_AMNNO",     	index:"FARM_AMNNO",     	 	hidden:true},
                       {name:"CLNT_TELNO",   		index:"CLNT_TELNO",  			hidden:true},
                       {name:"CLNTNM",      	index:"CLNTNM",      	 	hidden:true},
                       {name:"FSRG_DTM",       	index:"FSRG_DTM",       	 	hidden:true},
@@ -360,7 +361,8 @@
                       {name:"SMS_SEND_KEY",   	index:"SMS_SEND_KEY",   	 	hidden:true},
                       {name:"SEND_MSG_CNTN",  index:"SEND_MSG_CNTN",  	hidden:true},
                       {name:"KAKAO_TPL_C",  		index:"KAKAO_TPL_C",   	 	hidden:true},
-                      {name:"ADJ_BRC", 				index:"ADJ_BRC",   				hidden:true}
+                      {name:"ADJ_BRC", 				index:"ADJ_BRC",   				hidden:true},
+                      {name:"AUC_DT", 				index:"AUC_DT",   				hidden:true}
                      ];
         
         $("#grd_Msg").jqGrid("GridUnload");
@@ -490,14 +492,6 @@
                                     <input type="hidden" id="msg_gbn"/>
                                 </td>
                             </tr>
-<!--                             <tr> -->
-<!--                                 <th>알림톡<p class="dot_allow"></p></th> -->
-<!--                                 <td colspan="4">  -->
-<!--                                     <select name="talk_select" id="talk_select" class="talk_select"> -->
-<!--                                     	<option value="">선택</option> -->
-<!--                                     </select> -->
-<!--                                 </td> -->
-<!--                             </tr> -->
                         </tbody>
                     </table>
                     </form>

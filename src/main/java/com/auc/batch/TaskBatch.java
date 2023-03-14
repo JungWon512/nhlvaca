@@ -72,7 +72,7 @@ public class TaskBatch {
 				return ;
 			}
 		
-			batchController.commonBatch("BJLM0010",request, rMap);
+			batchController.commonBatch("BJ-LM-0010",request, rMap);
 			
 		}
 		catch (RuntimeException e) {
@@ -98,7 +98,7 @@ public class TaskBatch {
 				return ;
 			}
 		
-			batchController.commonBatch("BJLM0011",request, rMap);
+			batchController.commonBatch("BJ-LM-0011",request, rMap);
 			
 		}
 		catch (RuntimeException e) {
@@ -110,7 +110,7 @@ public class TaskBatch {
 	}
 
 	/**
-	 * 휴면예정자 알림톡 발송 : 매일 오전 8시 00분
+	 * 휴면예정자 알림톡 발송 : 매일 오전 8시 30분
 	 */
 	@Scheduled(cron = "0 30 8 * * *")
 	public void batch_BJ_LM_0020() {

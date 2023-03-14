@@ -150,26 +150,41 @@ public class AlarmTalkForm {
 	public String getAlarmTalkTemplateToJson(String templateCode, Map<String, Object> paramMap) {
 		JSONObject jobj = new JSONObject();
 		String appLink = "";
+		StringBuffer sb = new StringBuffer();
 		
 		// java단에서 알람톡 템플릿을 사용하지않음
 		//jobj.put("msg_content", this.getAlarmTalkTemplate(templateCode, paramMap));
-		jobj.put("msg_content", paramMap.get("MSG_CNTN"));
+		jobj.put("msg_content", paramMap.get("msg_cntn"));
 		// NHKKO00259 : 출하주, NHKKO00260 : 중도매인
 		if ("NHKKO00259".equals(templateCode) || "NHKKO00260".equals(templateCode)) {
 			try {
-				// short link 생성을 위한 중도매인 정산서 url
-				StringBuffer sb = new StringBuffer();
-				if ("production".equals(serverType)) {
-					sb.append("https://www.xn--o39an74b9ldx9g.kr/state-acc/mwmn/");
-				}
-				else {
-					sb.append("http://adv-www.xn--e20bw05b.co.kr/state-acc/mwmn/");
-				}
-				sb.append(paramMap.get("NA_BZPLC"));
-				sb.append('/');
-				sb.append(paramMap.get("AUC_DT"));
-				sb.append('/');
-				sb.append(paramMap.get("TRMN_AMNNO"));
+					if ("1".equals((String) paramMap.get("dpamn_dsc"))) {
+						// short link 생성을 위한 중도매인 정산서 url
+						if ("production".equals(serverType)) {
+							sb.append("https://www.xn--o39an74b9ldx9g.kr/state-acc/mwmn/");						
+						} else {
+							sb.append("http://adv-www.xn--e20bw05b.co.kr/state-acc/mwmn/");
+						}
+						sb.append(paramMap.get("na_bzplc"));
+						sb.append('/');
+						sb.append(paramMap.get("auc_dt"));
+						sb.append('/');
+						sb.append(paramMap.get("trmn_amnno_no"));
+					} else {
+						// short link 생성을 위한 출하주 정산서 url
+						if ("production".equals(serverType)) {
+							sb.append("https://www.xn--o39an74b9ldx9g.kr/state-acc/fhs/");
+						} else {
+							sb.append("http://adv-www.xn--e20bw05b.co.kr/state-acc/fhs/");
+						}
+						sb.append(paramMap.get("na_bzplc"));
+						sb.append('/');
+						sb.append(paramMap.get("auc_dt"));
+						sb.append('/');
+						sb.append(paramMap.get("fhs_id_no"));
+						sb.append('_');
+						sb.append(paramMap.get("farm_amnno"));
+					}
 				
 				jobj.put("btn_name_1", "정산서 보기");
 				jobj.put("btn_type_1", "AL");
@@ -177,9 +192,9 @@ public class AlarmTalkForm {
 				appLink = restApiJsonController.createShortLink(sb.toString());
 //				String appLink = paramMap.getOrDefault("BTN_URL", "https://nhauction.page.link/JwzKzHb6hMzbEXk88").toString();
 			} catch (RuntimeException e) {
-				appLink = "https://nhauction.page.link/JwzKzHb6hMzbEXk88";
+				appLink = sb.toString();
 			}catch (Exception e) {
-				appLink = "https://nhauction.page.link/JwzKzHb6hMzbEXk88";
+				appLink = sb.toString();
 			}
 			
 			jobj.put("btn_content_1", appLink +"$|$" + appLink);

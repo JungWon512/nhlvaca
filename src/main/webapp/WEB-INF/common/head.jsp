@@ -1712,10 +1712,9 @@ function fn_ExcelDownlad(gid, p_title, p_footer){
 	   xhr.setRequestHeader("Content-Type",  "application/json; charset=UTF-8");
 	                     
 	   xhr.onload = function(e){	       
-		   localStorage.setItem("nhlvaca_token", getCookie('token'));    
+		   localStorage.setItem("nhlvaca_token", (getCookie('token')||localStorage.getItem('nhlvaca_token')));    
 	       var filename = title;
 	       var disposition = xhr.getResponseHeader('Content-Disposition');
-	       disposition = fn_XXSEncode(disposition);
 	       if(disposition && disposition.indexOf("attachment") !== -1){
 	           var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
 	           var matches       = filenameRegex.exec(disposition);
@@ -1730,7 +1729,6 @@ function fn_ExcelDownlad(gid, p_title, p_footer){
 	               }else{
 	                  var downloadLink = window.document.createElement('a');
 	                  var contentTypeHeader = xhr.getResponseHeader("Content-Type");
-					  contentTypeHeader = fn_XXSEncode(contentTypeHeader);
 	                  downloadLink.href = window.URL.createObjectURL(new Blob([blob], {type:contentTypeHeader}));
 	                  downloadLink.download = filename;
 	                  document.body.appendChild(downloadLink);
@@ -1779,11 +1777,10 @@ function fn_fileDownlad(p_title){
     xhr.setRequestHeader("Content-Type",  "application/json; charset=UTF-8");
                          
     xhr.onload = function(e){
- 	   localStorage.setItem("nhlvaca_token", getCookie('token'));
+    	localStorage.setItem("nhlvaca_token", (getCookie('token')||localStorage.getItem('nhlvaca_token')));
            
         var filename = p_title;
         var disposition = xhr.getResponseHeader('Content-Disposition');
-        disposition = fn_XXSEncode(disposition);
         if(disposition && disposition.indexOf("attachment") !== -1){
             var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
             var matches       = filenameRegex.exec(disposition);
@@ -1798,7 +1795,6 @@ function fn_fileDownlad(p_title){
                 }else{
                    var downloadLink = window.document.createElement('a');
                    var contentTypeHeader = xhr.getResponseHeader("Content-Type");
-				   contentTypeHeader = fn_XXSEncode(contentTypeHeader);
                    downloadLink.href = window.URL.createObjectURL(new Blob([blob], {type:contentTypeHeader}));
                    downloadLink.download = filename;
                    document.body.appendChild(downloadLink);

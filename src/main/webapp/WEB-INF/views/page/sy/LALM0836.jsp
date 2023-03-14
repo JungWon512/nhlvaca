@@ -110,7 +110,7 @@ let scheDtGb = "";
 
 		if(setRowStatus == "U") {
 			if($(this).val() != scheDtGb ) {
-				MessagePopup("OK","변경시 같은조합 다른 경매대상의  날짜가 사라집니다.");
+				MessagePopup("OK","변경시, 같은조합-다른 경매대상의  '날짜가 사라집니다.''");
 				return;			
 			}
 		}		
@@ -339,7 +339,7 @@ let scheDtGb = "";
 	
 		var searchResultColNames = ["지역","조합","경매구분","거래주기","거래일","등록일자","등록자","통합사업장코드","지역코드","등록일련번호","경매구분 값", "거래주기히든","거래일히든","지정요일히든","경매구분히든","거래일상세 히든","동이상주소 히든","동이하주소 히든","조합 전화번호 히든"];  
 		var searchResultColModel = [                                                              
-			{name:"AREANM",        index:"AREANM",        width:40, align:'center'},
+			{name:"LOCNM",        index:"LOCNM",        width:40, align:'center'},
 		    {name:"CLNTNM",        index:"CLNTNM",        width:40, align:'center'},
 		    {name:"HD_AUC_OBJ_DSC",        index:"HD_AUC_OBJ_DSC",        width:40, align:'center'},
 		    {name:"SCHE_WEEK",           index:"SCHE_WEEK",           width:40, align:'center'}, 
@@ -698,23 +698,23 @@ let scheDtGb = "";
 	                            	</th>	
 	                            	<td colspan="5">
 	                            		<input type="hidden"  id="sche_week" name="sche_week_arr"> <!-- mapper에서 쓸 값. -->
-	                            		<input type="checkbox" id="sche_week1" value="1" name="sche_week" class="sche_week" ><label id="sche_week1_text" for="sche_week1">1주</label>
-	                                    <input type="checkbox" id="sche_week2" value="2" name="sche_week" class="sche_week" ><label id="sche_week2_text" for="sche_week2">2주</label>
-	                                    <input type="checkbox" id="sche_week3" value="3" name="sche_week" class="sche_week" ><label id="sche_week3_text" for="sche_week3">3주</label>                  
-	                                    <input type="checkbox" id="sche_week4" value="4" name="sche_week" class="sche_week" ><label id="sche_week4_text" for="sche_week4">4주</label>                   
-	                                    <input type="checkbox" id="sche_week5" value="5" name="sche_week" class="sche_week" ><label id="sche_week5_text" for="sche_week5">5주(마지막주)</label>              
+	                            		<input type="checkbox" id="sche_week1" value="1" name="sche_week" class="sche_week" ><label id="sche_week1_text" for="sche_week1"> 1주&nbsp;&nbsp;</label>
+	                                    <input type="checkbox" id="sche_week2" value="2" name="sche_week" class="sche_week" ><label id="sche_week2_text" for="sche_week2"> 2주&nbsp;&nbsp;</label>
+	                                    <input type="checkbox" id="sche_week3" value="3" name="sche_week" class="sche_week" ><label id="sche_week3_text" for="sche_week3"> 3주&nbsp;&nbsp;</label>                  
+	                                    <input type="checkbox" id="sche_week4" value="4" name="sche_week" class="sche_week" ><label id="sche_week4_text" for="sche_week4"> 4주&nbsp;&nbsp;</label>                   
+	                                    <input type="checkbox" id="sche_week5" value="5" name="sche_week" class="sche_week" ><label id="sche_week5_text" for="sche_week5"> 5주(마지막주)</label>              
 	                            	</td>
 	                            </tr>
 	                            <tr>
 	                            	<td colspan="5">
 	                            		<input type="hidden"  id="sche_dotw">  <!-- mapper에서 쓸 값. -->
-	                            		<input type="checkbox" id="sche_dotw2" class="sche_dotw" name="sche_dotw" value="2"> 월
-	                                    <input type="checkbox" id="sche_dotw3" class="sche_dotw" name="sche_dotw" value="3"> 화
-	                                    <input type="checkbox" id="sche_dotw4" class="sche_dotw" name="sche_dotw" value="4"> 수
-	                                    <input type="checkbox" id="sche_dotw5" class="sche_dotw" name="sche_dotw" value="5"> 목
-	                                    <input type="checkbox" id="sche_dotw6" class="sche_dotw" name="sche_dotw" value="6"> 금
-	                                    <input type="checkbox" id="sche_dotw7" class="sche_dotw" name="sche_dotw" value="7"> 토
-	                                    <input type="checkbox" id="sche_dotw1" class="sche_dotw" name="sche_dotw" value="1"> 일
+	                            		<input type="checkbox" id="sche_dotw2" class="sche_dotw" name="sche_dotw" value="2"> <label for="sche_dotw2">월&nbsp;&nbsp;</label>
+	                                    <input type="checkbox" id="sche_dotw3" class="sche_dotw" name="sche_dotw" value="3"> <label for="sche_dotw3">화&nbsp;&nbsp;</label>
+	                                    <input type="checkbox" id="sche_dotw4" class="sche_dotw" name="sche_dotw" value="4"> <label for="sche_dotw4">수&nbsp;&nbsp;</label>
+	                                    <input type="checkbox" id="sche_dotw5" class="sche_dotw" name="sche_dotw" value="5"> <label for="sche_dotw5">목&nbsp;&nbsp;</label>
+	                                    <input type="checkbox" id="sche_dotw6" class="sche_dotw" name="sche_dotw" value="6"> <label for="sche_dotw6">금&nbsp;&nbsp;</label>
+	                                    <input type="checkbox" id="sche_dotw7" class="sche_dotw" name="sche_dotw" value="7"> <label for="sche_dotw7">토&nbsp;&nbsp;</label>
+	                                    <input type="checkbox" id="sche_dotw1" class="sche_dotw" name="sche_dotw" value="1"> <label for="sche_dotw1">일&nbsp;&nbsp;</label>
 	                            	</td>
 	                            </tr>
 	                        </tbody>

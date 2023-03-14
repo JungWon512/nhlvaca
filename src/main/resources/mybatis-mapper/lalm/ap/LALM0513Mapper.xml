@@ -1232,6 +1232,10 @@
 	      AND A.AUC_DT          = #{auc_dt}
 	      AND A.DEL_YN          = '0'
 	      AND A.LED_SQNO        = 1
+	]]>
+		<if test='chk_no_bid == 1'>
+			AND A.LOWS_SBID_LMT_AM <![CDATA[>]]> 0
+		</if>
 	      AND A.SEL_STS_DSC     = '22'                                 /* 낙찰건         	       */
 	      AND A.NA_BZPLC        = B.NA_BZPLC
 	      AND A.SRA_SRS_DSC     = B.SRA_SRS_DSC                        /* 축산축종구분코드         */
@@ -1240,7 +1244,6 @@
 	    GROUP BY B.RG_DSC,B.INDV_SEX_C
 	
 	    ORDER BY B.RG_DSC
-	]]>
 	</select>
 	
 	<select id="LALM0513_selSubList_8" resultType="hashMap">
@@ -1282,7 +1285,10 @@
 					AND A.AUC_OBJ_DSC = #{auc_obj_dsc}
 					AND A.AUC_DT = #{auc_dt}
 					AND A.DEL_YN = '0'
-					AND A.LED_SQNO = 1
+					AND A.LED_SQNO = 1					
+					<if test='chk_no_bid == 1'>
+						AND A.LOWS_SBID_LMT_AM <![CDATA[>]]> 0
+					</if>
 					AND A.NA_BZPLC = C.NA_BZPLC
 					AND A.SRA_SRS_DSC = C.SRA_SRS_DSC
 					AND A.SRA_INDV_AMNNO = C.SRA_INDV_AMNNO

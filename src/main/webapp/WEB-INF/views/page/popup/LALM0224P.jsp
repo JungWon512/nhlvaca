@@ -71,6 +71,13 @@
 		fn_CreateGrid();
 		fn_Init();
 
+		// enter로 조회
+		$('#sra_indv_amnno').on('keydown',function(e){
+			if(e.keyCode==13){ 
+				 fn_Search();
+		    	return;
+			}
+		});
 		/******************************
 		 * 폼변경시 클리어 이벤트
 		 ******************************/
@@ -121,7 +128,7 @@
 		//정합성체크
 		var results = sendAjaxFrm("frm_Search", "/LALM0899_selIfSend", "POST");
 		var result;
-
+		
 		//그리드 초기화
 		$("#grd_MmIndv").jqGrid("clearGridData", true);
 		if (results.status != RETURN_SUCCESS) {

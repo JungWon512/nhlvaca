@@ -146,6 +146,11 @@ public class LALM0212ServiceImpl implements LALM0212Service{
 	}
 	
 	@Override
+	public List<Map<String, Object>> LALM0212_selDisabledAucDsc(Map<String, Object> map) throws Exception {
+		return lalm0212Mapper.LALM0212_selDisabledAucDsc(map);
+	}
+	
+	@Override
 	public Map<String, Object> LALM0212_updCommit(Map<String, Object> map) throws Exception{
 		
 		Map<String, Object> reMap = new HashMap<String, Object>();		

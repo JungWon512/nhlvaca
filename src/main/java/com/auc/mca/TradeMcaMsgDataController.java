@@ -1,6 +1,7 @@
 package com.auc.mca;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,7 +72,7 @@ public class TradeMcaMsgDataController {
 	            data.append(",\"PSN_INF_OFR_AGR_YN\":\"" + padLeftBlank((String)inMap.get("PSN_INF_OFR_AGR_YN"),1)  + "\"");
 	            data.append(",\"DEL_YN\":\""             + padLeftBlank((String)inMap.get("DEL_YN"),1)              + "\"");
 	            //20221118 스마트가축시장 고도화 inf 항목 추가
-	            data.append(",\"MB_INTG_NO\":\""          + padLeftBlank((String)inMap.get("MB_INTG_NO"),8)              + "\"");
+	            data.append(",\"MB_INTG_NO\":\""          + padLeftBlank(""+inMap.get("MB_INTG_NO"),8)              + "\"");
 	            if(k+1 == mwmnList.size()) {
 	            	data.append("}");	
 	            }else {
@@ -154,8 +155,8 @@ public class TradeMcaMsgDataController {
             	data.append(",\"LSCHG_DTM\":\""             + padLeftBlank((String)inMap.get("LSCHG_DTM"),14)            + "\"");
             	data.append(",\"LS_CMENO\":\""              + padLeftBlank((String)inMap.get("LS_CMENO"),9)              + "\"");
             	//20221118 스마트가축시장 고도화 inf 항목 추가
-            	data.append(",\"BDLN_VAL\":\""              + padLeftBlank(inMap.getOrDefault("BDLN_VAL","").toString(),8)              + "\"");
-            	data.append(",\"BDHT_VAL\":\""              + padLeftBlank(inMap.getOrDefault("BDHT_VAL","").toString(),8)              + "\"");
+            	data.append(",\"BDLN_VAL\":\""              + padLeftBlank(""+(BigDecimal)inMap.get("BDLN_VAL"),8)              + "\"");
+            	data.append(",\"BDHT_VAL\":\""              + padLeftBlank(""+(BigDecimal)inMap.get("BDHT_VAL"),8)              + "\"");
         	    if(k+1 == mwmnList.size()) {
 	            	data.append("}");	
 	            }else {

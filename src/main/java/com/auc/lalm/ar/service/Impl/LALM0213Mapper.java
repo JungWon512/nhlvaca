@@ -38,4 +38,6 @@ public interface LALM0213Mapper {
 
 	int LALM0213_delAllPgm(Map<String, Object> map) throws Exception;
 
+	List<Map<String, Object>> LALM0213_selBadCheckMwmn(Map<String, Object> map);
+
 }

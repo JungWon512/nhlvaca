@@ -188,9 +188,10 @@ public class McaUtil {
 	        
 	        if(json != null && json.getJSONObject("response") != null && json.getJSONObject("response").getJSONObject("body") !=null
 	        		&& json.getJSONObject("response").getJSONObject("body").getJSONObject("items") != null) {
-		        JSONArray jArr = json.getJSONObject("response").getJSONObject("body").getJSONObject("items").getJSONArray("item");
-		        for(Object item : jArr) {
-		        	JSONObject jItem = (JSONObject) item;
+		        
+	        	Object resultObj = json.getJSONObject("response").getJSONObject("body").getJSONObject("items").get("item");		        		
+		        if(resultObj instanceof JSONObject) {
+		        	JSONObject jItem = (JSONObject) resultObj; 
 	        		Iterator<String> it =jItem.keySet().iterator();
 	        		HashMap<String,Object> nodeMap = new HashMap<String, Object>();
 	        		while(it.hasNext()) {
@@ -203,8 +204,26 @@ public class McaUtil {
 	        		nodeMap.put("REG_TYPE", nodeMap.get("regType"));	
 	        		nodeMap.put("REG_YMD", nodeMap.get("regYmd"));	
 	        		nodeMap.put("FARM_NO", nodeMap.get("farmNo"));	
-	        		nodeList.add(nodeMap);
-		        }	        	
+	        		nodeList.add(nodeMap);		        	
+		        }else if(resultObj instanceof JSONArray){
+		        	JSONArray jArr = (JSONArray) resultObj; 
+			        for(Object item : jArr) {
+			        	JSONObject jItem = (JSONObject) item;
+		        		Iterator<String> it =jItem.keySet().iterator();
+		        		HashMap<String,Object> nodeMap = new HashMap<String, Object>();
+		        		while(it.hasNext()) {
+		        			String key = (String) it.next();
+			        		nodeMap.put(key, jItem.get(key));
+		        		}
+		        		nodeMap.put("SRA_INDV_AMNNO", map.get("trace_no"));	
+		        		nodeMap.put("FARM_ADDR", nodeMap.get("farmAddr"));	
+		        		nodeMap.put("FARMER_NM", nodeMap.get("farmerNm"));	
+		        		nodeMap.put("REG_TYPE", nodeMap.get("regType"));	
+		        		nodeMap.put("REG_YMD", nodeMap.get("regYmd"));	
+		        		nodeMap.put("FARM_NO", nodeMap.get("farmNo"));	
+		        		nodeList.add(nodeMap);
+			        }		        	
+		        }
 	        }	        
 		} catch (RuntimeException | IOException e) {
 			log.debug("openData 접종정보 연계 중 오류가 발생하였습니다.",e);

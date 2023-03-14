@@ -176,13 +176,13 @@
                                         <div class="cell">
                                             <input type="radio" id="bat_suc_yn_ALL" name="bat_suc_yn" value="" checked="checked"
                                             	onclick="javascript:fn_setChgRadio('bat_suc_yn','');fn_setRadioChecked('bat_suc_yn');"/>
-                                            <label for="bat_suc_yn_ALL">전체</label>
+                                            <label for="bat_suc_yn_ALL">전체 &nbsp;</label>
                                             <input type="radio" id="bat_suc_yn_S" name="bat_suc_yn" value="S"
                                             	onclick="javascript:fn_setChgRadio('bat_suc_yn','S');fn_setRadioChecked('bat_suc_yn');"/>
-                                            <label for="bat_suc_yn_S">성공</label>
+                                            <label for="bat_suc_yn_S">성공 &nbsp;</label>
                                             <input type="radio" id="bat_suc_yn_F" name="bat_suc_yn" value="F" 
                                             	onclick="javascript:fn_setChgRadio('bat_suc_yn','F');fn_setRadioChecked('bat_suc_yn');"/>
-                                            <label for="bat_suc_yn_F">실패</label>
+                                            <label for="bat_suc_yn_F">실패 &nbsp;</label>
                                         </div>
                                     </div>
                                     <input type="hidden" id="bat_suc_yn" value="" />

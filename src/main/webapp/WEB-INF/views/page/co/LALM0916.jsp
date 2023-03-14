@@ -164,7 +164,7 @@
         }
         
     	if(pw == $('#io_old_pw').val()){
-            MessagePopup('OK','새 비밀번호가 혅재 비밀번호와 일치 합니다.',function(){
+            MessagePopup('OK','새 비밀번호가 현재 비밀번호와 일치 합니다.',function(){
                 $( "#io_new_pw" ).focus();
             });
             return;
@@ -300,7 +300,7 @@
                     result = JSON.parse(response.responseText); 
                 }            
             },complete:function(data){
-           	   localStorage.setItem("nhlvaca_token", getCookie('token'));
+            	localStorage.setItem("nhlvaca_token", (getCookie('token')||localStorage.getItem('nhlvaca_token')));
 			}
         });        
         return result;

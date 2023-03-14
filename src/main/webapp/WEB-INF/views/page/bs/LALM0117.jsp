@@ -696,6 +696,8 @@
                                             <input type="radio" id="mbintg_gubun_01" name="mbintg_gubun" value="01" checked="checked"
                                             	onclick="javascript:fn_setChgRadio('mbintg_gubun','01');fn_setRadioChecked('mbintg_gubun');"/>
                                             <label for="mbintg_gubun_01">중도매인</label>
+                                            
+                                            <!--  TODO : 농가를 아예 통합회원에서 제거하게 되면 수정 or 제거해야 할 부분 -->
                                             <input type="radio" id="mbintg_gubun_02" name="mbintg_gubun" value="02" 
                                             	onclick="javascript:fn_setChgRadio('mbintg_gubun','02');fn_setRadioChecked('mbintg_gubun');"/>
                                             <label for="mbintg_gubun_02">출하주(농가)</label>

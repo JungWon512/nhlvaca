@@ -451,6 +451,7 @@ public class BatchServiceImpl implements BatchService{
 		msgMap.put("NA_BZPLC", sendPhoneInfo.get("NA_BZPLC"));
 		
 		// 인터페이스에 필요한 파라미터
+		msgMap.put("msg_cntn", msgMap.get("MSG_CNTN"));		//getAlarmTalkTemplateToJson 로 호출하는 파라미터가 소문자로 되면서 한번 더 셋팅함
 		msgMap.put("KAKAO_MSG_CNTN", alarmForm.getAlarmTalkTemplateToJson(templateId, msgMap));
 		msgMap.put("KAKAO_TPL_C", templateId);
 		msgMap.put("ADJ_BRC", sendPhoneInfo.get("ADJ_BRC"));			//사무소 코드 
@@ -532,7 +533,11 @@ public class BatchServiceImpl implements BatchService{
 		
 		//해당 조합의 최대 경매일수 조회(null일시 어떤값부를지는 미정)
 		Map<String,Object> tempMap = new HashMap<>();
-		tempMap.put("BTC_DT",LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+		if(map.get("BTC_DT") != null) {
+			tempMap.put("BTC_DT",map.get("BTC_DT"));
+		}else {
+			tempMap.put("BTC_DT",LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")));			
+		}
 		//tempMap.put("BTC_DT","20160901");
 		tempMap.put("SRA_SRS_DSC", "01");
 		
@@ -589,7 +594,13 @@ public class BatchServiceImpl implements BatchService{
 		
 		//해당 조합의 최대 경매일수 조회(null일시 어떤값부를지는 미정)
 		Map<String,Object> tempMap = new HashMap<>();
-		tempMap.put("AUC_DT",LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+		//tempMap.put("AUC_DT",LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
+
+		if(map.get("AUC_DT") != null) {
+			tempMap.put("AUC_DT",map.get("AUC_DT"));
+		}else {
+			tempMap.put("AUC_DT",LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyyMMdd")));			
+		}
 		//tempMap.put("AUC_DT","20160901");
 		tempMap.put("SRA_SRS_DSC", "01");
 
