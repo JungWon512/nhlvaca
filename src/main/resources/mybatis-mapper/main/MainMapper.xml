@@ -50,7 +50,7 @@
               AND A.UYN     = '1'
               AND A.PGID    = B.PGID(+)
               AND A.MENU_ID = C.MENU_ID
-            ORDER BY A.MENU_ID
+            ORDER BY SCD_MENU_ID, MENU_LVL_C, SORT_SQ
     </select>
     
     <select id="selectPopupList" resultType="hashMap">

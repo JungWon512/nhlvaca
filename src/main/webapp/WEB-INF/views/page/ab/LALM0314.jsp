@@ -236,7 +236,7 @@
         
         var searchResultColNames = ["경매대상", "일련번호", "경매시작번호", "경매종료번호", "경매일자", "진행상태", "차수", "차수변경"];        
         var searchResultColModel = [						 
-                                     {name:"AUC_OBJ_DSC",	index:"AUC_OBJ_DSC",	width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},                                     
+                                     {name:"AUC_OBJ_DSC",	index:"AUC_OBJ_DSC",	width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 3)}},                                     
                                      {name:"RG_SQNO",   	index:"RG_SQNO", 		width:100, align:'center'},
                                      {name:"ST_AUC_NO",   	index:"ST_AUC_NO",    	width:100, align:'center'},                                     
                                      {name:"ED_AUC_NO",     index:"ED_AUC_NO",      width:100, align:'center'},
@@ -635,6 +635,7 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_SearchSogCow1(p_param){
+    	console.log(p_param);
     	$("#grd_MhSogCow1").jqGrid("clearGridData", true);
     	
     	var results = sendAjax(p_param, "/LALM0314_selSogCow1List", "POST");        
@@ -653,6 +654,7 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_SearchSogCow2(p_param){
+    	console.log(p_param);
     	$("#grd_MhSogCow2").jqGrid("clearGridData", true);
     	
     	var results = sendAjax(p_param, "/LALM0314_selSogCow2List", "POST");        
@@ -671,6 +673,7 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_SearchSogCow3(p_param){
+    	 console.log(p_param);
     	$("#grd_MhSogCow3").jqGrid("clearGridData", true);
     	
     	var results = sendAjax(p_param, "/LALM0314_selSogCow3List", "POST");        
@@ -689,6 +692,7 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_SearchSogCow4(p_param){
+    	 console.log(p_param);
     	$("#grd_MhSogCow4").jqGrid("clearGridData", true);
     	
     	var results = sendAjax(p_param, "/LALM0314_selSogCow4List", "POST");        
@@ -707,6 +711,7 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_SearchSogCow5(p_param){
+    	 console.log(p_param);
     	$("#grd_MhSogCow5").jqGrid("clearGridData", true);
     	
     	var results = sendAjax(p_param, "/LALM0314_selSogCow5List", "POST");        
