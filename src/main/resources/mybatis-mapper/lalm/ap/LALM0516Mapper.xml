@@ -177,7 +177,7 @@
 	      AND A.SEL_STS_DSC      = #{cb_sel_sts_dsc}
 	      </if>
 	      AND A.LED_SQNO          = '1'
-	      <if test="cb_sel_sts_dsc != null and cb_sel_sts_dsc != ''">
+	      <if test="cb_maco_yn != null and cb_maco_yn != ''">
 	      AND E.MACO_YN          = #{cb_maco_yn}    
 	      </if>
 	      AND A.NA_BZPLC          = E.NA_BZPLC

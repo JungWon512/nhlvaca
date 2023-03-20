@@ -1,5 +1,6 @@
 package com.auc.lalm.ar.service.Impl;
 
+import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -189,7 +190,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				result.put("FARM_AMNNO", indvList.get(0).get("FARM_AMNNO"));
 				result.put("FTSNM", indvList.get(0).get("FTSNM"));
 				result.put("SRA_PDMNM", indvList.get(0).get("FTSNM"));
-				result.put("SRA_PD_RGNNM", indvList.get(0).get("DONGUP"));
+				String sraPdRgnnm = splitByte((String)indvList.get(0).get("DONGUP"),50);
+				result.put("SRA_PD_RGNNM", sraPdRgnnm);
 				result.put("MCOW_SRA_INDV_AMNNO", indvList.get(0).get("MCOW_SRA_INDV_AMNNO"));
 				result.put("CHK_IF_SRA_INDV", "1");
 				map.put("fhs_id_no", indvList.get(0).get("FHS_ID_NO"));
@@ -296,7 +298,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 							result.put("FHS_ID_NO", Demap.get("fhs_id_no"));	
 							result.put("FARM_AMNNO", Demap.get("farm_amnno"));	
 							result.put("SRA_PDMNM", Demap.get("sra_fhsnm"));	
-							result.put("SRA_PD_RGNNM", Demap.get("sra_farm_dongup"));
+							String sraPdRgnnm = splitByte((String)Demap.get("sra_farm_dongup"),50);
+							result.put("SRA_PD_RGNNM", sraPdRgnnm);
 						}else {
 							log.debug("개체 인터페이스[4700] 데이터 없음..");
 							result.put("CHK_IF_SRA_INDV", "0");		
@@ -660,5 +663,33 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 		reMap.put("resultList", reList);
 		
 		return reMap;
+	}
+
+	public String splitByte(String inputString, int length) {
+		if(inputString == null) {
+			inputString = "";
+		}
+		StringBuilder sb = new StringBuilder();
+		
+		try {
+			byte[] inputByte=inputString.getBytes("EUC-KR");
+			int byteLen = inputByte.length;
+			if(byteLen <= length) {
+				return inputString;
+			}else if(byteLen > length) {
+				StringBuilder stringBuilder = new StringBuilder(length);
+				int nCnt = 0;
+				for(char ch:inputString.toCharArray()){
+					nCnt += String.valueOf(ch).getBytes("EUC-KR").length;
+					if(nCnt > length) break;
+					stringBuilder.append(ch);
+				}
+				return stringBuilder.toString();
+			}
+		}catch (UnsupportedEncodingException e) {
+			log.error("splitByte");
+			return inputString;
+		}
+		return sb.toString();
 	}
 }
