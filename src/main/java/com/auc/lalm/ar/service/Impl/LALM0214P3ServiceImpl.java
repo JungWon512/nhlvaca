@@ -116,7 +116,9 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 			map.put("sog_na_trpl_c", "");
 			map.put("vhc_shrt_c", "");
 			map.put("trmn_amnno", "");
-			map.put("lvst_auc_ptc_mn_no", "");
+			map.put("lvst_auc_ptc_mn_no", "");	
+			String sraPdRgnnm = splitByte((String)map.get("sra_pd_rgnnm"),50);
+			map.put("sra_pd_rgnnm", sraPdRgnnm);
 			insertNum += lalm0214P3Mapper.LALM0214P3_insSogCow(map);
 			
 			map.put("chg_pgid", "LALM0214P3");
@@ -190,8 +192,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				result.put("FARM_AMNNO", indvList.get(0).get("FARM_AMNNO"));
 				result.put("FTSNM", indvList.get(0).get("FTSNM"));
 				result.put("SRA_PDMNM", indvList.get(0).get("FTSNM"));
-				String sraPdRgnnm = splitByte((String)indvList.get(0).get("DONGUP"),50);
-				result.put("SRA_PD_RGNNM", sraPdRgnnm);
+				result.put("SRA_PD_RGNNM", indvList.get(0).get("DONGUP"));
 				result.put("MCOW_SRA_INDV_AMNNO", indvList.get(0).get("MCOW_SRA_INDV_AMNNO"));
 				result.put("CHK_IF_SRA_INDV", "1");
 				map.put("fhs_id_no", indvList.get(0).get("FHS_ID_NO"));
@@ -298,8 +299,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 							result.put("FHS_ID_NO", Demap.get("fhs_id_no"));	
 							result.put("FARM_AMNNO", Demap.get("farm_amnno"));	
 							result.put("SRA_PDMNM", Demap.get("sra_fhsnm"));	
-							String sraPdRgnnm = splitByte((String)Demap.get("sra_farm_dongup"),50);
-							result.put("SRA_PD_RGNNM", sraPdRgnnm);
+							result.put("SRA_PD_RGNNM", Demap.get("sra_farm_dongup"));
 						}else {
 							log.debug("개체 인터페이스[4700] 데이터 없음..");
 							result.put("CHK_IF_SRA_INDV", "0");		

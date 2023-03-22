@@ -425,8 +425,7 @@ var na_bzplc = App_na_bzplc;
             		 
             		 // ★고창: 8808990762654 테스트: 8808990643625
             		 } else if(na_bzplc == "8808990762654") {
-            			 ReportPopup('LALM0216R0_18',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
-            		 
+            			 ReportPopup('LALM0216R0_18',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그            		 
             		 } else {
             			 var gridData = fnSetGridData1('grd_MhSogCow1');
             			 ReportPopup('LALM0216R0_1',TitleData, gridData, 'V');              //V:세로 , H:가로  , T :콘솔로그
