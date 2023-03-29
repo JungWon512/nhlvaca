@@ -37,11 +37,14 @@
      //mv_RunMode = '1':최초로딩, '2':조회, '3':저장/삭제, '4':기타설정
      var mv_RunMode = 0;
      var setRowStatus = "";
-     
+     var aucObjDscGrpSq = '2';
      $(document).ready(function(){
     	 
          fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 2, true);
-         fn_setCodeRadio("cb_auc_obj_dsc","hd_auc_obj_dsc","AUC_OBJ_DSC", 3);
+         
+         if(App_na_bzplc =='8808990689760') fn_setCodeRadio("cb_auc_obj_dsc","hd_auc_obj_dsc","AUC_OBJ_DSC", 9);
+         else fn_setCodeRadio("cb_auc_obj_dsc","hd_auc_obj_dsc","AUC_OBJ_DSC", 2);
+         
          fn_Init();
                 
         //프로그램ID 대문자 변환
@@ -317,7 +320,7 @@
        	/*                               1       2           3            4          5           6         7      */
        	var searchResultColNames = ["경매대상", "경매일자",  "경매시작번호", "경매종료번호", "진행상태", "등록일련번호", "삭제여부"];        
         var searchResultColModel = [						 
-						            {name:"AUC_OBJ_DSC"    , index:"AUC_OBJ_DSC"    , width:15, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 3)}},
+						            {name:"AUC_OBJ_DSC"    , index:"AUC_OBJ_DSC"    , width:15, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 9)}},
 						            {name:"AUC_DT"         , index:"AUC_DT"         , width:15, align:'center'},
 						            {name:"ST_AUC_NO"      , index:"ST_AUC_NO"      , width:15, align:'right'},
 						            {name:"ED_AUC_NO"      , index:"ED_AUC_NO"      , width:15, align:'right'},                                     

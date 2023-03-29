@@ -236,7 +236,7 @@
         
         var searchResultColNames = ["경매대상", "일련번호", "경매시작번호", "경매종료번호", "경매일자", "진행상태", "차수", "차수변경"];        
         var searchResultColModel = [						 
-                                     {name:"AUC_OBJ_DSC",	index:"AUC_OBJ_DSC",	width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 3)}},                                     
+                                     {name:"AUC_OBJ_DSC",	index:"AUC_OBJ_DSC",	width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 9)}},                                     
                                      {name:"RG_SQNO",   	index:"RG_SQNO", 		width:100, align:'center'},
                                      {name:"ST_AUC_NO",   	index:"ST_AUC_NO",    	width:100, align:'center'},                                     
                                      {name:"ED_AUC_NO",     index:"ED_AUC_NO",      width:100, align:'center'},
