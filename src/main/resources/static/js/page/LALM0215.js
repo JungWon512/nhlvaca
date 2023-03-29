@@ -1224,11 +1224,11 @@
     		MessagePopup("OK", "개체성별코드를 입력하기 바랍니다.");
 			return;
     	}
-    	if(fn_isNull($("#fhs_id_no").val())) {
+    	if(fn_isNull($.trim($("#fhs_id_no").val()))) {
     		MessagePopup("OK", "출하주가 정확하지 않습니다.");
 			return;
     	}
-    	if(fn_isNull($("#ftsnm").val())) {
+    	if(fn_isNull($.trim($("#ftsnm").val()))) {
     		MessagePopup("OK", "출하주가 정확하지 않습니다.");
 			return;
     	}

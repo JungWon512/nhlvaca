@@ -417,7 +417,7 @@
 				MessagePopup('OK','농가,개체번호 데이터를 확인해주세요.');
     			return true;
    			}
-			if(fn_isNull(o.FTSNM) || fn_isNull(o.FARM_AMNNO) || fn_isNull(o.FHS_ID_NO) || fn_isNull(o.AUC_PRG_SQ) || fn_isNull(o.AUC_OBJ_DSC) || fn_isNull(o.PPGCOW_FEE_DSC) || fn_isNull(o.SRA_INDV_AMNNO) ){    			 
+			if(fn_isNull(o.FTSNM) || fn_isNull(o.FARM_AMNNO) || fn_isNull($.trim(o.FHS_ID_NO)) || fn_isNull(o.AUC_PRG_SQ) || fn_isNull(o.AUC_OBJ_DSC) || fn_isNull(o.PPGCOW_FEE_DSC) || fn_isNull(o.SRA_INDV_AMNNO) ){    			 
 				MessagePopup('OK','필수입력값을 확인해주세요.');
 				return true;
     		 }else if(o.SRA_INDV_AMNNO.replace("-", "").length != 15 || o.SRA_INDV_AMNNO.substr(0,3) != '410'){    			 
