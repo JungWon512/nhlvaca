@@ -37,7 +37,7 @@
      //mv_RunMode = '1':최초로딩, '2':조회, '3':저장/삭제, '4':기타설정
      var mv_RunMode = 0;
      var setRowStatus = "";
-     var aucObjDscGrpSq = '2';
+     
      $(document).ready(function(){
     	 
          fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 2, true);
