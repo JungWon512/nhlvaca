@@ -393,5 +393,14 @@
 		   AND AUC_RECV_DT = #{auc_recv_dt}
 		   AND AUC_RECV_NO = #{auc_recv_no}
 	</update>
+	
+	
+	<delete id="LALM0226_delCowRecv" parameterType="hashMap">
+		DELETE FROM TB_LA_IS_MH_COW_RECV
+		 WHERE NA_BZPLC = #{ss_na_bzplc}
+		   AND AUC_OBJ_DSC = #{auc_obj_dsc}
+		   AND AUC_RECV_DT = #{auc_recv_dt}
+		   AND AUC_RECV_NO = #{auc_recv_no}
+	</delete>
 
 </mapper>

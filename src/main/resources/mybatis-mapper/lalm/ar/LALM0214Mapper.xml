@@ -95,7 +95,7 @@
                      WHEN LENGTH(F.BRKR_NAME) = 4 THEN SUBSTR(F.BRKR_NAME,1,1) || '**' || SUBSTR(F.BRKR_NAME,4,1)  
                      WHEN LENGTH(F.BRKR_NAME) >= 5 THEN SUBSTR(F.BRKR_NAME,1,2) || '**' || SUBSTR(F.BRKR_NAME,5,1)  END AS BRKR_NAME /* 수의사                                */
 	          , CASE WHEN A.NA_BZPLC = '8808990674605' THEN A.DNA_YN 
-                     ELSE (CASE WHEN A.DNA_YN = '1' THEN '일치' ELSE '0' END)
+                     ELSE (CASE WHEN A.DNA_YN = '1' THEN '1' ELSE '0' END)
                 END  AS DNA_YN                                     /* 친자검사결과 홍천=8808990674605       */
 	          , NVL(B.SRA_FED_SPY_YN, 0) AS SRA_FED_SPY_YN         /* 사료미사용여부                        */
 	          , CASE WHEN (G.USRNM = '' OR G.USRNM IS NULL) THEN  'SYSTEM'

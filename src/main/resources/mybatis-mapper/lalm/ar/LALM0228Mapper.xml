@@ -76,9 +76,10 @@
 				</if>
 				AND LENGTH(NVL(DECODE(#{obj_gbn},'2',D.CUS_MPNO,C.CUS_MPNO),'')) <![CDATA[>=]]> 10	
 				AND LENGTH(REGEXP_REPLACE(NVL(DECODE(#{obj_gbn},'2',D.CUS_MPNO,C.CUS_MPNO),''), '[^0-9]')) <![CDATA[>=]]> 10
+			ORDER BY A.AUC_PRG_SQ, D.FTSNM
 	</select>
 	
-
+ 
 	<!-- 알림톡 템플릿 리스트 조회 경매예정-->
 	<select id="LALM0228_selList2" parameterType="hashMap" resultType="hashMap">
 		SELECT

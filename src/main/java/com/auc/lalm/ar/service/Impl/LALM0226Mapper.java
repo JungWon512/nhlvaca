@@ -43,4 +43,12 @@ public interface LALM0226Mapper {
 	 */
 	int LALM0226_updCowRecv(Map<String, Object> frmMap);
 
+	/**
+	 * @methodName    : LALM0226_delCowRecv
+	 * @author        : Jung JungWon
+	 * @date          : 2023.04.12
+	 * @Comments      : 
+	 */
+	int LALM0226_delCowRecv(Map<String, Object> frmMap);
+
 }

@@ -316,13 +316,14 @@ var na_bzplc = App_na_bzplc;
         	 // ★합천: 8808990656236 테스트: 8808990643625
         	 if(na_bzplc == '8808990656236') {
         		if($("#auc_obj_dsc").val() == "1") {
-        			tmp_title = "출장우 내역 조회";
+        			//tmp_title = "출장우 내역 조회";
+        			tmp_title = "혈통송아지";
         		} else if($("#auc_obj_dsc").val() == "2") {
         			tmp_title = "일반송아지";
         		} else {
         			tmp_title = "큰소";
         		}
-        		tmp_title = tmp_title + "(응찰자용)" + fn_toDate(fn_dateToData($('#auc_dt').val()),"KR");
+        		tmp_title = tmp_title + "출장우내역 " + fn_toDate(fn_dateToData($('#auc_dt').val()),"KR");
         	
         	 // ★영주: 8808990687094 테스트: 8808990643625
         	 } else if(na_bzplc == '8808990687094') {
@@ -343,10 +344,11 @@ var na_bzplc = App_na_bzplc;
             	 if($("#auc_obj_dsc").val() == "3") {
             		 ReportPopup('LALM0216R1_3',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그      
 
+            	 } else if($("#auc_obj_dsc").val() == "2"){
+            		 ReportPopup('LALM0216R1_2',TitleData, 'grd_MhSogCow1', 'V');               //V:세로 , H:가로  , T :콘솔로그            		 
             	 } else {
-            		 ReportPopup('LALM0216R1_2',TitleData, 'grd_MhSogCow1', 'V');               //V:세로 , H:가로  , T :콘솔로그
-            		 
-            	 } 
+            	 	ReportPopup('LALM0216R1_2_1',TitleData, 'grd_MhSogCow1', 'V');               //V:세로 , H:가로  , T :콘솔로그
+            	 }
              
              // ★청도: 8808990656571
              } else if(na_bzplc == "8808990656571") {
@@ -1378,7 +1380,7 @@ var na_bzplc = App_na_bzplc;
         
         
         
-        var searchResultColNames = ["H낙찰자","H인공수정표","H부KPN","H임신일수","H큰소구분","H수송자","H동이상주소","H낙찰가","H수송자","H낙찰자","H낙찰번호","H귀표번호","H월령일수"
+        var searchResultColNames = ["H낙찰자","H인공수정표","H부KPN","H임신일수","H큰소구분","H수송자","H동이상주소","H낙찰가","H수송자","H낙찰자","H낙찰번호","H귀표번호","H월령일수","H읍면"
         	,"경매<br>번호", "경매대상", "귀표번호", "생년월일"
                                   , "월령", "성별", "계대", "등록번호", "등록구분", "제각여부"
                                   , "KPN번호", "어미귀표번호","산차","중량","주소","성명","휴대폰"
@@ -1401,6 +1403,7 @@ var na_bzplc = App_na_bzplc;
         	                         {name:"LVST_AUC_PTC_MN_NO",        index:"LVST_AUC_PTC_MN_NO",       width:55, align:'center'   ,hidden:true}, 
         	                         {name:"SRA_INDV_AMNNO",            index:"SRA_INDV_AMNNO",           width:55, align:'center'   ,hidden:true}, 
         	                         {name:"MTCN_DAYS",      	        index:"MTCN_DAYS",           	  width:55, align:'center'   ,hidden:true},
+        	                         {name:"DONGUP_EUP",      	        index:"DONGUP_EUP",           	  width:55, align:'center'   ,hidden:true},
                                     
         	                         {name:"AUC_PRG_SQ",                index:"AUC_PRG_SQ",               width:55, align:'center', sorttype: "number"  },
                                      {name:"AUC_OBJ_DSC",               index:"AUC_OBJ_DSC",              width:65, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
@@ -1836,7 +1839,7 @@ var na_bzplc = App_na_bzplc;
         }
         
         var searchResultColNames = ["일수(월령)","H사업장코드","H브랜드","H낙찰가격","H경매일자","H낙찰자","H낙찰가격","H인공수정일","H송아지축산개체관리번호","H송아지개체성별코드","H송아지출하중량","H송아지생년월일","H송아지KPN번호","H송아지월령","H구제역예방접종일","H임신개월수","H브루셀라검사일","H낙찰가","H예정가","H단가단위"
-
+        	 					   ,"H농가명마스킹","H동이상"
 								   ,"H유전능력 냉도체중","H유전능력 냉도체중 등급","H유전능력 배최장근단면적","H유전능력 배최장근단면적 등급","H등지방두께","H등지방두께 등급","H유전능력 근내지방도","H유전능력 근내지방도 등급"
 								   ,"H유전능력 냉도체중-모개체","H유전능력 냉도체중등급-모개체","H유전능력 배최장근단면적-모개체","H유전능력 배최장근단면적 등급-모개체","H유전능력 등지방두께-모개체","H유전능력 등지방두께 등급-모개체","H유전능력 근내지방도-모개체","H유전능력 근내지방도 등급-모개체"
 								   
@@ -1871,6 +1874,8 @@ var na_bzplc = App_na_bzplc;
         							 {name:"SRA_INDV_AM",               index:"SRA_INDV_AM",              width:55, align:'center'  ,hidden:true},
         							 {name:"LOWS_SBID_LMT_UPR",         index:"LOWS_SBID_LMT_UPR",		  width:55, align:'center'  ,hidden:true},
         							 {name:"LOWS_SBID_LMT_UNIT",        index:"LOWS_SBID_LMT_UNIT", 	  width:55, align:'center'  ,hidden:true},
+        							 {name:"FTSNM_MASKING",        		index:"FTSNM_MASKING", 	  		  width:55, align:'center'  ,hidden:true},
+        							 {name:"DONGUP",        			index:"DONGUP", 	  			  width:55, align:'center'  ,hidden:true},
                                      
         							 {name:"RE_PRODUCT_1",              index:"RE_PRODUCT_1",              width:55, align:'center'  ,hidden:true},
         							 {name:"RE_PRODUCT_1_1",            index:"RE_PRODUCT_1_1",            width:55, align:'center'  ,hidden:true},

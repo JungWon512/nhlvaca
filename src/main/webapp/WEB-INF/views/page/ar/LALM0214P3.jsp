@@ -280,6 +280,12 @@
 	                  	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_INDV_AMNNO', sraIndvAmnno,{background:"rgb(255 0 0)"});             	        	
 						}
 					}
+					var rmkCntn = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'RMK_CNTN');
+      				if(rmkCntn.length > 30){		 
+                  	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RMK_CNTN', rmkCntn ,{background:"rgb(255 0 0)"});      
+                  	  	$('#grd_MmInsSogCow').jqGrid('setCell',rowid,'CHK_VAILD_ERR','1');
+      	    		 }
+					
 				});
     			if(errCnt==0) $('#pb_allSyncIndv').attr('disabled',false);
 	         }
@@ -423,19 +429,22 @@
     		 }else if(o.SRA_INDV_AMNNO.replace("-", "").length != 15 || o.SRA_INDV_AMNNO.substr(0,3) != '410'){    			 
 				MessagePopup('OK','개체관리번호의 값을 확인해주세요.');
 				return true;    			 
+    		 }else if(o.RMK_CNTN.length > 30){    			 
+				MessagePopup('OK','비고의 값을 확인해주세요.<br/>[경매번호 : '+o.AUC_PRG_SQ+' 최대길이:30자]');
+				return true;    			 
     		 }
     		 return rowData.some((cur,j)=>{ 
     		 	if(cur.AUC_PRG_SQ == o.AUC_PRG_SQ && i != j){
-          			MessagePopup("OK", '중복된 경매번호['+cur.AUC_PRG_SQ+']가 있습니다.');
+         			MessagePopup("OK", '중복된 경매번호['+cur.AUC_PRG_SQ+']가 있습니다.');
 	    		 	return true ;
     		 	}
     		 	if(cur.SRA_INDV_AMNNO == o.SRA_INDV_AMNNO && i != j){
-          			MessagePopup("OK", '중복된 귀표번호['+cur.SRA_INDV_AMNNO+']가 있습니다.');
+         			MessagePopup("OK", '중복된 귀표번호['+cur.SRA_INDV_AMNNO+']가 있습니다.');
 	    		 	return true ;
     		 	}
     		 });
-    	 });
-
+    	});
+        
     	if(booleanRequierd) return;
     	
     	var aucDt = $('#auc_dt').val();

@@ -109,8 +109,25 @@ public class LALM0226Controller {
 	@RequestMapping(value = "/LALM0226_delPgm", method = RequestMethod.POST)
 	public Map<String, Object> LALM0226_delPgm(ResolverMap rMap) throws Exception {
 		Map<String, Object> map		= convertConfig.conMapWithoutXxs(rMap);
-		Map<String, Object> inMap	= lalm0226Service.LALM0226_insPgm(map);
+		Map<String, Object> inMap	= lalm0226Service.LALM0226_delPgm(map);
 		Map<String, Object> reMap	= commonFunc.createResultCUD(inMap);
+		return reMap;
+	}
+	
+	/**
+	 * 출장우 접수 내용 귀표 중복체크
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value="/LALM0226_selIndvChk", method=RequestMethod.POST)
+	public Map<String, Object> LALM0226_selIndvChk(ResolverMap rMap) throws Exception {
+		
+		Map<String, Object> map = convertConfig.conMap(rMap);
+		Map<String, Object> reInfo = lalm0226Service.LALM0226_selIndvChk(map);
+		Map<String, Object> reMap = commonFunc.createResultSetMapData(reInfo);
+		
 		return reMap;
 	}
 	

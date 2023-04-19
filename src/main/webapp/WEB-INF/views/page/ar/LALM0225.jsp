@@ -123,7 +123,7 @@
 		fn_InitFrm('frm_Search');
 		
 		$("#auc_dt_st").datepicker().datepicker("setDate", fn_getDay(0, 'YYYY-MM-DD'));
-		$("#auc_dt_en").datepicker().datepicker("setDate", fn_getDay(0, 'YYYY-MM-DD'));
+		$("#auc_dt_en").datepicker().datepicker("setDate", fn_getDay(365, 'YYYY-MM-DD'));
 		fn_setChgRadio('auc_obj_dsc','0')
 	}
 	
@@ -187,6 +187,18 @@
 	function fn_ExcelMca() {
 		fn_ExcelDownlad('grd_MhSogCow_mca', '축경통자료', null);
 	}
+	
+	
+    function fn_Print(){
+    	 
+    	 var results = sendAjaxFrm("frm_Search", "/Common_selAucQcn", "POST");
+    	 var result = null;
+         
+    	 var TitleData = new Object();
+    	 TitleData.title = App_na_bzplnm+" ("+ App_userNm +")";
+    	 
+		 ReportPopup('LALM0225R0',TitleData, 'grd_MhSogCow', 'V');              //V:세로 , H:가로  , T :콘솔로그      
+    }
 	
 	/*------------------------------------------------------------------------------
 	 * 1. 함 수 명    : 엑셀자료 엑셀 함수

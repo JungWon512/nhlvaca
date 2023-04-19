@@ -288,7 +288,7 @@ var mv_sqno_prc_dsc = "";
         var searchResultColNames = ["","H사업장코드","H경매일자","H원표번호","H판매상태구분","H거래인","H참여자번호","H혈통금액","H출하수수료수기적용여부","H출하수수료수기등록","H판매수수료수기적용여부","H판매수수료수기등록"
 						            ,"H12개월이상여부","H12개월이상수수료","H번식우수수료구분코드","H사료미사용여부","H친자검사여부","H친자검사결과","H출하자조합원여부","H중도매인조합원여부"
 						            ,"H임신감정여부","H임신여부","H괴사감정여부","H괴사여부","H운송비지급여부","H제각여부","H축산생산자명"
-						        	,"경매번호", "경매대상구분", "출하주", "접수일", "수송자", "귀표번호", "최소 예정가", "예정가", "예정가<br>변경횟수", "중량", "경매참가번호", "", "낙찰단가", "낙찰금액","진행상태","변경사유", "응찰하안가ex", "마감차수", "구분", "낮출금액", ""];        
+						        	,"경매번호", "경매대상구분", "출하주", "접수일", "수송자", "귀표번호","성별", "최소 예정가", "예정가", "예정가<br>변경횟수", "중량", "경매참가번호", "", "낙찰단가", "낙찰금액","진행상태","변경사유", "응찰하안가ex", "마감차수", "구분", "낮출금액", ""];        
         var searchResultColModel = [
             						{name:"_STATUS_",               index:"_STATUS_"              , width:15,  align:'center'},
             						
@@ -324,7 +324,8 @@ var mv_sqno_prc_dsc = "";
 						            {name:"FTSNM"                 , index:"FTSNM"                 , width:100, align:'center'},
 						            {name:"RC_DT"                 , index:"RC_DT"                 , width:100, align:'center', formatter:'gridDateFormat'},
 						            {name:"VHC_DRV_CAFFNM"        , index:"VHC_DRV_CAFFNM"        , width:100, align:'center'},
-						            {name:"SRA_INDV_AMNNO"        , index:"SRA_INDV_AMNNO"        , width:150, align:'center'},
+						            {name:"SRA_INDV_AMNNO"        , index:"SRA_INDV_AMNNO"        , width:150, align:'center'},						            
+						            {name:"INDV_SEX_C"			  , index:"INDV_SEX_C"			  , width:40 , sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
 						            {name:"FIR_LOWS_SBID_LMT_AM"  , index:"FIR_LOWS_SBID_LMT_AM"  , width:100, align:'right', formatter:'currency', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
 						            {name:"LOWS_SBID_LMT_AM"      , index:"LOWS_SBID_LMT_AM"      , width:100, align:'right', formatter:'currency', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
 						            {name:"LWPR_CHG_NT"           , index:"LWPR_CHG_NT"           , width:100, align:'right'},

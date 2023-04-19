@@ -57,12 +57,14 @@
 		    , AUC_PRG_SQ                             	/* 경매진행순서               */
 		    , DEL_YN                                 	/* 삭제여부                   */
 		    , TMS_YN                                 	/* 전송여부                   */
-		    , MODL_NO                                  /* 거치대 번호 */
+		    , MODL_NO                                   /* 거치대 번호 */
 			, AUC_YN         							/* 경매 여부 */
 		    , FSRG_DTM                               	/* 최초등록일시               */
 		    , FSRGMN_ENO                             	/* 최초등록자개인번호         */
 		    , LSCHG_DTM                              	/* 최종변경일시               */
 		    , LS_CMENO                               	/* 최종변경자개인번호         */
+		    , DNA_YN									/* 친자검사 결과 */
+		    , DNA_YN_CHK								/* 친자검사 여부 */
 		)VALUES(
 			#{ss_na_bzplc}                        	/* 경제통합사업장코드         */
 			, #{auc_obj_dsc}             				/* 경매대상구분코드           */
@@ -111,7 +113,7 @@
 			, #{rmhn_yn}                        
 			, #{sra_pdmnm}
 			, #{sra_pd_rgnnm}                   
-			, ''
+			, #{rmk_cntn}
 			, #{auc_prg_sq}                     
 			, '0'                         
 			, '0'
@@ -120,7 +122,9 @@
 			, SYSDATE				
 			, #{ss_userid}			
 			, SYSDATE				
-			, #{ss_userid}	            
+			, #{ss_userid}	         
+		    , #{dna_yn}							/* 친자검사 결과 */
+		    , #{dna_yn_chk}							/* 친자검사 여부 */   
 		)
 	</insert>
 	

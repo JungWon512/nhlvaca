@@ -650,6 +650,45 @@ function fn_getDay(p_addDate,p_retType){
 }
 
 //***************************************
+//* function   : fn_getDayType
+//* paramater  : p_addDate,p_type('y','m','d'),p_retType('YYYYMMDD')
+//* result     : today = "" + year + "-" + month + "-" + date + " " + hour + ":" + minute;
+//*                  ex)2021-05-18 10:06
+//***************************************
+function fn_getDayType(p_addDate,p_type,p_retType){
+	var v_now    = new Date();
+
+	if(p_type =='y'){
+		v_now.setYear(v_now.getYear()+p_addDate);
+		v_now.setDate(v_now.getDate() -1);
+	}else if(p_type =='m'){
+		v_now.setMonth(v_now.getMonth()+p_addDate);
+		v_now.setDate(v_now.getDate() -1);
+	}else{
+		v_now.setDate(v_now.getDate()+p_addDate);
+	}
+	
+	var v_year   = v_now.getFullYear();
+	var v_month  = v_now.getMonth() + 1;
+	var v_date   = v_now.getDate();
+	var v_hour   = v_now.getHours();
+	var v_minute = v_now.getMinutes();
+	var v_second = v_now.getSeconds();
+	
+	v_month = v_month >= 10 ? v_month : "0" + v_month;
+	v_date  = v_date  >= 10 ? v_date  : "0" + v_date;
+	// ""을 빼면 year + month (숫자+숫자) 됨.. ex) 2018 + 12 = 2030이 리턴됨.
+	
+	if(p_retType == 'YYYYMMDD'){
+      return v_year + v_month + v_date;
+  }else if(p_retType == 'YYYY-MM-DD'){
+      return v_year + "-" + v_month + "-" + v_date;
+  }else {
+		return v_year + "-" + v_month + "-" + v_date + " " + v_hour + ":" + v_minute;
+	}
+}
+
+//***************************************
 //* function   : fn_getAddDay
 //* paramater  : p_date, p_addDate,p_retType('YYYYMMDD')
 //* result     : year + "-" + month + "-" + date + " " + hour + ":" + minute;

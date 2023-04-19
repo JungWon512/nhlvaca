@@ -39,5 +39,21 @@ public interface LALM0226Service {
 	 */
 	Map<String, Object> LALM0226_updPgm(Map<String, Object> map) throws Exception;
 
+	/**
+	 * @methodName    : LALM0226_selIndvChk
+	 * @author        : Jung JungWon
+	 * @date          : 2023.04.11
+	 * @Comments      : 
+	 */
+	Map<String, Object> LALM0226_selIndvChk(Map<String, Object> map) throws Exception;
+
+	/**
+	 * @methodName    : LALM0226_delPgm
+	 * @author        : Jung JungWon
+	 * @date          : 2023.04.12
+	 * @Comments      : 
+	 */
+	Map<String, Object> LALM0226_delPgm(Map<String, Object> map) throws Exception;
+
 
 }

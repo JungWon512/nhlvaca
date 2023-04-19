@@ -111,4 +111,24 @@ public class LALM0226ServiceImpl implements LALM0226Service {
 		reMap.put("updateNum", updateNum);
 		return reMap;
 	}
+
+	@Override
+	public Map<String, Object> LALM0226_selIndvChk(Map<String, Object> map) throws Exception{
+		return lalm0226Mapper.LALM0226_selIndvChk(map);		
+	}
+	@Override
+	public Map<String, Object> LALM0226_delPgm(Map<String, Object> map) throws Exception{
+		final Map<String, Object> reMap	= new HashMap<String, Object>();
+		final Map<String, Object> frmMap	= (Map<String, Object>)map.get("frm_mhsogcow");
+			
+		int deleteNum = 0;
+		
+		
+		// 접수내역 저장
+		deleteNum = deleteNum + lalm0226Mapper.LALM0226_delCowRecv(frmMap);
+		
+		// 출하주 정보 추가 또는 수정 
+		reMap.put("deleteNum", deleteNum);
+		return reMap;		
+	}
 }

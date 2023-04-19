@@ -66,13 +66,17 @@
          , A.MOD_KPN_NO                                 /* 수정KPN번호                        */
          , A.DNA_YN_CHK                                 /* 친자검사여부                       */
          , CASE WHEN A.NA_BZPLC = '8808990674605' THEN A.DNA_YN 
-                ELSE (CASE WHEN A.DNA_YN = '1' THEN '일치' ELSE '0' END)
+                ELSE (CASE WHEN A.DNA_YN = '1' THEN '1' ELSE '0' END)
            END  AS DNA_YN                               /* 친자검사결과                       */
          
          , CASE WHEN A.BOVINE_DT != null and A.BOVINE_DT = '' THEN A.BOVINE_DT 
            WHEN  A.BOVINE_DT = A.BOVINE_DT THEN         SUBSTR(A.BOVINE_DT,1,4) || '-' || SUBSTR(A.BOVINE_DT,5,2) || '-' || SUBSTR(A.BOVINE_DT,7,2) 
            else A.BOVINE_DT end AS BOVINE_DT                                   /*우결핵 검사일자*/
          , B.DONGUP /*동이상주소*/
+         , CASE 
+         	WHEN REGEXP_COUNT(B.DONGUP,' ') > 1 THEN REGEXP_SUBSTR(B.DONGUP, '[^ ]+', 1, 3)
+         	ELSE REGEXP_SUBSTR(B.DONGUP, '[^ ]+', 1, REGEXP_COUNT(B.DONGUP,' ')+1) 
+       	 END DONGUP_EUP
         , CASE WHEN #{ss_security} = '1' THEN  B.FTSNM
                WHEN LENGTH(B.FTSNM) = 2 THEN SUBSTR(B.FTSNM,1,1) || '*' 
                WHEN LENGTH(B.FTSNM) = 3 THEN SUBSTR(B.FTSNM,1,1) || '*' || SUBSTR(B.FTSNM,3,1) 
@@ -254,7 +258,7 @@
          , A.MOD_KPN_NO                                  /* 수정KPN번호                       */
          , A.DNA_YN_CHK                                  /* 친자검사여부                      */
          , CASE WHEN A.NA_BZPLC = '8808990674605' THEN A.DNA_YN 
-                ELSE (CASE WHEN A.DNA_YN = '1' THEN '일치' ELSE '0' END)
+                ELSE (CASE WHEN A.DNA_YN = '1' THEN '1' ELSE '0' END)
            END  AS DNA_YN                                /* 친자검사결과                       */         
          , CASE WHEN A.BOVINE_DT != null and A.BOVINE_DT = '' THEN A.BOVINE_DT 
            WHEN  A.BOVINE_DT = A.BOVINE_DT THEN         SUBSTR(A.BOVINE_DT,1,4) || '-' || SUBSTR(A.BOVINE_DT,5,2) || '-' || SUBSTR(A.BOVINE_DT,7,2) 
@@ -454,7 +458,7 @@
          , A.MOD_KPN_NO                                  /* 수정KPN번호                         */
          , A.DNA_YN_CHK                                  /* 친자검사여부                        */
          , CASE WHEN A.NA_BZPLC = '8808990674605' THEN A.DNA_YN 
-                ELSE (CASE WHEN A.DNA_YN = '1' THEN '일치' ELSE '' END)
+                ELSE (CASE WHEN A.DNA_YN = '1' THEN '1' ELSE '' END)
            END  AS DNA_YN                                /* 친자검사결과                       */  
          
          , CASE WHEN A.BOVINE_DT != null and A.BOVINE_DT = '' THEN A.BOVINE_DT 
@@ -644,7 +648,7 @@
          , A.BRANDNM                                     /* 출장우브랜드명 		                   */
          , A.DNA_YN_CHK                                  /* 친자검사여부                           */
          , CASE WHEN A.NA_BZPLC = '8808990674605' THEN A.DNA_YN 
-                ELSE (CASE WHEN A.DNA_YN = '1' THEN '일치' ELSE '' END)
+                ELSE (CASE WHEN A.DNA_YN = '1' THEN '1' ELSE '' END)
            END  AS DNA_YN                                /* 친자검사결과                       */ 
          
          , CASE WHEN A.BOVINE_DT != NULL AND A.BOVINE_DT = '' THEN A.BOVINE_DT 
@@ -657,6 +661,10 @@
                 WHEN LENGTH(B.FTSNM) = 3 THEN SUBSTR(B.FTSNM,1,1) || '*' || SUBSTR(B.FTSNM,3,1) 
                 WHEN LENGTH(B.FTSNM) = 4 THEN SUBSTR(B.FTSNM,1,1) || '**' || SUBSTR(B.FTSNM,4,1)  
                 WHEN LENGTH(B.FTSNM) >= 5 THEN SUBSTR(B.FTSNM,1,2) || '**' || SUBSTR(B.FTSNM,5,1)   END AS FTSNM  /* 농가 이름 */          
+         , CASE WHEN LENGTH(B.FTSNM) = 2 THEN SUBSTR(B.FTSNM,1,1) || '*' 
+                WHEN LENGTH(B.FTSNM) = 3 THEN SUBSTR(B.FTSNM,1,1) || '*' || SUBSTR(B.FTSNM,3,1) 
+                WHEN LENGTH(B.FTSNM) = 4 THEN SUBSTR(B.FTSNM,1,1) || '**' || SUBSTR(B.FTSNM,4,1)  
+                WHEN LENGTH(B.FTSNM) >= 5 THEN SUBSTR(B.FTSNM,1,2) || '**' || SUBSTR(B.FTSNM,5,1)   END AS FTSNM_MASKING  /* 농가 이름 마스킹 */          
          , CASE WHEN #{ss_security} = '1' THEN B.OHSE_TELNO
                 WHEN LENGTH(REPLACE(RTRIM(B.OHSE_TELNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),6,4)  
                 WHEN LENGTH(REPLACE(RTRIM(B.OHSE_TELNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(B.OHSE_TELNO),'-',''),1,2) = '02' 
@@ -675,6 +683,7 @@
                                               END  AS CUS_MPNO   /* 고객휴대전화번호                   */  
          , b.zip                                         /* 축산농장앞자리우편번호              */
          , CASE WHEN #{ss_security} = '1' THEN B.DONGUP ||' '|| B.DONGBW  ELSE B.DONGUP ||' '||  TRIM(LPAD(' ', LENGTH(B.DONGBW) +1, '*')) END AS dong /* 주소                */
+         , B.DONGUP  /* 주소 동이상 */
          , CASE WHEN #{ss_security} = '1' THEN c.vhc_drv_caffnm
                 WHEN LENGTH(c.vhc_drv_caffnm) = 2 THEN SUBSTR(c.vhc_drv_caffnm,1,1) || '*' 
                 WHEN LENGTH(c.vhc_drv_caffnm) = 3 THEN SUBSTR(c.vhc_drv_caffnm,1,1) || '*' || SUBSTR(c.vhc_drv_caffnm,3,1) 

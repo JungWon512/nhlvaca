@@ -86,7 +86,7 @@
 		fn_setCodeRadio("rd_auc_obj_dsc","auc_obj_dsc","AUC_OBJ_DSC", 1);
 		
 		$("#auc_dt_st").datepicker().datepicker("setDate", fn_getDay(0, 'YYYY-MM-DD'));
-		$("#auc_dt_en").datepicker().datepicker("setDate", fn_getDay(365, 'YYYY-MM-DD'));
+		$("#auc_dt_en").datepicker().datepicker("setDate", fn_getDayType(1,'m', 'YYYY-MM-DD'));
 		
 		mv_auc_dt			= "";
 		mv_auc_obj_dsc		= "1";
@@ -148,6 +148,7 @@
 		 * 경매일자 변경이벤트
 		******************************/
 		$("#auc_dt").change(function(e) {
+			fn_CallIndvNoSrch()
 			fn_setPrnyMtcn();
 		});
 		
@@ -626,6 +627,67 @@
 	}
 
 	/*------------------------------------------------------------------------------
+	 * 1. 함 수 명    : 삭제 함수
+	 * 2. 입 력 변 수 : N/A
+	 * 3. 출 력 변 수 : N/A
+	 ------------------------------------------------------------------------------*/
+	function fn_Delete(){
+		if(fn_isNull($("#sra_indv_amnno").val())) {
+			MessagePopup("OK", "귀표번호가 정확하지 않습니다.");
+			return;
+		}
+		if(fn_isNull($("#auc_dt").val())) {
+			MessagePopup("OK", "경매일자가 정확하지 않습니다.");
+			return;
+		}
+		var srchData		= new Object();
+		var result			= null;
+
+		var saveMessage = "삭제 하시겠습니까?";
+	
+		MessagePopup('YESNO', saveMessage, function(res){
+			
+			if(res) {
+				// 추가운송비
+				if(fn_isNull($("#sra_trpcs").val())) {
+					$("#sra_trpcs").val("0");
+				}
+				// 사료대금
+				if(fn_isNull($("#sra_fed_spy_am").val())) {
+					$("#sra_fed_spy_am").val("0");
+				}
+				$("#chg_rmk_cntn").val("출장우 예약접수 삭제");
+				$("#chg_del_yn").val("0");
+				
+				srchData["frm_MhSogCow"]	= setFrmToData("frm_MhSogCow");
+				
+				result = sendAjax(srchData, "/LALM0226_delPgm", "POST");
+				
+				if(result.status == RETURN_SUCCESS){
+					MessagePopup("OK", "삭제되었습니다.",function(res){
+						mv_RunMode = 3;
+						mv_auc_dt = $("#auc_dt").val();
+						mv_auc_obj_dsc = $("#auc_obj_dsc").val();
+						mv_InitBoolean = true;
+						fn_Init();
+						fn_Search();
+					});
+				}
+				else {
+					showErrorMessage(result);
+					mv_InitBoolean = true;
+					fn_Init();
+					return;
+				}				
+			}
+			else {
+				MessagePopup('OK','취소되었습니다.');
+				return;
+			}
+		});
+		
+	}
+	/*------------------------------------------------------------------------------
 	 * 1. 함 수 명    : 저장 함수
 	 * 2. 입 력 변 수 : N/A
 	 * 3. 출 력 변 수 : N/A
@@ -806,65 +868,65 @@
 		
 		fn_CallIndvInfHstPopup(data, checkBoolean, function(result){
 			if(result){
-// 				if(chkBool == true) {
-// 					var results = sendAjax(result, "/LALM0222P_updReturnValue", "POST");
-// 					var returnVal;
+ 				//if(chkBool == true) {
+ 				//	var results = sendAjax(result, "/LALM0222P_updReturnValue", "POST");
+ 				//	var returnVal;
 					
-// 					if(results.status != RETURN_SUCCESS) {
-// 						showErrorMessage(results);
-// 						return;
-// 					}
-// 					else {
-// 						returnVal = setDecrypt(results);
-// 						$("#sra_srs_dsc").val(returnVal[0].SRA_SRS_DSC);
+ 				//	if(results.status != RETURN_SUCCESS) {
+ 				//		showErrorMessage(results);
+ 				//		return;
+ 				//	}
+ 				//	else {
+ 				//		returnVal = setDecrypt(results);
+ 				//		$("#sra_srs_dsc").val(returnVal[0].SRA_SRS_DSC);
 						
-// 						if(!fn_isNull(returnVal[0].SRA_INDV_AMNNO)) {
-// 							$("#hed_indv_no").val()
-// 							$("#sra_indv_amnno").val(returnVal[0].SRA_INDV_AMNNO.substr(6, 12));
-// 						}
+ 				//		if(!fn_isNull(returnVal[0].SRA_INDV_AMNNO)) {
+ 				//			$("#hed_indv_no").val()
+ 				//			$("#sra_indv_amnno").val(returnVal[0].SRA_INDV_AMNNO.substr(6, 12));
+ 				//		}
+				//		
+ 				//		$("#fhs_id_no").val(returnVal[0].FHS_ID_NO).prop("disabled", false);
+ 				//		$("#farm_amnno").val(returnVal[0].FARM_AMNNO).prop("disabled", false);
+ 				//		$("#ftsnm").val(fn_xxsDecode(returnVal[0].FTSNM)).prop("disabled", false);
+				//		
+ 				//		if(!fn_isNull(returnVal[0].CUS_MPNO)) {
+ 				//			$("#ohse_telno").val(returnVal[0].CUS_MPNO);
+ 				//		}
+ 				//		else {
+ 				//			$("#ohse_telno").val(returnVal[0].OHSE_TELNO);
+ 				//		}
 						
-// 						$("#fhs_id_no").val(returnVal[0].FHS_ID_NO);
-// 						$("#farm_amnno").val(returnVal[0].FARM_AMNNO);
-// 						$("#ftsnm").val(fn_xxsDecode(returnVal[0].FTSNM));
+ 				//		if(!fn_isNull(returnVal[0].ZIP)) {
+ 				//			$("#zip").val(returnVal[0].ZIP.substr(0, 3) + "-" + returnVal[0].ZIP.substr(3, 3));
+ 				//		}
 						
-// 						if(!fn_isNull(returnVal[0].CUS_MPNO)) {
-// 							$("#ohse_telno").val(returnVal[0].CUS_MPNO);
-// 						}
-// 						else {
-// 							$("#ohse_telno").val(returnVal[0].OHSE_TELNO);
-// 						}
+ 				//		$("#dongup").val(fn_xxsDecode(returnVal[0].DONGUP)).trigger("change");
+ 				//		$("#dongbw").val(fn_xxsDecode(returnVal[0].DONGBW)).trigger("change");
+ 				//		$("#sra_pdmnm").val(fn_xxsDecode(returnVal[0].FTSNM));
+ 				//		$("#sra_pd_rgnnm").val(fn_xxsDecode(returnVal[0].DONGUP));
+ 				//		$("#sog_na_trpl_c").val(returnVal[0].NA_TRPL_C);
+ 				//		$("#indv_sex_c").val(returnVal[0].INDV_SEX_C);
+ 				//		$("#birth").val(fn_toDate(returnVal[0].BIRTH)).trigger("change");
+ 				//		$("#indv_id_no").val(returnVal[0].INDV_ID_NO);
+ 				//		$("#sra_indv_brdsra_rg_no").val(returnVal[0].SRA_INDV_BRDSRA_RG_NO);
+ 				//		$("#rg_dsc").val(returnVal[0].RG_DSC);
+ 				//		$("#kpn_no").val(returnVal[0].KPN_NO);
+ 				//		$("#mcow_dsc").val(returnVal[0].MCOW_DSC);
+ 				//		$("#mcow_sra_indv_amnno").val(returnVal[0].MCOW_SRA_INDV_AMNNO);
 						
-// 						if(!fn_isNull(returnVal[0].ZIP)) {
-// 							$("#zip").val(returnVal[0].ZIP.substr(0, 3) + "-" + returnVal[0].ZIP.substr(3, 3));
-// 						}
+ 				//		if(!fn_isNull(returnVal[0].MATIME)) {
+ 				//			$("#matime").val(parseInt(returnVal[0].MATIME));
+ 				//		}
+				//	
+ 				//		if(!fn_isNull(returnVal[0].SRA_INDV_PASG_QCN)) {
+ 				//			$("#sra_indv_pasg_qcn").val(parseInt(returnVal[0].SRA_INDV_PASG_QCN));
+ 				//		}
 						
-// 						$("#dongup").val(fn_xxsDecode(returnVal[0].DONGUP)).trigger("change");
-// 						$("#dongbw").val(fn_xxsDecode(returnVal[0].DONGBW)).trigger("change");
-// 						$("#sra_pdmnm").val(fn_xxsDecode(returnVal[0].FTSNM));
-// 						$("#sra_pd_rgnnm").val(fn_xxsDecode(returnVal[0].DONGUP));
-// 						$("#sog_na_trpl_c").val(returnVal[0].NA_TRPL_C);
-// 						$("#indv_sex_c").val(returnVal[0].INDV_SEX_C);
-// 						$("#birth").val(fn_toDate(returnVal[0].BIRTH)).trigger("change");
-// 						$("#indv_id_no").val(returnVal[0].INDV_ID_NO);
-// 						$("#sra_indv_brdsra_rg_no").val(returnVal[0].SRA_INDV_BRDSRA_RG_NO);
-// 						$("#rg_dsc").val(returnVal[0].RG_DSC);
-// 						$("#kpn_no").val(returnVal[0].KPN_NO);
-// 						$("#mcow_dsc").val(returnVal[0].MCOW_DSC);
-// 						$("#mcow_sra_indv_amnno").val(returnVal[0].MCOW_SRA_INDV_AMNNO);
-						
-// 						if(!fn_isNull(returnVal[0].MATIME)) {
-// 							$("#matime").val(parseInt(returnVal[0].MATIME));
-// 						}
-						
-// 						if(!fn_isNull(returnVal[0].SRA_INDV_PASG_QCN)) {
-// 							$("#sra_indv_pasg_qcn").val(parseInt(returnVal[0].SRA_INDV_PASG_QCN));
-// 						}
-						
-// 						$("#io_sogmn_maco_yn").val(returnVal[0].MACO_YN);
-// 						$("#sra_farm_acno").val(returnVal[0].SRA_FARM_ACNO);
-// 					}
-// 				}
-// 				else {
+ 				//		$("#io_sogmn_maco_yn").val(returnVal[0].MACO_YN);
+ 				//		$("#sra_farm_acno").val(returnVal[0].SRA_FARM_ACNO);
+ 				//	}
+ 				//}
+ 				//else {
 					$("#sra_srs_dsc").val(result.SRA_SRS_DSC);
 					
 					if(!fn_isNull(result.SRA_INDV_AMNNO)) {
@@ -909,16 +971,19 @@
 					
 					$("#io_sogmn_maco_yn").val(result.MACO_YN);
 					$("#sra_farm_acno").val(result.SRA_FARM_ACNO);
-// 				}
+ 				//}
 				
-				// 브루셀라검사 조회
-				fn_CallBrclIspSrch();
-				// 친자확인 조회
-				fn_CallLsPtntInfSrch();
-				//유전체 분석 조회
-				fn_CallGeneBredrInfSrch();
-				// 해당 출장우의 분만정보 조회
-				fn_SelBhCross();
+				var indvChk = fn_CallIndvNoSrch();
+				if(!indvChk){
+					// 브루셀라검사 조회
+					fn_CallBrclIspSrch();
+					// 친자확인 조회
+					fn_CallLsPtntInfSrch();
+					//유전체 분석 조회
+					fn_CallGeneBredrInfSrch();
+					// 해당 출장우의 분만정보 조회
+					fn_SelBhCross();
+				}
 			}
 		});
 	}
@@ -991,6 +1056,10 @@
 		else {
 			// 실행모드 설정 (Window.mv_RunMode = '1':최초로딩, '2':조회, '3':저장/삭제, '4':기타설정)
 			mv_RunMode = 1;
+			//초기화시 히든데이터 초기화
+			$("#hdn_auc_recv_dt").val('');
+			$("#hdn_auc_recv_no").val('');
+			$("#hdn_auc_obj_dsc").val('');
 		}
 		
 		if(mv_RunMode == 1) {
@@ -1061,7 +1130,7 @@
 				$("#firstBody").show();
 			}
 			
-			if($("#trpcs_py_yn").val() == "0") {
+			if($("#trpcs_py_yn").val() == "1") {
 				$("#sra_trpcs").attr("disabled", true);
 				$("#vhc_drv_caffnm").attr("disabled", true);
 			}
@@ -1118,10 +1187,6 @@
 		// 귀표번호1X 410 고정
 		$("#hed_indv_no").val(result[0]["SRA_INDV_AMNNO"].substring(3, 6));
 		$("#sra_indv_amnno").val(result[0]["SRA_INDV_AMNNO"].substring(6, 15));
-		// 경매일자
-		if(fn_isDate(result[0]["AUC_DT"])) {
-			$("#auc_dt").val(fn_toDate(result[0]["AUC_DT"]));
-		}
 		// 제각여부
 		if(result[0]["DEBD_CANCEL_YN"] == "1") {
 			fn_contrChBox(true, "debd_cancel_yn", "");
@@ -1131,10 +1196,10 @@
 		}
 		// 자가, 운송협회에 따른 수송자 + 추가 수송비용
 		// 운송협회
-		if(result[0]["TRPCS_PY_YN"] == "1") {
+		if(result[0]["TRPCS_PY_YN"] == "0") {
 			$("#vhc_shrt_c").val(result[0]["VHC_SHRT_C"]);
 			$("#vhc_drv_caffnm").val(result[0]["VHC_DRV_CAFFNM"]);
-			fn_setChgRadio("trpcs_py_yn", "1");
+			fn_setChgRadio("trpcs_py_yn", "0");
 			
 			$("#vhc_drv_caffnm").attr("disabled", true);
 			$("#pb_vhc_drv_caffnm").attr("disabled", true);
@@ -1147,7 +1212,7 @@
 			}
 		}
 		else {
-			fn_setChgRadio("trpcs_py_yn", "0");
+			fn_setChgRadio("trpcs_py_yn", "1");
 			$("#vhc_drv_caffnm").attr("disabled", false);
 			$("#pb_vhc_drv_caffnm").attr("disabled", false);
 			$("#sra_trpcs").attr("disabled", false);
@@ -1199,7 +1264,12 @@
 		// 생년월일
 		if(fn_isDate(result[0]["BIRTH"])) {
 			$("#birth").val(fn_toDate(result[0]["BIRTH"])).trigger("change");
+		}		
+		// 경매일자 생일 change 이벤트로 인해 데이터 bind 수정
+		if(fn_isDate(result[0]["AUC_DT"])) {
+			$("#auc_dt").val(fn_toDate(result[0]["AUC_DT"]));
 		}
+		
 		// 어미구분
 		$("#mcow_dsc").val(result[0]["MCOW_DSC"]);
 		// 어미귀표번호
@@ -1409,7 +1479,7 @@
 	function fn_TrpcsPyYnModify(val) {
 		fn_setChgRadio("trpcs_py_yn", val);
 		// trpcs_py_yn 가 추가운송비 부과 여부를 함 따라서 값이 1인 경우 수송자 검색을 활성화 
-		if(val == "1") {
+		if(val == "0") {
 			$("#vhc_drv_caffnm").prop("disabled", false);
 			$("#pb_vhc_drv_caffnm").prop("disabled", false);
 			$("#sra_trpcs").prop("disabled", false);
@@ -1502,6 +1572,47 @@
 			result = setDecrypt(results);
 			$("#brcl_isp_dt").val(fn_toDate($.trim(result["inspectDt"])));
 			$("#vacn_dt").val(fn_toDate($.trim(result["injectionYmd"])));
+		}
+	}
+	
+	
+	//**************************************
+	// function  : fn_CallIndvNoSrch(개체번호 중복체크) 
+	// paramater : N/A
+	// result   : N/A
+	//**************************************
+	function fn_CallIndvNoSrch() {		
+		var srchData = new Object();
+		var p_sra_indv_amnno = "";
+		
+		if($("#sra_indv_amnno").val().replace("-", "").length == 9) {
+			p_sra_indv_amnno = "410" + $("#hed_indv_no").val() + $("#sra_indv_amnno").val().replace("-", "");
+		}
+		else {
+			MessagePopup('OK','귀표번호를 확인하세요.',null,function(){
+				$("#sra_indv_amnno").focus();
+			});
+			return;
+		}
+		
+		srchData["re_indv_no"]	= p_sra_indv_amnno;
+		srchData["auc_dt"]	= $('#auc_dt').val().replaceAll('-','');
+		
+		var results = sendAjax(srchData, "/LALM0226_selIndvChk", "POST");
+		var result;
+		
+		if(results.status == NO_DATA_FOUND) {
+			return false;
+		}else if(results.status == RETURN_SUCCESS){
+			result = setDecrypt(results);
+
+			var message = "이미 등록된 개체가 있습니다. <br/>[접수일:" + result.AUC_RECV_DT + ", 접수번호:" + result.AUC_RECV_NO + ", 경매일:" +  result.AUC_DT + "] ";
+			MessagePopup('OK',message,function(){
+				$('#auc_dt').val('');
+				$('#sra_indv_amnno').val('');
+			});
+			
+			return true;
 		}
 	}
 
@@ -1686,7 +1797,8 @@
 			var mtcn	= feCow.includes($("#indv_sex_c").val()) ? 8 : 7;		// 암송아지면 8개월령 수송아지면 7개월령
 			var birth	= dayjs($("#birth").val());								// 입력한 생년월일
 			var aucDtSt	= birth.add((mtcn-1), "month");							// 입력한 생년월일을 기반으로 경매기간 시작 계산 
-			var aucDtEn	= birth.add(mtcn, "month").add(-1, "day");				// 입력한 생년월일을 기반으로 경매기간 종료 계산
+			var aucDtEn	= birth.add(mtcn, "month");				// 입력한 생년월일을 기반으로 경매기간 종료 계산
+																// 최대일을 -1로직 제거 (조건비교 자체를 이전값으로 하기에 )
 // 			var aucWeek	= (birth.date() > 9 && birth.date() < 25) ? 2 : 4;
 			var aucWeek = [2, 4];
 			
@@ -1829,7 +1941,7 @@
 									{name:"DNA_YN_CHK",           index:"DNA_YN_CHK",           width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 									{name:"DNA_JUG_RESULT",       index:"DNA_JUG_RESULT",       width:60, align:'center'},
 									
-									{name:"TRPCS_PY_YN",          index:"TRPCS_PY_YN",          width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"TRPCS_PY_YN",          index:"TRPCS_PY_YN",          width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:"0:운송협회;1:자가"}},
 									{name:"VHC_DRV_CAFFNM",       index:"VHC_DRV_CAFFNM",       width:80, align:'center'},
 									{name:"SRA_TRPCS",            index:"SRA_TRPCS",            width:70, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
 									{name:"SRA_FED_SPY_AM",       index:"SRA_FED_SPY_AM",       width:70, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
@@ -2141,14 +2253,17 @@
 		else {
 			mv_InitBoolean = false;
 		}
-		// 브루셀라검사 조회
-		fn_CallBrclIspSrch();
-		// 친자확인 조회
-//		fn_CallLsPtntInfSrch();
-		// 유전체 분석 조회
-//		fn_CallGeneBredrInfSrch();
-		// 해당 출장우의 분만정보 조회
-		fn_SelBhCross();
+		var indvChk = fn_CallIndvNoSrch();
+		if(!indvChk){
+			// 브루셀라검사 조회
+			fn_CallBrclIspSrch();
+			// 친자확인 조회
+	//		fn_CallLsPtntInfSrch();
+			// 유전체 분석 조회
+	//		fn_CallGeneBredrInfSrch();
+			// 해당 출장우의 분만정보 조회
+			fn_SelBhCross();
+		}
 	}
 	////////////////////////////////////////////////////////////////////////////////
 	//  팝업 종료
@@ -2245,8 +2360,8 @@
 									<tr>
 										<th scope="row"><span>수송자</span></th>
 										<td>
-											<input type="radio" id="trpcs_py_yn_0"  name="rd_trpcs_py_yn" value="0" checked="checked" onclick="javascript:fn_setChgRadio('trpcs_py_yn','0');" /><label for="trpcs_py_yn_0">자가</label>
-											<input type="radio" id="trpcs_py_yn_1"  name="rd_trpcs_py_yn" value="1" onclick="javascript:fn_setChgRadio('trpcs_py_yn','1');" /><label for="trpcs_py_yn_1">운송협회</label>
+											<input type="radio" id="trpcs_py_yn_1"  name="rd_trpcs_py_yn" value="1" checked="checked" onclick="javascript:fn_setChgRadio('trpcs_py_yn','1');" /><label for="trpcs_py_yn_1">자가</label>
+											<input type="radio" id="trpcs_py_yn_0"  name="rd_trpcs_py_yn" value="0" onclick="javascript:fn_setChgRadio('trpcs_py_yn','0');" /><label for="trpcs_py_yn_0">운송협회</label>
 											<input type="hidden" id="trpcs_py_yn" name="trpcs_py_yn" value="0" />
 										</td>
 										<td>
