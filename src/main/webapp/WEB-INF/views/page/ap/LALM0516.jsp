@@ -107,6 +107,17 @@
  		            }); 
  	             }
  	         });      
+ 	         
+ 	         $('input[name=srch_con]').on('change',(e)=>{
+ 	        	console.log('srch_con change');
+ 	        	//1: 출하자 , 2. 중도매인
+ 	        	if($(e.target).val() =='1'){
+ 	        		$('#cb_jrdwo_dsc').attr('disabled',true);
+ 	        		$('#cb_jrdwo_dsc').val(''); 	        		
+ 	        	}else{
+ 	        		$('#cb_jrdwo_dsc').attr('disabled',false); 	        		
+ 	        	}
+ 	         });
          
     });
     
@@ -400,7 +411,7 @@
                                 <td id="radio" class="radio" colspan='2'>
                                     <input type="radio" name="srch_con" id="cb_fhs"  value="1"><label for="cb_fhs">출하자</label>
                                     <input type="radio" name="srch_con" id="cb_mmwn" value="2"><label for="cb_mmwn">중도매인</label>
-                                </td>   
+                                </td>
                                 <th scope="row">이름</th>
                                 <td>
                                     <div class="cellBox v_addr">
@@ -415,6 +426,17 @@
                                          </div>                                         
                                      </div>
                                 </td>                                
+                            </tr>
+                            <tr>   
+                                <th scope="row">관외구분</th>
+                                <td>                                
+                                    <select id="cb_jrdwo_dsc" disabled="disabled">
+                                    	<option value="">전체</option>
+                                    	<option value="1">관내</option>
+                                    	<option value="2">관외</option>
+                                    </select>
+                                </td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>

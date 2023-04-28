@@ -180,6 +180,9 @@
 	      <if test="cb_maco_yn != null and cb_maco_yn != ''">
 	      AND E.MACO_YN          = #{cb_maco_yn}    
 	      </if>
+	      <if test="cb_jrdwo_dsc != null and cb_jrdwo_dsc != ''">
+	      AND E.JRDWO_DSC          = #{cb_jrdwo_dsc}    
+	      </if>
 	      AND A.NA_BZPLC          = E.NA_BZPLC
 	      AND A.TRMN_AMNNO        = E.TRMN_AMNNO
 	    GROUP BY E.SRA_MWMNNM,E.OHSE_TELNO,E.CUS_MPNO, E.DONGUP ,  E.DONGBW,E.MACO_YN, E.CUS_RLNO

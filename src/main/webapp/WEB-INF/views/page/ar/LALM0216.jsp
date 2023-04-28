@@ -851,7 +851,7 @@ var na_bzplc = App_na_bzplc;
             		 }
             		 
             	 } else if($("#prto_tpc_15").is(":checked")) {
-            		 ReportPopup('LALM0216R3_27',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_27_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_17").is(":checked")) {
             		 ReportPopup('LALM0216R3_29',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1045,7 +1045,8 @@ var na_bzplc = App_na_bzplc;
                		 }
             		 
             	 } else if($("#prto_tpc_15").is(":checked")) {
-            		 ReportPopup('LALM0216R3_26',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+        			 //경주 비육우
+               		 ReportPopup('LALM0216R3_26_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_17").is(":checked")) {
             		 ReportPopup('LALM0216R3_30',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1335,8 +1336,8 @@ var na_bzplc = App_na_bzplc;
              		 }
             	 
             	 } else if($("#prto_tpc_15").is(":checked")) {
-            		 ReportPopup('LALM0216R3_25',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-            		 
+            		//경주 송아지					
+               		 ReportPopup('LALM0216R3_25',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             	 } else if($("#prto_tpc_17").is(":checked")) {
             		 ReportPopup('LALM0216R3_31',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
@@ -1845,13 +1846,14 @@ var na_bzplc = App_na_bzplc;
 								   
 								   ,"H유전능력 냉도체중","H유전능력 냉도체중 등급","H유전능력 배최장근단면적","H유전능력 배최장근단면적 등급","H등지방두께","H등지방두께 등급","H유전능력 근내지방도","H유전능력 근내지방도 등급"
 								   ,"H유전능력 냉도체중-모개체","H유전능력 냉도체중등급-모개체","H유전능력 배최장근단면적-모개체","H유전능력 배최장근단면적 등급-모개체","H유전능력 등지방두께-모개체","H유전능력 등지방두께 등급-모개체","H유전능력 근내지방도-모개체","H유전능력 근내지방도 등급-모개체"
-        							
+								   ,"H송아지만월령","H송아지월령일수","H임신개월(만)","H임신일수","H참가번호"
          		 				   ,"경매<br>번호", "경매대상", "성명", "귀표번호"
                                    , "생년월일", "산차", "어미구분", "계대", "제각여부", "KPN번호"
                                    , "성별", "중량","예정가","주소","전화번호","휴대폰","비고"
                                    ,"어미귀표번호","등록구분","월령","월령"
                                    ,"수정KPN","친자검사여부","친자검사결과","우결핵<br>검사일자"
-                                   ,"고능력여부","송아지구분","전이용사료여부"];        
+                                   ,"고능력여부","송아지구분","전이용사료여부"
+                                   ,"임신구분"];        
         var searchResultColModel = [
  
         							 {name:"MTCN4",                     index:"MTCN4",                    width:55, align:'center'  ,hidden:true},
@@ -1912,8 +1914,13 @@ var na_bzplc = App_na_bzplc;
         							 {name:"re_product_13_1",           index:"re_product_13-1",           width:55, align:'center'  ,hidden:true},
         							 {name:"re_product_14",             index:"re_product_14",             width:55, align:'center'  ,hidden:true},
         							 {name:"re_product_14_1",           index:"re_product_14_1",           width:55, align:'center'  ,hidden:true},        							 
-        							 /* e: 리포트 데이터 백지 방지용 컬럼  */
-        							 
+        							 /* e: 리포트 데이터 백지 방지용 컬럼  */        							 
+        							 {name:"CALF_MTCN_A",            	index:"CALF_MTCN_A"				  ,hidden:true},    
+        							 {name:"CALF_MTCN4",            	index:"CALF_MTCN4"				  ,hidden:true},    
+        							 {name:"MOD_MONTHS",            	index:"MOD_MONTHS"				  ,hidden:true},    
+        							 {name:"MOD_DAYS",            		index:"MOD_DAYS"				  ,hidden:true},    
+        							 {name:"LVST_AUC_PTC_MN_NO",        index:"LVST_AUC_PTC_MN_NO"		  ,hidden:true},    
+        							  
         							 {name:"AUC_PRG_SQ",                index:"AUC_PRG_SQ",               width:50, align:'center'  },
                                      {name:"AUC_OBJ_DSC",               index:"AUC_OBJ_DSC",              width:60, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
                                      {name:"FTSNM",                     index:"FTSNM",                    width:60, align:'center'  },
@@ -1941,7 +1948,8 @@ var na_bzplc = App_na_bzplc;
                                      {name:"BOVINE_DT",                 index:"BOVINE_DT",                width:100, align:'center'  }, 
                                      {name:"EPD_YN",                    index:"EPD_YN",                   width:80, align:'center'   , edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"CASE_COW",                  index:"CASE_COW",                 width:100, align:'center'  , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_SOG_COW_DSC", 1)}}, 
-                                     {name:"FED_SPY_YN",                index:"FED_SPY_YN",               width:100, align:'center' , edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}} 
+                                     {name:"FED_SPY_YN",                index:"FED_SPY_YN",               width:100, align:'center' , edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}} ,
+        							 {name:"PPGCOW_FEE_DSC",       		index:"PPGCOW_FEE_DSC",       	  width:100, sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("PPGCOW_FEE_DSC", 1)}}
                                      ];
             
         $("#grd_MhSogCow4").jqGrid("GridUnload");

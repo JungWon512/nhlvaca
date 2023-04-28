@@ -1317,7 +1317,8 @@
 		// -------------------- 출하주 정보 [e]-------------------- //
 
 		// -------------------- 번식우 정보 [s]-------------------- //
-		if($("#rd_auc_obj_dsc").val() == "3") {
+		var rdAucObjDsc = $("#rd_jrdwo_dsc input[name=auc_obj_dsc_radio]:checked").val();
+		if(rdAucObjDsc == "3") {
 			// 임신구분
 			$("#ppgcow_fee_dsc").val(result[0]["PPGCOW_FEE_DSC"]).trigger("change");
 			// 인공수정일

@@ -130,6 +130,7 @@
 		<if test="recv_can_yn != null and recv_can_yn != ''">
 		   AND A.RECV_CAN_YN = #{recv_can_yn}
 		</if>
+		ORDER BY A.AUC_DT DESC
 	</select>
 	
 	<select id="LALM0225_selAucQcn" parameterType="hashMap" resultType="hashMap">
