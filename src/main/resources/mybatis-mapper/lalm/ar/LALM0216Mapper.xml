@@ -139,7 +139,7 @@
                 
          , CASE WHEN G.BIRTH != null and G.BIRTH = '' THEN G.BIRTH 
           WHEN  G.BIRTH = G.BIRTH THEN         SUBSTR(G.BIRTH,1,4) || '-' || SUBSTR(G.BIRTH,5,2) || '-' || SUBSTR(G.BIRTH,7,2) 
-           else G.BIRTH end AS BIRTH /* 송아지생년월일                     */
+           else G.BIRTH end AS CALF_BIRTH /* 송아지생년월일                     */
          
          , G.KPN_NO      AS "CALF_KPN_NO"         /* 송아지정액번호                     */
          , TRUNC(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)) +1 AS CALF_MTCN /* 송아지월령 */
@@ -753,7 +753,7 @@
          , TRUNC(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)) +1 AS CALF_MTCN /* 송아지월령 */    
          , TRUNC(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)) AS CALF_MTCN_A /* 송아지 만월령 */    
          , ROUND(MOD(MOD(MONTHS_BETWEEN(A.AUC_DT, G.BIRTH)/12 ,1)*12,1)*(365/12),0) AS CALF_MTCN4      /* 송아지월령 일수  */   
-         , TRUNC(MONTHS_BETWEEN(A.AUC_DT, A.AFISM_MOD_DT)) +1 AS MOD_MONTHS /* 임신월 */       
+         , TRUNC(MONTHS_BETWEEN(A.AUC_DT, A.AFISM_MOD_DT)) AS MOD_MONTHS /* 임신월 */       
          , ROUND(MOD(MOD(MONTHS_BETWEEN(A.AUC_DT, A.AFISM_MOD_DT)/12 ,1)*12,1)*(365/12),0) AS MOD_DAYS          
 		 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.CALF_AUC_ATDR_UNT_AM, 10000))
 				WHEN A.AUC_OBJ_DSC = '2' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1))
