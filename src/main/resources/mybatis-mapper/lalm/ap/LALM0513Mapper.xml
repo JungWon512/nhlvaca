@@ -42,7 +42,8 @@
 	                                  + NVL(A.SRA_PYIVA, 0)
 	                                  + NVL(A.SRA_FED_SPY_AM, 0)
 	                                  + NVL(A.TD_RC_CST, 0)
-	                                  + NVL(A.MT12_OVR_FEE, 0)) AS SRA_UBD_FEE
+	                                  + NVL(DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE), 0)
+	                                  ) AS SRA_UBD_FEE
 	              , '1' AS FEE_APL_OBJ_C
 				  , COUNT(*) AS UBD_HDCN
 	          FROM TB_LA_IS_MH_SOG_COW   A
@@ -683,7 +684,8 @@
 	        , NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0)
 	                        + NVL(A.SRA_FED_SPY_AM, 0)
 	                        + NVL(A.TD_RC_CST, 0)
-	                        + NVL(A.MT12_OVR_FEE, 0)      AS SRA_ETC_CST
+	                        + NVL(DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE), 0)      
+			AS SRA_ETC_CST
 	        , NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)           AS SRA_TRPCS
 	        , F.ACD_RVG_AM                        AS ACD_RVG_AM
 	        
@@ -711,13 +713,20 @@
 	        
 	        
 	        , NVL(F.SRA_SOG_FEE, 0) + NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0)
-	        	+ NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0) + NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0) + NVL(F.ACD_RVG_AM, 0) AS FHS_TOT_AM
+	        	+ NVL(A.TD_RC_CST, 0) 
+	        	+ NVL(DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE), 0) 
+	        	+ NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0) + NVL(F.ACD_RVG_AM, 0) AS FHS_TOT_AM
 	        
 	        , CASE WHEN A.SEL_STS_DSC     = '22' 
 		        THEN NVL(A.SRA_SBID_AM, 0) - (NVL(F.SRA_SOG_FEE, 0) + NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0)
-		        + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0) + NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0) + NVL(F.ACD_RVG_AM, 0)) 
+		        + NVL(A.TD_RC_CST, 0) 
+		        + NVL(DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE), 0) 
+		        + NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0) + NVL(F.ACD_RVG_AM, 0)) 
 		        ELSE 0  - (NVL(F.SRA_SOG_FEE, 0) + NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0)
-		        + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0) + NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0) + NVL(F.ACD_RVG_AM, 0)) END  AS TOT_AM
+		        + NVL(A.TD_RC_CST, 0) 
+		        + NVL(DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE), 0) 
+		        + NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0) + NVL(F.ACD_RVG_AM, 0)) 
+		        END  AS TOT_AM
 	        
 	        , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <= 4 AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434')
                      THEN 4 
@@ -926,7 +935,7 @@
 	        , NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0)
 	                        + NVL(A.SRA_FED_SPY_AM, 0)
 	                        + NVL(A.TD_RC_CST, 0)
-	                        + NVL(A.MT12_OVR_FEE, 0)      AS SRA_ETC_CST                   /* 출하자 축산기타비용                 */
+	                        + NVL(DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE), 0)      AS SRA_ETC_CST                   /* 출하자 축산기타비용                 */
 	        , NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)           AS SRA_TRPCS                     /* 운송비                              */
 	        , F.ACD_RVG_AM                        AS ACD_RVG_AM                    /* 사고적립금                          */
 	        , G.FTSNM                             AS ACNO_OWNER
@@ -946,15 +955,16 @@
 	          END AS SRA_FARM_ACNO
 	       , C.DONGUP || ' ' || TRIM(LPAD(' ', LENGTH(C.DONGBW) +1, '*')) AS ADR
 	       , NVL(F.SRA_SOG_FEE, 0) + 
-	        (NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0)) +
+	        (NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE), 0)) +
 	        (NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) + NVL(F.ACD_RVG_AM, 0) AS FHS_TOT_AM
 	       , CASE WHEN A.SEL_STS_DSC = '22' THEN 
 			         NVL(A.SRA_SBID_AM, 0) - (NVL(F.SRA_SOG_FEE, 0) + 
 			        (NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0)) +
 			        (NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) + NVL(F.ACD_RVG_AM, 0))
 	         ELSE 0 - (NVL(F.SRA_SOG_FEE, 0) + 
-			        (NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0)) +
-			        (NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) + NVL(F.ACD_RVG_AM, 0))
+			        (NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) 
+			        /*+ NVL(A.MT12_OVR_FEE, 0))*/ 
+			        +(NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) + NVL(F.ACD_RVG_AM, 0))
 	         END                                 AS TOT_AM
 	       , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <= 4 AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434')
                      THEN 4 
@@ -1872,7 +1882,7 @@
 	              , SUM(C.ACD_RVG_AM)                                                    AS ACD_RVG_AM                     /* 사고적립금액        */
 	              , SUM(C.SRA_SHNM)                                                      AS SRA_SHNM                       /* 축산자조금          */
 	              , SUM(A.TD_RC_CST)                                                     AS TD_RC_CST                      /* 당일접수비용        */
-	              , SUM(A.MT12_OVR_FEE)                                                  AS MT12_OVR_FEE                   /* 12개월이상수수료    */
+	              , SUM(DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE))                       AS MT12_OVR_FEE                   /* 12개월이상수수료    */
 	              , SUM(C.IO_SRA_FEE1)                                                   AS IO_SRA_FEE1                    /* 검진비              */
 	              , SUM(C.IO_SRA_FEE2)                                                   AS IO_SRA_FEE2                    /* 혈통접수비          */
 	              , SUM(C.IO_SRA_FEE3)                                                   AS IO_SRA_FEE3                    /* 제각수수료          */
@@ -1901,8 +1911,10 @@
 	                    + NVL(C.TRU_FEE, 0)
 	                    + NVL(A.SRA_PYIVA, 0)
 	                    + NVL(A.SRA_FED_SPY_AM, 0)
-	                    + NVL(A.TD_RC_CST, 0)
-	                    + NVL(A.MT12_OVR_FEE, 0))                                        AS SRA_ETC_CST                    /* 축산기타비용    		 */
+	                    + NVL(A.TD_RC_CST, 0)	              
+ 						+ NVL(DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE), 0)      
+	                    )                                        
+	                    AS SRA_ETC_CST                    /* 축산기타비용    		 */
 	
 	          FROM TB_LA_IS_MH_SOG_COW   A
 	             , TB_LA_IS_MM_INDV      B
@@ -2282,7 +2294,7 @@
 	        , B.SRA_TRU_FEE
 	        , A.SRA_FED_SPY_AM
 	        , A.TD_RC_CST
-	        , A.MT12_OVR_FEE
+	        , DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE) MT12_OVR_FEE
 	        , A.AUC_DT
 	        , A.AUC_OBJ_DSC
 	        , D.FHS_ID_NO || '-' || D.FARM_AMNNO AS FHS_ID_NO
@@ -2320,9 +2332,13 @@
 	        , NVL((CASE WHEN A.SEL_STS_DSC = '22' THEN A.SRA_SBID_AM ELSE 0 END), 0) - 
 			 (NVL(B.SRA_SOG_FEE, 0) + (NVL(B.SRA_ACO_IVSAM, 0) + NVL(A.SRA_PYIVA, 0)) + NVL(B.SRA_ACD_RVGAM, 0) + (NVL(B.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) + 
 			  NVL(B.SRA_NCSS_JUG_FEE, 0) + NVL(B.SRA_PRNY_JUG_FEE, 0) + NVL(B.SRA_MDCCS, 0) + NVL(B.SRA_INJT_FEE, 0) + NVL(B.SRA_SHNM, 0) + NVL(B.SRA_PDG_RC_FEE, 0) +
-			  NVL(B.SRA_RMHN_FEE, 0) + NVL(B.SRA_TRU_FEE, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0)) AS TOT_AM
+			  NVL(B.SRA_RMHN_FEE, 0) + NVL(B.SRA_TRU_FEE, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) 
+			  + NVL(DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE), 0)
+			  ) AS TOT_AM
 			, NVL(B.sra_acd_rvgam, 0) + NVL(B.sra_ncss_jug_fee, 0) + NVL(B.sra_prny_jug_fee, 0) + NVL(B.sra_mdccs, 0) + NVL(B.sra_shnm, 0) + NVL(B.sra_pdg_rc_fee, 0) + 
-			  NVL(B.sra_rmhn_fee, 0) + NVL(B.sra_tru_fee, 0) + NVL(A.sra_fed_spy_am, 0) + NVL(A.td_rc_cst, 0) + NVL(A.mt12_ovr_fee, 0) AS TOT_FEE
+			  NVL(B.sra_rmhn_fee, 0) + NVL(B.sra_tru_fee, 0) + NVL(A.sra_fed_spy_am, 0) + NVL(A.td_rc_cst, 0) 
+			  + NVL(DECODE(A.SEL_STS_DSC,'22',A.MT12_OVR_FEE), 0) 
+			  AS TOT_FEE
 			, REPLACE(RTRIM(C.KPN_NO), 'KPN', '') AS KPN_NO
 	    FROM TB_LA_IS_MH_SOG_COW  A
 	         LEFT OUTER JOIN TB_LA_IS_MH_CALF G

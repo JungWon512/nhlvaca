@@ -85,7 +85,8 @@ var na_bzplc = App_na_bzplc;
  		$("#tab_1").click(function(){
             $(".ftsnm_td").show();             
             $(".dong_td").hide();
-            $(".bothPrint_td").hide();            
+            $(".bothPrint_td").hide();
+            $(".sordOrder_td").show();
           
         });
         
@@ -94,6 +95,7 @@ var na_bzplc = App_na_bzplc;
             $(".ftsnm_td").hide();          
             $(".dong_td").show();
             $(".bothPrint_td").hide();
+            $(".sordOrder_td").hide();
          
         });
         
@@ -101,6 +103,7 @@ var na_bzplc = App_na_bzplc;
             $(".ftsnm_td").hide();          
             $(".dong_td").hide();
             $(".bothPrint_td").hide();
+            $(".sordOrder_td").hide();
            
         });
         
@@ -108,7 +111,7 @@ var na_bzplc = App_na_bzplc;
             $(".ftsnm_td").hide();          
             $(".dong_td").hide();
             $(".bothPrint_td").show();
-           
+            $(".sordOrder_td").hide();           
             
         });
         
@@ -2258,8 +2261,14 @@ var na_bzplc = App_na_bzplc;
 												<input type="checkbox" id="bothPrint" class="noEvent" value="Y">
 											</div>
 										</div>
-									</td>
-									
+									</td>																		
+	                                <th scope="row" class="sordOrder_td">정렬구분</th>
+	                                <td class="sordOrder_td">
+	                                    <select id="sel_order">
+	                                    	<option value=""> 경매번호</option>
+	                                    	<option value="1"> 경매대상 + 출하자명 + 경매번호</option>
+	                                    </select>
+	                                </td> 
 								<tr>
 							</tbody>
 						</table>

@@ -296,6 +296,19 @@
 				ELSE 6 END)
 			, (CASE RG_DSC WHEN '01' THEN 1 WHEN '02' THEN 1 WHEN '03' THEN 1 ELSE 2 END), B.BIRTH DESC
 	    </if> 
+	    <if test='sel_order == "21"'>           /* 21. 경매대상 + 수/암 + 경매번호     */
+			ORDER BY
+			A.AUC_OBJ_DSC
+			, (CASE B.INDV_SEX_C
+				WHEN '2' THEN 0
+				WHEN '3' THEN 1
+				WHEN '5' THEN 2 
+				WHEN '1' THEN 3  
+				WHEN '6' THEN 4
+				WHEN '4' THEN 5
+				ELSE 6 END)
+			, B.BIRTH DESC
+	    </if> 
     </select>
     
 	<update id="LALM0219_updSogCowSq">

@@ -396,33 +396,33 @@ window.addEventListener("contextmenu",function(event){
     	 
 	   	 MessagePopup('YESNO',"저장 하시겠습니까?",function(res){
 	         if(res){
-	        	 if (App_na_bzplc == '8808990659008') {
-		        	 var tmpSaveObject = $.grep($("#mainGrid").jqGrid('getRowData'), function(obj){
-			        		return obj._STATUS_ == "*" || obj._STATUS_ == "+" ; 
-			        	 });
+// 	        	 if (App_na_bzplc == '8808990659008') {
+// 		        	 var tmpSaveObject = $.grep($("#mainGrid").jqGrid('getRowData'), function(obj){
+// 			        		return obj._STATUS_ == "*" || obj._STATUS_ == "+" ; 
+// 			        	 });
 			             
-			             if(tmpSaveObject.length > 0) {
+// 			             if(tmpSaveObject.length > 0) {
 			            	 
-			            	 var result        = null;
+// 			            	 var result        = null;
 			                    
-			                 var insDataObj = new Object();     
-			                 insDataObj['data'] = tmpSaveObject;
+// 			                 var insDataObj = new Object();     
+// 			                 insDataObj['data'] = tmpSaveObject;
 			                         
-			                 result = sendAjax(insDataObj, "/LALM0312_updSogCowSjam", "POST");
+// 			                 result = sendAjax(insDataObj, "/LALM0312_updSogCowSjam", "POST");
 			                 
-			                 if(result.status == RETURN_SUCCESS){
-			                     MessagePopup("OK", "정상적으로 처리되었습니다.",function(res){
-			                    	 fn_Search();
-			                     });
-			                 }else {
-		                        showErrorMessage(result);
-		                        return;
-		                     } 
-			             } else {
-			                 MessagePopup("OK", "변경된 내역이 없습니다.");
-			                 return;
-			             }
-	        	 } else {
+// 			                 if(result.status == RETURN_SUCCESS){
+// 			                     MessagePopup("OK", "정상적으로 처리되었습니다.",function(res){
+// 			                    	 fn_Search();
+// 			                     });
+// 			                 }else {
+// 		                        showErrorMessage(result);
+// 		                        return;
+// 		                     } 
+// 			             } else {
+// 			                 MessagePopup("OK", "변경된 내역이 없습니다.");
+// 			                 return;
+// 			             }
+// 	        	 } else {
 		        	 var tmpSaveObject = $.grep($("#mainGrid").jqGrid('getRowData'), function(obj){
 			        		return obj._STATUS_ == "*" || obj._STATUS_ == "+" ;
 			        	 });
@@ -448,7 +448,7 @@ window.addEventListener("contextmenu",function(event){
 			                 return;
 			             }        		 
 	        		 
-	        	 }
+// 	        	 }
 	                
 	         }else{
 	             MessagePopup('OK','취소되었습니다.');
@@ -795,6 +795,7 @@ window.addEventListener("contextmenu",function(event){
                                     	<option value="18">접수일자 + 수/암 + 생년월일↓(어린순)</option>
                                     	<option value="19">'접수일자 + 수/암 + 생년월일↑</option>
                                     	<option value="20">수/암 + 등록구분(등록우/미등록우) + 생년월일↓(어린순)</option>
+                                    	<option value="21">경매대상 + 수/암 + 경매번호</option>
                                     </select>
                                 </td> 
                                 <th scope="row">귀표번호</th>

@@ -554,7 +554,7 @@
 				,TO_CHAR(SEL_STS_DSC) AS SEL_STS_DSC
 				,TO_CHAR(BRCL_ISP_CTFW_SMT_YN) AS BRCL_ISP_CTFW_SMT_YN
 				,TO_CHAR(BRCL_ISP_DT) AS BRCL_ISP_DT
-				,TO_CHAR(LWPR_CHG_NT) AS LWPR_CHG_NT
+				,TO_CHAR(CASE WHEN LWPR_CHG_NT <![CDATA[<=]]> 0 THEN 0 ELSE LWPR_CHG_NT END) AS LWPR_CHG_NT
 				,TO_CHAR(VACN_DT) AS VACN_DT
 				,TO_CHAR(LVST_MKT_TRPL_AMNNO) AS LVST_MKT_TRPL_AMNNO
 				,MT12_OVR_YN
@@ -1347,7 +1347,7 @@
     </select>
     
     <select id="LALM0899_selMca3100_201_9008" resultType="HashMap">
-	SELECT a.na_bzplc
+	SELECT na_bzplc
 	       , replace( cus_mpno,'-','') as cus_mpno          /* 고객휴대폰   */
 	       , name  || '님'             as usrnm              /* 응찰자명     */
 	       ,substr(LISTAGG(', ' || msg_cntn) WITHIN GROUP (ORDER BY msg_cntn),2) as msg_cntn
@@ -1362,6 +1362,7 @@
 		   , SMS_TRMS_TELNO /* 발신자전화번호   */
 	 from(
 	     select
+	     		a.na_bzplc ,
 	            a.fhs_id_no as fhs_id_no,
 	            d.ftsnm as name,
 	            b.na_bzplnm as na_bzplnm,
@@ -1382,6 +1383,7 @@
 	                     as msg_cntn
 		   , g.TMS_YN
 		   , g.SMS_FWDG_DT
+		   , g.SMS_FWDG_SQNO
 		   , #{auc_obj_dsc} AS AUC_OBJ_DSC
 		   , A.auc_dt || A.oslp_no as trmn_amnno
 		   , d.ftsnm         AS RMS_MN_NAME    /* 수신자명         */
@@ -1411,7 +1413,7 @@
 	       and g.sel_sts_dsc(+)      = '01'
 		   and g.tms_type(+)			= #{tms_type}
 		   and  length(REGEXP_REPLACE(d.cus_mpno, '[^0-9]')) <![CDATA[>=]]> 10
-	    )b
+	    ) b
 	    GROUP BY na_bzplc, replace( cus_mpno,'-',''), name, fhs_id_no,TMS_YN, SMS_FWDG_DT, SMS_FWDG_SQNO
 			   , TRMN_AMNNO
 			   , RMS_MN_NAME    /* 수신자명         */

@@ -182,9 +182,17 @@
       AND A.AUC_DT               = G.AUC_DT(+)                                                                           /* 경매일자               */
       AND A.OSLP_NO              = G.OSLP_NO(+)                                                                          /* 원표번호               */
       AND 1                      = G.RG_SQNO(+)                                                                          /* 등록일련번호             */
-    ORDER BY A.AUC_PRG_SQ
 	
 	]]>
+	<choose>
+		<when test='sel_order == "1"'>
+			ORDER BY A.AUC_OBJ_DSC, B.FTSNM ,A.AUC_PRG_SQ
+		</when>
+		<otherwise>
+			ORDER BY A.AUC_PRG_SQ
+		</otherwise>
+	</choose>
+    
     </select>
    
  <select id="LALM0216_selList_2" resultType="hashMap">

@@ -335,7 +335,7 @@
         	});
             return;
     	}
-        else if(Number($("#lvst_auc_ptc_mn_no").val()) > lmt_lvst_auc_ptc_mn_no) {
+        else if(!$('#lvst_auc_ptc_mn_no').prop('disabled') && Number($("#lvst_auc_ptc_mn_no").val()) > lmt_lvst_auc_ptc_mn_no) {
         	MessagePopup('OK','참가번호는 ' + lmt_lvst_auc_ptc_mn_no + '이하 숫자만 입력하세요.',function(){
         		$("#lvst_auc_ptc_mn_no").focus();
         	});
