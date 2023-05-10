@@ -62,6 +62,7 @@
 					WHEN LENGTH(C.FTSNM) = 4 THEN SUBSTR(C.FTSNM,1,1) || '**' || SUBSTR(C.FTSNM,4,1)  
 					WHEN LENGTH(C.FTSNM) >= 5 THEN SUBSTR(C.FTSNM,1,2) || '**' || SUBSTR(C.FTSNM,5,1)
 				END AS FTSNM			/* 농가명 */
+			 , C.FHS_ID_NO|| '-' || C.FARM_AMNNO AS FHS_FARM_NO     /* 농가식별번호                          */
 			 , CASE WHEN #{ss_security} = '1' THEN NVL(C.SRA_FARM_ACNO, C.NEW_SRA_FARM_ACNO)
 					ELSE CASE WHEN ( C.SRA_FARM_ACNO = '' OR C.SRA_FARM_ACNO IS NULL ) THEN
 									CASE WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 12 THEN SUBSTR(C.NEW_SRA_FARM_ACNO,1,8)||'****'

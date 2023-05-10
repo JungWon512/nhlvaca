@@ -739,6 +739,11 @@
 			return;
 		}
 		
+		if(fn_isNull($("#auc_dt").val())) {
+			MessagePopup("OK", "경매일자를 입력하기 바랍니다.");
+			return;
+		}
+		
 		if(parseInt(fn_dateToData($("#auc_dt").val())) < parseInt(fn_dateToData($("#auc_recv_dt").val()))) {
 			MessagePopup("OK", "접수일자는 경매일자 보다 클수 없습니다.");
 			$("#auc_recv_dt").focus();
@@ -1974,6 +1979,7 @@
 			rownumbers:  true,
 			rownumWidth:30,
 			footerrow: true,
+			sortable: false,
 			userDataOnFooter: true,
 			onSelectRow: function(rowid, status, e){
 			},

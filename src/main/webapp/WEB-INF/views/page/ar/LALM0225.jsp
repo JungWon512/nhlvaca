@@ -261,7 +261,7 @@
 		if(data != null){
 			rowNoValue = data.length;
 		}
-		var searchResultColNames = ["H사업장코드"
+		var searchResultColNames = ["H사업장코드", "H농장번호"
 									,"경매<br/>대상", "경매일자", "경매<br/>번호", "접수일자", "접수<br/>번호", "예약취소", "취소일자", "바코드", "성별", "출하자"
 									,"주소", "동이하주소", "지역구분", "사료<br/>사용여부", "생년월일", "어미구분", "어미<br/>바코드", "개체<br/>관리번호", "등록구분", "월령", "산차"
 									,"계대", "아비<br/>KPN", "브루셀라", "백신접종", "전화번호","휴대전화", "계좌번호", "비고", "친자검사<br/>여부", "친자검사<br/>결과"
@@ -269,6 +269,7 @@
 									,"괴사<br/>감정여부", "제각여부", "최초등록자", "최초등록일", "최종수정자", "최종수정일"];
 		
 		var searchResultColModel = [{name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,height:30,  sortable:false, align:'center', hidden:true},
+									{name:"FHS_FARM_NO",          index:"FHS_FARM_NO",                width:80,  sortable:false, align:'center', hidden:true},
 			
 									{name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
 									{name:"AUC_DT",               index:"AUC_DT",               width:90,  sortable:false, align:'center', formatter:'gridDateFormat'},
@@ -376,7 +377,7 @@
 			onSelectRow: function(rowid, status, e){
 			},
 			ondblClickRow: function(rowid, iRow, iCol){
-				var sel_data = $("#grd_MhSogCow").getRowData(rowid);
+				var sel_data = $("#grd_MhSogCow_1").getRowData(rowid);
 				
 				var data = new Object();
 				data["na_bzplc"] = sel_data.NA_BZPLC;
@@ -430,7 +431,7 @@
 			userDataOnFooter: true,
 			onSelectRow: function(rowid, status, e){},
 			ondblClickRow: function(rowid, iRow, iCol){
-				var sel_data = $("#grd_MhSogCow").getRowData(rowid);
+				var sel_data = $("#grd_MhSogCow_2").getRowData(rowid);
 				
 				var data = new Object();
 				data["na_bzplc"] = sel_data.NA_BZPLC;
@@ -506,9 +507,10 @@
 		];
 		
 		fn_setGridFooter('grd_MhSogCow_1', arr1); 
-		
+		//grd_MhSogCow
 		$(".ui-jqgrid-sortable").unbind('click');
 		$(".ui-jqgrid-sortable").on('click',function(e){
+        	$(".s-ico").hide();
 			var tr_nm = e.target.id || e.target.offsetParent.id;
 			if(tr_nm.indexOf('jqgh_grd_MhSogCow_1') >= 0 || tr_nm.indexOf('jqgh_grd_MhSogCow_2') >= 0){
 				var sort_tr = tr_nm.replace('jqgh_grd_MhSogCow_1_','').replace('jqgh_grd_MhSogCow_2_','');
@@ -519,6 +521,16 @@
 				}
 				$('#grd_MhSogCow_1').jqGrid("setGridParam",{sortname:sort_tr,sortorder:sort_order}).trigger('reloadGrid');
 				$('#grd_MhSogCow_2').jqGrid("setGridParam",{sortname:sort_tr,sortorder:sort_order}).trigger('reloadGrid');
+				$('#grd_MhSogCow').jqGrid("setGridParam",{sortname:sort_tr,sortorder:sort_order}).trigger('reloadGrid');
+                $(this).find(".s-ico").show();
+                if (sort_order == "asc") {
+                	$(this).find(".s-ico").find(".ui-icon-asc").removeClass("ui-state-disabled");
+                	$(this).find(".s-ico").find(".ui-icon-desc").addClass("ui-state-disabled");
+                }
+                else {
+                	$(this).find(".s-ico").find(".ui-icon-asc").addClass("ui-state-disabled");
+                	$(this).find(".s-ico").find(".ui-icon-desc").removeClass("ui-state-disabled");
+                }
 			}
 		});
 		
