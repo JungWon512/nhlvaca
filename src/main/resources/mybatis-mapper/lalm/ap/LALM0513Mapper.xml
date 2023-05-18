@@ -1226,17 +1226,13 @@
 	        , FLOOR(AVG(NVL(A.COW_SOG_WT,0)))         AS AVG_WT                             /* 우출하 평균 중량               */
 	        , SUM(A.LOWS_SBID_LMT_AM)          AS LOWS_SBID_LMT_AM                   /* 응찰하한가 총계                */
 	        , FLOOR(AVG(A.LOWS_SBID_LMT_AM))   AS AVG_PR                             /* 응찰하한가 평균                */
-	
-	        /*	의령 8808990656199, 곡성 8808990656717, 서산 8808990656694, 괴산증평: 8808990656670, 영천: 8808990656687, 포항: 8808990679549, 영덕울진: 8808990785431, 수원: 8808990656496, 고령성주: 8808990659695 */
-	        , CASE WHEN #{auc_obj_dsc} = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN SUM(A.SRA_SBID_AM) ELSE SUM(A.SRA_SBID_UPR) END)
-	               ELSE SUM(A.SRA_SBID_AM) END  AS SRA_SBID_AM                       /* 축산낙찰금액                   */
-	        , CASE WHEN #{auc_obj_dsc} = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN AVG(A.SRA_SBID_AM) ELSE AVG(A.SRA_SBID_UPR) END)
-	               ELSE AVG(A.SRA_SBID_AM) END  AS SRA_AVG_SBID_UPR                  /* 축산평균낙찰금액               */
-	        , NVL((CASE WHEN #{auc_obj_dsc} = '2' THEN ( CASE WHEN (#{ss_na_bzplc} = '8808990656199' OR #{ss_na_bzplc} = '8808990656694' OR #{ss_na_bzplc} = '8808990656670' OR #{ss_na_bzplc} = '8808990656687' OR #{ss_na_bzplc} = '8808990679549' OR #{ss_na_bzplc} = '8808990785431' OR #{ss_na_bzplc} = '8808990656496' OR #{ss_na_bzplc} = '8808990659695' ) THEN AVG(A.SRA_SBID_AM) ELSE AVG(A.SRA_SBID_UPR) END)
-	               ELSE AVG(A.SRA_SBID_AM) END), 0) - NVL(AVG(A.LOWS_SBID_LMT_AM), 0) AS BIGO
-	
+			, SUM(CASE WHEN A.AUC_OBJ_DSC = '2' THEN ( A.SRA_SBID_UPR * NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1)) ELSE (A.SRA_SBID_AM) END) AS SRA_SBID_AM 
+			, AVG(CASE WHEN A.AUC_OBJ_DSC = '2' THEN ( A.SRA_SBID_UPR * NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1)) ELSE (A.SRA_SBID_AM) END) AS SRA_AVG_SBID_UPR 
+			, AVG(CASE WHEN A.AUC_OBJ_DSC = '2' THEN ( A.SRA_SBID_UPR * NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1)) - NVL((A.LOWS_SBID_LMT_AM), 0) ELSE (A.SRA_SBID_AM) - NVL((A.LOWS_SBID_LMT_AM), 0) END) AS BIGO
+			
 	    FROM TB_LA_IS_MH_SOG_COW A
 	       , TB_LA_IS_MM_INDV    B
+	       , TB_LA_IS_MM_ENV_EST J 
 	    WHERE A.NA_BZPLC        = #{ss_na_bzplc}
 	      AND A.AUC_OBJ_DSC     = #{auc_obj_dsc}
 	      AND A.AUC_DT          = #{auc_dt}
@@ -1250,6 +1246,7 @@
 	      AND A.NA_BZPLC        = B.NA_BZPLC
 	      AND A.SRA_SRS_DSC     = B.SRA_SRS_DSC                        /* 축산축종구분코드         */
 	      AND A.SRA_INDV_AMNNO  = B.SRA_INDV_AMNNO                     /* 축산개체관리번호         */
+	      AND A.NA_BZPLC = J.NA_BZPLC
 	
 	    GROUP BY B.RG_DSC,B.INDV_SEX_C
 	
@@ -1278,7 +1275,7 @@
 						ELSE '4'
 					END AS INDV_SEX_C
 					, CASE
-						WHEN A.AUC_OBJ_DSC = '2' THEN NVL(A.SRA_SBID_UPR,0)
+						WHEN A.AUC_OBJ_DSC = '2' THEN NVL(A.SRA_SBID_UPR,0) * NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1)
 						ELSE NVL(A.SRA_SBID_AM,0)
 					END AS SRA_SBID_AM
 					, A.SRA_INDV_AMNNO
@@ -1289,7 +1286,8 @@
 				FROM
 					TB_LA_IS_MH_SOG_COW A ,
 					TB_LA_IS_MM_INDV C ,
-					TB_LA_IS_MM_FHS B
+					TB_LA_IS_MM_FHS B ,
+	       			TB_LA_IS_MM_ENV_EST J 
 				WHERE
 					A.NA_BZPLC = #{ss_na_bzplc}
 					AND A.AUC_OBJ_DSC = #{auc_obj_dsc}
@@ -1305,6 +1303,7 @@
 					AND A.NA_BZPLC  = B.NA_BZPLC 
 					AND A.FHS_ID_NO = B.FHS_ID_NO 
 					AND A.FARM_AMNNO = B.FARM_AMNNO
+	      			AND A.NA_BZPLC = J.NA_BZPLC
 			) T
 			GROUP BY T.INDV_SEX_C
 		) G

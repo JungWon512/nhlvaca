@@ -679,8 +679,7 @@ var na_bzplc = App_na_bzplc;
             		 }
             	 
             	 } else if($("#prto_tpc_2").is(":checked")) { //세로
-            		 ReportPopup('LALM0216R3_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-            	 
+            		 ReportPopup('LALM0216R3_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            	 
             	 } else if($("#prto_tpc_3").is(":checked")) { //가로2형식
             		 // ★동해삼척태백: 8808990652825 테스트: 8808990643625
             		 if(na_bzplc == '8808990652825') {
@@ -894,7 +893,12 @@ var na_bzplc = App_na_bzplc;
              // 비육우
              } else if($("#auc_obj_dsc").val() == "2") {
             	 if($("#prto_tpc_1").is(":checked")) {
-            		 ReportPopup('LALM0216R3_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 // 의성 : 8808990656649
+            		 if(na_bzplc == '8808990656649') {
+            			 ReportPopup('LALM0216R3_2_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 }else{
+                		 ReportPopup('LALM0216R3_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
+            		 }
             	 
             	 } else if($("#prto_tpc_2").is(":checked")) {
             		// ★의령: 8808990656199 테스트: 8808990643625
@@ -1463,7 +1467,6 @@ var na_bzplc = App_na_bzplc;
             colNames: searchResultColNames,
             colModel: searchResultColModel,          
             onSelectRow:function(rowid,status, e){
-            	$("#auc_prg_sq");
             },
         });
 		
@@ -2096,13 +2099,13 @@ var na_bzplc = App_na_bzplc;
 			}else{
 				o.LOWS_SBID_LMT_AM = o.LOWS_SBID_LMT_UPR;
 			}
+			if(o.SRA_SBID_UPR == '0'){
+				o.SRA_SBID_UPR = '';
+			}
 			if(o.SRA_SBID_AM == '0'){
 				o.SRA_SBID_AM = '';
 			}else{
 				o.SRA_SBID_AM = o.SRA_SBID_UPR;
-			}
-			if(o.SRA_SBID_UPR == '0'){
-				o.SRA_SBID_UPR = '';
 			}
 			if(o.DNA_YN_CHK == '부'){
 				o.DNA_YN_CHK = '';
@@ -2125,7 +2128,7 @@ var na_bzplc = App_na_bzplc;
 			}else if(o.CALF_INDV_SEX_C == '9' ){
 				o.CALF_INDV_SEX_C ="공통";
 			}
-			result.push(cloneObj(o));
+			result.push(o);
 			if($('#bothPrint:checked').val() == 'Y'){
 				result.push(cloneObj(o));
 			}

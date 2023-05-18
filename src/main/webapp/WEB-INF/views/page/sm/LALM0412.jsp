@@ -1254,7 +1254,9 @@ var mCnt = 0;
 				//ReportPopup('LALM0412R0_1_3',p_param, p_grid, 'V');
 			}else if(na_bzplc == '8808990659008') { //경주
    				ReportPopup('LALM0412R0_0_4_2',p_param, p_grid, 'V');
-   			} else{
+   			} else if(na_bzplc == '8808990656649') { //의성
+				ReportPopup('LALM0412R0_0_4',p_param, p_grid, 'T');//원본
+			} else{
 				ReportPopup('LALM0412R0_0',p_param, p_grid, 'T');//원본
 			}
 

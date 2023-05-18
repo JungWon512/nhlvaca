@@ -223,9 +223,19 @@
             }
             
             
-            var tmpObject = $.grep($("#grd_CowBun").jqGrid('getRowData'), function(obj){
-                return obj.PRNY_JUG_YN == "1"  ;
-            });
+            //var tmpObject = $.grep($("#grd_CowBun").jqGrid('getRowData'), function(obj){
+            //    return obj.PRNY_JUG_YN == "1"  ;
+            //});
+            var tmpObject = new Array();
+            var ids = $('#grd_CowBun').jqGrid('getDataIDs');
+            var chkLenFlag = $('#grd_CowBun td.chkPrint input[type=checkbox]:checked').length > 0?false:true;
+
+        	for(var i = 0; i < ids.length; i++) {        
+                var rowdata = $("#grd_CowBun").jqGrid('getRowData', ids[i]);
+                if((chkLenFlag || rowdata.CHK_PRINT === 'Yes') && rowdata.PRNY_JUG_YN == "1"){
+                	tmpObject.push(rowdata);
+                }
+        	}
             
             for (var i = 0, len = colModel.length; i < len; i++) {
                 if (colModel[i].hidden === true) {
@@ -347,7 +357,18 @@
     ////////////////////////////////////////////////////////////////////////////////
     //  공통버튼 클릭함수 종료
     ////////////////////////////////////////////////////////////////////////////////
-    
+    function fn_check_click(id, lvl, obj, event) {
+	    if(lvl == 0 && obj.checked) {
+	    	var e = e||event;/* get IE event ( not passed ) */ 
+		    e.stopPropagation? e.stopPropagation() : e.cancelBubble = true;
+		    $("#grd_CowBun").find('td.chkPrint input[type=checkbox]').attr('checked',true);
+		    
+	    } else if(lvl == 0 && !obj.checked) {
+	    	var e = e||event;/* get IE event ( not passed ) */ 
+		    e.stopPropagation? e.stopPropagation() : e.cancelBubble = true;
+		    $("#grd_CowBun").find('td.chkPrint input[type=checkbox]').attr('checked',false);
+	    }
+	}
     
     
     //그리드 생성
@@ -360,7 +381,7 @@
         }
         
         var searchResultColNames = ["","H임신구분","H수정일자","H수정KPN","임신개월수","H임신감정여부","H임신여부","H괴사감정여부","H과사여부","H비고내용","H수의사"
-        	                          ,"경매일자","출하자","귀표번호","전화번호","주소","생년월일","낙찰자","상태"
+        	                          ,"<input type='checkbox' class='grdAllCheckBox' onclick=\"fn_check_click('all', 0, this, event);\"/>","경매일자","출하자","귀표번호","전화번호","주소","생년월일","낙찰자","상태","H거래병원명"
         	                          ,"경매대상","경매번호","대표번호","성별","임신구분","수정일자","분만예정일","수정KPN","임신개월수","임신<br>감정여부","임신<br>여부","괴사<br>감정여부"," 괴사<br>여부","비고내용","수의사", ];        
         var searchResultColModel = [
         	                         {name:"_STATUS_",           index:"_STATUS_",           width:10,  align:'center'},
@@ -376,6 +397,7 @@
                                      {name:"EX_RMK_CNTN",        index:"EX_RMK_CNTN",        width:80,  align:'center', hidden:true},
                                      {name:"V_LVST_MKT_TRPL_AMNNO",index:"V_LVST_MKT_TRPL_AMNNO",width:80,  align:'center', hidden:true},
                                      
+                                     {name:"CHK_PRINT",          index:"CHK_PRINT",        width:40,  align:'center', edittype:"checkbox", formatter:"checkbox", formatoptions:{disabled:false},classes: 'chkPrint', sortable: false},
 
                                      {name:"AUC_DT",             index:"AUC_DT",             width:80,  align:'center', hidden:true},
                                      {name:"FTSNM",              index:"FTSNM",              width:80,  align:'center', hidden:true},
@@ -385,7 +407,7 @@
                                      {name:"BIRTH",              index:"BIRTH",              width:80,  align:'center', hidden:true},
                                      {name:"SRA_MWMNNM",         index:"SRA_MWMNNM",         width:80,  align:'center', hidden:true},
                                      {name:"SEL_STS_DSC",        index:"SEL_STS_DSC",        width:80,  align:'center', hidden:true},
-
+                                     {name:"BRKR_NAME_HOST",     index:"BRKR_NAME_HOST",        width:80,  align:'center', hidden:true},                                     
                                      
         	                         {name:"AUC_OBJ_DSC",        index:"AUC_OBJ_DSC",        width:70,  align:'center', edittype:"select", formatter:"select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
                                      {name:"AUC_PRG_SQ",         index:"AUC_PRG_SQ",         width:50,  align:'center'},
@@ -474,6 +496,7 @@
             height:      330,
             rowNum:      rowNoValue,
             cellEdit:    true,
+            multiselect: false,
             resizeing:   true,
             autowidth:   true,
             shrinkToFit: false, 
@@ -481,13 +504,13 @@
             rownumWidth:40,
             sortable: true,
             cellsubmit:  "clientArray",
-            gridComplete:function(){
-            	$("#grd_CowBun").undelegate("input[type=checkbox]","change");
-            	$("#grd_CowBun").delegate("input[type=checkbox]","change",function(e){
+            gridComplete:function(rowid){
+            	$("#grd_CowBun").undelegate("td:not(.chkPrint) input[type=checkbox]","change");
+            	$("#grd_CowBun").delegate("td:not(.chkPrint) input[type=checkbox]","change",function(e){
             		var gridId = $("#grd_CowBun").prop("id");
             		var rowId = $(this).closest("tr").prop("id");
             		var colId = $(this).closest("td").attr("aria-describedby").substring(gridId.length+1);
-
+					if(colId ==='CHK_PRINT') return;
             		var value = "0";
             		if($(this).prop("checked") == true)value = "1";
             		$("#grd_CowBun").jqGrid('setCell', rowId, colId, value);
@@ -508,11 +531,13 @@
                        if (colModel[i].hidden === true) {
                            continue;
                        }
-                       if(String(colModel[i].formatoptions) != 'undefined' && colModel[i].formatoptions.disabled == false){
-                    	   $('#grd_CowBun tr').eq(rowid).children("td:eq("+i+")").find('input[type=checkbox]').attr('disabled','disabled');
-                       }
-                       if(colModel[i].editable == true){
-                    	   $('#grd_CowBun').jqGrid('setCell', rowid, colModel[i].name, "","not-editable-cell");
+                       if(colModel[i].name !== "CHK_PRINT"){
+                           if(String(colModel[i].formatoptions) != 'undefined' && colModel[i].formatoptions.disabled == false){
+                        	   $('#grd_CowBun tr').eq(rowid).children("td:eq("+i+")").find('input[type=checkbox]').attr('disabled','disabled');
+                           }
+                           if(colModel[i].editable == true){
+                        	   $('#grd_CowBun').jqGrid('setCell', rowid, colModel[i].name, "","not-editable-cell");
+                           }                    	   
                        }
                     }
             	}
@@ -556,15 +581,23 @@
      * 3. 출 력 변 수 : N/A
      * 4. 설 명       : 수정시 상태값과 행의 색상을 변경하는 함수
      ------------------------------------------------------------------------------*/
-    function fn_GridPpgcowFeeDscChange(v_selrow, v_ppgcow_fee_dsc){
-        if(v_ppgcow_fee_dsc != '1' && v_ppgcow_fee_dsc != '3'){
+    function fn_GridPpgcowFeeDscChange(v_selrow, v_ppgcow_fee_dsc){ 
+       	if(v_ppgcow_fee_dsc != '1' && v_ppgcow_fee_dsc != '3'){
         	$("#grd_CowBun").jqGrid('setCell', v_selrow, 'PTUR_PLA_DT', null);
             $("#grd_CowBun").jqGrid('setCell', v_selrow, 'AFISM_MOD_DT', null);
             $("#grd_CowBun").jqGrid('setCell', v_selrow, 'PRNY_MTCN', '0');
             //$("#grd_CowBun").jqGrid('getCell', v_selrow, 'NCSS_JUG_YN').find('input[type=checkbox]').prop("checked",false);
+            
             $("#grd_CowBun").jqGrid('setCell', v_selrow, 'NCSS_JUG_YN', '0');
             $("#grd_CowBun").jqGrid('setCell', v_selrow, 'NCSS_YN', '0');
-            $("#grd_CowBun").jqGrid('setCell', v_selrow, 'MOD_KPN_NO', '0');
+            $("#grd_CowBun").jqGrid('setCell', v_selrow, 'MOD_KPN_NO', null);
+            /*
+            	23.05.04 경주축협 요청사항
+            	임신구분 미임신으로 변경시 임신여부 체크해제(임신감정여부는 현상태 유지)
+            */ 
+            if(v_ppgcow_fee_dsc == '2' ){
+                $("#grd_CowBun").jqGrid('setCell', v_selrow, 'PRNY_YN', '0');            	
+            }
         }else {
             $("#grd_CowBun").jqGrid('setCell', v_selrow, 'AFISM_MOD_DT', $("#grd_CowBun").jqGrid('getCell', v_selrow, 'V_AFISM_MOD_DT'));
             $("#grd_CowBun").jqGrid('setCell', v_selrow, 'NCSS_JUG_YN', $("#grd_CowBun").jqGrid('getCell', v_selrow, 'V_NCSS_JUG_YN'));

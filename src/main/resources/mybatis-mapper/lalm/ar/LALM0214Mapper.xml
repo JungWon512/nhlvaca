@@ -593,6 +593,9 @@
 			, A.FEE_CHK_YN_FEE
 			, A.SELFEE_CHK_YN
 			, A.SELFEE_CHK_YN_FEE
+			, H.BRKR_NAME_HOST /* 거래병원명 */
+			, A.DNA_YN
+			, A.DNA_YN_CHK
 	    FROM TB_LA_IS_MH_SOG_COW A
 	    LEFT OUTER JOIN TB_LA_IS_MM_VHC C
 	         ON  C.NA_BZPLC    = A.NA_BZPLC
@@ -606,6 +609,8 @@
 	         ON  A.NA_BZPLC            = F.NA_BZPLC
 	         AND A.LVST_MKT_TRPL_AMNNO = F.LVST_MKT_TRPL_AMNNO
 	         AND F.LVST_MKT_TRPL_DSC   = '1'         /* 수의사 */
+	    LEFT OUTER JOIN TB_LA_IS_MM_ENV_EST H
+	         ON  A.NA_BZPLC = H.NA_BZPLC    
 	
 	    LEFT OUTER JOIN TB_LA_IS_MM_USR G
 	         ON  A.NA_BZPLC   = G.NA_BZPLC
@@ -654,6 +659,7 @@
              , FEE_CHK_YN_FEE      = #{fee_chk_yn_fee}
              , SELFEE_CHK_YN       = #{selfee_chk_yn}
              , SELFEE_CHK_YN_FEE   = #{selfee_chk_yn_fee}
+             , DNA_YN   		   = #{dna_yn}
              , LSCHG_DTM           = SYSDATE
              , LS_CMENO            =  #{ss_userid}
          WHERE NA_BZPLC            = #{ss_na_bzplc}

@@ -100,6 +100,8 @@
                     	fn_CallNaTrplCPopup(true);
                     }
                 }
+             }else{
+            	 $('#fhs_id_no').val('');
              }
         });
     	
@@ -3566,6 +3568,7 @@ function fn_CreateHdnGrid_13(data){
             	$("#fhs_id_no").val("");
              	$("#ftsnm").val("");
              }
+       	 	 $("#ftsnm").blur();
          });
 	}
 	
@@ -3592,6 +3595,7 @@ function fn_CreateHdnGrid_13(data){
             	$("#fhs_id_no").val("");
             	$("#ftsnm").val("");
              }
+        	 $("#ftsnm").blur();
          });
 	}
 	
@@ -3620,6 +3624,7 @@ function fn_CreateHdnGrid_13(data){
             	$("#fhs_id_no").val("");
              	$("#ftsnm").val("");
              }
+			 $("#ftsnm").blur();
          });
 	}
  	

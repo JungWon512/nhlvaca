@@ -25,6 +25,7 @@
     $(document).ready(function(){
     	
     	fn_CreateGrid();
+    	fn_CreateGridExcel();
     	
     	var setCombo = 1;
     	
@@ -54,11 +55,17 @@
         /******************************
          * 문자전송
          ******************************/  
-        $("#pb_sendMsg").on('click',function(e){
-            e.preventDefault();
-            this.blur();
-            fn_SendMsg();
-        });
+         $("#pb_sendMsg").on('click',function(e){
+             e.preventDefault();
+             this.blur();
+             fn_SendMsg();
+         });  
+         $("#pb_downloadExcel").on('click',function(e){
+             e.preventDefault();
+             this.blur();
+             fn_ExcelDownlad('grd_HdnMsgExcel', '문자메세지');
+         });
+        
         
         /******************************
          * 폼변경시 클리어 이벤트
@@ -106,6 +113,7 @@
     	        
         //그리드 초기화
          $("#grd_Msg").jqGrid("clearGridData", true);
+         $("#grd_HdnMsgExcel").jqGrid("clearGridData", true);
     	 
     	var srchData = new Object();
     	srchData["ctgrm_cd"]     = '3100';
@@ -130,6 +138,7 @@
        		e.MSG_CNTN = e.MSG_CNTN + addMsg;
        	})
         fn_CreateGrid(result);
+        fn_CreateGridExcel(result);
         
     }
     
@@ -140,7 +149,7 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Excel(){
-        fn_ExcelDownlad('grd_Msg', '문자메세지');
+        fn_ExcelDownlad('grd_Msg', '문자메세지');        
 
     }   
     
@@ -320,6 +329,45 @@
     	
     }
     
+    function fn_CreateGridExcel(data){
+    	if(data){
+        	data.forEach((o)=>{o.SUB_NM="님";});    		
+    	}
+    	var rowNoValue = 0;     
+        if(data != null){
+            rowNoValue = data.length;
+        }
+        
+        var searchResultColNames = ["고객명","호칭","메시지 내용","영업점명","고객휴대폰","영업점 번호"];        
+        var searchResultColModel = [
+                      {name:"RMS_MN_NAME",    index:"RMS_MN_NAME",    width:80, align:'center'},
+                      {name:"SUB_NM",         index:"SUB_NM",         width:30, align:'center'},
+                      {name:"MSG_CNTN",       index:"MSG_CNTN",       width:250, align:'left'},
+                      {name:"IO_TRMSNM",      index:"IO_TRMSNM",      width:60, align:'center'},
+                      {name:"SMS_RMS_MPNO",   index:"SMS_RMS_MPNO",   width:80, align:'center'},
+                      {name:"SMS_TRMS_TELNO", index:"CUS_MPNO",       width:80, align:'center'}
+                     ];
+        
+        $("#grd_HdnMsgExcel").jqGrid("GridUnload");
+        
+        $("#grd_HdnMsgExcel").jqGrid({
+	        datatype:    "local",
+	        data:        data,
+	        height:      500,
+	        rowNum:      rowNoValue,
+	        cellEdit:    false,
+	        resizeing:   true,
+	        autowidth:   false,
+	        shrinkToFit: false, 
+	        rownumbers:true,
+	        rownumWidth:30,
+	        multiselect:false,
+	        colNames: searchResultColNames,
+	        colModel: searchResultColModel,
+        });
+    	
+    }
+    
 </script>
 <body>
 	<div class="contents">
@@ -396,21 +444,25 @@
 				<ul class="tab_list fl_L">
 					<li><p class="dot_allow">검색결과</p></li>
 				</ul>
-				<div class="fl_C" style="width: 65%; left: 60%;">
+				<div class="fl_C" style="width: 55%; left: 50%;">
 					<!--  //버튼 모두 우측정렬 -->
 					<label id="msg_Sbid"
 						style="font-size: 15px; color: blue; font: message-box;">※
 						체크한 수신자 전화번호가 10자리보다 작을시 전송되지 않습니다. 발송 메시지는 LMS로 전송됩니다.</label>
 				</div>
+				
 				<div class="fl_R">
 					<!--  //버튼 모두 우측정렬 -->
+					<button class="tb_btn" id="pb_downloadExcel">업로드 양식</button>
 					<button class="tb_btn" id="pb_sendMsg">문자 전송</button>
 				</div>
 			</div>
 			<div class="listTable mb0">
-				<table id="grd_Msg">
-				</table>
+				<table id="grd_Msg"></table>
 			</div>
+            <div class="listTable" style="display:none;" >
+				<table id="grd_HdnMsgExcel" style="display:none;"></table>
+            </div>
 		</section>
 	</div>
 	<!-- ./wrapper -->
