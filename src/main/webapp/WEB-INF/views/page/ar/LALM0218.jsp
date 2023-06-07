@@ -149,8 +149,11 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Excel(){
-        fn_ExcelDownlad('grd_Msg', '문자메세지');        
-
+		if(App_na_bzplc != '8808990659008'){
+	        fn_ExcelDownlad('grd_Msg', '문자메세지');			
+		}else{
+	        fn_ExcelDownlad('grd_HdnMsgExcel', '문자메세지');			
+		}
     }   
     
     ////////////////////////////////////////////////////////////////////////////////
@@ -453,7 +456,7 @@
 				
 				<div class="fl_R">
 					<!--  //버튼 모두 우측정렬 -->
-					<button class="tb_btn" id="pb_downloadExcel">업로드 양식</button>
+					<!--  <button class="tb_btn" id="pb_downloadExcel">업로드 양식</button> -->
 					<button class="tb_btn" id="pb_sendMsg">문자 전송</button>
 				</div>
 			</div>

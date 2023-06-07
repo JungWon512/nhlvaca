@@ -93,49 +93,7 @@
                 }
             }); 
             
-        });
-        
-        /******************************
-         * 조합Logo 미리보기
-         ******************************/
-        $("#pb_LogoImgView").on('click',function(e){
-            e.preventDefault();
-            this.blur();
-            
-            var encrypt = setEncrypt(setFrmToData('frm_MmWmc'));
-            var result;
-        	
-        	$('#imageView2').css({"top":obj.top +"px","left":(obj.left - 300 + $("#pb_LogoImgView").width()) + "px"});
-        	$('#imageView2').show();
-            
-            $.ajax({
-                url: '/LALM0912_selLogoImg',
-                type: 'POST',
-                dataType:'TEXT',
-                async: false,
-                headers : {"Authorization": 'Bearer ' + localStorage.getItem("nhlvaca_token")},
-                data:{
-                       data : encrypt.toString()
-                },
-                success:function(data) {        
-                    if(data.length > 0 && data != null){
-                    	document.getElementById("preeview-image2").src = data;
-                    	var obj = $("#pb_LogoImgView").offset();
-                    	
-                    	$('#imageView2').css({"top":obj.top + 300+"px","left":(obj.left - 300 + $("#pb_LogoImgView").width()) + "px"});
-                    	$('#imageView2').show();
-                    }                                    
-                },
-                error:function(response){
-                	MessagePopup("OK", "이미지를 다운로드하지 못하였습니다.");
-                    return;
-                }
-            }); 
-            
-        });
-        
-        
-        
+        });        
     });    
     
     /*------------------------------------------------------------------------------
@@ -148,7 +106,6 @@
         fn_InitFrm('frm_MmWmc');
         $('#na_bzplc').attr("disabled",false);
         $("#pb_SealImgView").hide();
-        $("#pb_LogoImgView").hide();
         g_newFlg = true;
         if(App_grp_c != '001')fn_Search();
     }
@@ -190,9 +147,6 @@
             if(result.SEAL_IMG_FLNM != ""){
             	$("#pb_SealImgView").show();
             }
-//             else if(result.LOGO_IMG_FLNM != ''){
-            	$("#pb_LogoImgView").show();
-//             }
             g_newFlg = false;
         }                       
     } 
@@ -240,7 +194,7 @@
                          showErrorMessage(results);
                          return;
                      }else{  
-                    	 if($("#seal_img_flnm").val() != "" || $("#logo_img_flnm").val() != ""){
+                    	 if($("#seal_img_flnm").val() != ""){
                     		 g_newFlg = false;
                              if(fileUpload() == true){
                                  MessagePopup("OK", "신규등록되었습니다.<br>시스템 적용하기위해서는 재시작 하셔야 합니다.",function(res){
@@ -267,7 +221,7 @@
                         showErrorMessage(results);
                         return;
                     }else{
-                    	if($("#seal_img_flnm").val() != "" || $("#logo_img_flnm").val() != ""){
+                    	if($("#seal_img_flnm").val() != ""){
                     		if(fileUpload() == true){
                                 MessagePopup("OK", "수정되었습니다.<br>시스템 적용하기위해서는 재시작 하셔야 합니다.",function(res){
                                 	fn_Search();
@@ -439,13 +393,6 @@
                                         <div class="cell"><button class="tb_btn" id="pb_SealImgView" >이미지보기</button></div>
                                     </div>
                                 </td>
-<!--                                 <th scope="row">조합 Logo</th> -->
-<!--                                 <td> -->
-<!--                                     <div class="cellBox"> -->
-<!--                                         <div class="cell" style="width:500px;"><input type="file" id="logo_img_flnm"  name="logo_img_flnm" title="파일첨부" accept=".gif,.jpg,.png"/></div> -->
-<!--                                         <div class="cell"><button class="tb_btn" id="pb_LogoImgView" >이미지보기</button></div> -->
-<!--                                     </div> -->
-<!--                                 </td> -->
                             </tr>                      
                             <tr>
                                 <th scope="row">결제계좌은행</th>

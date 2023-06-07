@@ -659,6 +659,7 @@
              , FEE_CHK_YN_FEE      = #{fee_chk_yn_fee}
              , SELFEE_CHK_YN       = #{selfee_chk_yn}
              , SELFEE_CHK_YN_FEE   = #{selfee_chk_yn_fee}
+             , DNA_YN_CHK   	   = #{dna_yn_chk}
              , DNA_YN   		   = #{dna_yn}
              , LSCHG_DTM           = SYSDATE
              , LS_CMENO            =  #{ss_userid}

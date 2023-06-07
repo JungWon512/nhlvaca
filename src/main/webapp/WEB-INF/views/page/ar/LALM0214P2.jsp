@@ -202,7 +202,7 @@
         
         var searchResultColNames = [""
                                       ,"경매일자","상태"
-                                      ,"경매대상","경매번호","농가명","귀표번호","대표번호","예방접종일","브루셀라검사일","비고내용","추가운송비","사료대금","당일접수비","여부","금액","여부","금액" ];        
+                                      ,"경매대상","경매번호","농가명","귀표번호","대표번호","친자검사여부","친자일치","예방접종일","브루셀라검사일","비고내용","추가운송비","사료대금","당일접수비","여부","금액","여부","금액" ];        
         var searchResultColModel = [
                                      {name:"_STATUS_",           index:"_STATUS_",           width:10,  align:'center'},
                                      
@@ -216,7 +216,17 @@
                                      {name:"FTSNM",              index:"FTSNM",              width:80,  align:'center'},
                                      {name:"SRA_INDV_AMNNO",     index:"SRA_INDV_AMNNO",     width:110, align:'center', formatter:'gridIndvFormat'},
                                      {name:"SRA_INDV_AMNNO4",    index:"SRA_INDV_AMNNO4",    width:70,  align:'center'},
-                                    
+                                     {name:"DNA_YN_CHK",         index:"DNA_YN_CHK",         width:80,  align:'center'   ,editable:true, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},        
+                                     {name:"DNA_YN",     index:"DNA_YN",     width:80,  align:'center', editable:true, edittype:"select", formatter:"select",
+                                  	   editoptions:{
+                                  		   value:GRID_DNA_YN_DATA,
+                                             dataEvents:[{type:'change',fn:function(e){
+                                          	   var v_ppgcow_fee_dsc = $(this).val();
+                                          	   var v_selrow = $("#grd_CowBun").getGridParam('selrow');
+                                         	   fn_GridPpgcowFeeDscChange(v_selrow, v_ppgcow_fee_dsc);                                          	   
+                                             }}]
+                                         }
+                                     },
                                      {name:"VACN_DT",            index:"VACN_DT",            width:100,  align:'center', editable:true, formatter:'gridDateFormat',
                                             editoptions:{
                                                 dataInit:function(e){$(e).datepicker({

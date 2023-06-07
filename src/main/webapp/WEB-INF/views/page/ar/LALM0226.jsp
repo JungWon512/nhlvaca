@@ -251,7 +251,7 @@
 				$("#brcl_isp_dt").val("")					// 브루셀라검사일
 				$("#vacn_dt").val("");						// 예방접종일
 				fn_contrChBox(false, "dna_yn_chk", "");		// 친자감정여부
-				$("#dna_yn").val("3");						// 친자확인결과
+				$("#dna_jug_result").val("3");						// 친자확인결과
 				fn_contrChBox(false, "dna_sampled_yn", "");	// 모근채취여부
 				
 				$("#indv_sex_c").val("0");					// 개체성별코드
@@ -315,7 +315,7 @@
 			$("#brcl_isp_dt").val("")					// 브루셀라검사일
 			$("#vacn_dt").val("");						// 예방접종일
 			fn_contrChBox(false, "dna_yn_chk", "");		// 친자감정여부
-			$("#dna_yn").val("3");						// 친자확인결과
+			$("#dna_jug_result").val("3");						// 친자확인결과
 			fn_contrChBox(false, "dna_sampled_yn", "");	// 모근채취여부
 			
 			$("#indv_sex_c").val("0");					// 개체성별코드
@@ -1097,7 +1097,7 @@
 			$("#vhc_shrt_c").val(mv_vhc_shrt_c); 									// 수송자
 			$("#vhc_drv_caffnm").val(mv_vhc_drv_caffnm); 							// 수송자명
 			$("#auc_recv_dt").val(fn_getToday());									// 접수일자
-			$("#dna_yn").val("3");													// 친자확인결과
+			$("#dna_jug_result").val("3");													// 친자확인결과
 			
 			fn_TrpcsPyYnModify("0");
 			
@@ -1253,7 +1253,7 @@
 			fn_contrChBox(false, "dna_yn_chk", "");
 		}
 		// 친자확인결과
-		$("#dna_yn").val(result[0]["DNA_YN"]);
+		$("#dna_jug_result").val(result[0]["DNA_JUG_RESULT"]);
 		// 모근채취여부
 		if(result[0]["DNA_SAMPLED_YN"] == "1") {
 			fn_contrChBox(true, "dna_sampled_yn", "");
@@ -1322,7 +1322,7 @@
 		// -------------------- 출하주 정보 [e]-------------------- //
 
 		// -------------------- 번식우 정보 [s]-------------------- //
-		var rdAucObjDsc = $("#rd_jrdwo_dsc input[name=auc_obj_dsc_radio]:checked").val();
+		var rdAucObjDsc = $("#rd_auc_obj_dsc input[name=auc_obj_dsc_radio]:checked").val();
 		if(rdAucObjDsc == "3") {
 			// 임신구분
 			$("#ppgcow_fee_dsc").val(result[0]["PPGCOW_FEE_DSC"]).trigger("change");
@@ -1517,7 +1517,7 @@
 		$("#auc_recv_dt").val(tmpAucRecvDt);
 		$("#auc_obj_dsc").val(tmpAucObjDsc);
 		fn_setChgRadio("auc_obj_dsc", tmpAucObjDsc);
-		$("#dna_yn").val("3");
+		$("#dna_jug_result").val("3");
 		fn_TrpcsPyYnModify("0");
 		$("#hed_indv_no").val("002")
 	}
@@ -1653,32 +1653,32 @@
 		
 		if(results.status != RETURN_SUCCESS) {
 			MessagePopup('OK','친자확인 데이터 조회 실패.',null,function(){
-				$("#dna_yn").val("3");
+				$("#dna_jug_result").val("3");
 			});
 		}
 		else {
 			result = setDecrypt(results);
 			if(fn_isNull($.trim(result.LS_PTNT_DSC))) {
-				$("#dna_yn").val("3");
+				$("#dna_jug_result").val("3");
 			}
 			else if(result.LS_PTNT_DSC != "00" && result.LS_PTNT_DSC != "10" && result.LS_PTNT_DSC != "11" && result.LS_PTNT_DSC != "12" && result.LS_PTNT_DSC != "13") {
-				$("#dna_yn").val("3");
+				$("#dna_jug_result").val("3");
 			}
 			else {
 				if(result.LS_PTNT_DSC == "00"){
-					$("#dna_yn").val("1");
+					$("#dna_jug_result").val("1");
 				}
 				else if(result.LS_PTNT_DSC == "10"){
-					$("#dna_yn").val("2");
+					$("#dna_jug_result").val("2");
 				}
 				else if(result.LS_PTNT_DSC == "11"){
-					$("#dna_yn").val("4");
+					$("#dna_jug_result").val("4");
 				}
 				else if(result.LS_PTNT_DSC == "12"){
-					$("#dna_yn").val("5");
+					$("#dna_jug_result").val("5");
 				}
 				else if(result.LS_PTNT_DSC == "13"){
-					$("#dna_yn").val("6");
+					$("#dna_jug_result").val("6");
 				}
 			}
 		}

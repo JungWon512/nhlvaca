@@ -250,7 +250,13 @@
              		MessagePopup('OK','중도매인 명을 입력하세요.');
                  } else {
                  	var data = new Object();
-                    data['auc_obj_dsc'] = $("#auc_obj_dsc").val();
+                 	var qcn = $("#aucQcnGrid").getRowData();
+                 	if(qcn[0].AUC_OBJ_DSC == '0'){
+						data['auc_obj_dsc'] = qcn[0].AUC_OBJ_DSC;						 
+					}else{
+						data['auc_obj_dsc'] = $("#auc_obj_dsc").val();						 
+					}
+                    
                     data['auc_dt']      = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
                     data['sra_mwmnnm']  = $("#sra_mwmnnm").val();
                     fn_CallMwmnnmNoPopup(data,true,function(result) {
@@ -2433,6 +2439,12 @@
  	// result   : N/A
  	//**************************************
     function fn_popSearch(rowid, colkey){
+		/**
+		 * 개체이력조회 팝업 클릭시 귀표번호 cell Save 처리 
+		**/		
+   	    var rowIndex = $('#calfGrid tr[id='+rowid+']')[0].rowIndex;
+   	    var colIndex = $("#calfGrid").jqGrid("getGridParam", "colModel").findIndex((o,i)=>{if(o.name === 'SRA_INDV_AMNNO') return true;});
+   	    $("#calfGrid").jqGrid('saveCell', rowIndex , colIndex);		
 
 	    /******************************
 	     * 송아지 귀표번호 검색 팝업
@@ -2479,6 +2491,13 @@
  	// result   : N/A
  	//**************************************
     function fn_popSearch2(rowid, colkey){
+		/**
+		 * 개체이력조회 팝업 클릭시 귀표번호 cell Save 처리 
+		**/		
+   	    var rowIndex = $('#calfGrid tr[id='+rowid+']')[0].rowIndex;
+   	    var colIndex = $("#calfGrid").jqGrid("getGridParam", "colModel").findIndex((o,i)=>{if(o.name === 'SRA_INDV_AMNNO') return true;});
+   	    $("#calfGrid").jqGrid('saveCell', rowIndex , colIndex);		
+		
     	/******************************
 	     * 송아지 귀표번호 검색(인터페이스) 팝업
 	     ******************************/
