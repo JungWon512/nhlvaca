@@ -266,7 +266,7 @@
 									,"주소", "동이하주소", "지역구분", "사료<br/>사용여부", "생년월일", "어미구분", "어미<br/>바코드", "개체<br/>관리번호", "등록구분", "월령", "산차"
 									,"계대", "아비<br/>KPN", "브루셀라", "백신접종", "전화번호","휴대전화", "계좌번호", "비고", "친자검사<br/>여부", "친자검사<br/>결과"
 									,"자가여부", "수송자", "추가운송비", "사료대금", "임신구분", "인공수정일", "수정<br/>KPN", "분만예정일", "임신<br/>개월수", "임신<br/>감정여부"
-									,"괴사<br/>감정여부", "제각여부", "최초등록자", "최초등록일", "최종수정자", "최종수정일"];
+									,"괴사<br/>감정여부", "제각여부", "바코드(딸송)","최초등록자", "최초등록일", "최종수정자", "최종수정일"];
 		
 		var searchResultColModel = [{name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,height:30,  sortable:false, align:'center', hidden:true},
 									{name:"FHS_FARM_NO",          index:"FHS_FARM_NO",                width:80,  sortable:false, align:'center', hidden:true},
@@ -318,6 +318,7 @@
 									
 									{name:"NCSS_JUG_YN",          index:"NCSS_JUG_YN",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 									{name:"DEBD_CANCEL_YN",       index:"DEBD_CANCEL_YN",       width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"CCOW_SRA_INDV_AMNNO",  index:"CCOW_SRA_INDV_AMNNO",  width:110, sortable:false, align:'center', formatter:'gridIndvFormat'},
 									{name:"FSRGMN_NM",            index:"FSRGMN_NM",            width:80,  sortable:false, align:'center'},
 									{name:"FSRG_DTM",             index:"FSRG_DTM",             width:110, sortable:false, align:'center'},
 									{name:"LSCHG_NM",             index:"LSCHG_NM",             width:80,  sortable:false, align:'center'},
@@ -404,7 +405,7 @@
 			colNames: searchResultColNames,
 			colModel: searchResultColModel
 		});
-
+		
 		//행번호
 		$("#grd_MhSogCow_1").jqGrid("setLabel", "rn","No");  
 		//고정 타이틀 빼고 전부 숨김처리
@@ -412,7 +413,7 @@
 			"DONGUP", "DONGBW", "LOC_GB", "SRA_FED_SPY_YN", "BIRTH", "MCOW_DSC", "MCOW_SRA_INDV_AMNNO", "INDV_ID_NO", "RG_DSC", "MTCN", "MATIME"
 			, "SRA_INDV_PASG_QCN", "KPN_NO", "BRCL_ISP_DT", "VACN_DT", "OHSE_TELNO", "CUS_MPNO", "SRA_FARM_ACNO", "RMK_CNTN", "DNA_YN_CHK", "DNA_JUG_RESULT"
 			, "TRPCS_PY_YN", "VHC_DRV_CAFFNM", "SRA_TRPCS", "SRA_FED_SPY_AM", "PPGCOW_FEE_DSC", "AFISM_MOD_DT", "MOD_KPN_NO", "PTUR_PLA_DT", "PRNY_MTCN", "PRNY_JUG_YN"
-			, "NCSS_JUG_YN", "DEBD_CANCEL_YN", "FSRGMN_NM", "FSRG_DTM", "LSCHG_NM", "LSCHG_DTM"]);
+			, "NCSS_JUG_YN", "DEBD_CANCEL_YN","CCOW_SRA_INDV_AMNNO", "FSRGMN_NM", "FSRG_DTM", "LSCHG_NM", "LSCHG_DTM"]);
 		
 		///////////////////////////////////////////////////////////////////////
 		//스크롤 grd

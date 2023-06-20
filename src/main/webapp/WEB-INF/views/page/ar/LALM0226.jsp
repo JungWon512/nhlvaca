@@ -86,7 +86,8 @@
 		fn_setCodeRadio("rd_auc_obj_dsc","auc_obj_dsc","AUC_OBJ_DSC", 1);
 		
 		$("#auc_dt_st").datepicker().datepicker("setDate", fn_getDay(0, 'YYYY-MM-DD'));
-		$("#auc_dt_en").datepicker().datepicker("setDate", fn_getDayType(1,'m', 'YYYY-MM-DD'));
+		$("#auc_dt_en").datepicker().datepicker("setDate", fn_getDay(0, 'YYYY-MM-DD'));
+		//$("#auc_dt_en").datepicker().datepicker("setDate", fn_getDayType(1,'d', 'YYYY-MM-DD'));
 		
 		mv_auc_dt			= "";
 		mv_auc_obj_dsc		= "1";
@@ -244,7 +245,7 @@
 				$("#hed_indv_no").val("002");
 				fn_contrChBox(false, "debd_cancel_yn", "");	// 제각여부
 				$("#sra_trpcs").val("");					// 추가운송비
-				fn_TrpcsPyYnModify("0");					// 수송자
+				fn_TrpcsPyYnModify("1");					// 수송자
 				$("#rmk_cntn").val("");						// 비고
 				$("#sra_fed_spy_am").val("")				// 사료대금
 				
@@ -308,7 +309,7 @@
 			
 			fn_contrChBox(false, "debd_cancel_yn", "");	// 제각여부
 			$("#sra_trpcs").val("");					// 추가운송비
-			fn_TrpcsPyYnModify("0");					// 수송자
+			fn_TrpcsPyYnModify("1");					// 수송자
 			$("#rmk_cntn").val("");						// 비고
 			$("#sra_fed_spy_am").val("")				// 사료대금
 			
@@ -1099,7 +1100,7 @@
 			$("#auc_recv_dt").val(fn_getToday());									// 접수일자
 			$("#dna_jug_result").val("3");													// 친자확인결과
 			
-			fn_TrpcsPyYnModify("0");
+			fn_TrpcsPyYnModify("1");
 			
 			mv_flg = "";
 			
@@ -1518,7 +1519,7 @@
 		$("#auc_obj_dsc").val(tmpAucObjDsc);
 		fn_setChgRadio("auc_obj_dsc", tmpAucObjDsc);
 		$("#dna_jug_result").val("3");
-		fn_TrpcsPyYnModify("0");
+		fn_TrpcsPyYnModify("1");
 		$("#hed_indv_no").val("002")
 	}
 	
@@ -1707,7 +1708,9 @@
 		else {
 			resultBhCross = setDecrypt(resultsBhCross);
 			if (resultBhCross.length > 0) {
-				console.log(resultBhCross)
+				console.log(resultBhCross);
+				$('#mod_kpn_no').val(resultBhCross[resultBhCross.length-1].SRA_KPN_NO);				
+				$('#afism_mod_dt').val(resultBhCross[resultBhCross.length-1].CRSBD_DT).focusout().change();				
 			}
 		}
 	}
@@ -2369,7 +2372,7 @@
 										<td>
 											<input type="radio" id="trpcs_py_yn_1"  name="rd_trpcs_py_yn" value="1" checked="checked" onclick="javascript:fn_setChgRadio('trpcs_py_yn','1');" /><label for="trpcs_py_yn_1">자가</label>
 											<input type="radio" id="trpcs_py_yn_0"  name="rd_trpcs_py_yn" value="0" onclick="javascript:fn_setChgRadio('trpcs_py_yn','0');" /><label for="trpcs_py_yn_0">운송협회</label>
-											<input type="hidden" id="trpcs_py_yn" name="trpcs_py_yn" value="0" />
+											<input type="hidden" id="trpcs_py_yn" name="trpcs_py_yn" value="1" />
 										</td>
 										<td>
 											<input disabled="disabled" type="text" id="vhc_shrt_c">
