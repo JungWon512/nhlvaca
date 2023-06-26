@@ -1709,6 +1709,8 @@
 			resultBhCross = setDecrypt(resultsBhCross);
 			if (resultBhCross.length > 0) {
 				console.log(resultBhCross);
+				//$('#mod_kpn_no').val(resultBhCross[resultBhCross.length-1].SRA_KPN_NO);				
+				//$('#afism_mod_dt').val(resultBhCross[resultBhCross.length-1].CRSBD_DT).focusout().change();				
 				$('#mod_kpn_no').val(resultBhCross[resultBhCross.length-1].SRA_KPN_NO);				
 				$('#afism_mod_dt').val(resultBhCross[resultBhCross.length-1].CRSBD_DT).focusout().change();				
 			}

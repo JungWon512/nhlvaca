@@ -341,16 +341,17 @@ var na_bzplc = App_na_bzplc;
              TitleData.unit = "";
              TitleData.srch_condition =  tmp_condition;
              
-          	 // ★합천: 8808990656236 테스트: 8808990643625
-            
+          	 // ★합천: 8808990656236             
           	   if(na_bzplc == "8808990656236") {
             	 if($("#auc_obj_dsc").val() == "3") {
-            		 ReportPopup('LALM0216R1_3',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그      
-
-            	 } else if($("#auc_obj_dsc").val() == "2"){
-            		 ReportPopup('LALM0216R1_2',TitleData, 'grd_MhSogCow1', 'V');               //V:세로 , H:가로  , T :콘솔로그            		 
+            		 ReportPopup('LALM0216R1_3',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그            		 
             	 } else {
-            	 	ReportPopup('LALM0216R1_2_1',TitleData, 'grd_MhSogCow1', 'V');               //V:세로 , H:가로  , T :콘솔로그
+            		/** 
+            		* 23.05.22 jjw
+            		* 송아지, 비육우 리포트 비육우(LALM0216R1_2)로 통일
+            		**/
+            	 	//ReportPopup('LALM0216R1_2_1',TitleData, 'grd_MhSogCow1', 'V');               //V:세로 , H:가로  , T :콘솔로그
+           		 	ReportPopup('LALM0216R1_2',TitleData, 'grd_MhSogCow1', 'V');               //V:세로 , H:가로  , T :콘솔로그
             	 }
              
              // ★청도: 8808990656571
@@ -854,6 +855,7 @@ var na_bzplc = App_na_bzplc;
             		 
             	 } else if($("#prto_tpc_15").is(":checked")) {
             		 ReportPopup('LALM0216R3_27_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 //ReportPopup('LALM0216R3_27_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_17").is(":checked")) {
             		 ReportPopup('LALM0216R3_29',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
