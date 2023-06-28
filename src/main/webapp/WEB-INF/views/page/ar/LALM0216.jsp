@@ -412,9 +412,11 @@ var na_bzplc = App_na_bzplc;
              
              // 가로(4형식) - 거창
              } else if($("#prto_tpc_7").is(":checked")) {
-            	 if($("#auc_obj_dsc").val() == "3") {
+             	if($("#auc_obj_dsc").val() == "3") {
             		 ReportPopup('LALM0216R0_5',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
-            	 } else {
+            	 } else if(na_bzplc == "8808990657103"){
+               		 ReportPopup('LALM0216R0_10_1',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
+               	 } else {
             		 ReportPopup('LALM0216R0_10',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
             	 }
              
@@ -1549,7 +1551,7 @@ var na_bzplc = App_na_bzplc;
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["비고","임신개월수","수정kpn번호","운송비지급여부","큰소구분","축산낙찰금액","참가번호","낙찰자명","운송기사명","예정가","예정가 단위 "
+        var searchResultColNames = ["비고","임신개월수","수정kpn번호","운송비지급여부","큰소구분","축산낙찰금액","참가번호","낙찰자명","운송기사명","예정가","예정가 단위 ","동이상주소"
         						  ,"경매<br>번호", "경매대상", "주소", "성명"
                                   , "전화번호", "귀표번호", "생년월일", "산차", "어미구분", "계대"
                                   , "제각여부", "KPN번호","성별","중량","예정가","월령","친자검사여부"
@@ -1566,7 +1568,8 @@ var na_bzplc = App_na_bzplc;
                                      {name:"SRA_MWMNNM",       	        index:"SRA_MWMNNM",               width:55, align:'center'  ,hidden:true},
                                      {name:"VHC_DRV_CAFFNM",            index:"VHC_DRV_CAFFNM",           width:55, align:'center'  ,hidden:true},
                                      {name:"LOWS_SBID_LMT_AM",          index:"LOWS_SBID_LMT_AM",         width:55, align:'center'  ,hidden:true},
-                                     {name:"LOWS_SBID_LMT_UNIT",        index:"LOWS_SBID_LMT_UNIT",         width:55, align:'center'  ,hidden:true},
+                                     {name:"LOWS_SBID_LMT_UNIT",        index:"LOWS_SBID_LMT_UNIT",       width:55, align:'center'  ,hidden:true},
+                                     {name:"DONGUP",        			index:"DONGUP",         		  width:55, align:'center'  ,hidden:true},
                                      
                                      {name:"AUC_PRG_SQ",                index:"AUC_PRG_SQ",               width:50, align:'center' },
                                      {name:"AUC_OBJ_DSC",               index:"AUC_OBJ_DSC",              width:40, align:'center'  , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},

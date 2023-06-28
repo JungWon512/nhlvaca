@@ -45,10 +45,12 @@
          fn_setCodeRadio("auc_obj_dsc","hd_auc_obj_dsc","AUC_OBJ_DSC", 2);
          fn_setCodeRadio("sgno_prc_dsc", "hd_sgno_prc_dsc", "SGNO_PRC_DSC", 1);
          
-         if(App_na_bzplc =='8808990659701'){
-	         $('button[name=btn_Commit]').show();
-	         $('button[name=btn_CommitCancle]').show();        	 
-         }
+         /* 거창이외 조합에도 미개시, 개시 버튼 추가
+	         if(App_na_bzplc =='8808990659701'){
+		         $('button[name=btn_Commit]').show();
+		         $('button[name=btn_CommitCancle]').show();        	 
+	         }
+         */
          
          
          fn_Init();
@@ -761,8 +763,8 @@
                 
                 <div class="fl_R"><!--  //버튼 모두 우측정렬 -->   
                     <button class="tb_btn" name="btn_Init" value="입력초기화">입력초기화</button>
-                   	<button class="tb_btn" name="btn_Commit"  value="경매게시" style="display:none;">귀표번호 게시</button>
-                   	<button class="tb_btn" name="btn_CommitCancle"  value="경매숨김" style="display:none;">귀표번호 숨김</button>
+                   	<button class="tb_btn" name="btn_Commit"  value="경매게시" style="">귀표번호 게시</button>
+                   	<button class="tb_btn" name="btn_CommitCancle"  value="경매숨김" style="">귀표번호 숨김</button>
                     <button class="tb_btn" name="btn_Ddl"  value="경매마감">경매마감</button>
                     <button class="tb_btn" name="btn_Can"  value="마감취소">마감취소</button>
                 </div>  

@@ -777,7 +777,49 @@
 	                              ELSE G.SRA_FARM_ACNO END
 	                         END
 	          END AS SRA_FARM_ACNO
-	          
+	        , CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN
+	                    CASE WHEN (C.SRA_FARM_ACNO = '' OR C.SRA_FARM_ACNO IS NULL) THEN
+	                         CASE WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 12 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,8) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 13 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,9) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 14 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,10) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 15 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,11) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 16 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,12) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 17 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,13) || '****'
+	                              WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 18 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,14) || '****'
+	                              ELSE C.NEW_SRA_FARM_ACNO
+	                         END
+	                    ELSE
+	                         CASE WHEN LENGTH(C.SRA_FARM_ACNO) = 12 THEN SUBSTRING(C.SRA_FARM_ACNO,1,8) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 13 THEN SUBSTRING(C.SRA_FARM_ACNO,1,9) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 14 THEN SUBSTRING(C.SRA_FARM_ACNO,1,10) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 15 THEN SUBSTRING(C.SRA_FARM_ACNO,1,11) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 16 THEN SUBSTRING(C.SRA_FARM_ACNO,1,12) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 17 THEN SUBSTRING(C.SRA_FARM_ACNO,1,13) || '****'
+	                              WHEN LENGTH(C.SRA_FARM_ACNO) = 18 THEN SUBSTRING(C.SRA_FARM_ACNO,1,14) || '****'
+	                              ELSE C.SRA_FARM_ACNO END
+	                         END
+	               ELSE
+	                    CASE WHEN (G.SRA_FARM_ACNO = '' OR G.SRA_FARM_ACNO IS NULL) THEN
+	                         CASE WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 12 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,8) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 13 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,9) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 14 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,10) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 15 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,11) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 16 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,12) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 17 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,13) || '****'
+	                              WHEN LENGTH(G.NEW_SRA_FARM_ACNO) = 18 THEN SUBSTRING(G.NEW_SRA_FARM_ACNO,1,14) || '****'
+	                              ELSE G.NEW_SRA_FARM_ACNO
+	                         END
+	                    ELSE
+	                         CASE WHEN LENGTH(G.SRA_FARM_ACNO) = 12 THEN SUBSTRING(G.SRA_FARM_ACNO,1,8) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 13 THEN SUBSTRING(G.SRA_FARM_ACNO,1,9) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 14 THEN SUBSTRING(G.SRA_FARM_ACNO,1,10) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 15 THEN SUBSTRING(G.SRA_FARM_ACNO,1,11) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 16 THEN SUBSTRING(G.SRA_FARM_ACNO,1,12) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 17 THEN SUBSTRING(G.SRA_FARM_ACNO,1,13) || '****'
+	                              WHEN LENGTH(G.SRA_FARM_ACNO) = 18 THEN SUBSTRING(G.SRA_FARM_ACNO,1,14) || '****'
+	                              ELSE G.SRA_FARM_ACNO END
+	                         END
+	          END AS SRA_FARM_ACNO_MASKING
 	          , CASE WHEN #{ss_security} = '1' THEN C.DONGUP || ' ' || C.DONGBW
         	   	ELSE C.DONGUP || ' ' || '******' END AS ADR				/* 동이하마스킹주소		*/
 	
@@ -962,8 +1004,9 @@
 			        (NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) + NVL(A.MT12_OVR_FEE, 0)) +
 			        (NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) + NVL(F.ACD_RVG_AM, 0))
 	         ELSE 0 - (NVL(F.SRA_SOG_FEE, 0) + 
-			        (NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0) 
-			        /*+ NVL(A.MT12_OVR_FEE, 0))*/ 
+			        (NVL(F.SRA_ETC_CST, 0) + NVL(A.SRA_PYIVA, 0) + NVL(A.SRA_FED_SPY_AM, 0) + NVL(A.TD_RC_CST, 0)			         
+			        /*+ NVL(A.MT12_OVR_FEE, 0)*/
+			        ) 
 			        +(NVL(F.SRA_TRPCS, 0) + NVL(A.SRA_TRPCS, 0)) + NVL(F.ACD_RVG_AM, 0))
 	         END                                 AS TOT_AM
 	       , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <= 4 AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434')
@@ -2584,6 +2627,267 @@
 	</select>
 	
 	<select id="LALM0513_selList_13" resultType="hashMap">
+	<![CDATA[
+		SELECT T.* FROM (
+			SELECT
+		          A.NA_BZPLC
+		        , '경매'								AS IO_TR_TPC_NM
+		        , A.AUC_OBJ_DSC						AS SRA_INDV_DSC
+		        , A.AUC_DT
+		        , A.OSLP_NO
+		        , A.LED_SQNO
+		        , A.FHS_ID_NO
+		        , A.FARM_AMNNO
+		        , A.SOG_NA_TRPL_C
+		        , A.VHC_SHRT_C
+		        , A.RC_DT
+		        , A.TRMN_AMNNO
+		        , A.LVST_AUC_PTC_MN_NO
+		        , A.SRA_SRS_DSC
+		        , A.SRA_INDV_AMNNO                  AS SRA_INDV_EART_NO
+		        , A.COW_SOG_WT						AS COW_SOG_WT
+		        , A.FIR_LOWS_SBID_LMT_AM
+		        , A.LOWS_SBID_LMT_AM				AS LOWS_SBID_LMT_AM
+		        , A.SRA_SBID_UPR
+		        , A.SRA_SBID_AM						AS SRA_SBID_AM
+		        , A.SEL_STS_DSC
+		        , A.BRCL_ISP_CTFW_SMT_YN
+		        , A.BRCL_ISP_DT
+		        , A.LWPR_CHG_NT
+		        , A.VACN_DT
+		        , A.LVST_MKT_TRPL_AMNNO
+		        , A.MT12_OVR_YN
+		        , A.PPGCOW_FEE_DSC
+		        , A.PRNY_JUG_YN
+		        , A.PRNY_YN
+		        , A.NCSS_JUG_YN
+		        , A.NCSS_YN
+		        , A.TRPCS_PY_YN
+		        , A.SRA_TRPCS
+		        , A.SRA_PYIVA
+		        , A.SRA_FED_SPY_AM
+		        , A.TD_RC_CST
+		        , A.AFISM_MOD_DT
+		        , A.PRNY_MTCN
+		        , A.AFISM_MOD_CTFW_SMT_YN
+		        , A.RMHN_YN
+		        , A.SRA_PDMNM
+		        , A.SRA_PD_RGNNM
+		        , A.RMK_CNTN
+		        , A.AUC_PRG_SQ
+		        , A.DEL_YN
+		        , A.TMS_YN
+		        , A.FSRG_DTM
+		        , A.FSRGMN_ENO
+		        , B.MACO_YN							AS MACO_YN
+		        , C.VHC_DRV_CAFFNM
+		        , B.DONGUP						    AS SRA_FARM_DONGUP
+		        , B.DONGBW						    AS SRA_FARM_DONGBW	        
+		        , CASE WHEN #{ss_security} = '1' THEN B.FTSNM
+	              WHEN LENGTH(B.FTSNM) = 2 THEN SUBSTR(B.FTSNM,1,1) || '*' 
+	              WHEN LENGTH(B.FTSNM) = 3 THEN SUBSTR(B.FTSNM,1,1) || '*'  || SUBSTR(B.FTSNM,3,1) 
+	              WHEN LENGTH(B.FTSNM) = 4 THEN SUBSTR(B.FTSNM,1,1) || '**' || SUBSTR(B.FTSNM,4,1)  
+	              WHEN LENGTH(B.FTSNM) >= 5 THEN SUBSTR(B.FTSNM,1,2) || '**' || SUBSTR(B.FTSNM,5,1)  END AS SRA_FHSNM /* 농장명 */ 	        
+		        , B.FTSNM							AS SLPL_NA_CLNTNM
+		        , B.FHS_ID_NO
+		        , D.INDV_SEX_C
+		        , D.BIRTH							AS SRA_INDV_BIRTH
+		        , D.SRA_INDV_PASG_QCN
+		        , D.SRA_INDV_BRDSRA_RG_NO
+		        , REPLACE(RTRIM(D.KPN_NO), 'KPN', '')					AS SRA_INDV_KPN_NO
+		        , D.MCOW_SRA_INDV_AMNNO
+		        , D.MATIME               		    AS SRA_INDV_MOTHR_MATIME
+		        , D.RG_DSC
+		        , D.MCOW_DSC						AS SRA_INDV_MCOW_BRDSRA_RG_DSC
+		        , A.MOD_KPN_NO      
+		        , CASE WHEN #{ss_security} = '1' THEN E.SRA_MWMNNM
+	              WHEN LENGTH(E.SRA_MWMNNM) = 2 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*' 
+	              WHEN LENGTH(E.SRA_MWMNNM) = 3 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*'  || SUBSTR(E.SRA_MWMNNM,3,1) 
+	              WHEN LENGTH(E.SRA_MWMNNM) = 4 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '**' || SUBSTR(E.SRA_MWMNNM,4,1)  
+	              WHEN LENGTH(E.SRA_MWMNNM) >= 5 THEN SUBSTR(E.SRA_MWMNNM,1,2) || '**' || SUBSTR(E.SRA_MWMNNM,5,1)  END AS SRA_MWMNNM /* 판매자명 */ 	        
+		        , E.DONGUP							AS DONGUP
+		        , E.DONGBW							AS DONGBW	        
+		        , CASE WHEN #{ss_security} = '1' THEN B.CUS_MPNO
+		                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),6,4)  
+		                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) = '02' 
+		                                                                               THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+		                                                                               ELSE SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+		                                                                               END) 
+		                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),8,4)                                             
+		                                              END  AS SRA_FARM_CUS_MPNO	        
+		        , CASE WHEN #{ss_security} = '1' THEN E.CUS_MPNO
+		                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),6,4)  
+		                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) = '02' 
+		                                                                               THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),7,4)  
+		                                                                               ELSE SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),7,4)  
+		                                                                               END) 
+		                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),8,4)                                             
+		                                              END  AS CUS_MPNO	        
+		        , E.FRLNO							AS FRLNO
+		        , E.CUS_RLNO						AS CUS_RLNO	        
+		        , CASE WHEN #{ss_security} = '1' THEN B.DONGUP || ' ' || B.DONGBW
+	        	   		ELSE B.DONGUP || ' ' || '******' END AS SOG_DONG								/* 동이하마스킹주소		*/        	   		
+	        	, CASE WHEN #{ss_security} = '1' THEN E.DONGUP || ' ' || E.DONGBW
+	        	   		ELSE E.DONGUP || ' ' || '******' END AS MWMN_DONG								/* 동이하마스킹주소		*/	
+	        	, 'COW' GUBUN
+	        	, A.SRA_INDV_AMNNO||'_0'  SRA_INDV_AMNNO_P
+		    FROM TB_LA_IS_MH_SOG_COW A	
+		         LEFT OUTER JOIN TB_LA_IS_MM_VHC C
+		              ON  C.NA_BZPLC    = A.NA_BZPLC
+		              AND C.VHC_SHRT_C  = A.VHC_SHRT_C	
+		         LEFT OUTER JOIN TB_LA_IS_MM_MWMN E
+		              ON  A.NA_BZPLC    = E.NA_BZPLC
+		              AND A.TRMN_AMNNO  = E.TRMN_AMNNO	
+		       , TB_LA_IS_MM_FHS  B
+		       , TB_LA_IS_MM_INDV D	
+		    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
+		      AND A.AUC_DT         = #{auc_dt}
+		      AND A.LED_SQNO       = '1'
+		      AND A.DEL_YN         = '0'
+		      AND A.SEL_STS_DSC	   = '22'	
+		      AND B.NA_BZPLC       = A.NA_BZPLC
+		      AND B.FHS_ID_NO      = A.FHS_ID_NO
+		      AND B.FARM_AMNNO     = A.FARM_AMNNO	
+		      AND A.NA_BZPLC       = D.NA_BZPLC
+		      AND A.SRA_INDV_AMNNO = D.SRA_INDV_AMNNO
+		      AND A.SRA_SRS_DSC    = D.SRA_SRS_DSC
+	]]>
+		<if test="chk_calf_cow == 1">
+		    	UNION ALL
+				SELECT
+			          A.NA_BZPLC
+			        , '경매'								AS IO_TR_TPC_NM
+			        --, A.AUC_OBJ_DSC						AS SRA_INDV_DSC
+			        , '1' 						AS SRA_INDV_DSC
+			        , A.AUC_DT
+			        , A.OSLP_NO
+			        , A.LED_SQNO
+			        , A.FHS_ID_NO
+			        , A.FARM_AMNNO
+			        , A.SOG_NA_TRPL_C
+			        , A.VHC_SHRT_C
+			        , A.RC_DT
+			        , A.TRMN_AMNNO
+			        , A.LVST_AUC_PTC_MN_NO
+			        , A.SRA_SRS_DSC
+			        , F.SRA_INDV_AMNNO                  AS SRA_INDV_EART_NO
+			        , '' COW_SOG_WT
+			        , '' FIR_LOWS_SBID_LMT_AM
+			        , '' LOWS_SBID_LMT_AM
+			        , '' SRA_SBID_UPR
+			        , '' SRA_SBID_AM
+			        , A.SEL_STS_DSC
+			        , '' BRCL_ISP_CTFW_SMT_YN
+			        , '' BRCL_ISP_DT
+			        , '' LWPR_CHG_NT
+			        , '' VACN_DT
+			        , '' LVST_MKT_TRPL_AMNNO
+			        , '' MT12_OVR_YN
+			        , '' PPGCOW_FEE_DSC
+			        , '' PRNY_JUG_YN
+			        , '' PRNY_YN
+			        , '' NCSS_JUG_YN
+			        , '' NCSS_YN
+			        , '' TRPCS_PY_YN
+			        , '' SRA_TRPCS
+			        , '' SRA_PYIVA
+			        , '' SRA_FED_SPY_AM
+			        , '' TD_RC_CST
+			        , '' AFISM_MOD_DT
+			        , '' PRNY_MTCN
+			        , '' AFISM_MOD_CTFW_SMT_YN
+			        , '' RMHN_YN
+			        , A.SRA_PDMNM
+			        , A.SRA_PD_RGNNM
+			        , '' RMK_CNTN
+			        , A.AUC_PRG_SQ
+			        , A.DEL_YN
+			        , A.TMS_YN
+			        , F.FSRG_DTM
+			        , F.FSRGMN_ENO
+			        , B.MACO_YN							AS MACO_YN
+			        , C.VHC_DRV_CAFFNM
+			        , B.DONGUP						    AS SRA_FARM_DONGUP
+			        , B.DONGBW						    AS SRA_FARM_DONGBW	        
+			        , CASE WHEN #{ss_security} = '1' THEN B.FTSNM
+		              WHEN LENGTH(B.FTSNM) = 2 THEN SUBSTR(B.FTSNM,1,1) || '*' 
+		              WHEN LENGTH(B.FTSNM) = 3 THEN SUBSTR(B.FTSNM,1,1) || '*'  || SUBSTR(B.FTSNM,3,1) 
+		              WHEN LENGTH(B.FTSNM) = 4 THEN SUBSTR(B.FTSNM,1,1) || '**' || SUBSTR(B.FTSNM,4,1)  
+		              WHEN LENGTH(B.FTSNM) >= 5 THEN SUBSTR(B.FTSNM,1,2) || '**' || SUBSTR(B.FTSNM,5,1)  END AS SRA_FHSNM /* 농장명 */ 	        
+			        , B.FTSNM							AS SLPL_NA_CLNTNM
+			        , B.FHS_ID_NO
+			        , F.INDV_SEX_C 
+			        , F.BIRTH 							AS SRA_INDV_BIRTH
+			        , D.SRA_INDV_PASG_QCN
+			        , D.SRA_INDV_BRDSRA_RG_NO
+			        , REPLACE(RTRIM(F.KPN_NO ), 'KPN', '')					AS SRA_INDV_KPN_NO
+			        , D.MCOW_SRA_INDV_AMNNO
+			        , D.MATIME AS SRA_INDV_MOTHR_MATIME
+			        , D.RG_DSC
+			        , D.MCOW_DSC						AS SRA_INDV_MCOW_BRDSRA_RG_DSC
+			        , '' MOD_KPN_NO
+			        , CASE WHEN #{ss_security} = '1' THEN E.SRA_MWMNNM
+		              WHEN LENGTH(E.SRA_MWMNNM) = 2 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*' 
+		              WHEN LENGTH(E.SRA_MWMNNM) = 3 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '*'  || SUBSTR(E.SRA_MWMNNM,3,1) 
+		              WHEN LENGTH(E.SRA_MWMNNM) = 4 THEN SUBSTR(E.SRA_MWMNNM,1,1) || '**' || SUBSTR(E.SRA_MWMNNM,4,1)  
+		              WHEN LENGTH(E.SRA_MWMNNM) >= 5 THEN SUBSTR(E.SRA_MWMNNM,1,2) || '**' || SUBSTR(E.SRA_MWMNNM,5,1)  END AS SRA_MWMNNM /* 판매자명 */ 	        
+			        , E.DONGUP							AS DONGUP
+			        , E.DONGBW							AS DONGBW	        
+			        , CASE WHEN #{ss_security} = '1' THEN B.CUS_MPNO
+			                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),6,4)  
+			                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) = '02' 
+			                                                                               THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+			                                                                               ELSE SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),7,4)  
+			                                                                               END) 
+			                WHEN LENGTH(REPLACE(RTRIM(B.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(B.CUS_MPNO),'-',''),8,4)                                             
+			                                              END  AS SRA_FARM_CUS_MPNO	        
+			        , CASE WHEN #{ss_security} = '1' THEN E.CUS_MPNO
+			                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),6,4)  
+			                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) = '02' 
+			                                                                               THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,2) || '****' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),7,4)  
+			                                                                               ELSE SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,3) || '***' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),7,4)  
+			                                                                               END) 
+			                WHEN LENGTH(REPLACE(RTRIM(E.CUS_MPNO),'-','')) = 11 THEN SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),1,3) || '****' || SUBSTR(REPLACE(RTRIM(E.CUS_MPNO),'-',''),8,4)                                             
+			                                              END  AS CUS_MPNO	        
+			        , E.FRLNO							AS FRLNO
+			        , E.CUS_RLNO						AS CUS_RLNO	        
+			        , CASE WHEN #{ss_security} = '1' THEN B.DONGUP || ' ' || B.DONGBW
+		        	   		ELSE B.DONGUP || ' ' || '******' END AS SOG_DONG								/* 동이하마스킹주소		*/        	   		
+		        	, CASE WHEN #{ss_security} = '1' THEN E.DONGUP || ' ' || E.DONGBW
+		        	   		ELSE E.DONGUP || ' ' || '******' END AS MWMN_DONG								/* 동이하마스킹주소		*/		
+		        	, 'CALF' GUBUN
+		        	, A.SRA_INDV_AMNNO||'_'||F.RG_SQNO  SRA_INDV_AMNNO_P
+			    FROM TB_LA_IS_MH_CALF F
+			    	 LEFT JOIN TB_LA_IS_MH_SOG_COW A ON A.NA_BZPLC  = F.NA_BZPLC 
+											    	 AND A.AUC_OBJ_DSC  = F.AUC_OBJ_DSC 
+											    	 AND A.AUC_DT  = F.AUC_DT 
+											    	 AND A.OSLP_NO  = F.OSLP_NO 
+			         LEFT OUTER JOIN TB_LA_IS_MM_VHC C
+			              ON  C.NA_BZPLC    = A.NA_BZPLC
+			              AND C.VHC_SHRT_C  = A.VHC_SHRT_C	
+			         LEFT OUTER JOIN TB_LA_IS_MM_MWMN E
+			              ON  A.NA_BZPLC    = E.NA_BZPLC
+			              AND A.TRMN_AMNNO  = E.TRMN_AMNNO	
+			       , TB_LA_IS_MM_FHS  B	
+			       , TB_LA_IS_MM_INDV D	
+			    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
+			      AND A.AUC_DT         = #{auc_dt}
+			      AND A.LED_SQNO       = '1'
+			      AND A.DEL_YN         = '0'
+			      AND A.SEL_STS_DSC	   = '22'	
+			      AND B.NA_BZPLC       = A.NA_BZPLC
+			      AND B.FHS_ID_NO      = A.FHS_ID_NO
+			      AND B.FARM_AMNNO     = A.FARM_AMNNO	     
+			      AND f.NA_BZPLC       = D.NA_BZPLC
+			      AND f.SRA_INDV_AMNNO = D.SRA_INDV_AMNNO
+			      AND f.SRA_SRS_DSC    = D.SRA_SRS_DSC
+			</if> 
+		) T
+		ORDER BY TO_NUMBER(T.AUC_PRG_SQ), T.SRA_INDV_AMNNO_P
+	</select>
+	
+	
+	<select id="LALM0513_selList_13_backup" resultType="hashMap">
 	<![CDATA[
 		SELECT
 	          A.NA_BZPLC

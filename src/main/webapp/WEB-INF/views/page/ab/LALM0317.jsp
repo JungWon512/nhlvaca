@@ -161,8 +161,8 @@ var mv_sqno_prc_dsc = "";
         fn_setChgRadioAmRtoDsc('1');
         fn_setRadioChecked('am_rto_dsc');
         $( "#auc_obj_dsc" ).focus();
-        $( "#am_rto_dsc_radio_2_text" ).hide();
-        $( "#sbt_pmr_text" ).hide();
+//         $( "#am_rto_dsc_radio_2_text" ).hide();
+//         $( "#sbt_pmr_text" ).hide();
         
     }
     

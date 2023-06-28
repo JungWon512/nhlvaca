@@ -285,7 +285,13 @@
                   	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RMK_CNTN', rmkCntn ,{background:"rgb(255 0 0)"});      
                   	  	$('#grd_MmInsSogCow').jqGrid('setCell',rowid,'CHK_VAILD_ERR','1');
       	    		 }
-					
+					}
+      				//2023.06.22 엑셀업로드시 번식우가 아니면서 임신구분값이 5가 아닌경우 에러로 표기
+					var ppgcowFeeDsc = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'PPGCOW_FEE_DSC');
+      				if(ppgcowFeeDsc != '5' && aucObjDsc !='3'){		 
+                  	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'PPGCOW_FEE_DSC', rmkCntn ,{background:"rgb(255 0 0)"});      
+                  	  	$('#grd_MmInsSogCow').jqGrid('setCell',rowid,'CHK_VAILD_ERR','1');
+      	    		 }
 				});
     			if(errCnt==0) $('#pb_allSyncIndv').attr('disabled',false);
 	         }

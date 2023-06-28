@@ -619,8 +619,12 @@
     	if(fn_isDate(v_afism_mod_dt)){
     		var addday = fn_getAddDay(v_afism_mod_dt,285,'YYYYMMDD');
             $("#grd_CowBun").jqGrid('setCell', v_selrow, 'PTUR_PLA_DT', addday);
-            var spaday = fn_SpanDay(v_afism_mod_dt, $("#grd_CowBun").jqGrid('getCell', v_selrow, 'AUC_DT'),'Month') + 1;
-            $("#grd_CowBun").jqGrid('setCell', v_selrow, 'PRNY_MTCN', spaday);
+            //var spaday = fn_SpanDay(v_afism_mod_dt, $("#grd_CowBun").jqGrid('getCell', v_selrow, 'AUC_DT'),'Month') + 1;
+            
+			var aucDt		= dayjs($("#grd_CowBun").jqGrid('getCell', v_selrow, 'AUC_DT'));				// 경매일자
+			var afismModDt	= dayjs(v_afism_mod_dt);			// 인공수정일자
+			var prnyMtcn = aucDt.diff(afismModDt, "month") + 1
+            $("#grd_CowBun").jqGrid('setCell', v_selrow, 'PRNY_MTCN', prnyMtcn);
             
             
         } else {

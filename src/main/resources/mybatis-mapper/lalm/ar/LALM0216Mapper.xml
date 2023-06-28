@@ -297,6 +297,7 @@
          
          , B.ZIP                                         /* 축산농장앞자리우편번호            */
          , CASE WHEN #{ss_security} = '1' THEN B.DONGUP ||' '|| B.DONGBW ELSE B.DONGUP ||' '||  TRIM(LPAD(' ', LENGTH(B.DONGBW) +1, '*')) END AS DONG /* 주소                */
+         , B.DONGUP /* 동이상 주소 */
          , CASE WHEN #{ss_security} = '1' THEN C.VHC_DRV_CAFFNM
                 WHEN LENGTH(C.VHC_DRV_CAFFNM) = 2 THEN SUBSTR(C.VHC_DRV_CAFFNM,1,1) || '*' 
                 WHEN LENGTH(C.VHC_DRV_CAFFNM) = 3 THEN SUBSTR(C.VHC_DRV_CAFFNM,1,1) || '*' || SUBSTR(C.VHC_DRV_CAFFNM,3,1) 

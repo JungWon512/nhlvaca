@@ -139,7 +139,7 @@
     <update id="LALM0317_updBatPrice">
         UPDATE TB_LA_IS_MH_SOG_COW SET
                LOWS_SBID_LMT_AM  = CASE WHEN #{am_rto_dsc} = '1' THEN LOWS_SBID_LMT_AM - #{sbt_am}
-                                   ELSE                               LOWS_SBID_LMT_AM - (FIR_LOWS_SBID_LMT_AM * #{sbt_pmr} / 100) 
+                                   ELSE FLOOR((LOWS_SBID_LMT_AM - (LOWS_SBID_LMT_AM * ${sbt_pmr} / 100)) / 1000) * 1000
                                    END
              , LWPR_CHG_NT       = LWPR_CHG_NT + 1
              , LSCHG_DTM         = SYSDATE

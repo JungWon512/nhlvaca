@@ -14,7 +14,9 @@
 	               WHEN LENGTH(C.SRA_MWMNNM) = 2 THEN SUBSTR(C.SRA_MWMNNM,1,1) || '*' 
 	               WHEN LENGTH(C.SRA_MWMNNM) = 3 THEN SUBSTR(C.SRA_MWMNNM,1,1) || '*' || SUBSTR(C.SRA_MWMNNM,3,1) 
 	               WHEN LENGTH(C.SRA_MWMNNM) = 4 THEN SUBSTR(C.SRA_MWMNNM,1,1) || '**' || SUBSTR(C.SRA_MWMNNM,4,1)  
-	               WHEN LENGTH(C.SRA_MWMNNM) = 5 THEN SUBSTR(C.SRA_MWMNNM,1,2) || '**' || SUBSTR(C.SRA_MWMNNM,5,1)   END AS SRA_MWMNNM        
+	               WHEN LENGTH(C.SRA_MWMNNM) = 5 THEN SUBSTR(C.SRA_MWMNNM,1,2) || '**' || SUBSTR(C.SRA_MWMNNM,5,1)   
+	               ELSE SUBSTR(C.SRA_MWMNNM,1,2) || '**' || SUBSTR(C.SRA_MWMNNM,LENGTH(C.SRA_MWMNNM),1)   
+			END AS SRA_MWMNNM        
 	        , CASE WHEN #{ss_security} = '1' THEN C.DONGUP ||' '|| C.DONGBW
 	               ELSE C.DONGUP ||' '||  TRIM(LPAD(' ', LENGTH(C.DONGBW) +1, '*')) END AS ADR /* 동이상주소						  */
 	        , CASE WHEN #{ss_security} = '1' THEN C.CUS_MPNO
@@ -55,9 +57,12 @@
 	      AND A.SRA_INDV_AMNNO      = B.SRA_INDV_AMNNO
 	      AND A.SRA_SRS_DSC         = B.SRA_SRS_DSC
 	      AND A.NA_BZPLC            = C.NA_BZPLC
-	      AND A.TRMN_AMNNO          = C.TRMN_AMNNO
+	      AND A.TRMN_AMNNO          = C.TRMN_AMNNO]]>
+	      <if test="cb_jrdwo_dsc != null and cb_jrdwo_dsc != ''">
+	      	AND C.JRDWO_DSC          = #{cb_jrdwo_dsc}    
+	      </if>
 	    ORDER BY A.TRMN_AMNNO, A.AUC_DT, A.AUC_OBJ_DSC, A.AUC_PRG_SQ 
-    ]]>
+    
     </select>
         
 </mapper>

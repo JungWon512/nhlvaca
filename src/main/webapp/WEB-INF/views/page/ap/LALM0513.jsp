@@ -207,6 +207,13 @@
 				fn_contrChBox(false, "chk_no_bid", "");
 			}
         });
+	    $(document).on("click", "#chk_calf_cow", function(e) {
+	    	if($("#chk_calf_cow").is(":checked")) {
+	    		fn_contrChBox(true, "chk_calf_cow", "");
+			} else {
+				fn_contrChBox(false, "chk_calf_cow", "");
+			}
+        });
         
  		fn_Init();
  		
@@ -854,10 +861,11 @@
             	}else if($("#auc_obj_dsc").val() == '3'){
          			ReportPopup('LALM0513R15',TitleData, 'grd_MhSogCow5', 'V');	
          		}
+            }else if (na_bzplc == '8808990657103'){ //강진완도
+            	 ReportPopup('LALM0513R15_1',TitleData, 'grd_MhSogCow5', 'V');         	
             }else{
-            	 ReportPopup('LALM0513R15',TitleData, 'grd_MhSogCow5', 'V');
-         	
-            }	 
+            	 ReportPopup('LALM0513R15',TitleData, 'grd_MhSogCow5', 'V');         	
+            }
     	}
     	
     	if($("#pb_tab6").hasClass("on")){
@@ -1884,7 +1892,8 @@ function fn_CreateGrid_5(data){
             rowNoValue = data.length;
         }
         
-        var searchResultColNames = ["H기타수수료","h운송비","H출하수수료","H사고적립금","경매대상", "경매번호", "출하자코드", "경제통합 거래처코드", "출하자명", "출하자 생년월일", "주소", "핸드폰", "귀표번호", "진행상태", "성별", 
+        var searchResultColNames = ["H기타수수료","h운송비","H출하수수료","H사고적립금","H계좌번호마스킹"
+        							,"경매대상", "경매번호", "출하자코드", "경제통합 거래처코드", "출하자명", "출하자 생년월일", "주소", "핸드폰", "귀표번호", "진행상태", "성별", 
         							"생년월일", "월령", "중량(Kg)", "예정가", "낙찰단가", "낙찰가격", "수수료", "정산금액", "예금주", "계좌번호", "수송자", "낙찰자수수료", "낙찰자"];        
         
         var searchResultColModel = [
@@ -1892,6 +1901,7 @@ function fn_CreateGrid_5(data){
          							 {name:"SRA_TRPCS",                 index:"SRA_TRPCS",                width:65,  align:'center', hidden: true},
          							 {name:"SRA_SOG_FEE",               index:"SRA_SOG_FEE",              width:65,  align:'center', hidden: true},
          							 {name:"ACD_RVG_AM",                index:"ACD_RVG_AM",               width:65,  align:'center', hidden: true},
+         							 {name:"SRA_FARM_ACNO_MASKING",     index:"SRA_FARM_ACNO_MASKING",    width:65,  align:'center', hidden: true},
          							 {name:"AUC_OBJ_DSC",               index:"AUC_OBJ_DSC",              width:65,  align:'center' , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
                                      {name:"AUC_PRG_SQ",                index:"AUC_PRG_SQ",               width:65,  align:'center', sorttype: "number"},
                                      {name:"FHS_ID_NO",                 index:"FHS_ID_NO",                width:85,  align:'center'},
@@ -3346,10 +3356,13 @@ function fn_CreateHdnGrid_13(data){
                             	  '<td style="width:220px">' +
                             			'<input type="text" id="count_fee">' +
                             	  '</td>';
-	                          	  
 
 		var temp_noBidChk = '<th scope="row" id="t_MhSogCow8_Chk"><span class="tb_dot">결장우 미포함</span></th>';
-		temp_noBidChk += '<td><input type="checkbox" id="chk_no_bid" name="chk_no_bid" value="0"><label id="chk_no_bid_text" for="chk_no_bid"> 부</label></td>';
+		temp_noBidChk += '<td><input type="checkbox" id="chk_no_bid" name="chk_no_bid" value="0"><label id="chk_no_bid_text" for="chk_no_bid">부</label></td>';
+	                          	  
+
+		var temp_calfCowChk = '<th scope="row" id="t_MhSogCow8_Chk"><span class="tb_dot">딸린송아지 포함</span></th>';
+		temp_calfCowChk += '<td><input type="checkbox" id="chk_calf_cow" name="chk_calf_cow" value="0"><label id="chk_calf_cow_text" for="chk_calf_cow">부</label></td>';
 
 		fn_hideFrm("frm_Search", true);
 		$("#tab8_sub").hide();
@@ -3450,7 +3463,8 @@ function fn_CreateHdnGrid_13(data){
 		} else if($("#pb_tab13").hasClass("on") || p_param == "13") {
 			$("#dynamicTr").remove();
 			addSearchText = "";
-			addSearchText = '<tr id = "dynamicTr">' + temp_auc_dt + '</tr>';
+			addSearchText = '<tr id = "dynamicTr">' + temp_auc_dt + temp_calfCowChk + '</tr>';
+			
             $("#frm_Search_tbody").append(addSearchText);
             
 		} else if($("#pb_tab14").hasClass("on") || p_param == "14") {
@@ -3775,6 +3789,11 @@ function fn_CreateHdnGrid_13(data){
 	                            	<td>
 	                            		<input type="checkbox" id="chk_no_bid" name="chk_no_bid" value="0">
 	                            		<label id="chk_no_bid_text" for="chk_no_bid"> 부</label>
+	                            	</td>
+	                            	<th scope="row" id="t_MhSogCow10_Chk"><span class="tb_dot">딸린송아지 포함</span></th>
+	                            	<td>
+	                            		<input type="checkbox" id="chk_calf_cow" name="chk_calf_cow" value="0">
+	                            		<label id="chk_calf_cow_text" for="chk_calf_cow">부</label>
 	                            	</td>
 					            </tr>
 				            </tbody>

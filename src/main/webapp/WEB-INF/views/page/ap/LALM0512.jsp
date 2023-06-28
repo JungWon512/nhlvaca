@@ -202,7 +202,7 @@
   	TitleData.srch_condition=  '[경매일자 : ' + $('#auc_st_dt').val() + ' ~ ' + $('#auc_ed_dt').val() +']'
    							  +  '/ [경매대상 : ' + $( "#auc_obj_dsc option:selected").text()  + '/ 중도매인 : ' + $("#v_sra_mwmnnm").val() + ']';
   	
-  	if(na_bzplc != '8808990659008'){   // 경주 : 8808990659008 테스트: 8808990643625
+  	if(na_bzplc != '8808990659008' && na_bzplc != '8808990656236'){   // 경주 : 8808990659008 테스트: 8808990643625
   		ReportPopup('LALM0512R0_1',TitleData, 'mainGrid', 'H');
   	}else{
   		ReportPopup('LALM0512R0',TitleData, 'mainGrid', 'H');
@@ -460,8 +460,10 @@
                             <col width="70">     
                             <col width="220"> 
                             <col width="60">     
-                            <col width="150">     
-                            <col width="*">                                                                                  
+                            <col width="150">  
+                            <col width="70">     
+                            <col width="150">                                                                                
+                            <col width="*">                                                                                
                          
                         </colgroup>
                         <tbody>
@@ -501,7 +503,15 @@
                                     	<option value="1">조합원</option>
                                     </select>
                                 </td>
-
+                                <th scope="row">관외구분</th>
+                                <td>                                
+                                    <select id="cb_jrdwo_dsc">
+                                    	<option value="">전체</option>
+                                    	<option value="1">관내</option>
+                                    	<option value="2">관외</option>
+                                    </select>
+                                </td>
+                                <td></td>
                             </tr>
                         </tbody>
                     </table>
