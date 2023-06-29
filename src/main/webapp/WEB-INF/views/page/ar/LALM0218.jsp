@@ -232,6 +232,8 @@
         }else{
         	$("#msg_div").append("<input type='radio' id='msg_gbn_01' name='msg_gbn_radio' value='01'/>"
 			                    +"<label for='msg_gbn_01' style='margin-right:10px;'>경매전(출하주)</label>"
+		                        +"<input type='radio' id='msg_gbn_03' name='msg_gbn_radio' value='03'/>"
+		                        +"<label for='msg_gbn_03' style='margin-right:10px;'>경매전(접수)</label>"
 			                    +"<input type='radio' id='msg_gbn_02' name='msg_gbn_radio' value='02'/>"
 			                    +"<label for='msg_gbn_02' style='margin-right:10px;'>경매후(낙찰가)</label>");
         }

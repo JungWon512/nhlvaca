@@ -115,4 +115,6 @@ public interface LALM0899Mapper {
 	int LALM0899_insMca4600(Map<String, Object> inMap) throws Exception;
 
 	Map<String, Object> LALM0899_selMca5100AlarmTalkId(Map<String, Object> map) throws Exception;
+
+	List<Map<String, Object>> LALM0899_selMca3100_201_Recv(Map<String, Object> map) throws Exception;
 }

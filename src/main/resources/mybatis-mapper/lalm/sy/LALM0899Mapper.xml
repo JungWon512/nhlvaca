@@ -1828,5 +1828,66 @@
     		AND TMS_TYPE = '02'
     		AND SMS_FWDG_DT = TO_CHAR(SYSDATE, 'YYYYMMDD')
     </select>
+    
+    <select id="LALM0899_selMca3100_201_Recv" resultType="HashMap">
+        select
+              a.na_bzplc
+            , replace(d.cus_mpno,'-','')     as cus_mpno          /* 고객휴대폰   */
+            , d.ftsnm || '님'   as usrnm              /* 응찰자명     */
+		    , substr(a.auc_dt,5,2) || '월'
+		      || substr(a.auc_dt,7,2) || '일 '
+		      || ' 경매'
+		      || case when a.auc_obj_dsc = '1' then '(송아지) ' when a.auc_obj_dsc = '2' then '(비육우) ' else '(번식우) ' end
+		      || ' '
+		      || case when e.INDV_SEX_C = '0' then '없음'
+		             when e.INDV_SEX_C = '1' then '암'
+		             when e.INDV_SEX_C = '2' then '수'
+		             when e.INDV_SEX_C = '3' then '거세'
+		             when e.INDV_SEX_C = '4' then '미경산'
+		             when e.INDV_SEX_C = '5' then '비거세'
+		             when e.INDV_SEX_C = '6' then '프리마틴'
+		             else '공통'
+		        end
+		      ||  ' 개체번호:'
+		      ||   substr(a.sra_indv_amnno,7,9)
+		      || ' 입니다. 정상 접수되었습니다.'    as msg_cntn          /* 메세지내용   */
+               , f.TMS_YN
+               , f.SMS_FWDG_DT
+               , #{auc_obj_dsc}   AS AUC_OBJ_DSC
+               , A.auc_dt || A.oslp_no AS TRMN_AMNNO
+               , d.ftsnm         AS RMS_MN_NAME    /* 수신자명         */
+               , d.cus_mpno      AS SMS_RMS_MPNO   /* 수신자전화번호   */
+               , B.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
+               , B.TELNO         AS SMS_TRMS_TELNO /* 발신자전화번호   */
+		from tb_la_is_mh_sog_cow  a
+		   , tb_la_is_mm_wmc      b
+		   , tb_la_is_mm_fhs      d
+		   , tb_la_is_mm_indv     e
+          , tb_la_is_mm_sms f
+		where a.na_bzplc            = #{ss_na_bzplc}
+		  and a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
+		                                   when #{auc_obj_dsc} = '2' then '2'
+		                                   when #{auc_obj_dsc} = '3' then '3'
+		                                   else a.auc_obj_dsc
+		                              end
+		  and a.auc_dt              = #{auc_dt}
+		  and a.led_sqno            = 1
+		  and a.del_yn              = '0'       
+		  and a.na_bzplc            = b.na_bzplc
+		  and a.na_bzplc            = d.na_bzplc
+		  and a.fhs_id_no           = d.fhs_id_no
+		  and a.farm_amnno          = d.farm_amnno
+		  and  a.na_bzplc           = e.na_bzplc
+		  and  a.sra_indv_amnno     = e.sra_indv_amnno
+		  and  a.sra_srs_dsc        = e.sra_srs_dsc
+          and  a.na_bzplc           = f.na_bzplc(+)
+          and  A.auc_dt || A.oslp_no         = f.trmn_amnno(+)
+          and  f.auc_obj_dsc(+)     = #{auc_obj_dsc}
+          and  f.dpamn_dsc(+)       = '2'
+          and  f.sel_sts_dsc(+)     = '01'
+          and  f.tms_type(+)			= #{tms_type}
+          and  length(REGEXP_REPLACE(d.cus_mpno, '[^0-9]')) <![CDATA[>=]]> 10
+		order by a.auc_prg_sq
+    </select>
 </mapper>
 
