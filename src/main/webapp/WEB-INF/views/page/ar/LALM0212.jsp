@@ -690,7 +690,7 @@
          	var tmpAucObjDsc = $("#hd_auc_obj_dsc").val();
          	
          	// 논산: 8808990659268 / 테스트: 8808990643625
-         	if(na_bzplc == '8808990643625') {
+         	if(na_bzplc == '8808990659268') {
          		if(tmpAucObjDsc == '2' || tmpAucObjDsc == '3' || tmpAucObjDsc == '0') {
          			fn_DisableCut(false, false);
          		} else {

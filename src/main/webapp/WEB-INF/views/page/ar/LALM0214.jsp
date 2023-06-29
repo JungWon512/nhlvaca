@@ -54,7 +54,7 @@
         }
         
         //경매우 접수증
-        if(App_na_bzplc == '8808990656588' || App_na_bzplc == '8808990657622' || App_na_bzplc == '8808990643625'){//세종공주: 8808990656588 홍성: 8808990657622
+        if(App_na_bzplc == '8808990656588' || App_na_bzplc == '8808990657622'){//세종공주: 8808990656588 홍성: 8808990657622
         	$("#pb_AucReceipt").show();
         }else {
         	$("#pb_AucReceipt").hide();
@@ -849,7 +849,7 @@
         }
         
         //계좌번호 컬럼 
-        if (App_na_bzplc == '8808990660127' || App_na_bzplc == '8808990657622') {  // 부여: 8808990660127 홍성: 8808990657622 테스트: 8808990643625
+        if (App_na_bzplc == '8808990660127' || App_na_bzplc == '8808990657622') {  // 부여: 8808990660127 홍성: 8808990657622
         	$("#grd_MhSogCow_2").jqGrid("showCol","SRA_FARM_ACNO");
         }else{
         	$("#grd_MhSogCow_2").jqGrid("hideCol","SRA_FARM_ACNO");

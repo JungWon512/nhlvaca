@@ -237,20 +237,20 @@
         	 $("#tab8_sub").hide();    		 
     	 }
     	 
-    	 if(na_bzplc == "8808990656274" || na_bzplc == "8808990643625") {
+    	 if(na_bzplc == "8808990656274") {
     		 $("#pb_tab15").show();
     	 } else {
     		 $("#pb_tab15").hide();
     	 }
     	 
-    	 // ★고창: 8808990657189 테스트: 8808990643625
-         if(na_bzplc == "8808990657189" || na_bzplc == "8808990643625") {
+    	 // ★고창: 8808990657189
+         if(na_bzplc == "8808990657189") {
          	$("#grd_MhSogCow5").jqGrid("hideCol", "BIRTH").trigger('reloadGrid');
          } else {
          	$("#grd_MhSogCow5").jqGrid("showCol", "BIRTH").trigger('reloadGrid');
          }
-      	 // ★음성: 8808990683973 테스트: 8808990643625
-         if(na_bzplc == "8808990683973" || na_bzplc == "8808990643625") {
+      	 // ★음성: 8808990683973
+         if(na_bzplc == "8808990683973") {
          	$("#grd_MhSogCow5").jqGrid("hideCol", "SRA_TR_FEE2").trigger('reloadGrid');
          } else {
          	$("#grd_MhSogCow5").jqGrid("showCol", "SRA_TR_FEE2").trigger('reloadGrid');
@@ -449,14 +449,14 @@
                 	}
                 }
              	
-             	// ★고창: 8808990657189 테스트: 8808990643625
-                if(na_bzplc == "8808990657189" || na_bzplc == "8808990643625") {
+             	// ★고창: 8808990657189 
+                if(na_bzplc == "8808990657189") {
                 	$("#grd_MhSogCow5").jqGrid("hideCol", "BIRTH").trigger('reloadGrid');
                 } else {
                 	$("#grd_MhSogCow5").jqGrid("showCol", "BIRTH").trigger('reloadGrid');
                 }
              	// ★음성: 8808990683973 테스트: 8808990643625
-                if(na_bzplc == "8808990683973" || na_bzplc == "8808990643625") {
+                if(na_bzplc == "8808990683973") {
                 	$("#grd_MhSogCow5").jqGrid("hideCol", "SRA_TR_FEE2").trigger('reloadGrid');
                 } else {
                 	$("#grd_MhSogCow5").jqGrid("showCol", "SRA_TR_FEE2").trigger('reloadGrid');
@@ -2001,7 +2001,7 @@ function fn_CreateSubGrid_5(data){
         rowNoValue = data.length;
     }
     
-    var searchResultColNames = ["경매대상","경매번호","출하자코드","경제통합 거래처코드","출하자명", "주소", "핸드폰", "귀표번호", "진행상태", "성별", "생년월일", "월령", "중량(Kg)", "예정가", "낙찰단가", 
+    var searchResultColNames = ["경매대상","경매번호","출하자코드","경제통합 거래처코드","출하자명","출하자생년월일", "주소", "핸드폰", "귀표번호", "진행상태", "성별", "생년월일", "월령", "중량(Kg)", "예정가", "낙찰단가", 
     							"낙찰가격", "수수료", "정산금액", "예금주", "계좌번호", "수송사", "낙찰자"];        
     
     var searchResultColModel = [
@@ -2010,6 +2010,7 @@ function fn_CreateSubGrid_5(data){
      							 {name:"FHS_ID_NO",         index:"FHS_ID_NO",          width:120,  align:'center'},
      							 {name:"NA_TRPL_C",         index:"NA_TRPL_C",          width:120,  align:'center'},
      							 {name:"FTSNM",             index:"FTSNM",              width:100,  align:'center'},
+     							 {name:"FNBIRTH",           index:"FNBIRTH",              width:100,  align:'center'},
                                  {name:"ADR",               index:"ADR",                width:350,  align:'left'},
                                  {name:"CUS_MPNO",          index:"CUS_MPNO",           width:120,  align:'center'},
                                  {name:"SRA_INDV_AMNNO",	index:"SRA_INDV_AMNNO",     width:120,  align:'center'},
@@ -3401,13 +3402,13 @@ function fn_CreateHdnGrid_13(data){
             
             
          	// ★고창: 8808990657189 테스트: 8808990643625
-            if(na_bzplc == "8808990657189" || na_bzplc == "8808990643625") {
+            if(na_bzplc == "8808990657189") {
             	$("#grd_MhSogCow5").jqGrid("hideCol", "BIRTH").trigger('reloadGrid');
             } else {
             	$("#grd_MhSogCow5").jqGrid("showCol", "BIRTH").trigger('reloadGrid');
             }
-         	// ★음성: 8808990683973 테스트: 8808990643625
-            if(na_bzplc == "8808990683973" || na_bzplc == "8808990643625") {
+         	// ★음성: 8808990683973
+            if(na_bzplc == "8808990683973") {
             	$("#grd_MhSogCow5").jqGrid("hideCol", "SRA_TR_FEE2").trigger('reloadGrid');
             } else {
             	$("#grd_MhSogCow5").jqGrid("showCol", "SRA_TR_FEE2").trigger('reloadGrid');

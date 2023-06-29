@@ -188,7 +188,7 @@
                 }
             }
             
-            if(App_na_bzplc == '8808990657622' ){// 홍성: 8808990657622 테스트: 8808990643625
+            if(App_na_bzplc == '8808990657622' ){// 홍성: 8808990657622
             	ReportPopup('LALM0214R1_2',TitleData, tmpObject, 'H');//V:가로 , H:세로
             }else {
             	ReportPopup('LALM0214R1_1',TitleData, tmpObject, 'H');//V:가로 , H:세로

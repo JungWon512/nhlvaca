@@ -202,7 +202,7 @@
   	TitleData.srch_condition=  '[경매일자 : ' + $('#auc_st_dt').val() + ' ~ ' + $('#auc_ed_dt').val() +']'
    							  +  '/ [경매대상 : ' + $( "#auc_obj_dsc option:selected").text()  + '/ 중도매인 : ' + $("#v_sra_mwmnnm").val() + ']';
   	
-  	if(na_bzplc != '8808990659008' && na_bzplc != '8808990656236'){   // 경주 : 8808990659008 테스트: 8808990643625
+  	if(na_bzplc != '8808990659008' && na_bzplc != '8808990656236'){   // 경주 : 8808990659008 합천: 8808990656236
   		ReportPopup('LALM0512R0_1',TitleData, 'mainGrid', 'H');
   	}else{
   		ReportPopup('LALM0512R0',TitleData, 'mainGrid', 'H');

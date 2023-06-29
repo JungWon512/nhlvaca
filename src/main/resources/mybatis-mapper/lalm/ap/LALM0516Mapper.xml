@@ -29,7 +29,7 @@
                 WHEN LENGTH(trim(B.FTSNM)) = 4 THEN SUBSTR(trim(B.FTSNM),1,1) || '**' || SUBSTR(trim(B.FTSNM),4,1)  
                 WHEN LENGTH(trim(B.FTSNM)) = 5 THEN SUBSTR(trim(B.FTSNM),1,2) || '**' || SUBSTR(trim(B.FTSNM),5,1) ELSE trim(B.FTSNM) END AS NM  /* 농가명                     */           
              , B.FHS_ID_NO                               /* 농가코드                  */
-             , CASE WHEN '8808990643625' = '8808990811710' then b.rmk_cntn ELSE '' END             AS CUS_RLNO        /* 식별구분                  */
+             , CASE WHEN #{ss_na_bzplc} = '8808990811710' then b.rmk_cntn ELSE '' END             AS CUS_RLNO        /* 식별구분                  */
              , CASE WHEN #{ss_security} = '1' THEN B.OHSE_TELNO
                     WHEN LENGTH(REPLACE(trim(B.OHSE_TELNO),'-','')) = 9  THEN SUBSTR(REPLACE(trim(B.OHSE_TELNO),'-',''),1,2) || '-***-' || SUBSTR(REPLACE(trim(B.OHSE_TELNO),'-',''),6,4)  
                     WHEN LENGTH(REPLACE(trim(B.OHSE_TELNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(trim(B.OHSE_TELNO),'-',''),1,2) = '02' 
