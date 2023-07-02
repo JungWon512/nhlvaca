@@ -1098,6 +1098,7 @@ var mCnt = 0;
 	       TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 ";
 	       TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
 	       TitleData.rmk_cntn = parent.wmcList[0].RMK_CNTN;
+	       TitleData.tel_no = parent.wmcList[0].TELNO;
 	       
 	       TitleData.srch_condition =  '[경매일자 : ' + $('#auc_dt').val() + ']'
 	                                +  '/ [경매대상 : ' + $( "#auc_obj_dsc option:selected").text()  + ']';
@@ -1276,6 +1277,8 @@ var mCnt = 0;
    				ReportPopup('LALM0412R0_5_6',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990661315') { //화순
    				ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'V');
+   			}else if(na_bzplc == '8808990656557') { //예천
+   				ReportPopup('LALM0412R0_0_5',p_param, p_grid, 'V');
    			} else {	
    				//ReportPopup('LALM0412R0_5_3',p_param, p_grid, 'V');
    				if(na_bzplc == '8808990656236' && $("#auc_obj_dsc").val()=='3'){
@@ -1342,7 +1345,9 @@ var mCnt = 0;
 	   		 
 			if (na_bzplc == '8808990687094') {  // 영주:              8808990687094
 				ReportPopup('LALM0412R1_4',TitleData, 'grd_MhSogCow', 'T');
-			}else{
+			}else if(na_bzplc == '8808990656557') { //예천
+   				ReportPopup('LALM0412R1_0',p_param, p_grid, 'V');
+   			}else{
 				ReportPopup('LALM0412R1_9',TitleData, 'grd_MhSogCow', 'T');
 				//ReportPopup('LALM0412R1_1',TitleData, 'grd_MhSogCow', 'T');
 			}
