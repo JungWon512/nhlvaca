@@ -956,7 +956,7 @@
 	        , C.NA_TRPL_C
 	        , C.DONGUP
 	        , C.DONGBW
-	        
+	        , C.BIRTH FNBIRTH
 	        , CASE WHEN #{ss_security} = '1' THEN C.CUS_MPNO
 	                WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 9  THEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) || '***' || SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),6,4)  
 	                WHEN LENGTH(REPLACE(RTRIM(C.CUS_MPNO),'-','')) = 10 THEN (CASE WHEN SUBSTR(REPLACE(RTRIM(C.CUS_MPNO),'-',''),1,2) = '02' 

@@ -127,12 +127,15 @@
 			if($("#auc_obj_dsc").val() == "3") {
 				if($(this).val() == "1" || $(this).val() == "3") {
 					fn_contrChBox(true, "prny_jug_yn", "");
+					fn_SelBhCross();
 				}
 				else {
 					fn_contrChBox(false, "prny_jug_yn", "");
 					$("#afism_mod_dt").val("");
+					$("#ptur_pla_dt").val("");
 					$("#prny_mtcn").val("");
 					fn_AfismModDtModify();
+					$("#mod_kpn_no").val("");
 				}
 				
 				// 임신우 + 송아지, 비임신우 + 송아지인 경우

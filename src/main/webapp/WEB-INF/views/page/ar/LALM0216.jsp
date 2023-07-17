@@ -341,15 +341,19 @@ var na_bzplc = App_na_bzplc;
              TitleData.unit = "";
              TitleData.srch_condition =  tmp_condition;
              
+             //거창 : sub title 변경
+             if(na_bzplc == "8808990659701") {
+                 TitleData.sub_title = $("#auc_obj_dsc :checked").text().replaceAll(/[^ㄱ-ㅎ가-힣]/g,'');            	 
+             }
           	 // ★합천: 8808990656236             
-          	   if(na_bzplc == "8808990656236") {
+          	   if(na_bzplc == "8808990656236") {          		 
             	 if($("#auc_obj_dsc").val() == "3") {
             		 ReportPopup('LALM0216R1_3',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그            		 
             	 } else {
             		/** 
             		* 23.05.22 jjw
             		* 송아지, 비육우 리포트 비육우(LALM0216R1_2)로 통일
-            		**/
+            		**/            		
             	 	//ReportPopup('LALM0216R1_2_1',TitleData, 'grd_MhSogCow1', 'V');               //V:세로 , H:가로  , T :콘솔로그
            		 	ReportPopup('LALM0216R1_2',TitleData, 'grd_MhSogCow1', 'V');               //V:세로 , H:가로  , T :콘솔로그
             	 }
@@ -2078,8 +2082,8 @@ var na_bzplc = App_na_bzplc;
 		}
 		var index = 0;
 		$('#'+frmId).getRowData().forEach((o,i)=>{
-			//영암:8808990689760 | 익산:8808990227283 | 밀양 : 8808990656663 | 임실 : 8808990660783 일시 이력제월령 표기
-			if(na_bzplc == '8808990227283' || na_bzplc == '8808990656663' || na_bzplc == '8808990660783'){
+			//영암:8808990689760 | 익산:8808990227283 | 밀양 : 8808990656663 | 임실 : 8808990660783 | 영광 : 8808990811710 일시 이력제월령 표기
+			if(na_bzplc == '8808990227283' || na_bzplc == '8808990656663' || na_bzplc == '8808990660783' || na_bzplc == '8808990811710'){
 				o.MTCN = o.MTCN+'개월';	            					
 			}else{
 				//TO-DO 만월령 쿼리 추가

@@ -6,12 +6,15 @@
 <mapper namespace="com.auc.lalm.ap.service.Impl.LALM0514Mapper">
 
     <select id="LALM0514_selList" resultType="hashMap">
-    <![CDATA[ 
+    <![CDATA[     	
     	SELECT G.*
     		, NVL(ROUND(DECODE(G.TOT_HDCN,0,0,G.TOT_WT / G.TOT_HDCN)),0) AS AVG_WT
-    		, NVL(ROUND(DECODE(G.TOT_HDCN,0,0,G.LOWS_SBID_LMT_AM / G.TOT_HDCN)),0) AS AVG_PR
-    		, NVL(ROUND(DECODE(G.TOT_HDCN,0,0,G.SRA_SBID_AM / G.TOT_HDCN)),0) AS SRA_AVG_SBID_UPR
-    		, NVL(ROUND(DECODE(G.TOT_HDCN,0,0,(G.SRA_SBID_AM - G.LOWS_SBID_LMT_AM) / G.TOT_HDCN)),0) AS BIGO    		
+    		, NVL(ROUND(DECODE(G.TOT_HDCN,0,0,G.LOWS_SBID_LMT_UPR_TMP / G.TOT_HDCN)),0) AS AVG_PR
+    		, NVL(ROUND(DECODE(G.TOT_HDCN,0,0,G.SRA_SBID_AM_TMP / G.TOT_HDCN)),0) AS SRA_AVG_SBID_UPR
+    		, NVL(ROUND(DECODE(G.TOT_HDCN,0,0,(G.SRA_SBID_AM_TMP - G.LOWS_SBID_LMT_UPR_TMP) / G.TOT_HDCN)),0) AS BIGO
+    		, NVL(ROUND(DECODE(G.TOT_HDCN,0,0,G.LOWS_SBID_LMT_AM / G.TOT_HDCN)),0) AS AVG_PR_TMP
+    		, NVL(ROUND(DECODE(G.TOT_HDCN,0,0,G.SRA_SBID_AM / G.TOT_HDCN)),0) AS SRA_AVG_SBID_UPR_TMP
+    		, NVL(ROUND(DECODE(G.TOT_HDCN,0,0,(G.SRA_SBID_AM - G.LOWS_SBID_LMT_AM) / G.TOT_HDCN)),0) AS BIGO_TMP
     	FROM (    	
 	    	SELECT
 				   DECODE(GROUPING(A.AUC_OBJ_DSC), 1, '일계' ,substr(A.AUC_DT,1, 4) || '-' || substr(A.AUC_DT,5, 2) || '-' || substr(A.AUC_DT,7, 2)) AS AUC_DT                                                          
@@ -28,6 +31,9 @@
 				 , NVL(ROUND(SUM(A.SRA_SBID_AM) ),0) 							AS SRA_SBID_AM
 				 , NVL(ROUND(MAX(A.MAX_SRA_SBID_AM) ),0)						AS MAX_SRA_SBID_AM
 				 , NVL(ROUND(MIN(DECODE(A.SEL_STS_DSC,'22',A.MIN_SRA_SBID_AM)) ),0) 						AS MIN_SRA_SBID_AM
+				 , NVL(ROUND(SUM(A.LOWS_SBID_LMT_AM_TMP) ),0) 							AS LOWS_SBID_LMT_UPR
+				 , NVL(ROUND(SUM(DECODE(A.SEL_STS_DSC,'22',A.LOWS_SBID_LMT_AM_TMP)) ),0) 						AS LOWS_SBID_LMT_UPR_TMP
+				 , NVL(ROUND(SUM(A.SRA_SBID_AM_TMP) ),0) 							AS SRA_SBID_AM_TMP
 			FROM (
 				SELECT
 					A.AUC_DT AS AUC_DT /* 경매일자 */
@@ -44,28 +50,26 @@
 					, COUNT(A.SRA_INDV_AMNNO) AS TOT_HDCN /* 두수 */
 					, SUM(A.COW_SOG_WT) AS TOT_WT /* 우출하 총 중량 */ 
 					, AVG(A.COW_SOG_WT) AS AVG_WT /* 우출하 평균 중량 */
-					, SUM(A.LOWS_SBID_LMT_AM) AS LOWS_SBID_LMT_AM /* 응찰하한가 총계 */
-					, AVG(A.LOWS_SBID_LMT_AM) AS AVG_PR /* 응찰하한가 평균 */
+					, SUM(CASE WHEN A.AUC_OBJ_DSC = '2' AND J.NBFCT_AUC_UPR_DSC ='1' THEN 
+						CASE
+							WHEN Q.SGNO_PRC_DSC = '1' THEN FLOOR((A.LOWS_SBID_LMT_AM * A.COW_SOG_WT * NVL(J.NBFCT_AUC_ATDR_UNT_AM,1)) / Q.CUT_AM) * Q.CUT_AM 
+							WHEN Q.SGNO_PRC_DSC = '2' THEN CEIL((A.LOWS_SBID_LMT_AM * A.COW_SOG_WT  * NVL(J.NBFCT_AUC_ATDR_UNT_AM,1)) / Q.CUT_AM) * Q.CUT_AM 
+							WHEN Q.SGNO_PRC_DSC = '3' THEN ROUND((A.LOWS_SBID_LMT_AM * A.COW_SOG_WT * NVL(J.NBFCT_AUC_ATDR_UNT_AM,1)) / Q.CUT_AM) * Q.CUT_AM
+						END
+					  ELSE A.LOWS_SBID_LMT_AM END) AS LOWS_SBID_LMT_AM /* 응찰하한가 총계 */
+					, SUM(A.LOWS_SBID_LMT_AM) AS LOWS_SBID_LMT_AM_TMP /* 응찰하한가 총계 */
+					, SUM(A.SRA_SBID_AM) AS SRA_SBID_AM /* 축산낙찰금액 */
 					, CASE
 						WHEN A.AUC_OBJ_DSC = '2' THEN ( SUM(A.SRA_SBID_UPR * NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1)))
 						ELSE SUM(A.SRA_SBID_AM)
-					END AS SRA_SBID_AM /* 축산낙찰금액 */
-					, CASE
-						WHEN A.AUC_OBJ_DSC = '2' THEN ( AVG(A.SRA_SBID_UPR * NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1)))
-						ELSE AVG(A.SRA_SBID_AM)
-					END AS SRA_AVG_SBID_UPR /* 축산평균낙찰금액 */
-					, CASE
-						WHEN A.AUC_OBJ_DSC = '2' THEN ( MAX(A.SRA_SBID_UPR * NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1)))
-						ELSE MAX(A.SRA_SBID_AM)
-					END AS MAX_SRA_SBID_AM /* 축산최고가 */
-					, CASE
-						WHEN A.AUC_OBJ_DSC = '2' THEN ( MIN(A.SRA_SBID_UPR * NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1)))
-						ELSE MIN(A.SRA_SBID_AM)
-					END AS MIN_SRA_SBID_AM /* 축산최저가 */
+					END AS SRA_SBID_AM_TMP /* 축산낙찰금액 */
+					, MAX(A.SRA_SBID_AM) AS MAX_SRA_SBID_AM /* 축산최고가 */
+					, MIN(A.SRA_SBID_AM) AS MIN_SRA_SBID_AM /* 축산최저가 */
 				FROM
 					TB_LA_IS_MH_SOG_COW A ,
 					TB_LA_IS_MM_INDV B ,
-					TB_LA_IS_MM_ENV_EST J
+					TB_LA_IS_MM_ENV_EST J ,
+					TB_LA_IS_MH_AUC_QCN Q
 				  WHERE A.NA_BZPLC        = #{ss_na_bzplc}
 				    AND A.AUC_OBJ_DSC     = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END
 				    AND A.AUC_DT          BETWEEN #{auc_st_dt} AND #{auc_ed_dt}
@@ -79,7 +83,10 @@
 					AND A.NA_BZPLC = B.NA_BZPLC
 					AND A.SRA_SRS_DSC = B.SRA_SRS_DSC /* 축산축종구분코드 */
 					AND A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO /* 축산개체관리번호 */
-					AND A.NA_BZPLC = J.NA_BZPLC
+					AND A.NA_BZPLC = J.NA_BZPLC					
+					AND A.NA_BZPLC = Q.NA_BZPLC 
+					AND A.AUC_OBJ_DSC = DECODE(Q.AUC_OBJ_DSC,'0',A.AUC_OBJ_DSC,Q.AUC_OBJ_DSC)
+					AND A.AUC_DT = Q.AUC_DT
 				GROUP BY
 					A.AUC_DT,
 					A.AUC_OBJ_DSC,
@@ -99,6 +106,7 @@
 		) G
     ]]>
     </select>
+    
     
     <select id="LALM0514_selList_bak" resultType="hashMap">
     <![CDATA[   

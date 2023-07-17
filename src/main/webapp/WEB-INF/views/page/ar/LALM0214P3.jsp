@@ -270,7 +270,7 @@
       			$('#grd_MmInsSogCow').getDataIDs().forEach((rowid,i)=>{
 					if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR') == '1'){
 	             	 	errCnt++;
-	             	    $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '');
+	             	    $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '-',{background:"rgb(255 0 0)"});
 	             	    if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_ERR_AUC_PRG_SQ') == '1'){
 	             	    	var aucPrgSq = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'AUC_PRG_SQ');
 	                 	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'AUC_PRG_SQ', aucPrgSq,{background:"rgb(255 0 0)"});             	        	
@@ -281,17 +281,21 @@
 						}
 					}
 					var rmkCntn = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'RMK_CNTN');
-      				if(rmkCntn.length > 30){		 
+      				if(rmkCntn.length > 30){
+      					errCnt++;
+      					$("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '-',{background:"rgb(255 0 0)"});
                   	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RMK_CNTN', rmkCntn ,{background:"rgb(255 0 0)"});      
-                  	  	$('#grd_MmInsSogCow').jqGrid('setCell',rowid,'CHK_VAILD_ERR','1');
-      	    		 }
+                  	  	$('#grd_MmInsSogCow').jqGrid('setCell',rowid,'CHK_VAILD_ERR','1');      	    		 
 					}
       				//2023.06.22 엑셀업로드시 번식우가 아니면서 임신구분값이 5가 아닌경우 에러로 표기
 					var ppgcowFeeDsc = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'PPGCOW_FEE_DSC');
-      				if(ppgcowFeeDsc != '5' && aucObjDsc !='3'){		 
+					var aucObjDsc = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'AUC_OBJ_DSC');
+      				if(ppgcowFeeDsc != '5' && aucObjDsc !='3'){
+      					errCnt++;
+      					$("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '-',{background:"rgb(255 0 0)"});
                   	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'PPGCOW_FEE_DSC', rmkCntn ,{background:"rgb(255 0 0)"});      
                   	  	$('#grd_MmInsSogCow').jqGrid('setCell',rowid,'CHK_VAILD_ERR','1');
-      	    		 }
+      				 }
 				});
     			if(errCnt==0) $('#pb_allSyncIndv').attr('disabled',false);
 	         }
@@ -311,8 +315,8 @@
             fn_CreateGrid(data);
  			 
   			$('#grd_MmInsSogCow').getDataIDs().forEach((rowid,i)=>{
-				if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR') == '1'){
-             	    $("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '');
+				if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR') == '1'){					
+					$("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '-',{background:"rgb(255 0 0)"});
              	    if($('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_ERR_AUC_PRG_SQ') == '1'){
              	    	var aucPrgSq = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'AUC_PRG_SQ');
                  	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'AUC_PRG_SQ', aucPrgSq,{background:"rgb(255 0 0)"});             	        	
