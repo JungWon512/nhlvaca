@@ -207,7 +207,7 @@
 		                            	<td>
 		                            		<input type="text" class="number" id="sra_pyiva" maxlength="8">
 		                            	</td>
-		                            	<th scope="row"><span>사료대금</span></th>
+		                            	<th scope="row"><span>사료대금(공제금)</span></th>
 		                            	<td colspan=2>
 		                            		<input type="text" class="number" id="sra_fed_spy_am" maxlength="8">
 		                            	</td>

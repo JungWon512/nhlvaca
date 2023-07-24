@@ -1254,11 +1254,11 @@ var mCnt = 0;
    			} else if(na_bzplc == '8808990656649') { //의성
 				ReportPopup('LALM0412R0_0_4',p_param, p_grid, 'T');//원본
 			// 전주김제완주 보은옥천 옥천지점:8808990671086 파주연천:8808990659787 거창(번식우 제외):8808990659701, 영암:8808990689760, 고창부안:8808990657189, 횡성: 8808990656885
-			// , 강진완도 :  8808990657103, 양평 :  8808990643625
+			// , 강진완도 :  8808990657103, 양평 :  8808990643625 , 동해삼척태백축협 :  8808990652825
 			} else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485' || na_bzplc == '8808990671086' || na_bzplc == '8808990659787'  
 				|| (na_bzplc == '8808990689760' && $("#auc_obj_dsc").val() != '3' ) || (na_bzplc == '8808990659701' && $("#auc_obj_dsc").val() != '3')
 				|| na_bzplc == '8808990657189' || na_bzplc == '8808990656885' || na_bzplc == '8808990657103'|| na_bzplc == '8808990643625'
-				|| na_bzplc == '8808990656533' || na_bzplc == '8808990811710'
+				|| na_bzplc == '8808990656533' || na_bzplc == '8808990811710' || na_bzplc =='8808990652825'
 			){
 				ReportPopup('LALM0412R0_9',p_param, p_grid, 'T');//원본
 				//ReportPopup('LALM0412R0_1_3',p_param, p_grid, 'V');
@@ -1346,7 +1346,7 @@ var mCnt = 0;
 			if (na_bzplc == '8808990687094') {  // 영주:              8808990687094
 				ReportPopup('LALM0412R1_4',TitleData, 'grd_MhSogCow', 'T');
 			}else if(na_bzplc == '8808990656557') { //예천
-   				ReportPopup('LALM0412R1_0',p_param, p_grid, 'V');
+   				ReportPopup('LALM0412R1_0',TitleData, 'grd_MhSogCow', 'T');
    			}else{
 				ReportPopup('LALM0412R1_9',TitleData, 'grd_MhSogCow', 'T');
 				//ReportPopup('LALM0412R1_1',TitleData, 'grd_MhSogCow', 'T');

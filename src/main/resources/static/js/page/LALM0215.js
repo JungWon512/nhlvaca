@@ -2585,7 +2585,8 @@
            		
            		$("#io_sogmn_maco_yn").val(result.MACO_YN);
            		$("#sra_farm_acno").val(result.SRA_FARM_ACNO);
-        		if(fn_isDate(result.PTUR_PLA_DT) && $('#auc_dt').val().replace('-','') < result.PTUR_PLA_DT.replace('-','')){        			
+           		
+        		if($('#auc_obj_dsc').val() == '3' && fn_isDate(result.PTUR_PLA_DT) && $('#auc_dt').val().replace('-','') < result.PTUR_PLA_DT.replace('-','')){        			
             		$('#ppgcow_fee_dsc').val('1').change();
             		$('#afism_mod_dt').val(result.PTUR_PLA_DT).focusout().change();
         		}

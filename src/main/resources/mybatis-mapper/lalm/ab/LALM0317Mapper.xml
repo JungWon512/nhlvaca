@@ -34,9 +34,9 @@
              , A.LVST_MKT_TRPL_AMNNO            /* 가축시장거래처관리번호(수의사)       */
              , A.MT12_OVR_YN                    /* 12개월이상여부                       */
              , A.PPGCOW_FEE_DSC                 /* 번식우수수료구분코드                 */
-             , A.PRNY_JUG_YN                    /* 임신감정여부                         */
+             , NVL(A.PRNY_JUG_YN,'0') PRNY_JUG_YN                    /* 임신감정여부                         */
              , A.PRNY_YN                        /* 임신여부                             */
-             , A.NCSS_JUG_YN                    /* 괴사감정여부                         */
+             , NVL(A.NCSS_JUG_YN,'0') NCSS_JUG_YN                    /* 괴사감정여부                         */
              , A.NCSS_YN                        /* 괴사여부                             */
              , A.TRPCS_PY_YN                    /* 운송비지급여부                       */
              , A.SRA_TRPCS                      /* 축산운송비                           */
@@ -46,7 +46,7 @@
              , A.AFISM_MOD_DT                   /* 인공수정일자                         */
              , A.PRNY_MTCN                      /* 임신개월수                           */
              , A.AFISM_MOD_CTFW_SMT_YN          /* 인공수정증명서제출여부               */
-             , A.RMHN_YN                        /* 제각여부                             */
+             , NVL(A.RMHN_YN,'0') RMHN_YN                       /* 제각여부                             */
              , A.SRA_PDMNM                      /* 축산생산자명                         */
              , A.SRA_PD_RGNNM                   /* 축산생산지역명                       */
              , A.RMK_CNTN                       /* 비고내용                             */
