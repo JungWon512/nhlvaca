@@ -1103,6 +1103,11 @@ var mCnt = 0;
 	       TitleData.srch_condition =  '[경매일자 : ' + $('#auc_dt').val() + ']'
 	                                +  '/ [경매대상 : ' + $( "#auc_obj_dsc option:selected").text()  + ']';
 	       
+	       //양평축협일시 그리드 하단에 문구 추가
+	       if(na_bzplc == '8808990643625'){
+		       TitleData.tmp_text = '금번 접종한 주사는 대사촉진제 및 구충제입니다.';	    	   
+	       }
+	       
 	       fn_BtnAdj_fm_print(TitleData, "grd_MhSogCow");
 	
 		}
@@ -1262,7 +1267,9 @@ var mCnt = 0;
 			){
 				ReportPopup('LALM0412R0_9',p_param, p_grid, 'T');//원본
 				//ReportPopup('LALM0412R0_1_3',p_param, p_grid, 'V');
-			} else{
+			}else if(na_bzplc == '8808990656557') { //예천
+   				ReportPopup('LALM0412R0_0_5_2',p_param, p_grid, 'V');
+   			} else{
 				ReportPopup('LALM0412R0_0',p_param, p_grid, 'T');//원본
 			}
 		// 2형식

@@ -13,7 +13,12 @@
  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 </head>
 
-
+<style>
+.fontBold{
+	font-size:15px;
+	font-weight:700;
+}
+</style>
 <script type="text/javascript">
 /*------------------------------------------------------------------------------
  * 1. 단위업무명   : 가축시장
@@ -385,9 +390,9 @@
 						        	{name:"INDV_SEX_C",                      index:"INDV_SEX_C",                      width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
 						        	{name:"KPN_NO",                          index:"KPN_NO",                          width:100, align:'center'},
 						        	{name:"COW_SOG_WT",                      index:"COW_SOG_WT",                      width:100, align:'center'},
-						        	{name:"LOWS_SBID_LMT_AM",                index:"LOWS_SBID_LMT_AM",                width:100, align:'right' , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-						        	{name:"ATDR_AM",                         index:"ATDR_AM",                         width:100, align:'right' , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-						        	{name:"DIF_AM",							 index:"DIF_AM",						  width:100, align:'right' , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+						        	{name:"LOWS_SBID_LMT_AM",                index:"LOWS_SBID_LMT_AM",                width:100, align:'right' , sorttype: "number",classes:"fontBold", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+						        	{name:"ATDR_AM",                         index:"ATDR_AM",                         width:100, align:'right' , sorttype: "number",classes:"fontBold", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+						        	{name:"DIF_AM",							 index:"DIF_AM",						  width:100, align:'right' , sorttype: "number",classes:"fontBold", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
 						        	{name:"SRA_MWMNNM",                      index:"SRA_MWMNNM",                      width:100, align:'center'},
 						        	{name:"LVST_AUC_PTC_MN_NO",				 index:"LVST_AUC_PTC_MN_NO",			  width:100, align:'center', sorttype: "number"},
 						        	{name:"SRA_INDV_PASG_QCN",               index:"SRA_INDV_PASG_QCN",               width:100, align:'center'},
