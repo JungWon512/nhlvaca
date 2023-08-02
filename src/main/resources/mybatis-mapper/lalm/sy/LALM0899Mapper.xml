@@ -1144,8 +1144,8 @@
 	          || ' '
 	          || TO_CHAR(a.auc_prg_sq)
 	          || '번 '
-	          || case when #{ss_na_bzplc} = '8808990656557' or #{ss_na_bzplc} = '8808990762654' or #{ss_na_bzplc} = '8808990811710' then '' else '중량(' end
-	          || case when #{ss_na_bzplc} = '8808990656557' or #{ss_na_bzplc} = '8808990762654' or #{ss_na_bzplc} = '8808990811710' then '' --예천 : 8808990656557 , 테스트 8808990643625
+	          || case when #{ss_na_bzplc} = '8808990656557' or #{ss_na_bzplc} = '8808990762654' or (#{ss_na_bzplc} = '8808990811710' and A.AUC_OBJ_DSC != '2') or (#{ss_na_bzplc} = '8808990659008' and A.AUC_OBJ_DSC != '2') then '' else '중량(' end
+	          || case when #{ss_na_bzplc} = '8808990656557' or #{ss_na_bzplc} = '8808990762654' or (#{ss_na_bzplc} = '8808990811710' and A.AUC_OBJ_DSC != '2') or (#{ss_na_bzplc} = '8808990659008' and A.AUC_OBJ_DSC != '2') then '' --예천 : 8808990656557 , 테스트 8808990643625
 	                  else Replace(TO_CHAR(a.cow_sog_wt),'.000', '') || ' kg) '
 	             end                                                      
 	          || '낙찰가 ' || case when #{ss_na_bzplc} = '8808990689180' then REGEXP_REPLACE(REVERSE(REGEXP_REPLACE(REVERSE(TO_CHAR(a.sra_sbid_am- (c.sra_sog_fee + c.sra_acd_rvgam + c.sra_ncss_jug_fee + c.sra_prny_jug_fee + c.sra_mdccs + c.sra_injt_fee + c.sra_shnm + c.sra_pdg_rc_fee + c.sra_rmhn_fee + c.sra_tru_fee+a.sra_pyiva + a.sra_trpcs + a.sra_fed_spy_am + a.td_rc_cst + a.mt12_ovr_fee))), '([0-9]{3})','\1,')),'^,','')

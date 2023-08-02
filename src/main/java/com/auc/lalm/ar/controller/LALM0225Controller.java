@@ -63,5 +63,18 @@ public class LALM0225Controller {
 		Map<String, Object> reMap	= commonFunc.createResultCUD(inMap);
 		return reMap;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/LALM0225P1_updDnaYn", method=RequestMethod.POST)
+	public Map<String, Object> LALM0225P1_updDnaYn(ResolverMap rMap) throws Exception{				
+				
+		Map<String, Object> map   	= convertConfig.conMapWithoutXxs(rMap);
+		
+		List<Map<String, Object>> reList = lalm0225Service.LALM0225P1_updDnaYn(map);
+		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
+		
+		return reMap;
+		
+	}
 
 }

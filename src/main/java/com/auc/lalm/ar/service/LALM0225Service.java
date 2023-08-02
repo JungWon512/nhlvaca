@@ -20,4 +20,12 @@ public interface LALM0225Service {
 	 */
 	Map<String, Object> LALM0225_insSogCow(Map<String, Object> map) throws Exception;
 
+	/**
+	 * @methodName    : LALM0225P1_updDnaYn
+	 * @author        : Jung JungWon
+	 * @date          : 2023.07.05
+	 * @Comments      : 
+	 */
+	List<Map<String, Object>> LALM0225P1_updDnaYn(Map<String, Object> map) throws Exception;
+
 }

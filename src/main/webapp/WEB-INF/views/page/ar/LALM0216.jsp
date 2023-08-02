@@ -747,8 +747,8 @@ var na_bzplc = App_na_bzplc;
 							return o;
 						}); 
             			 ReportPopup('LALM0216R3_5_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-            		// ★양평 : 8808990643625	 
-            		 } else if(na_bzplc == '8808990643625') {
+            		// ★양평 : 8808990643625	 , ★원주 : 8808990656434	 
+            		 } else if(na_bzplc == '8808990643625' || na_bzplc == '8808990656434') {
 						ReportPopup('LALM0216R3_5_0',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 } else {
 						ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1221,9 +1221,9 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990657622') {
              			 ReportPopup('LALM0216R3_101',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
-             		 // ★ 담양 : 8808990656540 (브랜드 삭제 후 경매일자 추가)
+             		 // ★ 담양 : 8808990656540
              		 } else if(na_bzplc == '8808990656540') {
-             			 ReportPopup('LALM0216R3_106',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_6_0',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 // ★ 포항 : 8808990679549
              		 } else if(na_bzplc == '8808990679549') {
              			 ReportPopup('LALM0216R3_108',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그

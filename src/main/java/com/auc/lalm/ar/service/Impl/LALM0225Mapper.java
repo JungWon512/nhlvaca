@@ -36,5 +36,13 @@ public interface LALM0225Mapper {
 	 */
 	int LALM0225_delSogCow(Map<String, Object> map);
 
+	/** 출장우 친자검사일치 수정
+	 * @methodName    : LALM0225P1_updDnaYn
+	 * @author        : Jung JungWon
+	 * @date          : 2023.07.05
+	 * @Comments      : 
+	 */
+	int LALM0225P1_updDnaYn(Map<String, Object> map);
+
 
 }
