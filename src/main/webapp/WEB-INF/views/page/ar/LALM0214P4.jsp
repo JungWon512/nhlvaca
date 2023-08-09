@@ -458,7 +458,7 @@
                                              
                                           }
                                      },
-                                     {name:"PRNY_MTCN",          index:"PRNY_MTCN",          width:50,  align:'right', editable:true, formatter:'integer', formatoptions:{thousandsSeparator:','},
+                                     {name:"PRNY_MTCN",          index:"PRNY_MTCN",          width:50,  align:'right', editable:true, formatter:'integer', formatoptions:{thousandsSeparator:',',decimalPlaces:0},
                                     	 editoptions:{
                                              dataInit:function(e){$(e).addClass('grid_number');},
                                              maxlength:"3",

@@ -169,7 +169,18 @@ var na_bzplc = App_na_bzplc;
          	});
             return;
      	}
-	
+
+        
+        var results_6 = null; 
+   	    results_6 = sendAjaxFrm("frm_Search", "/Common_selAucQcn", "POST");
+   	  
+        if(results_6.status != RETURN_SUCCESS){
+            showErrorMessage(results_6);
+            return;
+        }else{     
+            result_6 = setDecrypt(results_6);
+           	$("#qcn").val(result_6[0].QCN)	
+        }	
      	
         	
         	
@@ -208,22 +219,8 @@ var na_bzplc = App_na_bzplc;
             }else{
             	result = setDecrypt(results);
             }
-            
-            var results_6 = null; 
-       	    results_6 = sendAjaxFrm("frm_Search", "/Common_selAucQcn", "POST");
-       	  
-            if(results_6.status != RETURN_SUCCESS){
-                showErrorMessage(results_6);
-                return;
-            }else{     
-                result_6 = setDecrypt(results_6);
-                 
-            }	
-           	$("#qcn").val(result_6[0].QCN)	
           
             fn_CreateGrid_3(result);
-          
-         
             	
      	}else if($("#tab_4").hasClass("on")){
      		var results = sendAjaxFrm("frm_Search", "/LALM0216_selList_4", "POST"); 
@@ -2091,10 +2088,10 @@ var na_bzplc = App_na_bzplc;
 		var index = 0;
 		$('#'+frmId).getRowData().forEach((o,i)=>{
 			//영암:8808990689760 | 익산:8808990227283 | 밀양 : 8808990656663 | 임실 : 8808990660783 | 영광 : 8808990811710 | 예천 : 8808990656557 
-			//동삼태 : 8808990652825
+			//동삼태 : 8808990652825 | 양평 : 8808990643625
 			//일시 이력제월령 표기
 			if(na_bzplc == '8808990227283' || na_bzplc == '8808990656663' || na_bzplc == '8808990660783' || na_bzplc == '8808990811710' || na_bzplc =='8808990656557'
-			|| na_bzplc == '8808990652825'){
+				|| na_bzplc == '8808990652825' || na_bzplc == '8808990643625'){
 				o.MTCN = o.MTCN+'개월';	            					
 			}else{
 				//TO-DO 만월령 쿼리 추가

@@ -350,6 +350,7 @@
                      	if(result){
                      		$("#vhc_shrt_c").val(result.VHC_SHRT_C);
     	                    $("#vhc_drv_caffnm").val(result.VHC_DRV_CAFFNM);
+    	                    $("#vhc_drv_caffnm").blur();
                      	}
                      }); 
                  }
@@ -368,6 +369,7 @@
             	if(result){
             		$("#vhc_shrt_c").val(result.VHC_SHRT_C);
                     $("#vhc_drv_caffnm").val(result.VHC_DRV_CAFFNM);
+                    $("#vhc_drv_caffnm").blur();
             	}
             });
         });

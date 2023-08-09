@@ -184,8 +184,11 @@
     	TitleData.sub_title = "";
     	TitleData.unit="";
     	TitleData.srch_condition=  '[경매대상 : ' + $('#cb_auc_obj_dsc option:selected').text() +' / 경매일자 : '+ $('#auc_st_dt').val() + '~' + $('#auc_ed_dt').val() +' / 출하주 : ' + $('#ftsnm').val() + ' / 관내외구분 : ' + $('#v_jrdwo_dsc').val() +  ']';
-
-    	ReportPopup('LALM0515R',TitleData, 'mainGrid', 'V');
+    	if(App_na_bzplc == '8808990656557'){
+        	ReportPopup('LALM0515R_1',TitleData, 'mainGrid', 'V');    		
+    	}else{
+        	ReportPopup('LALM0515R',TitleData, 'mainGrid', 'V');    		
+    	}
     		
    	}
     

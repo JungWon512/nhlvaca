@@ -46,25 +46,9 @@
             , a.hdwk_rg_yn                                   -- 수작업여부
             , a.anw_yn                                       -- 한우종합여부
             , a.SRA_FED_SPY_YN                               -- 사료사용여부
-            , case when (a.sra_farm_acno = '' or a.sra_farm_acno is null) then
-                       case when LENGTH(a.new_sra_farm_acno) = 12 then SUBSTR(a.new_sra_farm_acno,1,8) ||'****'
-                            when LENGTH(a.new_sra_farm_acno) = 13 then SUBSTR(a.new_sra_farm_acno,1,9) ||'****'
-                            when LENGTH(a.new_sra_farm_acno) = 14 then SUBSTR(a.new_sra_farm_acno,1,10) ||'****'
-                            when LENGTH(a.new_sra_farm_acno) = 15 then SUBSTR(a.new_sra_farm_acno,1,11) ||'****'
-                            when LENGTH(a.new_sra_farm_acno) = 16 then SUBSTR(a.new_sra_farm_acno,1,12) ||'****'
-                            when LENGTH(a.new_sra_farm_acno) = 17 then SUBSTR(a.new_sra_farm_acno,1,13) ||'****'
-                            when LENGTH(a.new_sra_farm_acno) = 18 then SUBSTR(a.new_sra_farm_acno,1,14) ||'****'
-                       else a.new_sra_farm_acno end
-                   else
-                       case when LENGTH(a.sra_farm_acno) = 12 then SUBSTR(a.sra_farm_acno,1,8) ||'****'
-                            when LENGTH(a.sra_farm_acno) = 13 then SUBSTR(a.sra_farm_acno,1,9) ||'****'
-                            when LENGTH(a.sra_farm_acno) = 14 then SUBSTR(a.sra_farm_acno,1,10) ||'****'
-                            when LENGTH(a.sra_farm_acno) = 15 then SUBSTR(a.sra_farm_acno,1,11) ||'****'
-                            when LENGTH(a.sra_farm_acno) = 16 then SUBSTR(a.sra_farm_acno,1,12) ||'****'
-                            when LENGTH(a.sra_farm_acno) = 17 then SUBSTR(a.sra_farm_acno,1,13) ||'****'
-                            when LENGTH(a.sra_farm_acno) = 18 then SUBSTR(a.sra_farm_acno,1,14) ||'****'
-                       else a.sra_farm_acno end
-                   end as sra_farm_acno
+	        , CASE WHEN #{ss_security} = '1' THEN NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO)
+	               ELSE SUBSTRING(NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO),1,LENGTH(NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO)) -4) || '****'
+	          END AS SRA_FARM_ACNO
             , case when (a.sra_farm_acno = '' or a.sra_farm_acno is null) then a.new_sra_farm_acno else a.sra_farm_acno end  as io_sra_farm_acno
             , a.birth
             , RTRIM(a.FTSNM)      as ORG_FTSNM
