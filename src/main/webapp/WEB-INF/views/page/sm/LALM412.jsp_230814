@@ -1263,24 +1263,20 @@ var mCnt = 0;
    				ReportPopup('LALM0412R0_0_4_2',p_param, p_grid, 'V');
    			} else if(na_bzplc == '8808990656649') { //의성
 				ReportPopup('LALM0412R0_0_4',p_param, p_grid, 'T');//원본
-			// 전주김제완주 보은옥천 옥천지점:8808990671086 , 파주연천:8808990659787
+			// 전주김제완주 보은옥천 옥천지점:8808990671086 파주연천:8808990659787 거창(번식우 제외):8808990659701, 영암:8808990689760
 			// , 고창부안:8808990657189, 횡성: 8808990656885, 강진완도 :  8808990657103, 양평 :  8808990643625 
-			// , 장흥 :  8808990656533, 영광 :  8808990811710, 동해삼척태백축협 :  8808990652825, 속초양양 : 8808990806426, 고령성주 : 8808990659695, 강릉 : 8808990656878
-			// 영천 : 8808990656687 , 나주 : 8808990659275
-			// 번식우 제외: 영암:8808990659701, 거창:8808990659701, 담양:8808990656540
+			// , 장흥 :  8808990656533, 영광 :  8808990811710, 동해삼척태백축협 :  8808990652825, 속초양양 : 8808990806426, 고령성주 : 8808990659695
 			} else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485' || na_bzplc == '8808990671086' || na_bzplc == '8808990659787'  
+				|| (na_bzplc == '8808990689760' && $("#auc_obj_dsc").val() != '3' ) || (na_bzplc == '8808990659701' && $("#auc_obj_dsc").val() != '3')
 				|| na_bzplc == '8808990657189' || na_bzplc == '8808990656885' || na_bzplc == '8808990657103'|| na_bzplc == '8808990643625'
-				|| na_bzplc == '8808990656533' || na_bzplc == '8808990811710' || na_bzplc =='8808990652825' || na_bzplc =='8808990806426' || na_bzplc =='8808990659695' || na_bzplc =='8808990656878'
-				|| na_bzplc =='8808990656687' || na_bzplc =='8808990659275'
-				|| ((na_bzplc == '8808990689760' || na_bzplc == '8808990659701' || na_bzplc =='8808990656540') && $("#auc_obj_dsc").val() != '3' )
+				|| na_bzplc == '8808990656533' || na_bzplc == '8808990811710' || na_bzplc =='8808990652825' || na_bzplc =='8808990806426' || na_bzplc =='8808990659695'
+				|| (na_bzplc =='8808990659695' && $("#auc_obj_dsc").val() =='2')
 			){
 				ReportPopup('LALM0412R0_9',p_param, p_grid, 'T');//원본
 				//ReportPopup('LALM0412R0_1_3',p_param, p_grid, 'V');
-			}else if(na_bzplc == '8808990656519' && $("#auc_obj_dsc").val() != '3') { //사천
-   				ReportPopup('LALM0412R0_10',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656557') { //예천
+			}else if(na_bzplc == '8808990656557') { //예천
    				ReportPopup('LALM0412R0_0_5_2',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656540') { //담양
+   			}else if(na_bzplc == '8808990659695') { //담양
    				ReportPopup('LALM0412R0_0_5_3',p_param, p_grid, 'V');
    			} else{
 				ReportPopup('LALM0412R0_0',p_param, p_grid, 'T');//원본
@@ -1299,15 +1295,11 @@ var mCnt = 0;
    				ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656557') { //예천
    				ReportPopup('LALM0412R0_0_5',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656434') { //원주
-   				ReportPopup('LALM0412R0_0_6',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615') { //고령성주  ,나주, 구미칠곡
+   			}else if(na_bzplc == '8808990659695') { //고령성주
    				ReportPopup('LALM0412R0_0_7',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656540') { //담양
-   				ReportPopup('LALM0412R0_0_3_1',p_param, p_grid, 'V');
    			} else {	
    				//ReportPopup('LALM0412R0_5_3',p_param, p_grid, 'V');
-   				if((na_bzplc == '8808990656236' || na_bzplc == '8808990656519') && $("#auc_obj_dsc").val()=='3'){
+   				if(na_bzplc == '8808990656236' && $("#auc_obj_dsc").val()=='3'){
    					ReportPopup('LALM0412R0_0_3',p_param, p_grid, 'V');
    				}else{
    					ReportPopup('LALM0412R0_0_1',p_param, p_grid, 'V');
@@ -1378,8 +1370,8 @@ var mCnt = 0;
 				ReportPopup('LALM0412R1_9',TitleData, 'grd_MhSogCow', 'T');
 				//ReportPopup('LALM0412R1_1',TitleData, 'grd_MhSogCow', 'T');
 			}
+
 			fn_chgAucEntrDdl();
-			
 		}
 		function fn_BtnAtfCvn(){
 			
@@ -1441,7 +1433,6 @@ var mCnt = 0;
 			//$("#qcn").val(result_6[0].QCN)
 	        ReportPopup('LALM0412R3',TitleData, 'grd_MhSogCow', 'T');
 		}
-		
 		function fn_getKNumber(number){
 			var kNumber = ['','일','이','삼','사','오','육','칠','팔','구'];
 			var tenThousandUnit = ['','만','억','조'];
@@ -1465,6 +1456,7 @@ var mCnt = 0;
 			}
 			return answer;
 		}
+		
 		
 		//정산서,채무확인서 출력시 경매 참가번호 거래 확정으로 수정
 		function fn_chgAucEntrDdl(){

@@ -172,5 +172,15 @@ public class LALM0412ServiceImpl implements LALM0412Service{
 		reMap.put("insertNum", insertNum);
 		return reMap;
 	}
+	@Override
+	public Map<String, Object> LALM0412_updAucEntrDdl(Map<String, Object> map) throws Exception{
+				
+		Map<String, Object> reMap = new HashMap<String, Object>();		
+		int updateNum = 0;
+		updateNum = lalm0412Mapper.LALM0412_updAucEntrDdl(map);
+		reMap.put("updateNum", updateNum);
+		return reMap;
+		
+	}
 	
 }

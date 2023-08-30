@@ -40,6 +40,14 @@ public interface LALM0412Service {
 	
 	Map<String, Object> LALM0412_insAdj(Map<String, Object> map) throws Exception;
 
+	/**
+	 * @methodName    : LALM0412_updAucEntrDdl
+	 * @author        : Jung JungWon
+	 * @date          : 2023.08.11
+	 * @Comments      : 
+	 */
+	Map<String, Object> LALM0412_updAucEntrDdl(Map<String, Object> map) throws Exception;
+
 	
 	
 

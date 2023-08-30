@@ -182,5 +182,14 @@ public class LALM0412Controller {
 		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);		
 		return reMap;
 	}	
+	
+	@ResponseBody
+	@RequestMapping(value="/LALM0412_updAucEntrDdl", method=RequestMethod.POST)
+	public Map<String, Object> LALM0412_updAucEntrDdl(ResolverMap rMap) throws Exception{
+		Map<String, Object> map   = convertConfig.conMap(rMap);
+		Map<String, Object> inMap = lalm0412Service.LALM0412_updAucEntrDdl(map);
+		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);		
+		return reMap;
+	}	
 
 }

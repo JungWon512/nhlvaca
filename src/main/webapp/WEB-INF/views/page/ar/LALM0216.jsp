@@ -407,9 +407,12 @@ var na_bzplc = App_na_bzplc;
              } else if($("#prto_tpc_5").is(":checked")) {
             	 if($("#auc_obj_dsc").val() == "3") {
             		 ReportPopup('LALM0216R0_4',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
-            	 } else {
+       			//구미칠곡 : 8808990657615
+    		 	}else if(na_bzplc == '8808990657615'){
+    				ReportPopup('LALM0216R0_0',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
+    		 	} else {
             		 ReportPopup('LALM0216R0_1',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
-            	 }
+            	}
              
              // 가로(4형식) - 거창
              } else if($("#prto_tpc_7").is(":checked")) {
@@ -447,9 +450,10 @@ var na_bzplc = App_na_bzplc;
             	     // 당진 : 8808990762654  테스트 : 8808990643625
             		 } else if(na_bzplc == "8808990762654") {
             			 ReportPopup('LALM0216R0_18',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
-            		//양평 : 8808990643625
-            		 } else if(na_bzplc == '8808990643625'){
-            			 ReportPopup('LALM0216R0_0',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
+              		// 양평 : 8808990643625
+                 	}else if(na_bzplc == "8808990643625") {
+                 		var gridData = fnSetGridData1('grd_MhSogCow1');
+                 		ReportPopup('LALM0216R0',TitleData, gridData, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }else {
             			 ReportPopup('LALM0216R0',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }
@@ -681,6 +685,8 @@ var na_bzplc = App_na_bzplc;
             		 // ★의성: 8808990656649 테스트: 8808990643625
             		 if(na_bzplc == '8808990656649') {
             			 ReportPopup('LALM0216R3_1_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 }else if(na_bzplc == '8808990656878') { //강릉
+            			 ReportPopup('LALM0216R3_1_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 } else {
             			 ReportPopup('LALM0216R3_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }
@@ -875,7 +881,12 @@ var na_bzplc = App_na_bzplc;
             		 ReportPopup('LALM0216R3_32',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_21").is(":checked")) {
-            		 ReportPopup('LALM0216R3_35',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 if(na_bzplc == '8808990656687'){ //영천
+                		 ReportPopup('LALM0216R3_1_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 
+            		 }else{
+                		 ReportPopup('LALM0216R3_35',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
+            		 }
             		 
             	 } else if($("#prto_tpc_22").is(":checked")) {
             		 // ★합천: 8808990656236 
@@ -2088,17 +2099,14 @@ var na_bzplc = App_na_bzplc;
 		var index = 0;
 		$('#'+frmId).getRowData().forEach((o,i)=>{
 			//영암:8808990689760 | 익산:8808990227283 | 밀양 : 8808990656663 | 임실 : 8808990660783 | 영광 : 8808990811710 | 예천 : 8808990656557 
-			//동삼태 : 8808990652825 | 양평 : 8808990643625
+			//동삼태 : 8808990652825 | 양평 : 8808990643625 | 사천 : 8808990656519
 			//일시 이력제월령 표기
 			if(na_bzplc == '8808990227283' || na_bzplc == '8808990656663' || na_bzplc == '8808990660783' || na_bzplc == '8808990811710' || na_bzplc =='8808990656557'
-				|| na_bzplc == '8808990652825' || na_bzplc == '8808990643625'){
+				|| na_bzplc == '8808990652825' || na_bzplc == '8808990643625' || na_bzplc == '8808990656519'){
 				o.MTCN = o.MTCN+'개월';	            					
 			}else{
 				//TO-DO 만월령 쿼리 추가
 				o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';
-			}
-			if(o.SRA_INDV_PASG_QCN == '0'){
-				o.SRA_INDV_PASG_QCN = '';
 			}
 			if(o.SRA_INDV_PASG_QCN == '0'){
 				o.SRA_INDV_PASG_QCN = '';

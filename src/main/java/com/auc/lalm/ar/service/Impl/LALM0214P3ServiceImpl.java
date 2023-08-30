@@ -113,7 +113,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 			map.put("modl_no", map.get("auc_prg_sq"));
 
 			map.put("rc_dt", inMap.get("rc_dt"));			
-			map.put("sog_na_trpl_c", "");
+			//map.put("sog_na_trpl_c", "");
 			map.put("vhc_shrt_c", "");
 			map.put("trmn_amnno", "");
 			map.put("lvst_auc_ptc_mn_no", "");	
@@ -194,6 +194,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				result.put("SRA_PDMNM", indvList.get(0).get("FTSNM"));
 				result.put("SRA_PD_RGNNM", indvList.get(0).get("DONGUP"));
 				result.put("MCOW_SRA_INDV_AMNNO", indvList.get(0).get("MCOW_SRA_INDV_AMNNO"));
+				result.put("SOG_NA_TRPL_C", indvList.get(0).get("NA_TRPL_C"));
+				
 				result.put("CHK_IF_SRA_INDV", "1");
 				map.put("fhs_id_no", indvList.get(0).get("FHS_ID_NO"));
 				map.put("farm_amnno", indvList.get(0).get("FARM_AMNNO"));
@@ -300,6 +302,7 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 							result.put("FARM_AMNNO", Demap.get("farm_amnno"));	
 							result.put("SRA_PDMNM", Demap.get("sra_fhsnm"));	
 							result.put("SRA_PD_RGNNM", Demap.get("sra_farm_dongup"));
+							result.put("SOG_NA_TRPL_C", Demap.get("na_trpl_c"));
 						}else {
 							log.debug("개체 인터페이스[4700] 데이터 없음..");
 							result.put("CHK_IF_SRA_INDV", "0");		

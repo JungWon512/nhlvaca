@@ -102,6 +102,24 @@
 				}
 			});
 		});
+		
+        $("#pb_ExcelTempDownload").on('click',function(e){					
+		    var pom = document.createElement('a');
+		    pom.setAttribute('href', '/files/20230808_COW_RECV_DNA.xlsx');
+		    pom.setAttribute('type', 'application/vnd.ms-excel');
+		    pom.setAttribute('download', "출장우예약접수_친자일치.xls");
+		 
+	        pom.click();
+        });
+        $("#pb_ExcelUpload").on('click',function(e){
+            e.preventDefault();
+            this.blur();
+            var pgid = 'LALM0225P1';
+            var menu_id = $("#menu_info").attr("menu_id");
+            parent.layerPopupPage(pgid, menu_id, null, null, 1200, 750,function(result){
+           	 if(result)fn_Search();                
+            });
+        });
 
 		//초기화
 		fn_Init();
@@ -789,8 +807,14 @@
 						<table id="grd_MhSogCow_2">
 						</table>
 					</div>
-				</div>
+				</div>   
 			</div>
+            <div class="tab_box clearfix">                              
+                <div class="fl_R"><!--  //버튼 모두 우측정렬 -->
+                    <button class="tb_btn" id="pb_ExcelTempDownload">엑셀 템플릿</button>
+                    <button class="tb_btn" id="pb_ExcelUpload">엑셀업로드</button>
+                </div> 
+            </div> 
 		</section>
 
 	</div>

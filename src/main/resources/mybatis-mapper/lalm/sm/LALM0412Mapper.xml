@@ -911,6 +911,17 @@
             )
     </insert>
     
+    <update id="LALM0412_updAucEntrDdl">	
+    	UPDATE TB_LA_IS_MH_AUC_ENTR SET
+    		TR_DFN_YN = '1'
+    		, LSCHG_DTM		= SYSDATE         
+			, LS_CMENO      = #{ss_userid}    
+    	WHERE NA_BZPLC= #{ss_na_bzplc}
+    	AND AUC_DT = #{auc_dt}
+    	AND AUC_OBJ_DSC = #{auc_obj_dsc}
+    	AND LVST_AUC_PTC_MN_NO	= #{lvst_auc_ptc_mn_no}
+		AND TRMN_AMNNO          = #{trmn_amnno}
+    </update>
     
     
 </mapper>
