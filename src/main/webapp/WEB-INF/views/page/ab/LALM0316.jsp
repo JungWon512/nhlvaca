@@ -213,10 +213,10 @@
 		var searchResultColNames = [ "응찰자", "응찰자명", "참가<br>번호", "응찰가", "응찰시간",
 				"삭제", "원표번호", "경매일자", "일련번호", "경매대상", "상태구분" ,"경매번호"];
 		var searchResultColModel = [ 
-									{name : "TRMN_AMNNO",         index : "TRMN_AMNNO",     	width : 40,	align : 'center'}, 
+									{name : "TRMN_AMNNO",         index : "TRMN_AMNNO",     	width : 40,	align : 'center' , sorttype: "number"}, 
 									{name : "SRA_MWMNNM",         index : "SRA_MWMNNM",     	width : 50,	align : 'center'}, 
-									{name : "LVST_AUC_PTC_MN_NO", index : "LVST_AUC_PTC_MN_NO", width : 50, align : 'center'}, 
-									{name : "ATDR_AM",            index : "ATDR_AM"            ,width : 60,	align : 'right',formatter : 'integer',formatoptions : {	thousandsSeparator : ',',decimalPlaces : 0}	}, 
+									{name : "LVST_AUC_PTC_MN_NO", index : "LVST_AUC_PTC_MN_NO", width : 50, align : 'center' , sorttype: "number"}, 
+									{name : "ATDR_AM",            index : "ATDR_AM"            ,width : 60,	align : 'right',formatter : 'integer',formatoptions : {	thousandsSeparator : ',',decimalPlaces : 0}	, sorttype: "number"}, 
 									{name : "ATDR_DTM",	          index : "ATDR_DTM",	        width : 100,align : 'center'},
 									{name : "BTNDEL",	          index : "BTNDEL",	            width : 40,	align : 'center',	sortable : false,formatter : gridCboxFormat	},
 									{name : "OSLP_NO",	          index : "OSLP_NO",	        width : 85,	align : 'center',	hidden : true}, 

@@ -188,8 +188,14 @@
              	TitleData.sub_title = "";
              	TitleData.unit="";
              	TitleData.srch_condition=  '[경매일자 : ' + $('#auc_dt').val() + ']'
-             	
-             	ReportPopup('LALM0314R_1' ,TitleData, 'grd_MhSogCow5', 'V'); //기본 출력물
+
+             	if(na_bzplc == '8808990811710'){
+                 	ReportPopup('LALM0314R_1_1' ,TitleData, 'grd_MhSogCow5', 'V'); //기본 출력물             		
+             	}else if(na_bzplc == '8808990659275'){
+                 	ReportPopup('LALM0314R_1_0' ,TitleData, 'grd_MhSogCow5', 'V'); //기본 출력물             		
+             	}else{
+                 	ReportPopup('LALM0314R_1' ,TitleData, 'grd_MhSogCow5', 'V'); //기본 출력물             		
+             	}
          	}
          	if($("#pb_tab2").hasClass("on")){
          		TitleData.title = $("#simp_cnm").val()+ " 일괄경매시작/마감(낙찰대상)";
@@ -202,6 +208,7 @@
          	if($("#pb_tab3").hasClass("on")){
          		TitleData.title = $("#simp_cnm").val()+ " 일괄경매시작/마감(유찰대상)";
              	TitleData.sub_title = "";
+             	if(na_bzplc == '8808990656540') TitleData.sub_title = "출두수 : "+($('#grd_MhSogCow2').getGridParam("reccount")||'0')+" 두";
              	TitleData.unit="";
              	TitleData.srch_condition=  '[경매일자 : ' + $('#auc_dt').val() + ']'
                 +  '/ [경매대상 + ' + $( "#auc_obj_dsc option:selected").text()  + ']';
