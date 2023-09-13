@@ -38,8 +38,10 @@
 	          , hdwk_rg_yn        = nvl(trim(#{HDWK_RG_YN}),'')               /* 수작업여부                       */
 	          , lschg_dtm         = SYSDATE                     /* 최종변경일시                     */
 	          , ls_cmeno          = #{ss_userid}                 /* 최종변경자개인번호               */
-	          , birth 					= nvl(trim(#{BIRTH}),'')		/* 생년월일 */
+	          , birth 			  = nvl(trim(#{BIRTH}),'')		/* 생년월일 */
 	          , mb_intg_no 		= #{mb_intg_no}					/* 통합회원번호 */
+	          /* 2023.08.31 영천축협 요청으로 수정 */	          
+	          , new_sra_farm_acno 		= nvl(trim(#{NEW_SRA_FARM_ACNO}),'')					/* 계좌번호 */
 	      where na_bzplc          = #{ss_na_bzplc}
 	        and fhs_id_no         = nvl(trim(#{FHS_ID_NO}),'')
 	        and farm_amnno        = nvl(trim(#{FARM_AMNNO}),'')
@@ -1884,10 +1886,61 @@
           and  A.auc_dt || A.oslp_no         = f.trmn_amnno(+)
           and  f.auc_obj_dsc(+)     = #{auc_obj_dsc}
           and  f.dpamn_dsc(+)       = '2'
-          and  f.sel_sts_dsc(+)     = '01'
+          and  f.sel_sts_dsc(+)     = '03'
           and  f.tms_type(+)			= #{tms_type}
           and  length(REGEXP_REPLACE(d.cus_mpno, '[^0-9]')) <![CDATA[>=]]> 10
 		order by a.auc_prg_sq
+    </select>
+    
+<!--     개체번호000000000특이사항(출장우내역등록화면 비고내용)ex)친자일치,허리확인등등  상이할경우 즉시 연락바랍니다.(883-8838) -->
+    <select id="LALM0899_selMca3100_201_Rmk" resultType="HashMap">
+        SELECT
+			A.NA_BZPLC
+            , REPLACE(D.CUS_MPNO,'-','')     AS CUS_MPNO          /* 고객휴대폰   */
+            , D.FTSNM || '님'   AS USRNM              /* 응찰자명     */
+ 			, CASE 
+				WHEN A.RMK_CNTN IS NULL THEN ''
+				ELSE ' 개체번호:' ||   SUBSTR(A.SRA_INDV_AMNNO,7,9) || ' 특이사항 :'|| A.RMK_CNTN 
+					 ||' 상이할경우 즉시 연락바랍니다.('|| DECODE(A.NA_BZPLC,'8808990656656','883-8838',B.TELNO) ||')' 
+ 			END    AS MSG_CNTN          /* 메세지내용   */
+			, F.TMS_YN
+			, F.SMS_FWDG_DT
+			, #{AUC_OBJ_DSC}   AS AUC_OBJ_DSC
+			, A.AUC_DT || A.OSLP_NO AS TRMN_AMNNO
+			, D.FTSNM         AS RMS_MN_NAME    /* 수신자명         */
+			, D.CUS_MPNO      AS SMS_RMS_MPNO   /* 수신자전화번호   */
+			, B.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
+			, B.TELNO         AS SMS_TRMS_TELNO /* 발신자전화번호   */
+		FROM TB_LA_IS_MH_SOG_COW  A
+		   , TB_LA_IS_MM_WMC      B
+		   , TB_LA_IS_MM_FHS      D
+		   , TB_LA_IS_MM_INDV     E
+          , TB_LA_IS_MM_SMS F
+		WHERE A.NA_BZPLC            = #{SS_NA_BZPLC}
+		  AND A.AUC_OBJ_DSC         = CASE WHEN #{AUC_OBJ_DSC} = '1' THEN '1'
+		                                   WHEN #{AUC_OBJ_DSC} = '2' THEN '2'
+		                                   WHEN #{AUC_OBJ_DSC} = '3' THEN '3'
+		                                   ELSE A.AUC_OBJ_DSC
+		                              END
+		  AND A.AUC_DT              = #{AUC_DT}
+		  AND A.LED_SQNO            = 1
+		  AND A.DEL_YN              = '0'       
+		  AND A.NA_BZPLC            = B.NA_BZPLC
+		  AND A.NA_BZPLC            = D.NA_BZPLC
+		  AND A.FHS_ID_NO           = D.FHS_ID_NO
+		  AND A.FARM_AMNNO          = D.FARM_AMNNO
+		  AND  A.NA_BZPLC           = E.NA_BZPLC
+		  AND  A.SRA_INDV_AMNNO     = E.SRA_INDV_AMNNO
+		  AND  A.SRA_SRS_DSC        = E.SRA_SRS_DSC
+          AND  A.NA_BZPLC           = F.NA_BZPLC(+)
+          AND  A.AUC_DT || A.OSLP_NO         = F.TRMN_AMNNO(+)
+          AND  F.AUC_OBJ_DSC(+)     = #{AUC_OBJ_DSC}
+          AND  F.DPAMN_DSC(+)       = '2'
+          AND  F.SEL_STS_DSC(+)     = '04'
+          AND  F.TMS_TYPE(+)			= #{TMS_TYPE}
+          AND  LENGTH(REGEXP_REPLACE(D.CUS_MPNO, '[^0-9]')) <![CDATA[>=]]> 10
+          AND TRIM(A.RMK_CNTN) IS NOT NULL
+		ORDER BY A.AUC_PRG_SQ
     </select>
 </mapper>
 
