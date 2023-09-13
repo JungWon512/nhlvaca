@@ -755,7 +755,7 @@ var na_bzplc = App_na_bzplc;
 						ReportPopup('LALM0216R3_5_0',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
 	                 // 영천축협 : 8808990656687
 	     	         } else if(na_bzplc == '8808990656687') {
-	     	        	ReportPopup('LALM0216R3_1_3',TitleData, grid4, 'V');
+	     	        	ReportPopup('LALM0216R3_5_2',TitleData, grid4, 'V');
             		 } else {
 						ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }            	 
