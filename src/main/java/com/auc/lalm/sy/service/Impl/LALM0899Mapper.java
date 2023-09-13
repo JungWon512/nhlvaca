@@ -117,4 +117,12 @@ public interface LALM0899Mapper {
 	Map<String, Object> LALM0899_selMca5100AlarmTalkId(Map<String, Object> map) throws Exception;
 
 	List<Map<String, Object>> LALM0899_selMca3100_201_Recv(Map<String, Object> map) throws Exception;
+
+	/**
+	 * @methodName    : LALM0899_selMca3100_201_Rmk
+	 * @author        : Jung JungWon
+	 * @date          : 2023.08.24
+	 * @Comments      : 
+	 */
+	List<Map<String, Object>> LALM0899_selMca3100_201_Rmk(Map<String, Object> map) throws Exception;
 }

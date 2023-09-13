@@ -263,6 +263,7 @@
 	<update id="LALM0225P1_updDnaYn" parameterType="hashMap">
 		UPDATE TB_LA_IS_MH_COW_RECV SET
 			DNA_JUG_RESULT = #{dna_jug_result} 
+			, DNA_YN_CHK = '1' 
 		WHERE NA_BZPLC = #{ss_na_bzplc}
 		AND AUC_DT = #{auc_dt}
 		AND SRA_INDV_AMNNO = #{sra_indv_amnno}

@@ -321,7 +321,7 @@
 									{name:"SRA_FARM_ACNO",        index:"SRA_FARM_ACNO",        width:120, sortable:false, align:'center'},
 									{name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable:false, align:'left'},
 									{name:"DNA_YN_CHK",           index:"DNA_YN_CHK",           width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"DNA_JUG_RESULT",       index:"DNA_JUG_RESULT",       width:60,  sortable:false, align:'center'},
+									{name:"DNA_JUG_RESULT",       index:"DNA_JUG_RESULT",       width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:"1:일치;2:불일치;3:미확인"}},
 									
 									{name:"TRPCS_PY_YN",          index:"TRPCS_PY_YN",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 									{name:"VHC_DRV_CAFFNM",       index:"VHC_DRV_CAFFNM",       width:80,  sortable:false, align:'center'},

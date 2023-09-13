@@ -122,6 +122,10 @@
      	var rowData = $('#grd_MmInsSogCow').getRowData();
     
 		var booleanRequierd = rowData.some((o,i)=>{
+			if(fn_isNull(o.SRA_INDV_AMNNO) || fn_isNull(o.AUC_DT) ){    			 
+				MessagePopup('OK','필수입력값을 확인해주세요.<br>[경매일자,바코드]');
+				return true;
+    		 }
     	});
         
     	if(booleanRequierd) return;
@@ -244,12 +248,29 @@
     			ExcelData['FARM_AMNNO'] = item[1 ]?item[1].split('-')[1]:''; // 농장번호                  
     			ExcelData['FTSNM'] = item[2 ]??''; // 농가명            
     			ExcelData['ADDR'] = item[3 ]??''; // 주소          
-    			ExcelData['SRA_INDV_AMNNO'] = item[4 ]??''; // 바코드
     			ExcelData['INDV_SEX_C'] = item[5 ]??''; // 성별                
-    			ExcelData['KPN_NO'] = item[6 ]??'0'; // KPN 번호         
-    			ExcelData['MCOW_SRA_INDV_AMNNO'] = item[7 ]??''; // 어미개체번호              
+    			ExcelData['KPN_NO'] = item[6 ]??'0'; // KPN 번호                       
     			ExcelData['ANALY_ORGAN'] = item[8 ]??''; // 분석기관          
-    			ExcelData['DNA_JUG_RESULT'] = item[9 ]=='일치'?'1':'3'; // 친자검사결과             
+    			ExcelData['DNA_JUG_RESULT'] = item[9 ]=='일치'?'1':'3'; // 친자검사결과
+
+    			//ExcelData['SRA_INDV_AMNNO'] = item[4 ]??''; // 바코드
+    			//개체번호
+    			var sraIndvAmnno = item[4 ]??''; // 바코드
+    			if(sraIndvAmnno.length == '15'){
+    				ExcelData['SRA_INDV_AMNNO'] = sraIndvAmnno;
+    			}else if(sraIndvAmnno.length == '12'){
+    				ExcelData['SRA_INDV_AMNNO'] = '410'+sraIndvAmnno;
+    			}else if(sraIndvAmnno.length == '9'){
+    				ExcelData['SRA_INDV_AMNNO'] = '410002'+sraIndvAmnno;
+    			}
+    			var mcowSraIndvAmnno = item[7 ]??''; // 어미 바코드
+    			if(mcowSraIndvAmnno.length == '15'){
+    				ExcelData['MCOW_SRA_INDV_AMNNO'] = mcowSraIndvAmnno;
+    			}else if(mcowSraIndvAmnno.length == '12'){
+    				ExcelData['MCOW_SRA_INDV_AMNNO'] = '410'+mcowSraIndvAmnno;
+    			}else if(mcowSraIndvAmnno.length == '9'){
+    				ExcelData['MCOW_SRA_INDV_AMNNO'] = '410002'+mcowSraIndvAmnno;
+    			}
     			
     			ExcelList.push(ExcelData);
     		}
