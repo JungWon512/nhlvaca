@@ -212,8 +212,13 @@
              	TitleData.unit="";
              	TitleData.srch_condition=  '[경매일자 : ' + $('#auc_dt').val() + ']'
                 +  '/ [경매대상 + ' + $( "#auc_obj_dsc option:selected").text()  + ']';
-
-  		      	ReportPopup('LALM0314R0' ,TitleData, 'grd_MhSogCow2', 'V'); 
+             	
+             	if(na_bzplc == '8808990659275'){
+             		ReportPopup('LALM0314R0_1' ,TitleData, 'grd_MhSogCow2', 'V');              		
+             	}else{
+             		ReportPopup('LALM0314R0' ,TitleData, 'grd_MhSogCow2', 'V');             		
+             	}  		      	
+  		      	 
          	}
          	if($("#pb_tab4").hasClass("on")){
          		TitleData.title = $("#simp_cnm").val()+ " 일괄경매시작/마감(동가대상)";

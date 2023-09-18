@@ -44,6 +44,9 @@ public class LALM0218ServiceImpl implements LALM0218Service{
 		//출하자 정상접수
 		}else if("2".equals(map.get("obj_gbn")) && "03".equals(map.get("msg_gbn"))) {
 			list = lalm0899Mapper.LALM0899_selMca3100_201_Recv(map);
+		//출하지 특이사항
+		}else if("2".equals(map.get("obj_gbn")) && "04".equals(map.get("msg_gbn"))) {
+			list = lalm0899Mapper.LALM0899_selMca3100_201_Rmk(map);
 		//구미칠곡
 		}else if("1".equals(map.get("obj_gbn")) && "04".equals(map.get("msg_gbn"))) {
 			list = lalm0899Mapper.LALM0899_selMca3100_104(map);

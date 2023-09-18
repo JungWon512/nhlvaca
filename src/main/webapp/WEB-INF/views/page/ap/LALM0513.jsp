@@ -982,7 +982,10 @@
              } else {
             	 tab11_result = setDecrypt(tab11_results);
              }
-    	   
+			var rowNoValue = 0;
+	        if(tab11_result != null){
+	            rowNoValue = tab11_result.length;
+	        }
 	       // 합계 그리드 
 	       var searchResultColNames1 = ["경매날짜","경매대상","출하자코드","출하자명", "주소"];        
 	       
@@ -1006,10 +1009,11 @@
 	            rownumbers:  true,
 	            hi :     true,
 	            rownumWidth: 40,
+	            rowNum:      rowNoValue,
 	            colNames: searchResultColNames1,
 	            colModel: searchResultColModel1, 
 	        });
-    		
+
     		TitleData.title ="출하자 정산내역";
     		TitleData.sub_title = " "+"님의" +  fn_deleteNumber($( "#auc_obj_dsc option:selected").text()) + " 매매가 이루어졌습니다.";
     		TitleData.unit = "";
@@ -3364,39 +3368,44 @@ function fn_CreateHdnGrid_13(data){
 
 		var temp_calfCowChk = '<th scope="row" id="t_MhSogCow8_Chk"><span class="tb_dot">딸린송아지 포함</span></th>';
 		temp_calfCowChk += '<td><input type="checkbox" id="chk_calf_cow" name="chk_calf_cow" value="0"><label id="chk_calf_cow_text" for="chk_calf_cow">부</label></td>';
+		
+		var tmp_mtcnGubun = '<th style="width:80px">월령기준</th><td style="width:180px">'+ '<select style="width:150px" id="mtcn_gubun"><option value="0">월령(이력제)</option><option value="1">월령(만)</option></select>' + '</td>';
 
 		fn_hideFrm("frm_Search", true);
 		$("#tab8_sub").hide();
 		
 		if($("#pb_tab1").hasClass("on") || p_param == "1") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
 	 		
 		} else if($("#pb_tab2").hasClass("on") || p_param == "2") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_ftsnm + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
             $("#io_sel").text("낙찰자");
 	 		
 		} else if($("#pb_tab3").hasClass("on") || p_param == "3") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_sel_sts_dsc + temp_indv_sex_c + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
 	 		
 		} else if($("#pb_tab4").hasClass("on") || p_param == "4") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
 	 		
 		} else if($("#pb_tab5").hasClass("on") || p_param == "5") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
-			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_ftsnm + temp_sel_sts_dsc + temp_auc_prg_sq + '</tr>';
+			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_ftsnm + temp_sel_sts_dsc +  '</tr>';
+			addSearchText += '<tr id = "dynamicTr">' +temp_auc_prg_sq+tmp_mtcnGubun+ '</tr>';
+			 
+			
             $("#frm_Search_tbody").append(addSearchText);
             $("#io_sel").text("출하자");
             
@@ -3415,67 +3424,67 @@ function fn_CreateHdnGrid_13(data){
             }
 			
 		} else if($("#pb_tab6").hasClass("on") || p_param == "6") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_ftsnm + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
             $("#io_sel").text("출하자");
 			
 		} else if($("#pb_tab7").hasClass("on") || p_param == "7") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_MhSogCow9 + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
             
 		} else if($("#pb_tab8").hasClass("on") || p_param == "8") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_noBidChk + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
             $("#tab8_sub").show();
             
 		} else if($("#pb_tab9").hasClass("on") || p_param == "9") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
             
 		} else if($("#pb_tab10").hasClass("on") || p_param == "10") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_ftsnm + temp_indv_sex_c + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
             $("#io_sel").text("낙찰자");
             
 		} else if($("#pb_tab11").hasClass("on") || p_param == "11") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_ftsnm + temp_MhSogCow11 + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
             $("#io_sel").text("출하자");
             
 		} else if($("#pb_tab12").hasClass("on") || p_param == "12") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_ftsnm + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
             $("#io_sel").text("수의사");
             
 		} else if($("#pb_tab13").hasClass("on") || p_param == "13") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_dt + temp_calfCowChk + '</tr>';
 			
             $("#frm_Search_tbody").append(addSearchText);
             
 		} else if($("#pb_tab14").hasClass("on") || p_param == "14") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_fee_apl_obj + temp_name + temp_sra_indv_amnno + '</tr>';
             $("#frm_Search_tbody").append(addSearchText);
             
 		} else if($("#pb_tab15").hasClass("on") || p_param == "15") {
-			$("#dynamicTr").remove();
+			$("tr[id=dynamicTr]").remove();
 			addSearchText = "";
 			addSearchText = '<tr id = "dynamicTr">' + temp_auc_obj_dsc + temp_auc_dt + temp_ftsnm + temp_count_fee + '</tr>';
 			$("#frm_Search_tbody").append(addSearchText);

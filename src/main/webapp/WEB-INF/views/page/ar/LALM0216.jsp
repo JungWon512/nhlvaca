@@ -685,7 +685,7 @@ var na_bzplc = App_na_bzplc;
             		 // ★의성: 8808990656649 테스트: 8808990643625
             		 if(na_bzplc == '8808990656649') {
             			 ReportPopup('LALM0216R3_1_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-            		 }else if(na_bzplc == '8808990656878' || na_bzplc == '8808990689180') { //강릉, 안동봉화
+            		 }else if(na_bzplc == '8808990656878' || na_bzplc == '8808990689180' || na_bzplc == '8808990785431') { //강릉, 안동봉화, 영덕울진
             			 ReportPopup('LALM0216R3_1_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 } else {
             			 ReportPopup('LALM0216R3_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -861,7 +861,10 @@ var na_bzplc = App_na_bzplc;
             		 if(na_bzplc == '8808990659275') {
             			 ReportPopup('LALM0216R3_83',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
-            		 } else {
+            		 } else if(na_bzplc == '8808990656694'){ //서산태안 : 8808990656694
+            			 ReportPopup('LALM0216R3_22_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 
+            		 }else {
             			 ReportPopup('LALM0216R3_22',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
@@ -888,7 +891,7 @@ var na_bzplc = App_na_bzplc;
             		 
             	 } else if($("#prto_tpc_21").is(":checked")) {
             		 if(na_bzplc == '8808990656687'){ //영천
-                		 ReportPopup('LALM0216R3_1_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+                		 ReportPopup('LALM0216R3_5_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }else{
                 		 ReportPopup('LALM0216R3_35',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
@@ -926,8 +929,8 @@ var na_bzplc = App_na_bzplc;
             		 // 의성 : 8808990656649
             		 if(na_bzplc == '8808990656649') {
             			 ReportPopup('LALM0216R3_2_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그 
-             		 // 안동봉화 : 8808990689180
-             		 } else if(na_bzplc == '8808990689180') {
+             		 // 강릉 : 8808990656878 ,안동봉화 : 8808990689180 , 영덕울진: 8808990785431
+             		 } else if(na_bzplc == '8808990656878' || na_bzplc == '8808990689180' || na_bzplc == '8808990785431') {
             			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else{
@@ -1074,7 +1077,10 @@ var na_bzplc = App_na_bzplc;
                		 if(na_bzplc == '8808990659275') {
                			 ReportPopup('LALM0216R3_83',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               			 
-              		 } else {
+              		 } else if(na_bzplc == '8808990656694'){ //서산태안 : 8808990656694
+            			 ReportPopup('LALM0216R3_22_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 
+            		 } else {
                			 ReportPopup('LALM0216R3_22',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
                			 
                		 }
@@ -1132,8 +1138,8 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990656953') {
              			 ReportPopup('LALM0216R3_92',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
-             		 // 안동봉화 : 8808990689180
-             		 } else if(na_bzplc == '8808990689180') {
+             		 //강릉 : 8808990656878 안동봉화 : 8808990689180 , 영덕울진: 8808990785431
+             		 } else if(na_bzplc == '8808990656878' || na_bzplc == '8808990689180' || na_bzplc == '8808990785431') {
             			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
@@ -1368,13 +1374,11 @@ var na_bzplc = App_na_bzplc;
             	 } else if($("#prto_tpc_13").is(":checked")) {
             		 // ★나주: 8808990659275
             		 if(na_bzplc == '8808990659275') {
-             			 ReportPopup('LALM0216R3_83',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-             		 
-             		 // ★경주 8808990659008
-             		 } else if(na_bzplc == '8808990659008') {
-             			ReportPopup('LALM0216R3_22',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-             			
-             		 } else {
+             			 ReportPopup('LALM0216R3_83',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             		 
+             		 } else if(na_bzplc == '8808990656694'){ //서산태안 : 8808990656694
+            			 ReportPopup('LALM0216R3_22_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 
+            		 } else {
              			ReportPopup('LALM0216R3_22',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
@@ -1778,10 +1782,10 @@ var na_bzplc = App_na_bzplc;
                                      {name:"RMHN_YN",                   index:"RMHN_YN",                  width:60,  align:'right'   , edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"KPN_NO",                    index:"KPN_NO",                   width:60,  align:'center' },
                                      {name:"INDV_SEX_C",                index:"INDV_SEX_C",               width:40,  align:'center'  , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
-                                     {name:"COW_SOG_WT",                index:"COW_SOG_WT",               width:70,  align:'right'   , formatter:'interger', formatoptions:{decimalPlaces:2,thousandsSeparator:','}},
-                                     {name:"LOWS_SBID_LMT_AM",          index:"LOWS_SBID_LMT_AM",         width:85,  align:'right'   , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-                                     {name:"SRA_SBID_UPR",               index:"SRA_SBID_UPR",            width:85,  align:'right'   , formatter:'currency', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-                                     {name:"SRA_SBID_AM",               index:"SRA_SBID_AM",              width:85,  align:'right'   , formatter:'currency', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"COW_SOG_WT",                index:"COW_SOG_WT",               width:70,  align:'right'   , sorttype: "number", formatter:'interger', formatoptions:{decimalPlaces:2,thousandsSeparator:','}},
+                                     {name:"LOWS_SBID_LMT_AM",          index:"LOWS_SBID_LMT_AM",         width:85,  align:'right'   , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"SRA_SBID_UPR",              index:"SRA_SBID_UPR",             width:85,  align:'right'   , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"SRA_SBID_AM",               index:"SRA_SBID_AM",              width:85,  align:'right'   , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"VHC_DRV_CAFFNM",            index:"VHC_DRV_CAFFNM",           width:85,  align:'center' },
                                      {name:"SRA_MWMNNM",                index:"SRA_MWMNNM",               width:80,  align:'center' },
                                      {name:"E_CUS_MPNO",                index:"E_CUS_MPNO",               width:80,  align:'center' },
@@ -2237,7 +2241,7 @@ var na_bzplc = App_na_bzplc;
 	<div class="contents">
 
 		<%@ include file="/WEB-INF/common/menuBtn.jsp"%>
-
+		
 		<section class="content">
 			<div class="tab_box clearfix">
 				<ul class="tab_list">

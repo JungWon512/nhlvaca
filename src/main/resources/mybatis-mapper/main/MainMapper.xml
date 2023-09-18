@@ -218,6 +218,7 @@
 		      , NA_BZPLNM 
 		   FROM TB_LA_IS_MM_WMC
 		  GROUP BY NA_BZPLC, NA_BZPLNM
+		  ORDER BY NA_BZPLNM
     </select>
     
     <select id="selectNaUserList" resultType="HashMap">

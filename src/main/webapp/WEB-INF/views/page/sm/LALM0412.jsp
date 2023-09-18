@@ -1267,14 +1267,14 @@ var mCnt = 0;
 			// , 고창부안:8808990657189, 횡성: 8808990656885, 강진완도 :  8808990657103, 양평 :  8808990643625 
 			// , 장흥 :  8808990656533, 영광 :  8808990811710, 동해삼척태백축협 :  8808990652825, 고령성주 : 8808990659695, 강릉 : 8808990656878
 			// 영천 : 8808990656687 , 나주 : 8808990659275 , 김천 : 8808990659565 , 서산 : 8808990656694 , 진천 : 8808990656502
-			// 홍천 : 8808990674605 , 영덕울진 : 8808990785431
-			// 번식우 제외: 영암:8808990659701, 거창:8808990659701, 담양:8808990656540
+			// 홍천 : 8808990674605 
+			// 번식우 제외: 영암:8808990659701, 거창:8808990659701 , 영덕울진 : 8808990785431
 			} else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485' || na_bzplc == '8808990671086' || na_bzplc == '8808990659787'  
 				|| na_bzplc == '8808990657189' || na_bzplc == '8808990656885' || na_bzplc == '8808990657103'|| na_bzplc == '8808990643625'
 				|| na_bzplc == '8808990656533' || na_bzplc == '8808990811710' || na_bzplc =='8808990652825'  || na_bzplc =='8808990659695' || na_bzplc =='8808990656878'
 				|| na_bzplc =='8808990656687' || na_bzplc =='8808990659275' || na_bzplc =='8808990659565' || na_bzplc =='8808990656694' || na_bzplc =='8808990656502'
-				|| na_bzplc =='8808990674605' || na_bzplc =='8808990785431'
-				|| ((na_bzplc == '8808990689760' || na_bzplc == '8808990659701') && $("#auc_obj_dsc").val() != '3' )
+				|| na_bzplc =='8808990674605'
+				|| ((na_bzplc == '8808990689760' || na_bzplc == '8808990659701' || na_bzplc =='8808990785431') && $("#auc_obj_dsc").val() != '3' )
 			){
 				ReportPopup('LALM0412R0_9',p_param, p_grid, 'T');//원본
 				//ReportPopup('LALM0412R0_1_3',p_param, p_grid, 'V');
@@ -1284,11 +1284,17 @@ var mCnt = 0;
    				ReportPopup('LALM0412R0_0_5_2',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990806426') { //속초양양 : 8808990806426
    				ReportPopup('LALM0412R0_9_1',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656540') { //담양
-   				ReportPopup('LALM0412R0_0_5_3',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656540' && $("#auc_obj_dsc").val() != '3' ) { //담양 : 8808990656540
+   			}else if(na_bzplc == '8808990656540' && $("#auc_obj_dsc").val() == '1' ) { //담양 : 8808990656540
    				ReportPopup('LALM0412R0_9_2',p_param, p_grid, 'V');
-   			} else{
+   			}else if(na_bzplc == '8808990656540' && $("#auc_obj_dsc").val() == '2' ) { //담양 : 8808990656540
+   				ReportPopup('LALM0412R0_9_2_1',p_param, p_grid, 'V');
+   			}else if(na_bzplc == '8808990656540') { //담양
+   				ReportPopup('LALM0412R0_9_2_2',p_param, p_grid, 'V');
+   			}else if(na_bzplc == '8808990689180') { //안동
+   				ReportPopup('LALM0412R0_0_5_7',p_param, p_grid, 'V');
+   			} else if(na_bzplc == '8808990660783'){ //임실
+				ReportPopup('LALM0412R0_T_0',p_param, p_grid, 'T');//원본
+			} else{
 				ReportPopup('LALM0412R0_0',p_param, p_grid, 'T');//원본
 			}
 		// 2형식
@@ -1312,9 +1318,11 @@ var mCnt = 0;
    			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615' || na_bzplc == '8808990659565') { //고령성주  ,나주, 구미칠곡, 김천
    				ReportPopup('LALM0412R0_0_7',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656540') { //담양
-   				ReportPopup('LALM0412R0_0_5_3',p_param, p_grid, 'V');
+   				ReportPopup('LALM0412R0_9_2_2',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990689180') { //안동
    				ReportPopup('LALM0412R0_0_5_7',p_param, p_grid, 'V');
+   			}else if(na_bzplc == '8808990660783') { //임실
+   				ReportPopup('LALM0412R0_T_1',p_param, p_grid, 'V');
    			} else {	
    				//ReportPopup('LALM0412R0_5_3',p_param, p_grid, 'V');
    				if((na_bzplc == '8808990656236' || na_bzplc == '8808990656519') && $("#auc_obj_dsc").val()=='3'){
@@ -1362,7 +1370,7 @@ var mCnt = 0;
 	   		var kNumber = fn_getKNumber(TitleData.tot_npym_am?.replaceAll(',',''));
    			TitleData.tot_npym_am_k = kNumber;
    			var aucObjDscNm = fn_deleteNumber($( "#auc_obj_dsc option:selected").text());
-   			if(aucObjDscNm =='일괄') aucObjDscNm = '송아지, 큰소';
+   			if(na_bzplc != '8808990656694' && aucObjDscNm =='일괄') aucObjDscNm = '송아지, 큰소';
    			
 	   		if(na_bzplc == '8808990687094') {  // 영주: 8808990687094
 				TitleData.text1 = $("#sra_mwmnnm").val()+" 님은\n"+fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 우 매입대금 중 아래 금액에 대하여 채무를 확인하고 \n경매일 익일 오전 12시까지 완납 할것을 확인합니다.";
@@ -1390,7 +1398,7 @@ var mCnt = 0;
 				ReportPopup('LALM0412R1_9',TitleData, 'grd_MhSogCow', 'T');
 				//ReportPopup('LALM0412R1_1',TitleData, 'grd_MhSogCow', 'T');
 			}
-			fn_chgAucEntrDdl();
+			//fn_chgAucEntrDdl();
 			
 		}
 		function fn_BtnAtfCvn(){
