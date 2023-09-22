@@ -213,7 +213,7 @@
              	TitleData.srch_condition=  '[경매일자 : ' + $('#auc_dt').val() + ']'
                 +  '/ [경매대상 + ' + $( "#auc_obj_dsc option:selected").text()  + ']';
              	
-             	if(na_bzplc == '8808990659275'){
+             	if(na_bzplc == '8808990656540'){ //담양 : 8808990656540
              		ReportPopup('LALM0314R0_1' ,TitleData, 'grd_MhSogCow2', 'V');              		
              	}else{
              		ReportPopup('LALM0314R0' ,TitleData, 'grd_MhSogCow2', 'V');             		

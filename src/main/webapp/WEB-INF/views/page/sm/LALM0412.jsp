@@ -463,7 +463,8 @@ var mCnt = 0;
 	                               
 	                               "출하주","경매대상","경매번호","귀표번호","성별","등록구분","중량","낙찰가","수수료"
 	                               ,"송아지귀표번호","송아지성별","임신개월수","송아지생년월일","출하주생년","어미소축산개체관리번호","어미구분코드","번식우수수료구분코드"
-	                              
+	                              ,"H월령"
+	                               
 	                              ];        
 	    var searchResultColModel = [
 	    	
@@ -563,6 +564,7 @@ var mCnt = 0;
 	                                 {name:"MCOW_SRA_INDV_AMNNO",   index:"MCOW_SRA_INDV_AMNNO",   width:60, align:'center', formatter:'gridIndvFormat', hidden:true},
 	                                 {name:"MCOW_DSC",              index:"MCOW_DSC",              width:40, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}, hidden:true},
 	                                 {name:"PPGCOW_FEE_DSC",        index:"PPGCOW_FEE_DSC",        width:30, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("PPGCOW_FEE_DSC", 1)}},
+	                                 {name:"MTCN",             		index:"MTCN",             	   width:40, align:'center'},
 	                                ];
 	        
 	    $("#grd_MhSogCow").jqGrid("GridUnload");
@@ -1266,13 +1268,13 @@ var mCnt = 0;
 			// 전주김제완주 보은옥천 옥천지점:8808990671086 , 파주연천:8808990659787
 			// , 고창부안:8808990657189, 횡성: 8808990656885, 강진완도 :  8808990657103, 양평 :  8808990643625 
 			// , 장흥 :  8808990656533, 영광 :  8808990811710, 동해삼척태백축협 :  8808990652825, 고령성주 : 8808990659695, 강릉 : 8808990656878
-			// 영천 : 8808990656687 , 나주 : 8808990659275 , 김천 : 8808990659565 , 서산 : 8808990656694 , 진천 : 8808990656502
+			// 영천 : 8808990656687 , 나주 : 8808990659275  , 서산 : 8808990656694 , 진천 : 8808990656502
 			// 홍천 : 8808990674605 
 			// 번식우 제외: 영암:8808990659701, 거창:8808990659701 , 영덕울진 : 8808990785431
 			} else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485' || na_bzplc == '8808990671086' || na_bzplc == '8808990659787'  
 				|| na_bzplc == '8808990657189' || na_bzplc == '8808990656885' || na_bzplc == '8808990657103'|| na_bzplc == '8808990643625'
 				|| na_bzplc == '8808990656533' || na_bzplc == '8808990811710' || na_bzplc =='8808990652825'  || na_bzplc =='8808990659695' || na_bzplc =='8808990656878'
-				|| na_bzplc =='8808990656687' || na_bzplc =='8808990659275' || na_bzplc =='8808990659565' || na_bzplc =='8808990656694' || na_bzplc =='8808990656502'
+				|| na_bzplc =='8808990656687' || na_bzplc =='8808990659275' || na_bzplc =='8808990656694' || na_bzplc =='8808990656502'
 				|| na_bzplc =='8808990674605'
 				|| ((na_bzplc == '8808990689760' || na_bzplc == '8808990659701' || na_bzplc =='8808990785431') && $("#auc_obj_dsc").val() != '3' )
 			){
@@ -1294,6 +1296,10 @@ var mCnt = 0;
    				ReportPopup('LALM0412R0_0_5_7',p_param, p_grid, 'V');
    			} else if(na_bzplc == '8808990660783'){ //임실
 				ReportPopup('LALM0412R0_T_0',p_param, p_grid, 'T');//원본
+			} else if(na_bzplc == '8808990659565'){ //김천
+				ReportPopup('LALM0412R0_9_3',p_param, p_grid, 'T');//원본
+			} else if(na_bzplc == '8808990679549'){ //포항 : 8808990679549
+				ReportPopup('LALM0412R0_9_J_0',p_param, p_grid, 'T');//원본
 			} else{
 				ReportPopup('LALM0412R0_0',p_param, p_grid, 'T');//원본
 			}
@@ -1315,7 +1321,7 @@ var mCnt = 0;
    				ReportPopup('LALM0412R0_0_1_1',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656434') { //원주
    				ReportPopup('LALM0412R0_0_6',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615' || na_bzplc == '8808990659565') { //고령성주  ,나주, 구미칠곡, 김천
+   			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615' || na_bzplc == '8808990659565' || na_bzplc == '8808990679549') { //고령성주  ,나주, 구미칠곡, 김천
    				ReportPopup('LALM0412R0_0_7',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656540') { //담양
    				ReportPopup('LALM0412R0_9_2_2',p_param, p_grid, 'V');
