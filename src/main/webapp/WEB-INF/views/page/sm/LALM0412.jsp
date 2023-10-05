@@ -1325,12 +1325,8 @@ var mCnt = 0;
    				ReportPopup('LALM0412R0_0_1_1',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656434') { //원주
    				ReportPopup('LALM0412R0_0_6',p_param, p_grid, 'V');
-<<<<<<< HEAD
    			//고령성주  ,나주, 구미칠곡, 김천, 충주, 의령
-   			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615' || na_bzplc == '8808990659565' || na_bzplc == '8808990679549' || na_bzplc =='8808990656465' || na_bzplc =='8808990656199') { 
-=======
-   			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615' || na_bzplc == '8808990659565' || na_bzplc == '8808990679549' || na_bzplc == '8808990656199') { //고령성주  ,나주, 구미칠곡, 김천, 의령
->>>>>>> branch 'master' of https://github.com/JungWon512/nhlvaca.git
+   			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615' || na_bzplc == '8808990659565' || na_bzplc == '8808990679549' || na_bzplc =='8808990656465' || na_bzplc =='8808990656199') {   			
    				ReportPopup('LALM0412R0_0_7',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656540') { //담양
    				ReportPopup('LALM0412R0_9_2_2',p_param, p_grid, 'V');

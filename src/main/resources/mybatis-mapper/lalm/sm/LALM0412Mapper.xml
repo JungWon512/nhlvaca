@@ -469,11 +469,7 @@
         and aa.na_fee_c      != '090'
         and aa.fee_apl_obj_c = '2'                 /* 1:출하자, 2:낙찰자 */
         ) as sra_tr_fee5                                       /* 자조금 */
-<<<<<<< HEAD
 		  , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, B.BIRTH)) +1 <![CDATA[<=]]> 4 AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434')
-=======
-		  , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <![CDATA[<=]]> 4 AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434')
->>>>>>> branch 'master' of https://github.com/JungWon512/nhlvaca.git
 		         THEN 4 
 		    ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, B.BIRTH)) +1 END AS MTCN
         from tb_la_is_mh_sog_cow  a
