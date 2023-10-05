@@ -158,12 +158,20 @@
    		        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
    		      		// ★익산: 8808990227283
    		        	if(App_na_bzplc == "8808990227283") {
-   		        		fn_contrChBox(false, "prny_jug_yn", "");
+   		        		fn_contrChBox(false, "prny_jug_yn", "");   		        		
    		            } else {
    		            	fn_contrChBox(true, "prny_jug_yn", "");
+   		            	//경주축협일때 임신구분 자동체크
+   		            	if (App_na_bzplc == '8808990659008'){
+	   		        		fn_contrChBox(true, "prny_yn", "");						   
+ 					    }
    		            }
    		        } else {
    		        	fn_contrChBox(false, "prny_jug_yn", "");
+	            	//경주축협일때 임신구분 자동체크
+	            	if (App_na_bzplc == '8808990659008'){
+   		        		fn_contrChBox(false, "prny_yn", "");						   
+				    }
    		        }
 
    		  		// ★거창: 8808990659701
@@ -3564,10 +3572,19 @@
         		$("#pb_tab2").hide();
         		
         		// ★영천: 8808990656687 포항: 8808990679549  테스트: 8808990643625
+        		// 20230920 : 영천축협 요청 임신감정여부 초기값 false로 설정
         		if (App_na_bzplc == '8808990656687' || App_na_bzplc == '8808990679549'){  
         			$("#ppgcow_fee_dsc").val("2");
+	    			$("input:checkbox[id='prny_jug_yn']").prop("checked", false);
+	    			fn_contrChBox(false, "prny_jug_yn", "");
 	            }else{
 	            	$("#ppgcow_fee_dsc").val("1");
+	    			$("input:checkbox[id='prny_jug_yn']").prop("checked", true);
+	    			fn_contrChBox(true, "prny_jug_yn", "");
+	            	//경주축협일때 임신우 => 임신구분 여
+	            	if (App_na_bzplc == '8808990659008'){
+   		        		fn_contrChBox(true, "prny_yn", "");						   
+				    }	    			
 	            }
         		
         		if(parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"] == "1000") {
@@ -3583,10 +3600,7 @@
         			$("#lows_sbid_lmt_am_ex").attr("maxlength", "8");
         			$("#sra_sbid_upr").attr("maxlength", "8");
         			$("#msg_Sbid3").text(" / (단위: 원)");
-        		}
-        		
-    			$("input:checkbox[id='prny_jug_yn']").prop("checked", true);
-    			fn_contrChBox(true, "prny_jug_yn", "");
+        		}        		
         	}
 	    	
         	fn_GvnoBascdModify();

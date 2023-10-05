@@ -848,6 +848,9 @@ var na_bzplc = App_na_bzplc;
             		 }else if(na_bzplc == '8808990656540'){ //담양 : 8808990656540 
             			 ReportPopup('LALM0216R3_18_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
+            		 }else if(na_bzplc == '8808990656465'){ //충주 : 8808990656465 
+            			 ReportPopup('LALM0216R3_18_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 
             		 } else {
             			 ReportPopup('LALM0216R3_18',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
@@ -1311,10 +1314,12 @@ var na_bzplc = App_na_bzplc;
              			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		// 밀양축협 : 8808990656663
              		 } else if(na_bzplc == '8808990656663') {
-             			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             	
+             		// 의령축협 : 8808990656199 테스트 8808990687094
+             		 } else if(na_bzplc == '8808990656199'){
+             			ReportPopup('LALM0216R3_8_3',TitleData, grid4, 'V')				//V:세로 , H:가로  , T :콘솔로그
              		 } else  {
              			ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-             			
              		 }
 
             	 } else if($("#prto_tpc_5").is(":checked")) {
