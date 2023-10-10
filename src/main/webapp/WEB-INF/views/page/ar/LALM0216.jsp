@@ -1,6 +1,7 @@
-
-
-
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -1373,7 +1374,11 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990656274') {
              			ReportPopup('LALM0216R3_102',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
-             		 } else {
+             		 // ★청양 8808990657646	테스트 8808990687094
+             		 } else if(na_bzplc == '8808990657646'){
+             			ReportPopup('LALM0216R3_23',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			
+             		 }else {
              			ReportPopup('LALM0216R3_19',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
