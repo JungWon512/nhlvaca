@@ -1,7 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -598,8 +597,8 @@ var na_bzplc = App_na_bzplc;
         		 }
         		 
         	 } else {
-        		 // ★합천: 8808990656236
-        		 if(na_bzplc == '8808990656236') {
+        		 // ★합천: 8808990656236 , 진천 : 8808990656502
+        		 if(na_bzplc == '8808990656236' || na_bzplc == '8808990656502') {
         			 ReportPopup('LALM0216R2_2',TitleData, 'grd_MhSogCow3', 'V');              //V:세로 , H:가로  , T :콘솔로그
         		 
         		 // ★김해: 8808990670737  테스트: 8808990643625
@@ -1009,7 +1008,7 @@ var na_bzplc = App_na_bzplc;
             		 // ★함평: 8808990656601 영암: 8808990689760
             		 //|| na_bzplc == '8808990689760'
               		 if(na_bzplc == '8808990656601' ) {
-              			 ReportPopup('LALM0216R3_48',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+              			 ReportPopup('LALM0216R3_49',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
                 	 // ★영암축협: 8808990689760
             		 }else if(na_bzplc == '8808990689760'){
              			ReportPopup('LALM0216R3_20',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
