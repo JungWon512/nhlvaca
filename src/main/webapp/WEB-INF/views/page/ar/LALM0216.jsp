@@ -761,7 +761,7 @@ var na_bzplc = App_na_bzplc;
             		 }            	 
             	 } else if($("#prto_tpc_4").is(":checked")) { //세로2형식
             		 // ★함평: 8808990656601 영암: 8808990689760 테스트: 8808990643625
-            		 if(na_bzplc == '8808990656946' || na_bzplc == '8808990689760') {
+            		 if(na_bzplc == '8808990656601' || na_bzplc == '8808990689760') {
             			 ReportPopup('LALM0216R3_50',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★거창: 8808990659701
@@ -1009,7 +1009,7 @@ var na_bzplc = App_na_bzplc;
             		 // ★함평: 8808990656601 영암: 8808990689760
             		 //|| na_bzplc == '8808990689760'
               		 if(na_bzplc == '8808990656601' ) {
-              			 ReportPopup('LALM0216R3_49',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+              			 ReportPopup('LALM0216R3_48',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
                 	 // ★영암축협: 8808990689760
             		 }else if(na_bzplc == '8808990689760'){
              			ReportPopup('LALM0216R3_20',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1028,7 +1028,10 @@ var na_bzplc = App_na_bzplc;
              			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		// 밀양축협 : 8808990656663
              		 } else if(na_bzplc == '8808990656663') {
-             			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그                        	
+             		// 의령축협 : 8808990656199
+             		 } else if(na_bzplc == '8808990656199'){
+             			ReportPopup('LALM0216R3_8_3',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그  			
              		 } else {
               			 ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
               		 }
@@ -1288,8 +1291,8 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990656601' || na_bzplc == '8808990689760') {
              			ReportPopup('LALM0216R3_48',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
-             		 // ★사천: 8808990656519 테스트: 8808990643625 의령 : 8808990656199
-             		 } else if(na_bzplc == '8808990656519' || na_bzplc == '8808990656199') {
+             		 // ★사천: 8808990656519 테스트: 8808990643625
+             		 } else if(na_bzplc == '8808990656519') {
              			ReportPopup('LALM0216R3_74',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 
              		 // ★함양산청: 8808990656410 산청지점: 8808990674506
@@ -1315,9 +1318,9 @@ var na_bzplc = App_na_bzplc;
              		// 밀양축협 : 8808990656663
              		 } else if(na_bzplc == '8808990656663') {
              			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             	
-             		// 의령축협 : 8808990656199 테스트 8808990687094
+             		// 의령축협 : 8808990656199
              		 } else if(na_bzplc == '8808990656199'){
-             			ReportPopup('LALM0216R3_8_3',TitleData, grid4, 'V')				//V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_8_3',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그
              		 } else  {
              			ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 }
@@ -2130,10 +2133,10 @@ var na_bzplc = App_na_bzplc;
 		var index = 0;
 		$('#'+frmId).getRowData().forEach((o,i)=>{
 			//영암:8808990689760 | 익산:8808990227283 | 밀양 : 8808990656663 | 임실 : 8808990660783 | 영광 : 8808990811710 | 예천 : 8808990656557 
-			//동삼태 : 8808990652825 | 양평 : 8808990643625 | 사천 : 8808990656519
+			//동삼태 : 8808990652825 | 양평 : 8808990643625 | 사천 : 8808990656519 | 함평 : 8808990656601
 			//일시 이력제월령 표기
 			if(na_bzplc == '8808990227283' || na_bzplc == '8808990656663' || na_bzplc == '8808990660783' || na_bzplc == '8808990811710' || na_bzplc =='8808990656557'
-				|| na_bzplc == '8808990652825' || na_bzplc == '8808990643625' || na_bzplc == '8808990656519'){
+				|| na_bzplc == '8808990652825' || na_bzplc == '8808990643625' || na_bzplc == '8808990656519' || na_bzplc =='8808990656601'){
 				o.MTCN = o.MTCN+'개월';	            					
 			}else{
 				//TO-DO 만월령 쿼리 추가
