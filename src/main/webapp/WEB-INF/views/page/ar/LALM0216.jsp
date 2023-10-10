@@ -1076,7 +1076,11 @@ var na_bzplc = App_na_bzplc;
                		 }
             		 
             	 } else if($("#prto_tpc_12").is(":checked")) {
-            		 ReportPopup('LALM0216R3_20',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 if(na_bzplc=='8808990657646'){
+                		 ReportPopup('LALM0216R3_23',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
+            		 }else{
+                		 ReportPopup('LALM0216R3_20',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
+            		 }            		  
             		 
             	 } else if($("#prto_tpc_13").is(":checked")) {
             		 // ★나주: 8808990659275 테스트: 8808990643625
