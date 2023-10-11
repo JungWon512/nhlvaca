@@ -851,6 +851,9 @@ var na_bzplc = App_na_bzplc;
             		 }else if(na_bzplc == '8808990656465'){ //충주 : 8808990656465 
             			 ReportPopup('LALM0216R3_18_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
+            		 }else if(na_bzplc == '8808990656229'){	//춘천철원 : 8808990656229
+            			 ReportPopup('LALM0216R3_18_4',TitleData, grid4, 'V');
+            	 
             		 } else {
             			 ReportPopup('LALM0216R3_18',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
