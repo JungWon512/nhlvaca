@@ -1332,7 +1332,9 @@ var mCnt = 0;
    				ReportPopup('LALM0412R0_0_5_7',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990660783') { //임실
    				ReportPopup('LALM0412R0_T_1',p_param, p_grid, 'V');
-   			} else {	
+   			}else if (na_bzplc == '8808990806426') { //속초양양
+				ReportPopup('LALM0412R0_J_0',p_param, p_grid, 'T');//원본
+			} else {	
    				//ReportPopup('LALM0412R0_5_3',p_param, p_grid, 'V');
    				if((na_bzplc == '8808990656236' || na_bzplc == '8808990656519') && $("#auc_obj_dsc").val()=='3'){
    					ReportPopup('LALM0412R0_0_3',p_param, p_grid, 'V');

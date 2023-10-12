@@ -109,6 +109,9 @@
 	          END                                                    AS CUS_MPNO                /* 출하주 핸드폰번호          */      
 	       
            , A.RMHN_YN                                 /* 제각여부                          */
+           , CASE WHEN #{ss_security} = '1' THEN F.SRA_MWMNNM
+           ELSE SUBSTR(F.SRA_MWMNNM,1,1) || LPAD('*',LENGTH(F.SRA_MWMNNM)-2, '*') || SUBSTR(F.SRA_MWMNNM, LENGTH(F.SRA_MWMNNM), 1) 
+           END SRA_MWMNNM
 	    FROM TB_LA_IS_MH_SOG_COW  A
 	       , (SELECT NA_BZPLC
 	               , AUC_OBJ_DSC
@@ -144,6 +147,7 @@
 	       , TB_LA_IS_MM_FHS      D
 	       , TB_LA_IS_MM_VHC      E
 	       , TB_LA_IS_MM_FHS     G
+	       , TB_LA_IS_MM_MWMN F
 	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}                                                                   /* 경제통합사업장코드            */
 	      AND A.AUC_OBJ_DSC     = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END
 	      AND A.AUC_DT            BETWEEN #{auc_st_dt} AND #{auc_ed_dt}                                              /* 경매일자                   */
@@ -163,6 +167,8 @@
 	      AND A.FARM_AMNNO        = D.FARM_AMNNO
 	      AND A.NA_BZPLC          = E.NA_BZPLC(+)
 	      AND A.VHC_SHRT_C        = E.VHC_SHRT_C(+)
+	      AND A.NA_BZPLC          = F.NA_BZPLC(+)
+ 		  AND A.TRMN_AMNNO        = F.TRMN_AMNNO(+)
 	      AND A.NA_BZPLC		  = G.NA_BZPLC
 	      AND CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN A.FHS_ID_NO ELSE A.SOGMN_C  END = G.FHS_ID_NO
 	      AND (CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN A.FARM_AMNNO ELSE 0 END) =
