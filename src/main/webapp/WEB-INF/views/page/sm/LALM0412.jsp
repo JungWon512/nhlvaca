@@ -1419,7 +1419,12 @@ var mCnt = 0;
 			acno = parent.wmcList.ACNO;
 			var TitleData = new Object();
 		    TitleData.title = "가축시장용 양도·양수신고서(보관용)";
-		    TitleData.title1 = "가축시장용 양도·양수신고서(교부용)";
+		  	//춘천철원 : 8808990656229
+		    if(parent.wmcList[0].NA_BZPLC == '8808990656229'){
+			    TitleData.title1 = "가축시장용 양도·양수신고서";
+		    }else{
+			    TitleData.title1 = "가축시장용 양도·양수신고서(교부용)";
+		    }
 		    TitleData.sub_title = "가축매매수수료 영수증 겸용";
 		    TitleData.unit = "";
 	        TitleData.frlno = $("#frlno").val() + " - *******";
@@ -1438,7 +1443,12 @@ var mCnt = 0;
 			TitleData.auc_dt = fn_toDate(fn_dateToData($('#auc_dt').val()), "KR");
 			TitleData.acno = parent.wmcList[0].ACNO;
 			
-			ReportPopup('LALM0412R2',TitleData, 'grd_MhSogCow', 'T');
+			//춘천철원 : 8808990656229
+			if(parent.wmcList[0].NA_BZPLC == '8808990656229'){
+				ReportPopup('LALM0412R2_1',TitleData, 'grd_MhSogCow', 'T');
+			}else{
+				ReportPopup('LALM0412R2',TitleData, 'grd_MhSogCow', 'T');
+			}
 		}
 		
 		function fn_BtnFeeRctw(){
