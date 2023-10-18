@@ -854,7 +854,9 @@ var na_bzplc = App_na_bzplc;
             		 }else if(na_bzplc == '8808990656229'){	//춘천철원 : 8808990656229
             			 ReportPopup('LALM0216R3_18_4',TitleData, grid4, 'V');
             	 
-            		 } else {
+            		 }else if(na_bzplc == '8808990659275') { //나주축협
+               			 ReportPopup('LALM0216R3_83_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그               			 
+               		 } else {
             			 ReportPopup('LALM0216R3_18',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
@@ -899,6 +901,9 @@ var na_bzplc = App_na_bzplc;
             		 if(na_bzplc == '8808990656687'){ //영천
                 		 ReportPopup('LALM0216R3_5_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
+            		 }else if(na_bzplc == '8808990656229'){	//춘천철원 : 8808990656229
+            			 ReportPopup('LALM0216R3_18_4',TitleData, grid4, 'V');
+            	 
             		 }else{
                 		 ReportPopup('LALM0216R3_35',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
             		 }
@@ -1078,7 +1083,12 @@ var na_bzplc = App_na_bzplc;
                			 
                		 }
             		 
-            	 } else if($("#prto_tpc_12").is(":checked")) {
+            	 } else if($("#prto_tpc_11").is(":checked")) {
+            		 if(na_bzplc=='8808990659275'){
+                		 ReportPopup('LALM0216R3_83_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
+            		 }           		  
+            		 
+            	 }else if($("#prto_tpc_12").is(":checked")) {
             		 if(na_bzplc=='8808990657646'){
                 		 ReportPopup('LALM0216R3_23',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
             		 }else{
@@ -1371,6 +1381,11 @@ var na_bzplc = App_na_bzplc;
             	 
             	 } else if($("#prto_tpc_10").is(":checked")) {
             		 ReportPopup('LALM0216R3_15',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            	 
+            	 }else if($("#prto_tpc_11").is(":checked")) {
+	           		 if(na_bzplc == '8808990659275') {
+	           			 ReportPopup('LALM0216R3_83_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             		 
+	           		 } 
             	 
             	 } else if($("#prto_tpc_12").is(":checked")) {
             		 // ★거창: 8808990659701 테스트:8808990643625
