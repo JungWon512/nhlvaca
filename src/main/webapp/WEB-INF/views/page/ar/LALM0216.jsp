@@ -756,6 +756,12 @@ var na_bzplc = App_na_bzplc;
 	                 // 영천축협 : 8808990656687
 	     	         } else if(na_bzplc == '8808990656687') {
 	     	        	ReportPopup('LALM0216R3_5_2',TitleData, grid4, 'V');
+            		 // 고성축협 : 8808990812007
+	     	         } else if(na_bzplc == '8808990812007'){
+	     	        	ReportPopup('LALM0216R3_18_4',TitleData, grid4, 'V');
+	     	         // 수원축협 : 8808990656496	
+            		 } else if(na_bzplc == '8808990656496'){
+            			 ReportPopup('LALM0216R3_6_4',TitleData, grid4, 'V');
             		 } else {
 						ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }            	 
@@ -1008,9 +1014,12 @@ var na_bzplc = App_na_bzplc;
 						 }); 
              			 ReportPopup('LALM0216R3_6_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
-             		 }else {
+             		 // 수원축협 : 8808990656496
+             		 } else if(na_bzplc == '8808990656496'){
+            			 ReportPopup('LALM0216R3_6_4',TitleData, grid4, 'V');
+            			 
+            		 } else {
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-             			 
              		 }
             	 
             	 } else if($("#prto_tpc_4").is(":checked")) {
@@ -1291,6 +1300,10 @@ var na_bzplc = App_na_bzplc;
 	     	         } else if(na_bzplc == '8808990656687') {
 	     	         	ReportPopup('LALM0216R3_6_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
 	     	        
+	     	         // 수원축협 : 8808990656496
+					 } else if(na_bzplc == '8808990656496'){
+						 ReportPopup('LALM0216R3_6_4',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+						 
 					 } else {
 	            		 grid4 = grid4.map((o,i)=>{
 							return o;
