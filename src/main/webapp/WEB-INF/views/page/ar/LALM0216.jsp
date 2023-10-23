@@ -2196,6 +2196,13 @@ var na_bzplc = App_na_bzplc;
 			if(o.DNA_YN_CHK == '부'){
 				o.DNA_YN_CHK = '';
 			}
+			if(o.DNA_YN == '일치'){
+				if(na_bzplc=='8808990656199'){
+					o.DNA_YN = '친자'+o.DNA_YN;				
+				}				
+			}
+			
+			
 			
 			if(o.CALF_INDV_SEX_C == '0' ){
 				o.CALF_INDV_SEX_C ="없음";

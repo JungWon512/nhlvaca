@@ -205,7 +205,7 @@
         
         	/*                            1                     2               3               4               5           6            7          8           9       		 10    */
         	var searchResultColNames = [  "경매일자"     , "경매대상"           , "출하자코드"       , "출하자명"       , "출하자 생년월일"     , "조합원여부"  , "관내외구분" , "경매진행순서", "주소"     , "귀표번호", "성별","제각여부"
-                                        , "생년월일"     , "어미귀표번호"        , "예정가"       , "중량(kg)"    , "낙찰단가"   , "낙찰금액", "낙찰자"  , "출하수수료"  , "조합출자금" , "사고적립금"    , "운송비"
+                                        , "생년월일"     , "월령"				, "어미귀표번호"        , "예정가"       , "중량(kg)"    , "낙찰단가"   , "낙찰금액", "낙찰자"  , "출하수수료"  , "조합출자금" , "사고적립금"    , "운송비"
                                         , "괴사감정료"    , "임신감정료"         , "검진비"          , "주사료"      , "자조금"     , "혈통접수비" , "제각수수료" , "위탁수수료"  , "사료공급금액"  , "당일접수비용"
                                         , "12개월이상수수료", "정산금액"          , "수송자명"        , "친자검사여부"  , "친자검사결과" , "비고내용"  , "임신감정여부", "임신여부"   , "사료미사용여부"  , "예금주"
                                         , "계좌번호"      , "전화번호"          , "핸드폰번호"
@@ -225,6 +225,7 @@
 						                {name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:80, align:'center'},
                                         {name:"RMHN_YN",              index:"RMHN_YN",              width:80, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                         {name:"BIRTH",                index:"BIRTH",                width:80, align:'center'},
+                                        {name:"MTCN",                 index:"MTCN",                 width:80, align:'center'},
 						                {name:"MCOW_SRA_INDV_AMNNO",  index:"MCOW_SRA_INDV_AMNNO",  width:150, align:'center'},
 						                {name:"LOWS_SBID_LMT_AM",     index:"LOWS_SBID_LMT_AM",     width:100, align:'right', formatter:'integer', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
 						                {name:"COW_SOG_WT",           index:"COW_SOG_WT",           width:100, align:'right', formatter:'integer', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
