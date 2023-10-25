@@ -1306,6 +1306,8 @@ var mCnt = 0;
 				ReportPopup('LALM0412R0_9_J_0',p_param, p_grid, 'T');//원본
 			} else if(na_bzplc =='8808990656571'){ //청도 : 8808990656571
 				ReportPopup('LALM0412R0_9_J_1',p_param, p_grid, 'T');
+			} else if(na_bzplc =='8808990656670'){	//괴산증평 : 8808990656670
+				ReportPopup('LALM0412R0_9_4',p_param, p_grid, 'T');
 			} else{
 				ReportPopup('LALM0412R0_0',p_param, p_grid, 'T');//원본
 			}
