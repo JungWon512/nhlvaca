@@ -2244,6 +2244,20 @@ var na_bzplc = App_na_bzplc;
 					o.DNA_YN = '친자'+o.DNA_YN;				
 				}				
 			}
+			//평택시 주소 설정
+			if(na_bzplc == '8808990795874'){
+				var tempAddr ="";
+				o.DONGUP.split(" ").forEach((o,i)=>{
+				    if(o.endsWith('시') || o.endsWith('군') || o.endsWith('구')
+			    		|| o.endsWith('읍') || o.endsWith('면') || o.endsWith('동')
+		    		){
+				        if(tempAddr.length > 0) tempAddr +=" ";
+				        tempAddr += o;
+				    }
+				});
+				o.DONGUP = tempAddr;
+			}
+			
 			
 			if(o.CALF_INDV_SEX_C == '0' ){
 				o.CALF_INDV_SEX_C ="없음";
