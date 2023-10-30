@@ -762,6 +762,9 @@ var na_bzplc = App_na_bzplc;
 	     	         // 수원축협 : 8808990656496	
             		 } else if(na_bzplc == '8808990656496'){
             			 ReportPopup('LALM0216R3_6_4',TitleData, grid4, 'V');
+            		 // 평택축협 : 8808990795874	 
+            		 } else if(na_bzplc == '8808990795874'){
+            			 ReportPopup('LALM0216R3_115',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 } else {
 						ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }            	 
@@ -1021,6 +1024,10 @@ var na_bzplc = App_na_bzplc;
              		 // 수원축협 : 8808990656496
              		 } else if(na_bzplc == '8808990656496'){
             			 ReportPopup('LALM0216R3_6_4',TitleData, grid4, 'V');
+            			 
+            		 // 평택축협 : 8808990795874	 
+            		 } else if(na_bzplc == '8808990795874'){
+            			 ReportPopup('LALM0216R3_115',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 } else {
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1311,6 +1318,10 @@ var na_bzplc = App_na_bzplc;
 	     	         // 수원축협 : 8808990656496
 					 } else if(na_bzplc == '8808990656496'){
 						 ReportPopup('LALM0216R3_6_4',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+						
+					 // 평택축협 : 8808990795874	 
+					 } else if(na_bzplc == '8808990795874'){
+						 ReportPopup('LALM0216R3_115',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
 						 
 					 } else {
 	            		 grid4 = grid4.map((o,i)=>{
@@ -1392,7 +1403,14 @@ var na_bzplc = App_na_bzplc;
              		 }
 
             	 } else if($("#prto_tpc_7").is(":checked")) {
-            		 ReportPopup('LALM0216R3_14',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 //평택축협 : 8808990795874 테스트 8808990687094
+            		 if(na_bzplc == '8808990795874'){
+            			 ReportPopup('LALM0216R3_115_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 
+            		 }else{
+	            		 ReportPopup('LALM0216R3_14',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+	            		 
+            		 }
             	 
             	 } else if($("#prto_tpc_8").is(":checked")) {
             		 ReportPopup('LALM0216R3_9',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
