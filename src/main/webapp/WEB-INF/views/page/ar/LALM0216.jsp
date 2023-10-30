@@ -2227,8 +2227,6 @@ var na_bzplc = App_na_bzplc;
 				}				
 			}
 			
-			
-			
 			if(o.CALF_INDV_SEX_C == '0' ){
 				o.CALF_INDV_SEX_C ="없음";
 			}else if(o.CALF_INDV_SEX_C == '1' ){
