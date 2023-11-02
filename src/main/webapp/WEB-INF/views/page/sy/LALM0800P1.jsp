@@ -59,7 +59,7 @@
                                 <input type="text" id="fsrg_dtm" readonly="readonly">
                             </td>
                         </tr>
-                        <tr style="display:none;">
+                        <tr id ='trPopU' style="display:none;">
                             <th class="tb_dot">팝업여부</th>
                             <td colspan="2">
                                 <input type="checkbox" id="pup_uyn" name="pup_uyn">
@@ -126,8 +126,8 @@
                 $("#pup_uyn_text").text("여");
                 $("#st_dt").attr("disabled",false);
                 $("#ed_dt").attr("disabled",false);
-                $("#st_dt" ).datepicker().datepicker("setDate", fn_getDay(-7));
-                $("#ed_dt" ).datepicker().datepicker("setDate", fn_getToday()); 
+                $("#st_dt" ).datepicker().datepicker("setDate", fn_getToday()); 
+                $("#ed_dt" ).datepicker().datepicker("setDate", fn_getDay(7));
             } else {
                 $("#pup_uyn_text").text("부");
                 $("#st_dt").attr("disabled",true);
@@ -156,14 +156,26 @@
         $( '#na_bzplc' ).val('0000000000000');
         $( "#blbd_dsc" ).val(pageInfo.param.blbd_dsc); 
         $( "#inq_cn_yn" ).val("0");
+        if(pageInfo.param.blbd_dsc == '4'){
+            $('tr#trPopU').show();        	
+        }
         CKEDITOR.instances.bbrd_cntn.setData(''); 
         if(pageInfo.param.bbrd_sqno != null && pageInfo.param.bbrd_sqno !=''){
             $("#bbrd_sqno").val(pageInfo.param.bbrd_sqno);
             $("#rl_sqno").val(pageInfo.param.rl_sqno);
+            if(pageInfo.param.blbd_dsc == '4'){
+            	$("#pup_uyn").attr('disabled',true);
+                $("#st_dt" ).datepicker();
+                $("#ed_dt" ).datepicker();
+            }
         	fn_Search();
         }else {
         	$("#rl_sqno").val("0");
-            $("#pup_uyn").prop('checked',false).trigger('change');
+            if(pageInfo.param.blbd_dsc == '4'){
+            	$("#pup_uyn").prop('checked',true).trigger('change').attr('disabled',true);
+            }else{
+                $("#pup_uyn").prop('checked',false).trigger('change');            	
+            }
         }
         
     }

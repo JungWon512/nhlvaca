@@ -136,7 +136,7 @@
                 data['blbd_dsc'] =  $("#mainGrid").jqGrid('getCell', rowid, 'BLBD_DSC');
                 data['bbrd_sqno'] =  $("#mainGrid").jqGrid('getCell', rowid, 'BBRD_SQNO');
                 data['rl_sqno'] =  $("#mainGrid").jqGrid('getCell', rowid, 'RL_SQNO');
-                parent.layerPopupPage(pgid, menu_id, data, null, 1000, 600,function(result){
+                parent.layerPopupPage(pgid, menu_id, data, null, 1000, 750,function(result){
                       if(result){
                     	  fn_Search();
                       }
