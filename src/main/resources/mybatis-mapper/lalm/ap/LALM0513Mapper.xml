@@ -734,10 +734,7 @@
                 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 END AS MTCN      
                 
 	        , CASE WHEN A.SEL_STS_DSC = '22' THEN A.SRA_SBID_UPR ELSE 0 END AS SRA_SBID_UPR
-	        , CASE WHEN #{ss_security} = '1' THEN 
-	        	   	CASE WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN NVL(C.SRA_FARM_ACNO, C.NEW_SRA_FARM_ACNO)
-	        	   		 ELSE NVL(G.SRA_FARM_ACNO, G.NEW_SRA_FARM_ACNO)
-        	   		END 
+	        , CASE WHEN #{ss_security} = '1' THEN NVL(C.SRA_FARM_ACNO, C.NEW_SRA_FARM_ACNO)
 	               WHEN (A.SOGMN_C = '' OR A.SOGMN_C IS NULL) THEN
 	                    CASE WHEN (C.SRA_FARM_ACNO = '' OR C.SRA_FARM_ACNO IS NULL) THEN
 	                         CASE WHEN LENGTH(C.NEW_SRA_FARM_ACNO) = 12 THEN SUBSTRING(C.NEW_SRA_FARM_ACNO,1,8) || '****'
@@ -2469,11 +2466,9 @@
 	
 	<select id="LALM0513_selList_11_print" resultType="hashMap">
 	<![CDATA[
-		SELECT G.*
-		FROM (
 			SELECT
 		          A.AUC_DT
-		        , DECODE(#{auc_obj_dsc},'0','0',A.AUC_OBJ_DSC) AUC_OBJ_DSC  
+	        , A.AUC_OBJ_DSC
 		        , D.FHS_ID_NO || '-' || D.FARM_AMNNO AS FHS_ID_NO
 		        , D.FTSNM
 		        , D.DONGUP || ' ' || D.DONGBW AS ADR
@@ -2546,8 +2541,14 @@
 			<if test='ftsnm != null and ftsnm != ""'>
 			      AND D.FTSNM             = #{ftsnm}
 			</if>
-		) G
-	    GROUP BY G.AUC_DT, G.AUC_OBJ_DSC, G.FHS_ID_NO, G.FTSNM, G.ADR
+	    GROUP BY A.AUC_DT
+		       , A.AUC_OBJ_DSC
+		       , D.FHS_ID_NO || '-' || D.FARM_AMNNO
+		       , D.FTSNM
+		       , D.DONGUP || ' ' || D.DONGBW 
+	<![CDATA[
+	    ORDER BY  A.AUC_OBJ_DSC
+	]]>
 	</select>
 	
 	

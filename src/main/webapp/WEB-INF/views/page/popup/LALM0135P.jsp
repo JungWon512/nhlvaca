@@ -35,7 +35,7 @@
 							<th scope="row">통합회원구분</th>
 							<td>
 								<select id="search_type">
-									<option value="1" selected="selected">통합회원이름</option>
+									<option value="1">통합회원이름</option>
 									<option value="0">통합회원번호</option>
 								</select>
 							</td>
@@ -116,7 +116,7 @@
 	 * 3. 출 력 변 수 : N/A
 	 ------------------------------------------------------------------------------*/
 	function fn_Search(){
-		var errMsg = $("#search_type").val() == "0" ? "통합회원번호를 입력하세요." : "통합회원이름을 입력하세요.";
+		var errMsg = $("#search_type").val() == "0" ? "통합회원번호를 입력하세요." : "통합회원번호를 입력하세요.";
 		//정합성체크
 		if(fn_isNull($("#search_text").val())){
 			MessagePopup('OK', errMsg, function(){

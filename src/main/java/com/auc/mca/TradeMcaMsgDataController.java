@@ -73,6 +73,8 @@ public class TradeMcaMsgDataController {
 	            data.append(",\"DEL_YN\":\""             + padLeftBlank((String)inMap.get("DEL_YN"),1)              + "\"");
 	            //20221118 스마트가축시장 고도화 inf 항목 추가
 	            data.append(",\"MB_INTG_NO\":\""          + padLeftBlank(""+inMap.get("MB_INTG_NO"),8)              + "\"");
+	            //20230816 축산경제통합 CUS_RLNO 누락으로 인한 항목추가
+	            data.append(",\"CUS_RLNO\":\""          + padLeftBlank(""+inMap.get("CUS_RLNO2"),13)              + "\"");
 	            if(k+1 == mwmnList.size()) {
 	            	data.append("}");	
 	            }else {

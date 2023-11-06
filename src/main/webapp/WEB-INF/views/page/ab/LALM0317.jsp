@@ -48,7 +48,14 @@ var mv_sqno_prc_dsc = "";
                 return;
             }
             
-            if($("#sbt_am").val() == 0) {
+            //값없을 경우 0으로 초기화
+            if(($("#sbt_pmr").val() == '' && $("#sbt_am").attr('disabled'))){
+            	$("#sbt_pmr").val('0');
+            }else if(($("#sbt_am").val() == '' && $("#sbt_pmr").attr('disabled'))){
+            	$("#sbt_am").val('0');
+            }
+            
+            if((parseInt($("#sbt_am").val()) == 0 && $("#sbt_pmr").attr('disabled')) || (parseInt($("#sbt_pmr").val()) == 0 && $("#sbt_am").attr('disabled'))) {
             	MessagePopup('YESNO',"예정가를 최초 예정가로 변경합니다. 변경하시겠습니까?",function(res){
                     if(res){
                         var result        = null;
@@ -71,7 +78,7 @@ var mv_sqno_prc_dsc = "";
                         MessagePopup('OK','취소되었습니다.');
                     }
                 });
-            } else if(parseInt($("#sbt_am").val()) > 0) {
+            } else if((parseInt($("#sbt_am").val()) > 0 && $("#sbt_pmr").attr('disabled')) || (parseInt($("#sbt_pmr").val()) > 0 && $("#sbt_am").attr('disabled'))) {
             	MessagePopup('YESNO',"저장 하시겠습니까?",function(res){
                     if(res){
                         var result        = null;
@@ -519,7 +526,7 @@ var mv_sqno_prc_dsc = "";
    	    var data = new Object();      	    
         data['auc_obj_dsc']      = $("#auc_obj_dsc").val();        
         data['auc_dt']           = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');     
-        data['sra_mwmnnm']       = $("#grd_MhSogCow").jqGrid("getCell", rowid, 38);
+        data['sra_mwmnnm']       = $("#grd_MhSogCow").jqGrid("getCell", rowid, 'SRA_MWMNNM');
   	    fn_CallMwmnnmNoPopup(data,flag,function(result){
          	if(result){
   	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 'SRA_MWMNNM', result.SRA_MWMNNM);  

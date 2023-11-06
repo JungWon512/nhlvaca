@@ -57,7 +57,8 @@
 	      AND A.SRA_INDV_AMNNO      = B.SRA_INDV_AMNNO
 	      AND A.SRA_SRS_DSC         = B.SRA_SRS_DSC
 	      AND A.NA_BZPLC            = C.NA_BZPLC
-	      AND A.TRMN_AMNNO          = C.TRMN_AMNNO]]>
+	      AND A.TRMN_AMNNO          = C.TRMN_AMNNO
+	]]>
 	      <if test="cb_jrdwo_dsc != null and cb_jrdwo_dsc != ''">
 	      	AND C.JRDWO_DSC          = #{cb_jrdwo_dsc}    
 	      </if>

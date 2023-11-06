@@ -896,8 +896,7 @@
     		TitleData.title +="경매 집계 표 제 "+ $("#qcn").val()+" 차";
     		TitleData.sub_title = "";
     		TitleData.unit = "";
-    		TitleData.srch_condition=  '[경매일자 : ' + $('#auc_dt').val() + ']'
- 	       +  '/ [경매대상 : ' + $( "#auc_obj_dsc option:selected").text()  + ']';
+    		TitleData.srch_condition=  '[경매일자 : ' + $('#auc_dt').val() + ']' +  '/ [경매대상 : ' + $( "#auc_obj_dsc option:selected").text()  + ']';
     		TitleData.am_tot_su = $("#am_tot_su").val();
     		TitleData.su_tot_su = $("#su_tot_su").val();
     		TitleData.no_tot_su = $("#no_tot_su").val();
@@ -995,7 +994,7 @@
 	       
 	       var searchResultColModel1 = [
 	        							 {name:"AUC_DT",      index:"AUC_DT",      width:80, align:'center', },
-	        							 {name:"AUC_OBJ_DSC", index:"AUC_OBJ_DSC", width:65,  align:'center' , edittype:"select", formatter : "select", editoptions:{value:'0:일괄;1:송아지;2:비육우;3:번식우'}},
+	        							 {name:"AUC_OBJ_DSC", index:"AUC_OBJ_DSC", width:65,  align:'center' , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
 	        							 {name:"FHS_ID_NO",   index:"FHS_ID_NO",   width:80, align:'center', },
 	        							 {name:"FTSNM",       index:"FTSNM",       width:80, align:'center'},
 	                                     {name:"ADR",         index:"ADR",         width:100, align:'center'},
@@ -1022,7 +1021,7 @@
     		TitleData.sub_title = " "+"님의" +  fn_deleteNumber($( "#auc_obj_dsc option:selected").text()) + " 매매가 이루어졌습니다.";
     		TitleData.unit = "";
     		
-    		//ReportPopup('LALM0513R9',TitleData, 'grd_MhSogCow11,grd_MhSogCow11_1', 'V'); 
+    		ReportPopup('LALM0513R9',TitleData, 'grd_MhSogCow11,grd_MhSogCow11_1', 'V'); 
     		
     	}
     	

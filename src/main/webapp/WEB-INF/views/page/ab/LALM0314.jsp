@@ -189,10 +189,10 @@
              	TitleData.unit="";
              	TitleData.srch_condition=  '[경매일자 : ' + $('#auc_dt').val() + ']'
 
-             	if(na_bzplc == '8808990811710'){
-                 	ReportPopup('LALM0314R_1_1' ,TitleData, 'grd_MhSogCow5', 'V'); //기본 출력물             		
-             	}else if(na_bzplc == '8808990659275'){
+             	if(na_bzplc == '8808990811710'){ //영광
                  	ReportPopup('LALM0314R_1_0' ,TitleData, 'grd_MhSogCow5', 'V'); //기본 출력물             		
+             	}else if(na_bzplc == '8808990659275'){ //나주
+                 	ReportPopup('LALM0314R_1_1' ,TitleData, 'grd_MhSogCow5', 'V'); //기본 출력물             		
              	}else{
                  	ReportPopup('LALM0314R_1' ,TitleData, 'grd_MhSogCow5', 'V'); //기본 출력물             		
              	}
@@ -213,7 +213,7 @@
              	TitleData.srch_condition=  '[경매일자 : ' + $('#auc_dt').val() + ']'
                 +  '/ [경매대상 + ' + $( "#auc_obj_dsc option:selected").text()  + ']';
              	
-             	if(na_bzplc == '8808990656540'){ //담양 : 8808990656540
+             	if(na_bzplc == '8808990656540'){
              		ReportPopup('LALM0314R0_1' ,TitleData, 'grd_MhSogCow2', 'V');              		
              	}else{
              		ReportPopup('LALM0314R0' ,TitleData, 'grd_MhSogCow2', 'V');             		
@@ -651,7 +651,6 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_SearchSogCow1(p_param){
-    	console.log(p_param);
     	$("#grd_MhSogCow1").jqGrid("clearGridData", true);
     	
     	var results = sendAjax(p_param, "/LALM0314_selSogCow1List", "POST");        

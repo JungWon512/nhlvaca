@@ -20,7 +20,7 @@
                 <li><p class="dot_allow" >비밀번호 변경</p></li>
             </ul>
             <div class="tab_box fl_R"><!--  //버튼 모두 우측정렬 -->
-	            <label style="font-size:15px;color: blue;font: message-box;">* 영문,숫자의 조합으로 8자리 이상</label>
+	            <label style="font-size:15px;color: blue;font: message-box;">* 영문,숫자의 조합으로 10자리 이상</label>
 	        </div>
         </div>
         <div class="sec_table">
@@ -140,8 +140,8 @@
             return;
     	}
     	 
-    	if(pw.length < 8 || pw.length > 20){
-    		MessagePopup('OK','비밀번호는 8자리 이상 20자리 이내로 입력하세요.',function(){
+    	if(pw.length < 10 || pw.length > 20){
+    		MessagePopup('OK','비밀번호는 10자리 이상 20자리 이내로 입력하세요.',function(){
                 $( "#io_new_pw" ).focus();
             });
             return;

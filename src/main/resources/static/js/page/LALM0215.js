@@ -290,7 +290,13 @@
             e.preventDefault();
             this.blur();
             var data = new Object();
+         	var qcn = $("#aucQcnGrid").getRowData();
+         	if(qcn[0].AUC_OBJ_DSC == '0'){
+				data['auc_obj_dsc'] = qcn[0].AUC_OBJ_DSC;						 
+			}else{
             data['auc_obj_dsc'] = $("#auc_obj_dsc").val();
+			}
+            //data['auc_obj_dsc'] = $("#auc_obj_dsc").val();
             data['auc_dt']      = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
             data['sra_mwmnnm']  = $("#sra_mwmnnm").val();
             fn_CallMwmnnmNoPopup(data,false,function(result){
@@ -320,7 +326,7 @@
                     data['ftsnm'] = $("#sra_pdmnm").val();
                     fn_CallMmFhsPopup(data,true,function(result) {
                      	if(result){
-                     		$("#sogmn_c").val(result.FARM_AMNNO);
+                     		$("#sogmn_c").val(result.FHS_ID_NO);
     	                    $("#sra_pdmnm").val(result.FTSNM);
                      	}
                     }); 
@@ -338,8 +344,8 @@
             this.blur();
             fn_CallMmFhsPopup(null,false,function(result){
             	if(result){
-                    $("#sogmn_c").val(result.TRMN_AMNNO);
-                    $("#sra_pdmnm").val(result.SRA_MWMNNM);
+	         		$("#sogmn_c").val(result.FHS_ID_NO);
+	                $("#sra_pdmnm").val(result.FTSNM);
             	}
             });
         });
@@ -603,11 +609,9 @@
     		// 번식우
     		if($("#auc_obj_dsc").val() == "3") {
    		        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
-   		      		// ★익산: 8808990227283
-   		        	if(App_na_bzplc == "8808990227283") {
+   		      		// ★익산: 8808990227283 || 동삼태 : 8808990652825
    		        		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게 기존 false 고정
-   		        		//fn_contrChBox(false, "prny_jug_yn", "");
-   		            } else {
+   		        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825") {
    		            	fn_contrChBox(true, "prny_jug_yn", "");
    		            }
    		        } else {
@@ -1209,6 +1213,7 @@
      ------------------------------------------------------------------------------*/
     function fn_Save() {
     	$("#re_indv_no").val($("#hed_indv_no").val() + $("#sra_indv_amnno").val());
+    	gridSaveRow('calfGrid');
     	var calfArray = $("#calfGrid").jqGrid("getRowData");
     	var srchData      = new Object();
      	var result        = null;
@@ -2596,7 +2601,7 @@
            		$("#io_sogmn_maco_yn").val(result.MACO_YN);
            		$("#sra_farm_acno").val(result.SRA_FARM_ACNO);
            		
-        		if($('#auc_obj_dsc').val() == '3' && fn_isDate(result.PTUR_PLA_DT) && $('#auc_dt').val().replace('-','') < result.PTUR_PLA_DT.replace('-','')){        			
+        		if($('#auc_obj_dsc').val() == '3' && fn_isDate(result.PTUR_PLA_DT)){        			
             		$('#ppgcow_fee_dsc').val('1').change();
             		$('#afism_mod_dt').val(result.PTUR_PLA_DT).focusout().change();
         		}
@@ -2704,8 +2709,9 @@
     		mv_RunMode = 1;
     		fn_AucOnjDscModify("init");
         	fn_Search();
-        	
-    		mv_RunMode = 2;
+        	//fn_Search중 error시 pageInfos.param를 null로 변하는 로직이있어 param 이중체크
+        	//에러시 신규기준으로 판단하고 세팅
+        	if(pageInfos.param) mv_RunMode = 2;
         	
         } else {
         	// 실행모드 설정 (Window.mv_RunMode = '1':최초로딩, '2':조회, '3':저장/삭제, '4':기타설정)
@@ -2917,11 +2923,9 @@
  			// 번식우
  			if($("#auc_obj_dsc").val() == "3") {
  			        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
- 			      		// ★익산: 8808990227283
- 			        	if(App_na_bzplc == "8808990227283") {
+ 			      		// ★익산: 8808990227283 || 동삼태 : 8808990652825
+ 			        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825") {
 	   		        		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게 기존 false 고정
- 			        		//fn_contrChBox(false, "prny_jug_yn", "");
- 			            } else {
  			            	fn_contrChBox(true, "prny_jug_yn", "");
  			            }
  			        } else {
@@ -3282,14 +3286,21 @@
              if(results.status == RETURN_SUCCESS){
              	result = setDecrypt(results);
                 fn_SetData(result);
-//                fn_selCowImg();
-                
+//                fn_selCowImg();              
              }else {
                  showErrorMessage(results);
                  mv_InitBoolean = true;
                  mv_Tab_Boolean = false;
-        		 fn_Init();
         		 $("#btn_Delete").attr("disabled", true);
+        		 /**
+        		 * 20230321 jjw
+        		 * 출장우내역 등록에서 데이터 삭제하고 
+        		 * 탭이동해서 조회에서 삭제한 목록 재진입시
+        		 * 무한 루프로 빠지는현상 확인
+        		 **/
+        		 pageInfos.param = null;
+        		 
+        		 fn_Init();
                  return;
              }
     	 }        
@@ -4520,7 +4531,7 @@
 		  $("#uploadImg").append(canvas);
 		  
 		  return canvas.toDataURL("image/png", 1);
-		}
+	}
     ////////////////////////////////////////////////////////////////////////////////
     //  사용자 함수 종료
     ////////////////////////////////////////////////////////////////////////////////

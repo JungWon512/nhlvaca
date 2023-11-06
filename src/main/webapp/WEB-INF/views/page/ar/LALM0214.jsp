@@ -190,7 +190,7 @@
              this.blur();
              var TitleData = new Object();
              TitleData.title = "출장우 내역 조회";
-             if(App_na_bzplc='8808990656557'){
+             if(App_na_bzplc == '8808990656557'){
             	 TitleData.title = "비육우 출장내역";            	 
              }
              TitleData.sub_title = "";
@@ -243,7 +243,7 @@
          		
          		return result;
              }
-             if(App_na_bzplc='8808990656557'){
+             if(App_na_bzplc == '8808990656557'){
                  ReportPopup('LALM0214R0_0',TitleData, gridData, 'V');//V:가로 , H:세로            	 
              }else{
                  ReportPopup('LALM0214R0',TitleData, gridData, 'V');//V:가로 , H:세로            	 

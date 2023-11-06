@@ -293,7 +293,7 @@
       				if(ppgcowFeeDsc != '5' && aucObjDsc !='3'){
       					errCnt++;
       					$("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '-',{background:"rgb(255 0 0)"});
-                  	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'PPGCOW_FEE_DSC', rmkCntn ,{background:"rgb(255 0 0)"});      
+                  	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'PPGCOW_FEE_DSC', ppgcowFeeDsc ,{background:"rgb(255 0 0)"});      
                   	  	$('#grd_MmInsSogCow').jqGrid('setCell',rowid,'CHK_VAILD_ERR','1');
       				 }
 				});
@@ -648,6 +648,7 @@
 	       		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FARM_AMNNO', result.FARM_AMNNO);     
 	       		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_PDMNM', fn_xxsDecode(result.FTSNM));        
 	       		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_PD_RGNNM', fn_xxsDecode(result.DONGUP));
+	       		$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SOG_NA_TRPL_C', result.NA_TRPL_C);
 	       		fn_CallIndvInfSrchSet(p_sra_indv_amnno,rowid);
         	}else{
 				$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 0);        		
@@ -682,6 +683,7 @@
        			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_PD_RGNNM', fn_xxsDecode(result.DONGUP));
 
        			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'MCOW_SRA_INDV_AMNNO', result.MCOW_SRA_INDV_AMNNO);
+       			$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SOG_NA_TRPL_C', result.NA_TRPL_C);
 	        	$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'CHK_IF_SRA_INDV', 1);
                 fn_CallIndvInfSrchSet(p_sra_indv_amnno,rowid);
 	        	
@@ -939,7 +941,7 @@
         	                        ,"냉도체중(EPD)","배최장근단면적(EPD)","등지방두께(EPD)","근내지방도(EPD)"
         	                        ,"냉도체중 등급(EPD)","배최장근단면적 등급(EPD)","등지방두께 등급(EPD)","근내지방도 등급(EPD)"
         	                        ,"냉도체중(모EPD)","배최장근단면적(모EPD)","등지방두께(모EPD)","근내지방도(모EPD)"
-        	                        ,"냉도체중 등급(모EPD)","배최장근단면적 등급(모EPD)","등지방두께 등급(모EPD)","근내지방도 등급(모EPD)"
+        	                        ,"냉도체중 등급(모EPD)","배최장근단면적 등급(모EPD)","등지방두께 등급(모EPD)","근내지방도 등급(모EPD)","경제통합거래처코드"
         	                        ,"","","","",""];
         
         var searchResultColModel = [
@@ -967,20 +969,20 @@
                                      {name:"RMHN_YN",              index:"RMHN_YN",              width:90,  align:'left'  , sortable : false, editable:false, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}  },
                                      {name:"MT12_OVR_YN",          index:"MT12_OVR_YN",          width:90,  align:'left'  , sortable : false, editable:false, edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}  },
                                      {name:"MT12_OVR_FEE",         index:"MT12_OVR_FEE",         width:90,  align:'left'  , sortable : false, editable:false , formatter:'integer'  },
-                                     {name:"PPGCOW_FEE_DSC",       index:"PPGCOW_FEE_DSC",       width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("PPGCOW_FEE_DSC",1)}  },
+                                     {name:"PPGCOW_FEE_DSC",       index:"PPGCOW_FEE_DSC",       width:90,  align:'left'  , sortable : false, editable:false , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("PPGCOW_FEE_DSC",1)}  },
                                      {name:"AFISM_MOD_DT",         index:"AFISM_MOD_DT",         width:90,  align:'left'  , sortable : false, editable:false , formatter:'gridDateFormat'},
-                                     {name:"AFISM_MOD_CTFW_SMT_YN",index:"AFISM_MOD_CTFW_SMT_YN",width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
+                                     {name:"AFISM_MOD_CTFW_SMT_YN",index:"AFISM_MOD_CTFW_SMT_YN",width:90,  align:'left'  , sortable : false, editable:false , edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
                                      {name:"MOD_KPN",              index:"MOD_KPN",              width:90,  align:'left'  , sortable : false, editable:false   },
                                      {name:"PRNY_MTCN",            index:"PRNY_MTCN",            width:90,  align:'left'  , sortable : false, editable:false , formatter:'integer' },
-                                     {name:"PRNY_JUG_YN",          index:"PRNY_JUG_YN",          width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
-                                     {name:"PRNY_YN",              index:"PRNY_YN",              width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
-                                     {name:"NCSS_JUG_YN",          index:"NCSS_JUG_YN",          width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
-                                     {name:"NCSS_YN",              index:"NCSS_YN",              width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
-                                     {name:"DNA_YN",               index:"DNA_YN",               width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value: '3:정보없음;1:일치;2:완전불일치;4:부불일치;5:모불일치;6:부or모불일치' }  },
-                                     {name:"DNA_YN_CHK",           index:"DNA_YN_CHK",           width:90,  align:'left'  , sortable : false, editable:false , editable:true, edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
+                                     {name:"PRNY_JUG_YN",          index:"PRNY_JUG_YN",          width:90,  align:'left'  , sortable : false, editable:false , edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
+                                     {name:"PRNY_YN",              index:"PRNY_YN",              width:90,  align:'left'  , sortable : false, editable:false , edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
+                                     {name:"NCSS_JUG_YN",          index:"NCSS_JUG_YN",          width:90,  align:'left'  , sortable : false, editable:false , edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
+                                     {name:"NCSS_YN",              index:"NCSS_YN",              width:90,  align:'left'  , sortable : false, editable:false , edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
+                                     {name:"DNA_YN",               index:"DNA_YN",               width:90,  align:'left'  , sortable : false, editable:false , edittype:"select", formatter : "select", editoptions:{value: '3:정보없음;1:일치;2:완전불일치;4:부불일치;5:모불일치;6:부or모불일치' }  },
+                                     {name:"DNA_YN_CHK",           index:"DNA_YN_CHK",           width:90,  align:'left'  , sortable : false, editable:false , edittype:"select", formatter : "select", editoptions:{value: GRID_YN_DATA }  },
                                      {name:"RMK_CNTN",             index:"RMK_CNTN",             width:90,  align:'left'  , sortable : false, editable:false   },
                                      {name:"SRA_PDMNM",            index:"SRA_PDMNM",            width:90,  align:'left'  , sortable : false, editable:false },
-                                     {name:"SRA_PD_RGNNM",         index:"SRA_PD_RGNNM",         width:90,  align:'left'  , sortable : false, editable:false },
+                                     {name:"SRA_PD_RGNNM",         index:"SRA_PD_RGNNM",         width:90,  align:'left'  , sortable : false, s:false },
                                      {name:"MCOW_SRA_INDV_AMNNO",  index:"MCOW_SRA_INDV_AMNNO",	 width:90,  align:'left'  , sortable : false, hidden : true},
                                      {name:"RE_PRODUCT_1",		   index:"RE_PRODUCT_1",	 width:90,  align:'left'  , sortable : false, hidden : true},
                                      {name:"RE_PRODUCT_2",		   index:"RE_PRODUCT_2",	 width:90,  align:'left'  , sortable : false, hidden : true},
@@ -998,6 +1000,7 @@
                                      {name:"RE_PRODUCT_12_1",	   index:"RE_PRODUCT_12_1",	 width:90,  align:'left'  , sortable : false, hidden : true},
                                      {name:"RE_PRODUCT_13_1",	   index:"RE_PRODUCT_13_1",	 width:90,  align:'left'  , sortable : false, hidden : true},
                                      {name:"RE_PRODUCT_14_1",	   index:"RE_PRODUCT_14_1",	 width:90,  align:'left'  , sortable : false, hidden : true},
+                                     {name:"SOG_NA_TRPL_C",        index:"SOG_NA_TRPL_C",	 width:90,  align:'left'  , sortable : false, hidden : true},
                                      
                                      {name:"CHK_IF_SRA_INDV",	   index:"CHK_IF_SRA_INDV",		 width:90,  align:'left'  , sortable : false, hidden : true},
                                      {name:"CHK_IF_FHS",	       index:"CHK_IF_FHS",      	 width:90,  align:'left'  , sortable : false, hidden : true},

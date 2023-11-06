@@ -201,6 +201,7 @@
 				               then Replace(substr(a.cus_rlno,1,6),'-','')
 				               else Replace(a.cus_rlno,'-','')
 				          end as cus_rlno
+				        , cus_rlno as cus_rlno2
 				        , a.mb_intg_no 		/*통합회원번호*/
 				    from  tb_la_is_mm_mwmn a
 				         ,tb_la_is_mh_auc_entr b
@@ -1400,6 +1401,11 @@
               tb_la_is_mm_sms     g
 	     where a.na_bzplc = #{ss_na_bzplc}
 	       and a.auc_dt = #{auc_dt}
+		   and a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
+											when #{auc_obj_dsc} = '2' then '2'
+			                                when #{auc_obj_dsc} = '3' then '3'
+			                                else a.auc_obj_dsc
+										end
 	       and a.led_sqno = 1
 	       and a.del_yn = '0'
 	       and a.na_bzplc = b.na_bzplc
@@ -1670,6 +1676,7 @@
                                else Replace(a.cus_rlno,'-','')
                           end as cus_rlno
                         , a.mb_intg_no 		/*통합회원번호*/  
+				        , cus_rlno as cus_rlno2
                     from  tb_la_is_mm_mwmn a
                     where a.na_bzplc    = #{ss_na_bzplc}
                     order by a.trmn_amnno
@@ -1906,7 +1913,7 @@
  			END    AS MSG_CNTN          /* 메세지내용   */
 			, F.TMS_YN
 			, F.SMS_FWDG_DT
-			, #{AUC_OBJ_DSC}   AS AUC_OBJ_DSC
+			, #{auc_obj_dsc}   AS AUC_OBJ_DSC
 			, A.AUC_DT || A.OSLP_NO AS TRMN_AMNNO
 			, D.FTSNM         AS RMS_MN_NAME    /* 수신자명         */
 			, D.CUS_MPNO      AS SMS_RMS_MPNO   /* 수신자전화번호   */
@@ -1917,13 +1924,13 @@
 		   , TB_LA_IS_MM_FHS      D
 		   , TB_LA_IS_MM_INDV     E
           , TB_LA_IS_MM_SMS F
-		WHERE A.NA_BZPLC            = #{SS_NA_BZPLC}
-		  AND A.AUC_OBJ_DSC         = CASE WHEN #{AUC_OBJ_DSC} = '1' THEN '1'
-		                                   WHEN #{AUC_OBJ_DSC} = '2' THEN '2'
-		                                   WHEN #{AUC_OBJ_DSC} = '3' THEN '3'
+		WHERE A.NA_BZPLC            = #{ss_na_bzplc}
+		  AND A.AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '1' THEN '1'
+		                                   WHEN #{auc_obj_dsc} = '2' THEN '2'
+		                                   WHEN #{auc_obj_dsc} = '3' THEN '3'
 		                                   ELSE A.AUC_OBJ_DSC
 		                              END
-		  AND A.AUC_DT              = #{AUC_DT}
+		  AND A.AUC_DT              = #{auc_dt}
 		  AND A.LED_SQNO            = 1
 		  AND A.DEL_YN              = '0'       
 		  AND A.NA_BZPLC            = B.NA_BZPLC
@@ -1935,10 +1942,10 @@
 		  AND  A.SRA_SRS_DSC        = E.SRA_SRS_DSC
           AND  A.NA_BZPLC           = F.NA_BZPLC(+)
           AND  A.AUC_DT || A.OSLP_NO         = F.TRMN_AMNNO(+)
-          AND  F.AUC_OBJ_DSC(+)     = #{AUC_OBJ_DSC}
+          AND  F.AUC_OBJ_DSC(+)     = #{auc_obj_dsc}
           AND  F.DPAMN_DSC(+)       = '2'
           AND  F.SEL_STS_DSC(+)     = '04'
-          AND  F.TMS_TYPE(+)			= #{TMS_TYPE}
+          AND  F.TMS_TYPE(+)			= #{tms_type}
           AND  LENGTH(REGEXP_REPLACE(D.CUS_MPNO, '[^0-9]')) <![CDATA[>=]]> 10
           AND TRIM(A.RMK_CNTN) IS NOT NULL
 		ORDER BY A.AUC_PRG_SQ

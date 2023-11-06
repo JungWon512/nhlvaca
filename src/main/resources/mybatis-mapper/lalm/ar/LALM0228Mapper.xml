@@ -61,9 +61,10 @@
 			INNER JOIN TB_LA_IS_BM_BZLOC E ON A.NA_BZPLC = E.NA_BZPLC
 			INNER JOIN TB_LA_IS_MM_WMC G ON A.NA_BZPLC = G.NA_BZPLC
 			LEFT JOIN TB_LA_IS_MM_SMS F ON A.NA_BZPLC = F.NA_BZPLC
-														AND A.AUC_OBJ_DSC = #{auc_obj_dsc}
+														AND F.AUC_OBJ_DSC = #{auc_obj_dsc}
 														AND F.TRMN_AMNNO = A.AUC_DT || LPAD(A.OSLP_NO, 4, '0') || NVL(#{sms_key},0)
 														AND F.DPAMN_DSC = #{obj_gbn}
+														AND F.SEL_STS_DSC = #{msg_gbn}
 														AND TMS_TYPE = '02'
 			WHERE A.NA_BZPLC = #{ss_na_bzplc}
 				AND A.AUC_OBJ_DSC =  DECODE(#{auc_obj_dsc},'0',A.AUC_OBJ_DSC,#{auc_obj_dsc})

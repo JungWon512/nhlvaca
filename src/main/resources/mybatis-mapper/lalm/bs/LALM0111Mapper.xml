@@ -47,7 +47,9 @@
             , a.anw_yn                                       -- 한우종합여부
             , a.SRA_FED_SPY_YN                               -- 사료사용여부
 	        , CASE WHEN #{ss_security} = '1' THEN NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO)
-	               ELSE SUBSTRING(NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO),1,LENGTH(NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO)) -4) || '****'
+	               ELSE
+	               	CASE WHEN LENGTH(NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO)) > 0 THEN SUBSTRING(NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO),1,LENGTH(NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO)) -4) || '****'
+	               	ELSE NULL END
 	          END AS SRA_FARM_ACNO
             , case when (a.sra_farm_acno = '' or a.sra_farm_acno is null) then a.new_sra_farm_acno else a.sra_farm_acno end  as io_sra_farm_acno
             , a.birth

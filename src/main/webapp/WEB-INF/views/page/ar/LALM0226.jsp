@@ -989,7 +989,7 @@
 					// 친자확인 조회
 					fn_CallLsPtntInfSrch();
 					//유전체 분석 조회
-					fn_CallGeneBredrInfSrch();
+					//fn_CallGeneBredrInfSrch();
 					// 해당 출장우의 분만정보 조회
 					fn_SelBhCross();
 				}
@@ -1675,15 +1675,18 @@
 				else if(result.LS_PTNT_DSC == "10"){
 					$("#dna_jug_result").val("2");
 				}
-				else if(result.LS_PTNT_DSC == "11"){
-					$("#dna_jug_result").val("4");
+				else{
+					$("#dna_jug_result").val("3");
 				}
-				else if(result.LS_PTNT_DSC == "12"){
-					$("#dna_jug_result").val("5");
-				}
-				else if(result.LS_PTNT_DSC == "13"){
-					$("#dna_jug_result").val("6");
-				}
+				//else if(result.LS_PTNT_DSC == "11"){
+				//	$("#dna_jug_result").val("4");
+				//}
+				//else if(result.LS_PTNT_DSC == "12"){
+				//	$("#dna_jug_result").val("5");
+				//}
+				//else if(result.LS_PTNT_DSC == "13"){
+				//	$("#dna_jug_result").val("6");
+				//}
 			}
 		}
 	}
@@ -2272,7 +2275,7 @@
 			// 브루셀라검사 조회
 			fn_CallBrclIspSrch();
 			// 친자확인 조회
-	//		fn_CallLsPtntInfSrch();
+			fn_CallLsPtntInfSrch();
 			// 유전체 분석 조회
 	//		fn_CallGeneBredrInfSrch();
 			// 해당 출장우의 분만정보 조회

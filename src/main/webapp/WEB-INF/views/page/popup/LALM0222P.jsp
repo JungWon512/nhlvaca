@@ -459,8 +459,10 @@
          } else {
         	 returnVal = setDecrypt(results);
              var len = $('#grd_BhCross').getRowData().length;
+             var crossSort = selresult.LIST_BH_CROSS.sort(function(pre,next){return next.CRSBD_DT - pre.CRSBD_DT;});
              pageInfo.returnValue = returnVal[0];
-             pageInfo.returnValue.PTUR_PLA_DT = $('#grd_BhCross').jqGrid('getRowData',len).PTUR_PLA_DT;
+             pageInfo.returnValue.PTUR_PLA_DT = '';
+             if(crossSort.length > 0) pageInfo.returnValue.PTUR_PLA_DT = $.trim(crossSort[0].CRSBD_DT);
              //pageInfo.returnValue.SIB_INDV = $('#grd_SibIndv').getRowData();
              //pageInfo.returnValue.POST_INDV = $('#grd_PostIndv').getRowData(); 
              var parentInput =  parent.$("#pop_result_" + pageInfo.popup_info.PGID );

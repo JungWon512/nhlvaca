@@ -181,7 +181,7 @@
 	      AND E.MACO_YN          = #{cb_maco_yn}    
 	      </if>
 	      <if test="cb_jrdwo_dsc != null and cb_jrdwo_dsc != ''">
-	      AND E.JRDWO_DSC          = #{cb_jrdwo_dsc}    
+	      AND NVL(E.JRDWO_DSC,'1')          = #{cb_jrdwo_dsc}    
 	      </if>
 	      AND A.NA_BZPLC          = E.NA_BZPLC
 	      AND A.TRMN_AMNNO        = E.TRMN_AMNNO
