@@ -1068,6 +1068,9 @@ var na_bzplc = App_na_bzplc;
              		//	고흥축협 : 8808990779546
              		 } else if(na_bzplc == '8808990779546'){
              			ReportPopup('LALM0216R3_8_4',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그 
+             		 // 보성축협 : 8808990656267
+             		 } else if(na_bzplc == '8808990656267'){
+             			ReportPopup('LALM0216R3_8_5',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그 
              		 } else {
               			 ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
               		 }
@@ -1378,7 +1381,10 @@ var na_bzplc = App_na_bzplc;
              		// 의령축협 : 8808990656199
              		 } else if(na_bzplc == '8808990656199'){
              			ReportPopup('LALM0216R3_8_3',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그
-             		 } else  {
+             		// 보성축협 : 8808990656267
+             		 } else if(na_bzplc == '8808990656267'){
+              			ReportPopup('LALM0216R3_8_5',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그 
+             		 }else  {
              			ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 }
 
@@ -2215,11 +2221,11 @@ var na_bzplc = App_na_bzplc;
 		$('#'+frmId).getRowData().forEach((o,i)=>{
 			//영암:8808990689760 | 익산:8808990227283 | 밀양 : 8808990656663 | 임실 : 8808990660783 | 영광 : 8808990811710 | 예천 : 8808990656557 
 			//동삼태 : 8808990652825 | 양평 : 8808990643625 | 사천 : 8808990656519 | 함평 : 8808990656601 | 장성 : 8808990817675 
-			//해남 : 8808990656106
+			//해남 : 8808990656106 | 보성 : 8808990656267
 			//일시 이력제월령 표기
 			if(na_bzplc == '8808990227283' || na_bzplc == '8808990656663' || na_bzplc == '8808990660783' || na_bzplc == '8808990811710' || na_bzplc =='8808990656557'
 				|| na_bzplc == '8808990652825' || na_bzplc == '8808990643625' || na_bzplc == '8808990656519' || na_bzplc =='8808990656601' || na_bzplc =='8808990817675'
-				|| na_bzplc == '8808990656106'
+				|| na_bzplc == '8808990656106' || na_bzplc == '8808990656267'
 			){
 				o.MTCN = o.MTCN+'개월';	            					
 			}else{
