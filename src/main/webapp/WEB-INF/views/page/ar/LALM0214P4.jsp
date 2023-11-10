@@ -249,8 +249,11 @@
                 }
             }
             
-            
-            ReportPopup('LALM0214R4_3',TitleData, tmpObject, 'H');//V:가로 , H:세로
+			if(App_na_bzplc == ''){
+	            ReportPopup('LALM0214R4_3_1',TitleData, tmpObject, 'H');//V:가로 , H:세로				
+			}else{
+	            ReportPopup('LALM0214R4_3',TitleData, tmpObject, 'H');//V:가로 , H:세로				
+			}         
         });
 
         

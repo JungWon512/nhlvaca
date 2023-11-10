@@ -101,4 +101,15 @@ public interface CommonMapper {
 	 */
 	int Common_resFhsInfo(Map<String, Object> map);
 	
+
+	
+	int Common_insAiakPostInfo(Map<String, Object> postMap) throws Exception;
+	int Common_insAiakSibInfo(Map<String, Object> postMap) throws Exception;
+	int Common_insAiakInfo(Map<String, Object> map) throws Exception;
+
+	int Common_delAiakPostInfo(Map<String, Object> map) throws Exception;
+	int Common_delAiakSibInfo(Map<String, Object> map) throws Exception;
+	int Common_updIndvSibMatime(Map<String, Object> map) throws Exception;
+	int Common_updIndvPostMatime(Map<String, Object> map) throws Exception;
+	
 }

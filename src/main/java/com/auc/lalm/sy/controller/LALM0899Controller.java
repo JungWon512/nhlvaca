@@ -24,6 +24,7 @@ import com.auc.common.exception.ErrorCode;
 import com.auc.common.vo.JwtUser;
 import com.auc.common.vo.ResolverMap;
 import com.auc.lalm.sy.service.LALM0899Service;
+import com.auc.main.service.CommonService;
 import com.auc.mca.AlarmTalkForm;
 import com.auc.mca.McaUtil;
 import com.auc.mca.RestApiJsonController;
@@ -36,6 +37,8 @@ public class LALM0899Controller {
 	ConvertConfig convertConfig;
 	@Autowired
 	CommonFunc commonFunc;
+	@Autowired
+	CommonService commonService;
 	@Autowired
 	McaUtil mcaUtil;
 	@Autowired
@@ -557,6 +560,34 @@ public class LALM0899Controller {
 		}
 		
 		Map<String, Object> reMap = commonFunc.createResultSetListData(nodeList); 	
+        return reMap;
+    }
+
+	@ResponseBody
+	@RequestMapping(value="/LALM0899_selAiakRestApi", method=RequestMethod.POST)
+    public Map<String, Object> LALM0899_selAiakRestApi(ResolverMap rMap) throws Exception {//IOException, SAXException, ParserConfigurationException
+		
+		Map<String, Object> map          = convertConfig.conMap(rMap);
+		Map<String, Object> nodeMap      = new HashMap<String, Object>();
+		
+		String barcode = (String) map.get("sra_indv_amnno");
+		nodeMap = commonService.Common_selAiakInfo(barcode);
+		
+		Map<String, Object> reMap = commonFunc.createResultSetMapData(nodeMap); 	
+        return reMap;
+    }
+
+	@ResponseBody
+	@RequestMapping(value="/LALM0899_selAiakRestApiTest", method=RequestMethod.POST)
+    public Map<String, Object> LALM0899_selAiakRestApiTest(ResolverMap rMap) throws Exception {//IOException, SAXException, ParserConfigurationException
+		
+		Map<String, Object> map          = convertConfig.conMap(rMap);
+		Map<String, Object> nodeMap      = new HashMap<String, Object>();
+		
+		String barcode = (String) map.get("sra_indv_amnno");
+		nodeMap = mcaUtil.callApiAiakMap(barcode);
+		
+		Map<String, Object> reMap = commonFunc.createResultSetMapData(nodeMap); 	
         return reMap;
     }
 	

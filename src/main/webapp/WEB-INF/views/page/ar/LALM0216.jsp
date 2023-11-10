@@ -828,7 +828,12 @@ var na_bzplc = App_na_bzplc;
             		 }
             	 
             	 } else if($("#prto_tpc_7").is(":checked")) { //세로3형식
-            		 ReportPopup('LALM0216R3_14',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 if(na_bzplc == '8808990658995'){ //청주축협 : 8808990658995
+            			 ReportPopup('LALM0216R3_5_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 
+            		 }else{
+                		 ReportPopup('LALM0216R3_14',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
+            		 }
             		 
             	 } else if($("#prto_tpc_8").is(":checked")) { //세로4형식
             		 ReportPopup('LALM0216R3_10',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1037,7 +1042,7 @@ var na_bzplc = App_na_bzplc;
             		 // ★함평: 8808990656601 영암: 8808990689760
             		 //|| na_bzplc == '8808990689760'
               		 if(na_bzplc == '8808990656601' ) {
-              			 ReportPopup('LALM0216R3_49',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+              			 ReportPopup('LALM0216R3_48',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
                 	 // ★영암축협: 8808990689760
             		 }else if(na_bzplc == '8808990689760'){
              			ReportPopup('LALM0216R3_20',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1413,9 +1418,6 @@ var na_bzplc = App_na_bzplc;
             		 //평택축협 : 8808990795874 테스트 8808990687094
             		 if(na_bzplc == '8808990795874'){
             			 ReportPopup('LALM0216R3_115_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-            			 
-            		 }else if(na_bzplc == '8808990658995'){ //청주축협 : 8808990658995
-            			 ReportPopup('LALM0216R3_41',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }else{
 	            		 ReportPopup('LALM0216R3_14',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -2257,35 +2259,16 @@ var na_bzplc = App_na_bzplc;
 					o.DNA_YN = '친자'+o.DNA_YN;				
 				}				
 			}
-			//평택시 주소 설정
-			if(na_bzplc == '8808990795874'){
-				var tempAddr ="";
+			//주소 설정 평택 : 8808990795874 | 해남진도 : 8808990656106
+			if(na_bzplc == '8808990795874' || na_bzplc == '8808990656106'){
+				var tempAddr = [];
 				o.DONGUP.split(" ").forEach((o,i)=>{
 				    if(o.endsWith('시') || o.endsWith('군') || o.endsWith('구')
 			    		|| o.endsWith('읍') || o.endsWith('면') || o.endsWith('동')
 		    		){
-				        if(tempAddr.length > 0) tempAddr +=" ";
-				        tempAddr += o;
+				        tempAddr.push(o);
 				    }
 				});
-				o.DONGUP = tempAddr;
-			}
-			
-			//해남진도축협 주소 설정
-			if(na_bzplc == '8808990656106'){
-				var tempAddr = [];
-				o.DONGUP.split(" ").forEach((o,i)=>{
-					if(i == 0){
-						tempAddr.push(o);
-					}else{
-					    if(o.endsWith('시') || o.endsWith('군') || o.endsWith('구')
-				    		|| o.endsWith('읍') || o.endsWith('면') || o.endsWith('동') || o.endsWith('리') || o.endsWith('길')
-			    		){
-					        tempAddr.push(o);
-					    }
-					}
-				});
-				
 				o.DONG = tempAddr.join(" ");
 			}
 			

@@ -2607,6 +2607,7 @@
         		}
         		
         		fn_FtsnmModify();
+        		
         		// 브루셀라검사 조회
                 fn_CallBrclIspSrch();
         		// 친자확인 조회
@@ -2617,6 +2618,9 @@
         		if(!fn_isNull($("#mcow_sra_indv_amnno").val())){
                 	fn_CallGeneBredrInfSrch($("#mcow_sra_indv_amnno").val());
                 }
+                
+        		//종축개량 데이터 연동
+        		fn_CallAiakInfoSync();
                 if(App_na_bzplc == '8808990687094'){
     				$("#ftsnm").focus();
        			}else {
@@ -4173,6 +4177,39 @@
         }
     }
     
+    
+  	//**************************************
+	//function  : fn_CallAiakInfoSync(종축개량 데이터 연동) 
+	//paramater : N/A
+	// result   : N/A
+	//**************************************
+    function fn_CallAiakInfoSync(p_param) {
+		var p_sra_indv_amnno = "";
+		
+		if($("#sra_indv_amnno").val().replace("-", "").length == 12) {
+				p_sra_indv_amnno = $("#hed_indv_no").val() + $("#sra_indv_amnno").val().replace("-", "");        	
+		} else {
+			MessagePopup('OK','귀표번호를 확인하세요.',null,function(){
+                $("#sra_indv_amnno").focus();
+            });
+			return;
+		}
+    	 
+    	//개체이력정보
+    	var srchData = new Object();
+    	var results = null;
+    	var result = null;
+    	
+        srchData["SRA_INDV_AMNNO"]   = p_sra_indv_amnno;
+        
+        results = sendAjax(srchData, "/LALM0899_selAiakRestApi", "POST");
+        
+        if(results.status == RETURN_SUCCESS) {        	
+            result = setDecrypt(results);            
+        }
+        return result;
+    }
+    
   	//**************************************
 	//function  : maxLengthCheck(바이트 문자 입력가능 문자수 체크) 
 	//paramater : id(tag id), title(tag title), maxLength(최대 입력가능 수 byte)
@@ -5078,6 +5115,7 @@
             	fn_CallFtsnmPopup(true);
             }
         }
+        
         // 브루셀라검사 조회
         fn_CallBrclIspSrch();
         // 친자확인 조회
@@ -5088,6 +5126,9 @@
         if(!fn_isNull($("#mcow_sra_indv_amnno").val())){
         	fn_CallGeneBredrInfSrch($("#mcow_sra_indv_amnno").val());
         }
+        
+		//종축개량 데이터 연동
+		fn_CallAiakInfoSync();
         
  	}
     

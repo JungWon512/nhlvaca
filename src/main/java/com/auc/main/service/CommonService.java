@@ -30,4 +30,5 @@ public interface CommonService {
 	Map<String, Object> Common_insMbintgInfo(Map<String, Object> map) throws Exception;
 	
 	/********************************************************************* 통합회원 관련 [e] *********************************************************************/
+	Map<String, Object> Common_selAiakInfo(String barcode) throws Exception;
 }

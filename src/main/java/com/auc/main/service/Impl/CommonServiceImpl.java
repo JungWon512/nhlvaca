@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -14,13 +16,16 @@ import com.auc.common.exception.CusException;
 import com.auc.common.exception.ErrorCode;
 import com.auc.common.util.StringUtils;
 import com.auc.common.vo.ResolverMap;
+import com.auc.lalm.co.service.Impl.LALM0222PServiceImpl;
 import com.auc.main.service.CommonService;
 import com.auc.main.service.LogService;
 import com.auc.main.service.MainService;
+import com.auc.mca.McaUtil;
 
 @Service("CommonService")
 public class CommonServiceImpl implements CommonService{
-	
+
+	private static Logger log = LoggerFactory.getLogger(CommonServiceImpl.class);
 	@Autowired
 	CommonMapper commonMapper;	
 	@Autowired
@@ -29,6 +34,8 @@ public class CommonServiceImpl implements CommonService{
 	ConvertConfig convertConfig;
 	@Autowired
 	private LogService logService;
+	@Autowired
+	private McaUtil mcaUtil;
 	
 	@Override
 	public Map<String, Object> Common_selAucDt(Map<String, Object> map) throws Exception {
@@ -493,74 +500,111 @@ public class CommonServiceImpl implements CommonService{
 	 */
 	@Override
 	public Map<String, Object> Common_insMbintgInfo(Map<String, Object> map) throws Exception{
-		
-		// 통합회원 테이블에서 이름, 생년월일, 전화번호로 정보 조회
-		// 단, 한우종합에서 등록한 농가(anw_yn값이 1)는 농가식별번호(FHS_ID_NO)로 통합회원정보 조회 
-		final Map<String, Object> info = "1".equals(map.get("anw_yn")) ? commonMapper.Common_selFhsMbintgInfo(map) : commonMapper.Common_selMbintgInfo(map);
-		
-		// 통합 정보가 있는 경우 통합회원번호 리턴
-		if (!ObjectUtils.isEmpty(info) && !ObjectUtils.isEmpty(info.get("MB_INTG_NO"))) {
-			map.put("mb_intg_no", info.get("MB_INTG_NO"));
-			return map;
-		}
-		
-		// 이름 / 생년월일 / 휴대전화번호 중 1개라도 없으면 통합을 진행하지 않음
-		String userName = "02".equals(map.get("mb_intg_gb")) ? map.getOrDefault("ftsnm", "").toString() : map.getOrDefault("sra_mwmnnm", "").toString();
-		String birth = "02".equals(map.get("mb_intg_gb")) ? map.getOrDefault("birth", "").toString() : map.getOrDefault("cus_rlno", "").toString();	
-		String cus_mpno = map.getOrDefault("cus_mpno", "").toString();
-		
-		if((StringUtils.isEmpty(userName.trim()) || StringUtils.isEmpty(birth.trim()) || StringUtils.isEmpty(cus_mpno.trim()))) {
-			return map;
-		}
-		
-		// 조회된 통합회원 정보가 없는 경우, 휴면 회원 백업 테이블에서 한 번 더 조회
-		final Map<String, Object> dormInfo = commonMapper.Common_selDormMbintgInfo(map);
-
-		// 백업 테이블에도 정보가 없는 경우 통합회원 신규 저장
-		if (ObjectUtils.isEmpty(dormInfo)) {
-			// 통합회원 원장 테이블 저장
-			commonMapper.Common_insMbintgInfo(map);
-			// 통합회원 히스토리 저장
-			commonMapper.Common_insMbintgHisInfo(map);
-
-			return map;
-		}
-
-		// 휴면 백업 정보에 있는 통합회원번호
-		map.put("mb_intg_no", dormInfo.get("MB_INTG_NO"));
-		// 현재 조합에 해당 통합회원번호로 등록된 중도매인, 출하주 데이터 수
-		// - 데이터가 없는 경우에만 중도매인, 출하주를 신규 저장
-		// - 데이터가 있는 경우에는 중도매인, 출하주 휴면 정보 처리 과정에서 기존 데이터를 복구시키기 때문에 신규 저장이 필요 없음
-		//   > 한 조합에 동일한 중도매인 등록을 막기 위함
-		map.put("cur_dorm_cnt", dormInfo.get("CUR_DORM_CNT"));
-		
-		// 휴면정보 복구
-		commonMapper.Common_resMbintgInfo(map);
-
-		// 통합회원정보 이력 저장
-		commonMapper.Common_insMbintgHisInfo(map);
-		
-		// 통합회원 휴면 정보 삭제
-		commonMapper.Common_delDormMbintgInfo(map);
-
-		// 중도매인
-		int updateNum = 0;
-		if ("01".equals(map.get("mb_intg_gb"))) {
-			// 중도매인 정보 복구
-			updateNum += commonMapper.Common_resMwmnInfo(map);
+		try {
+			// 통합회원 테이블에서 이름, 생년월일, 전화번호로 정보 조회
+			// 단, 한우종합에서 등록한 농가(anw_yn값이 1)는 농가식별번호(FHS_ID_NO)로 통합회원정보 조회 
+			//final Map<String, Object> info = "1".equals(map.get("anw_yn")) ? commonMapper.Common_selFhsMbintgInfo(map) : commonMapper.Common_selMbintgInfo(map);
+			final Map<String, Object> info = commonMapper.Common_selMbintgInfo(map);
 			
-			// 중도매인 이력 저장
-			commonMapper.Common_insMiMwmnInfo(map);
-		}
-		// 출하주
-		else {
-		// 출하주 정보 복구
-			updateNum += commonMapper.Common_resFhsInfo(map);
-		}
+			// 통합 정보가 있는 경우 통합회원번호 리턴
+			if (!ObjectUtils.isEmpty(info) && !ObjectUtils.isEmpty(info.get("MB_INTG_NO"))) {
+				map.put("mb_intg_no", info.get("MB_INTG_NO"));
+				return map;
+			}
+			
+			// 이름 / 생년월일 / 휴대전화번호 중 1개라도 없으면 통합을 진행하지 않음
+			String userName = "02".equals(map.get("mb_intg_gb")) ? map.getOrDefault("ftsnm", "").toString() : map.getOrDefault("sra_mwmnnm", "").toString();
+			String birth = "02".equals(map.get("mb_intg_gb")) ? map.getOrDefault("birth", "").toString() : map.getOrDefault("cus_rlno", "").toString();	
+			String cus_mpno = map.getOrDefault("cus_mpno", "").toString();
+			
+			if((StringUtils.isEmpty(userName.trim()) || StringUtils.isEmpty(birth.trim()) || StringUtils.isEmpty(cus_mpno.trim()))) {
+				return map;
+			}
+			
+			// 조회된 통합회원 정보가 없는 경우, 휴면 회원 백업 테이블에서 한 번 더 조회
+			final Map<String, Object> dormInfo = commonMapper.Common_selDormMbintgInfo(map);
 
-		map.put("updateNum", updateNum);
+			// 백업 테이블에도 정보가 없는 경우 통합회원 신규 저장
+			if (ObjectUtils.isEmpty(dormInfo)) {
+				// 통합회원 원장 테이블 저장
+				commonMapper.Common_insMbintgInfo(map);
+				// 통합회원 히스토리 저장
+				commonMapper.Common_insMbintgHisInfo(map);
+
+				return map;
+			}
+
+			// 휴면 백업 정보에 있는 통합회원번호
+			map.put("mb_intg_no", dormInfo.get("MB_INTG_NO"));
+			// 현재 조합에 해당 통합회원번호로 등록된 중도매인, 출하주 데이터 수
+			// - 데이터가 없는 경우에만 중도매인, 출하주를 신규 저장
+			// - 데이터가 있는 경우에는 중도매인, 출하주 휴면 정보 처리 과정에서 기존 데이터를 복구시키기 때문에 신규 저장이 필요 없음
+			//   > 한 조합에 동일한 중도매인 등록을 막기 위함
+			map.put("cur_dorm_cnt", dormInfo.get("CUR_DORM_CNT"));
+			
+			// 휴면정보 복구
+			commonMapper.Common_resMbintgInfo(map);
+
+			// 통합회원정보 이력 저장
+			commonMapper.Common_insMbintgHisInfo(map);
+			
+			// 통합회원 휴면 정보 삭제
+			commonMapper.Common_delDormMbintgInfo(map);
+
+			// 중도매인
+			int updateNum = 0;
+			if ("01".equals(map.get("mb_intg_gb"))) {
+				// 중도매인 정보 복구
+				updateNum += commonMapper.Common_resMwmnInfo(map);
+				
+				// 중도매인 이력 저장
+				commonMapper.Common_insMiMwmnInfo(map);
+			}
+			// 출하주
+			else {
+			// 출하주 정보 복구
+				updateNum += commonMapper.Common_resFhsInfo(map);
+			}
+
+			map.put("updateNum", updateNum);
+			
+		}catch(Exception e) {
+			log.error("Common_insMbintgInfo :: 신규통합회원 생성 :: ",e);
+		}
 		return map;
 	}
 	/********************************************************************* 통합회원 관련 [e] *********************************************************************/
 
+	public Map<String, Object> Common_selAiakInfo(String barcode) throws Exception{
+		Map<String,Object> reMap = new HashMap<>();
+		int updateNum = 0;
+		if(barcode != null && barcode.length() == 15) {
+			barcode = barcode.substring(3);
+		}
+		reMap = mcaUtil.callApiAiakMap(barcode);
+		if(reMap != null && !reMap.isEmpty()) {
+			updateNum += this.Common_insAiakInfo(reMap);			
+		}
+		reMap.put("updateNum", updateNum);
+		return reMap;
+	}
+	
+	private int Common_insAiakInfo(Map<String, Object> map) throws Exception{
+		int insertNum = 0;
+		insertNum += commonMapper.Common_insAiakInfo(map);
+
+		List<Map<String, Object>> postData = (List<Map<String, Object>>) map.get("postInfo");
+		for(Map<String, Object> postMap: postData) {
+			insertNum += commonMapper.Common_insAiakPostInfo(postMap);			
+		}
+
+		List<Map<String, Object>> sibData = (List<Map<String, Object>>) map.get("sibInfo");
+		for(Map<String, Object> sibMap: sibData) {
+			insertNum += commonMapper.Common_insAiakSibInfo(sibMap);			
+		}
+		commonMapper.Common_updIndvSibMatime(map);
+		commonMapper.Common_updIndvPostMatime(map);
+		
+		return insertNum;
+	}
 }
