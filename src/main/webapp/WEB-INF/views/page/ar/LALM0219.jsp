@@ -796,6 +796,7 @@ window.addEventListener("contextmenu",function(event){
                                     	<option value="19">'접수일자 + 수/암 + 생년월일↑</option>
                                     	<option value="20">수/암 + 등록구분(등록우/미등록우) + 생년월일↓(어린순)</option>
                                     	<option value="21">경매대상 + 수/암 + 경매번호</option>
+                                    	<option value="22">암/수 + 접수일자 + 생년월일↓(어린순)</option>
                                     </select>
                                 </td> 
                                 <th scope="row">귀표번호</th>

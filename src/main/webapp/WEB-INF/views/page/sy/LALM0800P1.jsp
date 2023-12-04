@@ -59,7 +59,7 @@
                                 <input type="text" id="fsrg_dtm" readonly="readonly">
                             </td>
                         </tr>
-                        <tr id ='trPopU' style="display:none;">
+                        <tr id ='trPopU' style="">
                             <th class="tb_dot">팝업여부</th>
                             <td colspan="2">
                                 <input type="checkbox" id="pup_uyn" name="pup_uyn">
@@ -156,26 +156,15 @@
         $( '#na_bzplc' ).val('0000000000000');
         $( "#blbd_dsc" ).val(pageInfo.param.blbd_dsc); 
         $( "#inq_cn_yn" ).val("0");
-        if(pageInfo.param.blbd_dsc == '4'){
-            $('tr#trPopU').show();        	
-        }
+
         CKEDITOR.instances.bbrd_cntn.setData(''); 
         if(pageInfo.param.bbrd_sqno != null && pageInfo.param.bbrd_sqno !=''){
             $("#bbrd_sqno").val(pageInfo.param.bbrd_sqno);
-            $("#rl_sqno").val(pageInfo.param.rl_sqno);
-            if(pageInfo.param.blbd_dsc == '4'){
-            	$("#pup_uyn").attr('disabled',true);
-                $("#st_dt" ).datepicker();
-                $("#ed_dt" ).datepicker();
-            }
+            $("#rl_sqno").val(pageInfo.param.rl_sqno);            
         	fn_Search();
         }else {
         	$("#rl_sqno").val("0");
-            if(pageInfo.param.blbd_dsc == '4'){
-            	$("#pup_uyn").prop('checked',true).trigger('change').attr('disabled',true);
-            }else{
-                $("#pup_uyn").prop('checked',false).trigger('change');            	
-            }
+        	$("#pup_uyn").prop('checked',false).trigger('change');
         }
         
     }

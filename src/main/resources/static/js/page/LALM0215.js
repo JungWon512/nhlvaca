@@ -2769,7 +2769,7 @@
 	        
 	        fn_RcDtModify();
 	        fn_IoSogmnMacoYnModify();
-	        fn_TrpcsPyYnModify();
+	        fn_TrpcsPyYnModify('init');
 	        
 		    fn_SelMhCalf();
 		    mv_flg = "";
@@ -2911,6 +2911,7 @@
     		$("#case_cow").val("");
     		$("#case_cow").attr("disabled", true);
     	}
+    	
 		
     	if($("#auc_obj_dsc").val() == "3") {
  			if($("#ppgcow_fee_dsc").val() == "3" || $("#ppgcow_fee_dsc").val() =="4") {
@@ -3629,19 +3630,19 @@
 	        }
         	
         	// ★세종공주: 8808990656588 테스트: 8808990643625
-        	if (App_na_bzplc == '8808990656588') {
-        		
-        		var resultsTmpAucPrgSq = sendAjaxFrm("frm_MhSogCow", "/LALM0215_selTmpAucPrgSq", "POST");        
-                var resultTmpAucPrgSq;
-                
-                if(resultsTmpAucPrgSq.status == RETURN_SUCCESS){
-                	resultTmpAucPrgSq = setDecrypt(resultsTmpAucPrgSq);
-                	$("#auc_prg_sq").val(resultTmpAucPrgSq[0]["AUC_PRG_SQ"]);
-                }else {
-                    showErrorMessage(resultsTmpAucPrgSq);
-                    return;
-                }
-        	}
+			//if (App_na_bzplc == '8808990656588') {
+			//	
+			//	var resultsTmpAucPrgSq = sendAjaxFrm("frm_MhSogCow", "/LALM0215_selTmpAucPrgSq", "POST");        
+			//      var resultTmpAucPrgSq;
+			//      
+			//      if(resultsTmpAucPrgSq.status == RETURN_SUCCESS){
+			//      	resultTmpAucPrgSq = setDecrypt(resultsTmpAucPrgSq);
+			//      	$("#auc_prg_sq").val(resultTmpAucPrgSq[0]["AUC_PRG_SQ"]);
+			//      }else {
+			//          showErrorMessage(resultsTmpAucPrgSq);
+			//          return;
+			//      }
+			//}
 	        
 	    }
 	    
@@ -3794,7 +3795,8 @@
  	//paramater : N/A
  	// result   : N/A
  	//**************************************
- 	function fn_TrpcsPyYnModify() {
+ 	function fn_TrpcsPyYnModify(flag) {
+		if(flag == 'init' && na_bzplc=='8808990779546') fn_contrChBox(false, "trpcs_py_yn", "");
  		if($("#trpcs_py_yn").is(":checked")) {
  			fn_contrChBox(true, "trpcs_py_yn", "");
 			
@@ -3894,7 +3896,7 @@
 		
  	   	fn_RcDtModify();
  	   	fn_IoSogmnMacoYnModify();
- 	   	fn_TrpcsPyYnModify();
+ 	   	fn_TrpcsPyYnModify('init');
  	   	
  	    fn_SelMhCalf();
  		

@@ -790,7 +790,7 @@ var na_bzplc = App_na_bzplc;
             			 ReportPopup('LALM0216R3_91',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★하동축협: 8808990656656 테스트: 8808990643625
-            		 } else if(na_bzplc == '8808990656656') {
+            		 } else if(na_bzplc == '8808990656656') { 
             			 ReportPopup('LALM0216R3_95',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★고령성주: 8808990659695 테스트: 8808990643625
@@ -876,7 +876,7 @@ var na_bzplc = App_na_bzplc;
             		 }
             	 
             	 } else if($("#prto_tpc_12").is(":checked")) { //세로6형식
-            		 ReportPopup('LALM0216R3_21',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R3_20',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             	 } else if($("#prto_tpc_13").is(":checked")) { //가로7형식
             		 // ★나주: 8808990659275  테스트: 8808990643625
@@ -1458,7 +1458,7 @@ var na_bzplc = App_na_bzplc;
              			ReportPopup('LALM0216R3_23',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }else {
-             			ReportPopup('LALM0216R3_19',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_20',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
              		 }
             	 
@@ -2219,6 +2219,11 @@ var na_bzplc = App_na_bzplc;
 		}
 		var index = 0;
 		$('#'+frmId).getRowData().forEach((o,i)=>{
+			
+			if(na_bzplc == '8808990656267'){
+				o.MTCN4 = (o.MTCN-1)+'개월 '+o.MTCN4+'일';
+			}
+			
 			//영암:8808990689760 | 익산:8808990227283 | 밀양 : 8808990656663 | 임실 : 8808990660783 | 영광 : 8808990811710 | 예천 : 8808990656557 
 			//동삼태 : 8808990652825 | 양평 : 8808990643625 | 사천 : 8808990656519 | 함평 : 8808990656601 | 장성 : 8808990817675 
 			//해남 : 8808990656106 | 보성 : 8808990656267
@@ -2227,11 +2232,12 @@ var na_bzplc = App_na_bzplc;
 				|| na_bzplc == '8808990652825' || na_bzplc == '8808990643625' || na_bzplc == '8808990656519' || na_bzplc =='8808990656601' || na_bzplc =='8808990817675'
 				|| na_bzplc == '8808990656106' || na_bzplc == '8808990656267'
 			){
-				o.MTCN = o.MTCN+'개월';	            					
+				o.MTCN = o.MTCN+'개월';
 			}else{
 				//TO-DO 만월령 쿼리 추가
 				o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';
 			}
+		
 			if(o.SRA_INDV_PASG_QCN == '0'){
 				o.SRA_INDV_PASG_QCN = '';
 			}

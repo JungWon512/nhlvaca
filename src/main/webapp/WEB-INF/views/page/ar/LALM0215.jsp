@@ -462,7 +462,7 @@
 	                            	<td colspan=2>
 	                            		<input type="text" class="number" id="bdht_val">
 	                            	</td>
-	                            	<td colspan=5></td>
+	                            	<td colspan=3></td>
 	                            </tr>
 	                            	                        
 	                        	<tr>
@@ -496,7 +496,7 @@
 	                            	<td colspan=2>
 	                            		<select id="lvst_mkt_trpl_amnno"></select>
 	                            	</td>
-	                            	<td colspan=6></td>
+	                            	<td colspan=3></td>
 	                            </tr>	        
 	                            
 	                            <tr>
@@ -511,10 +511,19 @@
 	                            		<input disabled="disabled" type="text" id="fee_chk_yn_fee" style="width:120px" value="0">
 	                            	</td>
 	                            	<th scope="row" colspan=1><span>판매수수료<br> 수기등록</span></th>
-	                            	<td colspan=8>
+	                            	<td colspan=2>
 	                            		<input type="checkbox" id="selfee_chk_yn" name="selfee_chk_yn" value="0">
 	                            		<label id="selfee_chk_yn_text" for="selfee_chk_yn"> 부</label>
 	                            		<input disabled="disabled" type="text" id="selfee_chk_yn_fee" style="width:120px" value="0">
+	                            	</td>
+	                            	<th scope="row" colspan="1"><span>구분</span></th>
+	                            	<td colspan="2">
+	                            		<select id="case_cow">
+	                            			<option value="1" selected="selected">등록</option>
+	                            			<option value="2">일반</option>
+	                            			<option value="3">으뜸</option>
+	                            			<option value="4">친자</option>
+	                            		</select>
 	                            	</td>
 	                            </tr>
 	                        </tbody>
