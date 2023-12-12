@@ -37,6 +37,7 @@ public interface CommonMapper {
 	 * @return
 	 */
 	Map<String, Object> Common_selMbintgInfo(Map<String, Object> map);
+	List<Map<String, Object>> Common_selMbintgList(Map<String, Object> map);
 	
 	/**
 	 * 농가정보 테이블(TB_LA_IS_MM_FHS)에서 농가식별번호, 농장관리번호로 정보 조회

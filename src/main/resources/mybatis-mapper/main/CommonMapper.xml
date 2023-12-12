@@ -375,6 +375,33 @@
 		   AND REPLACE(TRIM(MB_RLNO),' ','') = DECODE(#{mb_intg_gb}, '01', REGEXP_REPLACE(TRIM(#{cus_rlno}), '[^0-9]'), REGEXP_REPLACE(TRIM(#{birth}), '[^0-9]'))
 		   AND REGEXP_REPLACE(MB_MPNO, '[^0-9]') = REGEXP_REPLACE(TRIM(#{cus_mpno}), '[^0-9]')
 	</select>
+	<!-- 통합회원정보 조회 -->
+	<select id="Common_selMbintgList" parameterType="hashMap" resultType="hashMap">
+		SELECT MB_INTG_NO
+			 , MB_INTG_NM
+			 , MB_RLNO
+			 , OHSE_TELNO
+			 , MB_MPNO
+			 , DORMACC_YN
+			 , DORMACC_DT
+			 , DELACC_YN
+			 , DELACC_DT
+			 , MB_INTG_DT
+			 , TMS_YN
+			 , FNCON_DTM
+			 , FSRG_DTM
+			 , FSRGMN_ENO
+			 , LSCHG_DTM
+			 , LS_CMENO
+			 , MB_INTG_GB
+			 , DORMDUE_DT
+		  FROM TB_LA_IS_MM_MBINTG
+		 WHERE MB_INTG_GB = #{mb_intg_gb}
+		   AND REPLACE(TRIM(MB_INTG_NM),' ','') = REPLACE(TRIM(DECODE(#{mb_intg_gb}, '01', TRIM(#{sra_mwmnnm}), TRIM(#{ftsnm}))),' ','')
+		   AND REPLACE(TRIM(MB_RLNO),' ','') = DECODE(#{mb_intg_gb}, '01', REGEXP_REPLACE(TRIM(#{cus_rlno}), '[^0-9]'), REGEXP_REPLACE(TRIM(#{birth}), '[^0-9]'))
+		   AND REGEXP_REPLACE(MB_MPNO, '[^0-9]') = REGEXP_REPLACE(TRIM(#{cus_mpno}), '[^0-9]')
+		ORDER BY LSCHG_DTM
+	</select>
 	
 	<!-- 농가 식별번호와 농장관리번호로 통합회원코드 조회 -->
 	<select id="Common_selFhsMbintgInfo" parameterType="hashMap" resultType="hashMap">

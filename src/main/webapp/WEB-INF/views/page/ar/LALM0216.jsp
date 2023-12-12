@@ -409,9 +409,11 @@ var na_bzplc = App_na_bzplc;
             		 ReportPopup('LALM0216R0_4',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
        			//구미칠곡 : 8808990657615
     		 	}else if(na_bzplc == '8808990657615'){
-    				ReportPopup('LALM0216R0_0',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
+    		 		var gridData = fnSetGridData1('grd_MhSogCow1');
+    				ReportPopup('LALM0216R0_0',TitleData, gridData, 'V');              //V:세로 , H:가로  , T :콘솔로그
     		 	} else {
-            		 ReportPopup('LALM0216R0_1',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
+    		 		var gridData = fnSetGridData1('grd_MhSogCow1');
+            		 ReportPopup('LALM0216R0_1',TitleData, gridData, 'V');              //V:세로 , H:가로  , T :콘솔로그
             	}
              
              // 가로(4형식) - 거창
@@ -1309,7 +1311,7 @@ var na_bzplc = App_na_bzplc;
              			 
              		 // ★ 홍성축협 : 8808990657622 (개월령삭제버전)
              		 } else if(na_bzplc == '8808990657622') {
-             			 ReportPopup('LALM0216R3_101',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			 ReportPopup('LALM0216R3_6_7',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★ 담양 : 8808990656540
              		 } else if(na_bzplc == '8808990656540') {
@@ -2271,8 +2273,8 @@ var na_bzplc = App_na_bzplc;
 					o.DNA_YN = '친자'+o.DNA_YN;				
 				}				
 			}
-			//주소 설정 평택 : 8808990795874 | 해남진도 : 8808990656106
-			if(na_bzplc == '8808990795874' || na_bzplc == '8808990656106'){
+			//주소 설정 평택 : 8808990795874 | 해남진도 : 8808990656106 | 고흥 : 8808990779546
+			if(na_bzplc == '8808990795874' || na_bzplc == '8808990656106' || na_bzplc == '8808990779546'){
 				var tempAddr = [];
 				o.DONGUP.split(" ").forEach((o,i)=>{
 				    if(o.endsWith('시') || o.endsWith('군') || o.endsWith('구')
