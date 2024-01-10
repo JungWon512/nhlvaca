@@ -671,7 +671,9 @@
 			 , D.MATIME                            /* 산차                                    */
 			 , D.MCOW_SRA_INDV_AMNNO               /* 어미소축산개체관리번호                  */
 			 , D.MCOW_DSC                          /* 어미구분코드                            */
-			 , A.COW_SOG_WT                        /* 우출하중량                              */
+			 , CASE WHEN #{ss_na_bzplc} NOT IN ('8808990656267','8808990656106','8808990779546','8808990817675') OR A.COW_SOG_WT != 0
+			 	THEN A.COW_SOG_WT
+		 	 END COW_SOG_WT /* 우출하중량                              */
 			 , C.ATDR_AM
 			 , CASE WHEN #{ss_security} = '1' THEN G.SRA_MWMNNM
 					WHEN LENGTH(G.SRA_MWMNNM) = 2 THEN SUBSTR(G.SRA_MWMNNM,1,1) || '*' 

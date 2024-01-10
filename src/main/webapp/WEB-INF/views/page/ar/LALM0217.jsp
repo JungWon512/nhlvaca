@@ -42,7 +42,7 @@
     	 
          fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 2, true);
          
-         if(App_na_bzplc =='8808990689760') fn_setCodeRadio("cb_auc_obj_dsc","hd_auc_obj_dsc","AUC_OBJ_DSC", 9);
+         if(App_na_bzplc =='8808990689760' || App_na_bzplc =='8808990656106') fn_setCodeRadio("cb_auc_obj_dsc","hd_auc_obj_dsc","AUC_OBJ_DSC", 9);
          else fn_setCodeRadio("cb_auc_obj_dsc","hd_auc_obj_dsc","AUC_OBJ_DSC", 2);
          
          fn_Init();

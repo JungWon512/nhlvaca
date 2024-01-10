@@ -296,6 +296,14 @@
                   	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'PPGCOW_FEE_DSC', ppgcowFeeDsc ,{background:"rgb(255 0 0)"});      
                   	  	$('#grd_MmInsSogCow').jqGrid('setCell',rowid,'CHK_VAILD_ERR','1');
       				 }
+      				//인공수정일자 날짜확인
+					var afism_mod_dt = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'AFISM_MOD_DT');
+      				if(aucObjDsc =='3' && !fn_isNull(afism_mod_dt) && !fn_isDate(afism_mod_dt)){
+      					errCnt++;
+      					$("#grd_MmInsSogCow").jqGrid('setCell', rowid, '_STATUS_', '-',{background:"rgb(255 0 0)"});
+                  	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'AFISM_MOD_DT', afism_mod_dt ,{background:"rgb(255 0 0)"});      
+                  	  	$('#grd_MmInsSogCow').jqGrid('setCell',rowid,'CHK_VAILD_ERR','1');      	    		 
+					}
 				});
     			if(errCnt==0) $('#pb_allSyncIndv').attr('disabled',false);
 	         }

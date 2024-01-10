@@ -188,21 +188,40 @@
                 }
             }
             
+            var tmpObjectHeader = tmpObject.map((o,i)=> {return {'NA_BZPLNM' : o.NA_BZPLNM,'DONGUP' : o.DONGUP,'AUC_DT' : o.AUC_DT,'FTSNM' : o.FTSNM,'FHS_ID_NO' : o.FHS_ID_NO}});
+            var uniqueObject = [...new Set(tmpObjectHeader.map((o) => JSON.stringify(o)))].map((s) =>JSON.parse(s));
             if(App_na_bzplc == '8808990657622' ){// 홍성: 8808990657622 테스트: 8808990643625
-            	ReportPopup('LALM0214R1_2',TitleData, tmpObject, 'H');//V:가로 , H:세로
+            	ReportPopupTemp('LALM0214R1_2',TitleData, uniqueObject,tmpObject, 'H');//V:가로 , H:세로
             }else {
             	ReportPopup('LALM0214R1_1',TitleData, tmpObject, 'H');//V:가로 , H:세로
             }
-            
-            
-           
-        });
-
-        
-               
         
     }); 
+    function ReportPopupTemp(p_reportName,p_titleObj, obj1,obj2, p_type){
+    	
+    	p_titleObj['filename'] = p_reportName;
+    	//p_titleObj['samuso']   = App_na_bzplc +" " + App_na_bzplnm ;
+    	p_titleObj['samuso']   = App_na_bzplnm ;
+        p_titleObj['usrnm']    = App_userNm;
+        p_titleObj['pgid']     = pageInfo.pgid;
+        p_titleObj['pgmnm']    = pageInfo.pgmnm;
+        
+        var ReportData = new Object();
+        
 
+    	ReportData['LISTDATA_1'] = obj1;
+    	ReportData['LISTDATA_2'] = obj2;
+        
+    	var Data = new Object();
+        Data['TITLE'] = p_titleObj;
+        Data[p_reportName] = ReportData;
+        
+        if(p_type == 'T'){
+        	console.log(JSON.stringify(Data));
+        }
+        	
+    	parent.layerPopupReport(p_reportName,p_titleObj.title,JSON.stringify(Data),p_type);
+    }
 
     
     /*------------------------------------------------------------------------------
@@ -217,8 +236,7 @@
         fn_InitFrm('frm_Search');
         $( "#auc_obj_dsc" ).val(pageInfo.param.auc_obj_dsc).prop("selected",true);  
         $( "#auc_dt" ).datepicker().datepicker("setDate", pageInfo.param.auc_dt);
-        
-        fn_Search();
+        if(App_na_bzplc != '8808990657622') fn_Search();
     }
     
     /*------------------------------------------------------------------------------
@@ -227,6 +245,11 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Search(){ 
+
+        if(App_na_bzplc == '8808990657622' && fn_isNull($("#ftsnm").val())){
+            MessagePopup('OK','출하주 명을 입력하세요.');
+            return;
+        }
     	 $("#grd_CowBun").jqGrid("clearGridData", true);
         //정합성체크        
         var results = sendAjaxFrm("frm_Search", "/LALM0214P1_selList", "POST");        
