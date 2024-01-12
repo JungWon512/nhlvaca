@@ -14,4 +14,6 @@ public interface LALM0219Mapper {
 
 	int LALM0219P1_updExcelUpload(Map<String, Object> tmp) throws Exception;
 
+	Map<String, Object> LALM0219_selAucPrg(Map<String, Object> map) throws Exception;
+
 }

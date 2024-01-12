@@ -10,4 +10,6 @@ public interface LALM0219Service {
 	Map<String, Object> LALM0219_updSogCowSq(List<Map<String, Object>> inList) throws Exception;
 
 	Map<String, Object> LALM0219P1_updExcelUpload(Map<String, Object> map) throws Exception;
+
+	Map<String, Object> LALM0219_selAucPrg(Map<String, Object> tempMap) throws Exception;
 }

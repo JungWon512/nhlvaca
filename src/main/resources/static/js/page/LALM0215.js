@@ -458,7 +458,7 @@
             		  $("#sra_pdmnm").val("");
             		  $("#sra_pd_rgnnm").val("");
             		  $("#sog_na_trpl_c").val("");
-            		  $("#indv_sex_c").val("");
+            		  $("#indv_sex_c").val("0");
             		  $("#birth").val("");
             		  $("#indv_id_no").val("");
             		  $("#sra_indv_brdsra_rg_no").val("");
@@ -501,7 +501,19 @@
        			} else if(!fn_isNull($("#indv_sex_c").val()) || !fn_isNull($("#birth").val())) {
     				$("#vacn_dt").focus();
     			}
-            }
+            }else{
+				$("#fhs_id_no").val("");
+          	  	$("#farm_amnno").val("");
+          	  	$("#ohse_telno").val("");
+          	  	$("#zip").val("");
+          	  	$("#dongup").val("");
+          	  	$("#dongbw").val("");
+          	  	$("#sra_pdmnm").val("");
+          	  	$("#sra_pd_rgnnm").val("");
+          	  	$("#sog_na_trpl_c").val("");
+          	  	$("#io_sogmn_maco_yn").val("");
+          	  	$("#sra_farm_acno").val("");
+			}
         });
     	
     	/******************************
@@ -516,21 +528,21 @@
     	/******************************
          * 출하주 변경 이벤트(키업)
          ******************************/
-    	$("#ftsnm").on("change keyup paste", function(e){
-			if(e.keyCode != 13) {
-				$("#fhs_id_no").val("");
-          	  	$("#farm_amnno").val("");
-          	  	$("#ohse_telno").val("");
-          	  	$("#zip").val("");
-          	  	$("#dongup").val("");
-          	  	$("#dongbw").val("");
-          	  	$("#sra_pdmnm").val("");
-          	  	$("#sra_pd_rgnnm").val("");
-          	  	$("#sog_na_trpl_c").val("");
-          	  	$("#io_sogmn_maco_yn").val("");
-          	  	$("#sra_farm_acno").val("");
-             }
-    	});
+    	//$("#ftsnm").on("change keyup paste", function(e){
+		//	if(e.keyCode != 13) {
+		//		$("#fhs_id_no").val("");
+        //  	  	$("#farm_amnno").val("");
+        //  	  	$("#ohse_telno").val("");
+        //  	  	$("#zip").val("");
+        //  	  	$("#dongup").val("");
+        //  	  	$("#dongbw").val("");
+        //  	  	$("#sra_pdmnm").val("");
+        //  	  	$("#sra_pd_rgnnm").val("");
+        //  	  	$("#sog_na_trpl_c").val("");
+        //  	  	$("#io_sogmn_maco_yn").val("");
+        //  	  	$("#sra_farm_acno").val("");
+        //     }
+    	//});
     	
     	/******************************
          * 출하주 변경 이벤트(체인지 포커스아웃)
@@ -609,9 +621,9 @@
     		// 번식우
     		if($("#auc_obj_dsc").val() == "3") {
    		        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
-   		      		// ★익산: 8808990227283 || 동삼태 : 8808990652825
+   		      		// ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687
    		        		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게 기존 false 고정
-   		        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825") {
+   		        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825" && App_na_bzplc != "8808990656687") {
    		            	fn_contrChBox(true, "prny_jug_yn", "");
    		            }
    		        } else {
@@ -1612,7 +1624,14 @@
     										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267"  
     										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
     											// 임신감정료 / 진행상태:낙찰 / 임신여부:여
-    											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "1") {
+												//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+												if(tmpResult[i]["NA_FEE_C"] == "060" && App_na_bzplc == "8808990817675" ){
+    												if($("#io_sogmn_maco_yn").val() == "1") {
+    													v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    												} else {
+    													v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    												}
+												}else if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "1") {
     												v_upr = 0;
     											} else if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
     												if($("#io_sogmn_maco_yn").val() == "1") {
@@ -1663,8 +1682,15 @@
     										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
     										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" 
     										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-    											// 임신감정료 / 진행상태:낙찰 / 임신여부:부
-    											if(tmpResult[i]["NA_FEE_C"] == '060' && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
+    											// 임신감정료 / 진행상태:낙찰 / 임신여부:부    											
+												//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+												if(tmpResult[i]["NA_FEE_C"] == "060" && App_na_bzplc == "8808990817675" ){
+    												if($("#io_sogmn_maco_yn").val() == "1") {
+    													v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    												} else {
+    													v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    												}
+												}else if(tmpResult[i]["NA_FEE_C"] == '060' && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
     												v_upr = 0;
     											// 임신감정료 / 진행상태:낙찰 / 임신감정여부:부 / 임신여부:부
     											}else if (tmpResult[i]["NA_FEE_C"] == '060' && $("#sel_sts_dsc").val() == '22' && $("#prny_yn").val() == "1"){
@@ -1727,7 +1753,15 @@
     										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
     										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" 
     										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-    											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() != "0") {
+    											
+												//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+												if(tmpResult[i]["NA_FEE_C"] == "060" && App_na_bzplc == "8808990817675" ){
+    												if($("#io_sogmn_maco_yn").val() == "1") {
+    													v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    												} else {
+    													v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    												}
+												}else if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() != "0") {
     												v_upr = 0;
     											} else {
     												if($("#io_sogmn_maco_yn").val() == "1") {
@@ -1750,7 +1784,15 @@
     										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
     										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" 
     										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-    											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
+    											
+												//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+												if(tmpResult[i]["NA_FEE_C"] == "060" && App_na_bzplc == "8808990817675" ){
+    												if($("#io_sogmn_maco_yn").val() == "1") {
+    													v_upr = tmpResult[i]["MACO_FEE_UPR"];
+    												} else {
+    													v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+    												}
+												}else if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
     												v_upr = 0;
     											} else {
     												if($("#io_mwmn_maco_yn").val() == "1") {
@@ -2222,7 +2264,15 @@
 										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" 
 										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
 											// 임신감정료 / 진행상태:낙찰 / 임신여부:여
-											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "1") {
+											
+											//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+											if(tmpResult[i]["NA_FEE_C"] == "060" && App_na_bzplc == "8808990817675" ){
+												if($("#io_sogmn_maco_yn").val() == "1") {
+													v_upr = tmpResult[i]["MACO_FEE_UPR"];
+												} else {
+													v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+												}
+											}else if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "1") {
 												v_upr = 0;
 											} else if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
 												if($("#io_sogmn_maco_yn").val() == "1") {
@@ -2273,7 +2323,15 @@
 										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
 										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" 
 										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-											if(tmpResult[i]["NA_FEE_C"] == '060' && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
+																						
+											//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+											if(tmpResult[i]["NA_FEE_C"] == "060" && App_na_bzplc == "8808990817675" ){
+												if($("#io_sogmn_maco_yn").val() == "1") {
+													v_upr = tmpResult[i]["MACO_FEE_UPR"];
+												} else {
+													v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+												}
+											}else if(tmpResult[i]["NA_FEE_C"] == '060' && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() == "0") {
 												v_upr = 0;
 											} else {
 												// 보성 : 8808990656267, 장흥 : 8808990656533, 영광 : 8808990811710, 장성 : 8808990817675
@@ -2329,7 +2387,15 @@
 										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
 										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" 
 										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() != "0") {
+																					
+											//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+											if(tmpResult[i]["NA_FEE_C"] == "060" && App_na_bzplc == "8808990817675" ){
+												if($("#io_sogmn_maco_yn").val() == "1") {
+													v_upr = tmpResult[i]["MACO_FEE_UPR"];
+												} else {
+													v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+												}
+											}else if(tmpResult[i]["NA_FEE_C"] == "060" && $("#sel_sts_dsc").val() == "22" && $("#prny_yn").val() != "0") {
 												v_upr = 0;
 											} else {
 												if($("#io_sogmn_maco_yn").val() == "1") {
@@ -2346,7 +2412,15 @@
 										// 곡성 : 8808990656717, 순천광양: 8808990658896, 영광 : 8808990811710 , 장성 : 8808990817675
 										if(App_na_bzplc == "8808990657189" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990656267" 
 										|| App_na_bzplc == "8808990656717" || App_na_bzplc == "8808990658896" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-											if(tmpResult[i]["NA_FEE_C"] == "060" && $("#SEL_STS_DSC").val() == "22" && $("#prny_yn").val() == "0") {
+																						
+											//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+											if(tmpResult[i]["NA_FEE_C"] == "060" && App_na_bzplc == "8808990817675" ){
+												if($("#io_sogmn_maco_yn").val() == "1") {
+													v_upr = tmpResult[i]["MACO_FEE_UPR"];
+												} else {
+													v_upr = tmpResult[i]["NMACO_FEE_UPR"];
+												}
+											}else if(tmpResult[i]["NA_FEE_C"] == "060" && $("#SEL_STS_DSC").val() == "22" && $("#prny_yn").val() == "0") {
 												v_upr = 0;
 											} else {
 												if($("#io_mwmn_maco_yn").val() == "1") {
@@ -2940,8 +3014,8 @@
  			// 번식우
  			if($("#auc_obj_dsc").val() == "3") {
  			        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
- 			      		// ★익산: 8808990227283 || 동삼태 : 8808990652825
- 			        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825") {
+ 			      		// ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687
+ 			        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825" && App_na_bzplc != "8808990656687") {
 	   		        		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게 기존 false 고정
  			            	fn_contrChBox(true, "prny_jug_yn", "");
  			            }
@@ -4865,9 +4939,10 @@
 	       			}
             	} else if(!fn_isNull($("#fhs_id_no").val()) && fn_isNull($("#indv_sex_c").val()) && fn_isNull($("#birth").val())) {
             		$("#indv_sex_c").val("0");
-            		$("#indv_sex_c").focus();
+            		//$("#indv_sex_c").focus();
             	}
                 fn_FtsnmModify();
+             	$('#ftsnm').blur();
              } else {
             	 $("#fhs_id_no").val("");
          		 $("#farm_amnno").val("");
@@ -4891,8 +4966,9 @@
 	       			}
              	 } else if(!fn_isNull($("#fhs_id_no").val()) && fn_isNull($("#indv_sex_c").val()) && fn_isNull($("#birth").val())) {
              		$("#indv_sex_c").val("0");
-             		$("#indv_sex_c").focus();
+             		//$("#indv_sex_c").focus();
              	 }
+             	 $('#ftsnm').blur();
              }
          });
  	}

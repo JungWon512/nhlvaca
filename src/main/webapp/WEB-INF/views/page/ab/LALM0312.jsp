@@ -91,7 +91,7 @@
          for (var i = 0, len = ids.length; i < len; i++) {
         	 
              var rowData = $('#mainGrid').jqGrid('getRowData', ids[i]);
-             if(rowData._STATUS_ != "*" && rowData._STATUS_ != "+")continue;
+             if(rowData._STATUS_ != "*" && rowData._STATUS_ != "+") continue;
              if(rowData.SANJUNG1 == 0){
                  var _index = fn_GridColByName('mainGrid', 'SANJUNG1');
                  MessagePopup("OK", "수정할 행의 모든 산정가를 입력하세요.",function(res){
@@ -290,10 +290,8 @@
                     if(code == 13){
                     	e.preventDefault();
                     	$("#mainGrid").jqGrid("saveCell", iRow, iCol);
-                        
-                        if($("#mainGrid").jqGrid('getCell', rowid, '_STATUS_') == '+') {
-                            return;
-                        }else {
+                    	
+                        if($("#mainGrid").jqGrid('getCell', rowid, '_STATUS_') != '+') {
                             if($(this).val() != value){
                             	var v_cnt = 0;
                             	var v_avg = 0;
@@ -326,6 +324,9 @@
                             	$("#mainGrid").jqGrid("setCell", rowid, 'LOWS_SBID_LMT_AM', v_sum);                            	
                                 $("#mainGrid").jqGrid('setCell', rowid, '_STATUS_', '*',GRID_MOD_BACKGROUND_COLOR);
                             }
+                        }
+                        if(cellname.indexOf('SANJUNG') > -1){
+                        	setTimeout("$('#mainGrid').editCell(" + (iRow + 1) + "," + iCol + ", true);", 100);
                         }
                     }                       
                 });                  

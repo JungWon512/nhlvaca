@@ -381,74 +381,46 @@ window.addEventListener("contextmenu",function(event){
     	 
     	 var getData = $("#mainGrid").jqGrid('getRowData');
          
-         for (var i = 1, len = getData.length; i <= len; i++) {
-        	 temp1 = $("#mainGrid").jqGrid('getCell', i, 'AUC_PRG_SQ');
-        	 for (var t = 1, len2 = getData.length; t <= len2; t++) {
-        		 if(i != t) {
-        			 temp2 = $("#mainGrid").jqGrid('getCell', t, 'AUC_PRG_SQ');
-        			 if(temp1 == temp2) {
-        				 MessagePopup("OK", "중복된 경매번호가 있습니다. 확인하세요.");
-        				 return;
-            		 }
-        		 }
-        	 }
-         }
+//          for (var i = 1, len = getData.length; i <= len; i++) {
+//         	 temp1 = $("#mainGrid").jqGrid('getCell', i, 'AUC_PRG_SQ');
+//         	 for (var t = 1, len2 = getData.length; t <= len2; t++) {
+//         		 if(i != t) {
+//         			 temp2 = $("#mainGrid").jqGrid('getCell', t, 'AUC_PRG_SQ');
+//         			 if(temp1 == temp2) {
+//         				 MessagePopup("OK", "중복된 경매번호가 있습니다. 확인하세요.");
+//         				 return;
+//             		 }
+//         		 }
+//         	 }
+//          }
     	 
 	   	 MessagePopup('YESNO',"저장 하시겠습니까?",function(res){
 	         if(res){
-// 	        	 if (App_na_bzplc == '8808990659008') {
-// 		        	 var tmpSaveObject = $.grep($("#mainGrid").jqGrid('getRowData'), function(obj){
-// 			        		return obj._STATUS_ == "*" || obj._STATUS_ == "+" ; 
-// 			        	 });
-			             
-// 			             if(tmpSaveObject.length > 0) {
-			            	 
-// 			            	 var result        = null;
-			                    
-// 			                 var insDataObj = new Object();     
-// 			                 insDataObj['data'] = tmpSaveObject;
-			                         
-// 			                 result = sendAjax(insDataObj, "/LALM0312_updSogCowSjam", "POST");
-			                 
-// 			                 if(result.status == RETURN_SUCCESS){
-// 			                     MessagePopup("OK", "정상적으로 처리되었습니다.",function(res){
-// 			                    	 fn_Search();
-// 			                     });
-// 			                 }else {
-// 		                        showErrorMessage(result);
-// 		                        return;
-// 		                     } 
-// 			             } else {
-// 			                 MessagePopup("OK", "변경된 내역이 없습니다.");
-// 			                 return;
-// 			             }
-// 	        	 } else {
-		        	 var tmpSaveObject = $.grep($("#mainGrid").jqGrid('getRowData'), function(obj){
-			        		return obj._STATUS_ == "*" || obj._STATUS_ == "+" ;
-			        	 });
-			             
-			             if(tmpSaveObject.length > 0) {
-			            	 var result        = null;
-			                    
-			                 var insDataObj = new Object();     
-			                 insDataObj['data'] = tmpSaveObject;
-			                         
-			                 result = sendAjax(insDataObj, "/LALM0219_updSogCowSq", "POST");
-			                 
-			                 if(result.status == RETURN_SUCCESS){
-			                     MessagePopup("OK", "정상적으로 처리되었습니다.",function(res){
-			                    	 fn_Search();
-			                     });
-			                 }else {
-                                showErrorMessage(result);
-                                return;
-                             } 
-			             } else {
-			                 MessagePopup("OK", "변경된 내역이 없습니다.");
-			                 return;
-			             }        		 
+		       	 var tmpSaveObject = $.grep($("#mainGrid").jqGrid('getRowData'), function(obj){
+		         	return obj._STATUS_ == "*" || obj._STATUS_ == "+" ;
+		         });
+		             
+	             if(tmpSaveObject.length > 0) {
+	            	 var result        = null;
+	                    
+	                 var insDataObj = new Object();     
+	                 insDataObj['data'] = tmpSaveObject;
+	                         
+	                 result = sendAjax(insDataObj, "/LALM0219_updSogCowSq", "POST");
+	                 
+	                 if(result.status == RETURN_SUCCESS){
+	                     MessagePopup("OK", "정상적으로 처리되었습니다.",function(res){
+	                    	 fn_Search();
+	                     });
+	                 }else {
+	                             showErrorMessage(result);
+	                             return;
+	                          } 
+	             } else {
+	                 MessagePopup("OK", "변경된 내역이 없습니다.");
+	                 return;
+	             }        		 
 	        		 
-// 	        	 }
 	                
 	         }else{
 	             MessagePopup('OK','취소되었습니다.');

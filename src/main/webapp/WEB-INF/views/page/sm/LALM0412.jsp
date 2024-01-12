@@ -1097,7 +1097,11 @@ var mCnt = 0;
 	     
 	       TitleData.acno = parent.wmcList[0].ACNO;
 	       TitleData.clntnm = parent.wmcList[0].NA_BZPLNM;
-	       TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 ";
+	       if(na_bzplc == '8808990683973'){
+		       TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM;	    	   
+	       }else{
+		       TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 ";	    	   
+	       }
 	       TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
 	       TitleData.rmk_cntn = parent.wmcList[0].RMK_CNTN;
 	       TitleData.tel_no = parent.wmcList[0].TELNO;
@@ -1213,7 +1217,11 @@ var mCnt = 0;
 
     		TitleData.acno = parent.wmcList[0].ACNO;
     		TitleData.clntnm = parent.wmcList[0].NA_BZPLNM 
-    		TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 ";
+	       if(na_bzplc == '8808990683973'){
+		       TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM;	    	   
+	       }else{
+		       TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 ";	    	   
+	       }
     		TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
     		TitleData.rmk_cntn = parent.wmcList[0].RMK_CNTN;
     		TitleData.tel_no = parent.wmcList[0].TELNO;
@@ -1273,7 +1281,7 @@ var mCnt = 0;
 			* 홍천 : 8808990674605 , 충주 : 8808990656465 , 의령 : 8808990656199, 함평 : 8808990656601, 청양 : 8808990657646
 			* 제주 : 8808990656618 , 수원 : 8808990656496 , 고성 : 8808990812007, 세종공주 : 8808990656588 , 옥천 : 8808990671086 , 평택 : 8808990795874
 			* 청주 : 8808990658995  , 해남 : 8808990656106, 고흥 : 8808990779546, 음성 : 8808990683973, 보령 : 8808990684321, 인천강화옹진 : 8808990812021
-			* 예산 : 8808990657196 , 홍성 : 8808990657622, 제천단양 : 8808990656526
+			* 예산 : 8808990657196 , 홍성 : 8808990657622, 제천단양 : 8808990656526, 당진 : 8808990762654, 부여 : 8808990660127
 			* 번식우 제외: 영암:8808990659701, 거창:8808990659701 , 영덕울진 : 8808990785431 , 보성 : 8808990656267 
 			*/
 			} else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485' || na_bzplc == '8808990671086' || na_bzplc == '8808990659787'  
@@ -1357,6 +1365,8 @@ var mCnt = 0;
 				ReportPopup('LALM0412R0_J_0',p_param, p_grid, 'T');//원본
 			} else if((na_bzplc == '8808990656236' || na_bzplc == '8808990656519') && $("#auc_obj_dsc").val()=='3'){
  				ReportPopup('LALM0412R0_0_3',p_param, p_grid, 'V');
+   			} else if((na_bzplc == '8808990671086') && $("#auc_obj_dsc").val()=='3'){ //보은옥천영동축협 옥천지점
+ 				ReportPopup('LALM0412R0_0_3_J',p_param, p_grid, 'V');
    			}else if (na_bzplc == '8808990656588'){ //세종 : 8808990656588
    				ReportPopup('LALM0412R0_0_1_T',p_param, p_grid, 'V');
    			}else{

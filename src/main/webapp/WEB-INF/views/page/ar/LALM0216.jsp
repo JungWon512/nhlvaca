@@ -783,8 +783,8 @@ var na_bzplc = App_na_bzplc;
             		 } else if(na_bzplc == '8808990656410' || na_bzplc == '8808990674506') {
             			 ReportPopup('LALM0216R3_78',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
-            		 // ★영광축협: 8808990811710 , 장성축협: 8808990811710
-            		 } else if(na_bzplc == '8808990811710' || na_bzplc == '8808990817675') {
+            		 // ★영광축협: 8808990811710 
+            		 } else if(na_bzplc == '8808990811710') {
             			 ReportPopup('LALM0216R3_82',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★구미칠곡: 8808990657615
@@ -868,7 +868,7 @@ var na_bzplc = App_na_bzplc;
             			 ReportPopup('LALM0216R3_18_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }else if(na_bzplc == '8808990656229'){	//춘천철원 : 8808990656229
-            			 ReportPopup('LALM0216R3_18_4',TitleData, grid4, 'V');
+            			 ReportPopup('LALM0216R3_18_4_1',TitleData, grid4, 'V');
             	 
             		 }else if(na_bzplc == '8808990659275') { //나주축협
                			 ReportPopup('LALM0216R3_83_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그               			 
@@ -1049,7 +1049,7 @@ var na_bzplc = App_na_bzplc;
             		 }else if(na_bzplc == '8808990689760'){
              			ReportPopup('LALM0216R3_20',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
               		 // ★영광축협: 8808990811710 장성: 8808990817675
-              		 } else if(na_bzplc == '8808990811710' || na_bzplc == '8808990817675') {
+              		 } else if(na_bzplc == '8808990811710') {
               			 ReportPopup('LALM0216R3_81',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
               		 // ★하동축협: 8808990656656
               		 } else if(na_bzplc == '8808990656656') {

@@ -352,6 +352,16 @@
 	              AND OSLP_NO		    =  #{oslp_no}
 	    ]]>		   
     </update>
+    
+    <select id="LALM0219_selAucPrg" resultType="hashMap">
+         SELECT COUNT(AUC_PRG_SQ) AS C_AUC_PRG_SQ
+           FROM  TB_LA_IS_MH_SOG_COW
+          WHERE 1 = 1
+            AND NA_BZPLC    	= #{ss_na_bzplc}
+            AND AUC_DT   		= #{auc_dt}
+            AND OSLP_NO  		!= #{oslp_no}
+            AND AUC_PRG_SQ  	= #{auc_prg_sq}
+    </select>
 </mapper>
 
 

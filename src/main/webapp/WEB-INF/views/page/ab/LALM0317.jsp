@@ -406,7 +406,7 @@ var mv_sqno_prc_dsc = "";
                     	   if(cellname == 'SRA_MWMNNM') {
                     		   fn_popSearch(rowid, cellname,true);
                     		   
-                    	   } else if(cellname == 'COW_SOG_WT' || cellname == 'SRA_SBID_UPR'|| cellname == 'CHG_LOWS_SBID_LMT_AM') {
+                    	   } else if(cellname == 'COW_SOG_WT' || cellname == 'SRA_SBID_UPR'|| cellname == 'CHG_LOWS_SBID_LMT_AM' || cellname == 'CHG_RMK_CNTN') {
                     		   $("#grd_MhSogCow").jqGrid("saveCell", iRow, iCol);
                     		   
                     		   if($("#grd_MhSogCow").jqGrid('getCell', rowid, '_STATUS_') == '+') {
@@ -433,6 +433,8 @@ var mv_sqno_prc_dsc = "";
                                }
                        	   }
                        }
+                }).on('focus',function(e) {
+                	$(e.target).select()
                 });
             },
             afterSaveCell: function(rowid, cellname, value, iRow, iCol) {
@@ -475,8 +477,7 @@ var mv_sqno_prc_dsc = "";
             			MessagePopup('OK','낙찰가가 예정가보다 작습니다.');
             		}
             		
-            	}
-            	
+            	}            	
             },
             colNames: searchResultColNames,
             colModel: searchResultColModel,          
@@ -534,6 +535,7 @@ var mv_sqno_prc_dsc = "";
   	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 'LVST_AUC_PTC_MN_NO', result.LVST_AUC_PTC_MN_NO); 
 
           		$("#grd_MhSogCow").jqGrid('setCell', rowid, '_STATUS_', '*', GRID_MOD_BACKGROUND_COLOR);
+          		$('#grd_MhSogCow').jqGrid('editCell',Number(rowid)+1,fn_GridColByName('grd_MhSogCow', 'SRA_MWMNNM'), true);
          	}
          });
 	}     

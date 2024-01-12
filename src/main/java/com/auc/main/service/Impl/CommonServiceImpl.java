@@ -256,8 +256,11 @@ public class CommonServiceImpl implements CommonService{
 								 ||MhSogCow.get("na_bzplc").equals("8808990656267") // 보성    : 8808990656267
 								 ||MhSogCow.get("na_bzplc").equals("8808990656717") || MhSogCow.get("na_bzplc").equals("8808990658896") // 곡성    : 8808990656717 , 순천광양: 8808990658896
 								 ||MhSogCow.get("na_bzplc").equals("8808990811710") || MhSogCow.get("na_bzplc").equals("8808990817675"))// 영광    : 8808990811710 , 장성    : 8808990817675 
-								{ 
-									if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "1".equals(MhSogCow.get("prny_yn"))) {// 임신감정료 / 진행상태:낙찰 / 임신여부:여
+								{ 	
+									//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+									if("060".equals(MhFee.get("na_fee_c")) && MhSogCow.get("na_bzplc").equals("8808990817675")){
+										v_upr = ("1".equals(MhSogCow.get("io_sogmn_maco_yn")))?macoFeeUpr:nmacoFeeUpr;
+									}else if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "1".equals(MhSogCow.get("prny_yn"))) {// 임신감정료 / 진행상태:낙찰 / 임신여부:여
 										v_upr = 0;
 									}else if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "0".equals(MhSogCow.get("prny_yn"))) {
 										v_upr = ("1".equals(MhSogCow.get("io_sogmn_maco_yn")))?macoFeeUpr:nmacoFeeUpr;
@@ -289,7 +292,10 @@ public class CommonServiceImpl implements CommonService{
 								 ||MhSogCow.get("na_bzplc").equals("8808990656717") || MhSogCow.get("na_bzplc").equals("8808990658896") // 곡성    : 8808990656717 , 순천광양: 8808990658896
 								 ||MhSogCow.get("na_bzplc").equals("8808990811710") || MhSogCow.get("na_bzplc").equals("8808990817675"))// 영광    : 8808990811710 , 장성    : 8808990817675 
 								{ 
-									if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "0".equals(MhSogCow.get("prny_yn"))) {// 임신감정료 / 진행상태:낙찰 / 임신여부:부
+									//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+									if("060".equals(MhFee.get("na_fee_c")) && MhSogCow.get("na_bzplc").equals("8808990817675")){
+										v_upr = ("1".equals(MhSogCow.get("io_sogmn_maco_yn")))?macoFeeUpr:nmacoFeeUpr;
+									}else if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "0".equals(MhSogCow.get("prny_yn"))) {// 임신감정료 / 진행상태:낙찰 / 임신여부:부
 										v_upr = 0;
 									}else if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "1".equals(MhSogCow.get("prny_yn"))) {
 										v_upr = ("1".equals(MhSogCow.get("IO_MWMN_MACO_YN")))?macoFeeUpr:nmacoFeeUpr;
@@ -329,8 +335,10 @@ public class CommonServiceImpl implements CommonService{
 								 ||MhSogCow.get("na_bzplc").equals("8808990656267") // 보성    : 8808990656267
 								 ||MhSogCow.get("na_bzplc").equals("8808990656717") || MhSogCow.get("na_bzplc").equals("8808990658896") // 곡성    : 8808990656717 , 순천광양: 8808990658896
 								 ||MhSogCow.get("na_bzplc").equals("8808990811710") || MhSogCow.get("na_bzplc").equals("8808990817675"))// 영광    : 8808990811710 , 장성    : 8808990817675 
-								{ 
-									if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "1".equals(MhSogCow.get("prny_yn"))) {// 임신감정료 / 진행상태:낙찰 / 임신여부:여
+								{ 									//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+									if("060".equals(MhFee.get("na_fee_c")) && MhSogCow.get("na_bzplc").equals("8808990817675")){
+										v_upr = ("1".equals(MhSogCow.get("io_sogmn_maco_yn")))?macoFeeUpr:nmacoFeeUpr;
+									}else if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "1".equals(MhSogCow.get("prny_yn"))) {// 임신감정료 / 진행상태:낙찰 / 임신여부:여
 										v_upr = 0;
 									}else if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc")) && "0".equals(MhSogCow.get("prny_yn"))) {
 										v_upr = (("1".equals(MhSogCow.get("io_sogmn_maco_yn")))?macoFeeUpr:nmacoFeeUpr) * sraSbidAm / 100;
@@ -347,7 +355,10 @@ public class CommonServiceImpl implements CommonService{
 								 ||MhSogCow.get("na_bzplc").equals("8808990656717") || MhSogCow.get("na_bzplc").equals("8808990658896") // 곡성    : 8808990656717 , 순천광양: 8808990658896
 								 ||MhSogCow.get("na_bzplc").equals("8808990811710") || MhSogCow.get("na_bzplc").equals("8808990817675"))// 영광    : 8808990811710 , 장성    : 8808990817675 
 								{ 
-									if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc"))&& "0".equals(MhSogCow.get("prny_yn"))) {// 임신감정료 / 진행상태:낙찰 / 임신여부:부
+									//임신감정료이면서 장성축협일경우 낙찰에 상관없이 임신감정료 부과
+									if("060".equals(MhFee.get("na_fee_c")) && MhSogCow.get("na_bzplc").equals("8808990817675")){
+										v_upr = ("1".equals(MhSogCow.get("io_sogmn_maco_yn")))?macoFeeUpr:nmacoFeeUpr;
+									}else if("060".equals(MhFee.get("na_fee_c")) && "22".equals(MhSogCow.get("sel_sts_dsc"))&& "0".equals(MhSogCow.get("prny_yn"))) {// 임신감정료 / 진행상태:낙찰 / 임신여부:부
 										v_upr = 0;
 									}else  {
 										v_upr = (("1".equals(MhSogCow.get("io_mwmn_maco_yn")))?macoFeeUpr:nmacoFeeUpr) * sraSbidAm / 100;

@@ -7,6 +7,8 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.auc.common.exception.CusException;
+import com.auc.common.exception.ErrorCode;
 import com.auc.lalm.ar.service.LALM0219Service;
 import com.auc.main.service.LogService;
 import com.auc.main.service.Impl.LogMapper;
@@ -56,6 +58,14 @@ public class LALM0219ServiceImpl implements LALM0219Service{
 			reMap.put("updateNum", updateNum);
 		}
 		
+		for(Map<String, Object> tempMap : inList) {
+			Map<String, Object> aucPrgMap = this.LALM0219_selAucPrg(tempMap);
+			int cnt = Integer.valueOf(String.valueOf(aucPrgMap.get("C_AUC_PRG_SQ")));
+			if(cnt > 0) {
+				throw new CusException(ErrorCode.CUSTOM_ERROR,"중복된 경매번호["+tempMap.get("auc_prg_sq")+"]가 있습니다. 경매번호를 확인 바랍니다.");				
+			}			
+		}
+		
 		return reMap;
 	}	
 
@@ -85,5 +95,8 @@ public class LALM0219ServiceImpl implements LALM0219Service{
 		
 	}
 
-	
+	@Override
+	public Map<String, Object> LALM0219_selAucPrg(Map<String, Object> map) throws Exception{
+		return lalm0219Mapper.LALM0219_selAucPrg(map);
+	}
 }
