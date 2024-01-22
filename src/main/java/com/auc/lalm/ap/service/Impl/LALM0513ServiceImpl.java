@@ -219,6 +219,10 @@ public class LALM0513ServiceImpl implements LALM0513Service{
 		return list;
 		
 	}
-
+	
+	@Override
+	public List<Map<String, Object>> LALM0513_selList_11_print2(Map<String, Object> map) throws Exception{
+		return lalm0513Mapper.LALM0513_selList_11_print2(map);
+	}
 
 }

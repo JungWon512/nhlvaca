@@ -280,5 +280,16 @@ public class LALM0513Controller {
 		
 		return reMap;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value="/LALM0513_selList_11_print2", method=RequestMethod.POST) 
+	public Map<String, Object> LALM0513_selList_11_print2(ResolverMap rMap) throws Exception{				
+		
+		Map<String, Object> map = convertConfig.conMap(rMap);
+		List<Map<String, Object>> reList = lalm0513Service.LALM0513_selList_11_print2(map);				
+		Map<String, Object> reMap = commonFunc.createResultSetListData(reList); 	
+		
+		return reMap;
+	}
 
 }

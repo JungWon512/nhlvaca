@@ -2552,6 +2552,91 @@
 	</select>
 	
 	
+	<select id="LALM0513_selList_11_print2" resultType="hashMap">
+			SELECT
+		          A.AUC_DT
+	        	, F.AUC_OBJ_DSC
+		        , D.FHS_ID_NO || '-' || D.FARM_AMNNO AS FHS_ID_NO
+		        , D.FTSNM
+		        , D.DONGUP || ' ' || D.DONGBW AS ADR
+		    FROM TB_LA_IS_MH_SOG_COW  A
+		    LEFT OUTER JOIN TB_LA_IS_MH_CALF G
+		              ON  A.NA_BZPLC            = G.NA_BZPLC
+		              AND A.AUC_OBJ_DSC         = G.AUC_OBJ_DSC
+		              AND A.AUC_DT              = G.AUC_DT
+		              AND A.OSLP_NO             = G.OSLP_NO
+		              AND 1                     = G.RG_SQNO
+		
+		    LEFT OUTER JOIN TB_LA_IS_MM_MWMN E
+		              ON  A.NA_BZPLC       = E.NA_BZPLC
+		              AND A.TRMN_AMNNO     = E.TRMN_AMNNO
+		
+		    , TB_LA_IS_MM_INDV     C
+		    , TB_LA_IS_MM_FHS      D
+		    , TB_LA_IS_MH_AUC_QCN  F
+	       , (SELECT
+	                NA_BZPLC
+	              , AUC_OBJ_DSC
+	              , AUC_DT
+	              , OSLP_NO
+	              , LED_SQNO
+	              , SUM(CASE WHEN NA_FEE_C = '010' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SOG_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '011' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SEL_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '020' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ACO_IVSAM
+	              , SUM(CASE WHEN NA_FEE_C = '030' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ACD_RVGAM
+	              , SUM(CASE WHEN NA_FEE_C = '040' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_TRPCS
+	              , SUM(CASE WHEN NA_FEE_C = '050' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_NCSS_JUG_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '060' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_PRNY_JUG_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '070' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_MDCCS
+	              , SUM(CASE WHEN NA_FEE_C = '080' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_INJT_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '090' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_SHNM
+	              , SUM(CASE WHEN NA_FEE_C = '100' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_PDG_RC_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '110' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_RMHN_FEE
+	              , SUM(CASE WHEN NA_FEE_C = '120' THEN (CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_TRU_FEE
+	
+	          FROM TB_LA_IS_MH_FEE_IMPS
+	          WHERE NA_BZPLC        = #{ss_na_bzplc}
+	            AND AUC_DT          = #{auc_dt}
+	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND FEE_APL_OBJ_C   = CASE WHEN NA_FEE_C = '011' THEN  '2' ELSE  '1' END	
+	          GROUP BY NA_BZPLC
+	                 , AUC_OBJ_DSC
+	                 , AUC_DT
+	                 , OSLP_NO
+	                 , LED_SQNO
+	         ) B	
+		    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
+		      AND A.AUC_DT            = #{auc_dt}
+		      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+		      AND A.DEL_YN            = '0'
+		      AND A.LED_SQNO          = 1
+		      AND A.LOWS_SBID_LMT_AM  > 0	
+		      AND A.NA_BZPLC          = B.NA_BZPLC(+)
+		      AND A.AUC_OBJ_DSC       = B.AUC_OBJ_DSC(+)
+		      AND A.AUC_DT            = B.AUC_DT(+)
+		      AND A.OSLP_NO           = B.OSLP_NO(+)
+		      AND A.LED_SQNO          = B.LED_SQNO(+)
+		      AND A.NA_BZPLC          = C.NA_BZPLC
+		      AND A.SRA_SRS_DSC       = C.SRA_SRS_DSC
+		      AND A.SRA_INDV_AMNNO    = C.SRA_INDV_AMNNO	
+		      AND A.NA_BZPLC          = D.NA_BZPLC
+		      AND A.FHS_ID_NO         = D.FHS_ID_NO
+		      AND A.FARM_AMNNO        = D.FARM_AMNNO
+		      AND A.NA_BZPLC          = F.NA_BZPLC
+		      AND A.AUC_OBJ_DSC       = DECODE(F.AUC_OBJ_DSC,'0',A.AUC_OBJ_DSC,F.AUC_OBJ_DSC)
+		      AND A.AUC_DT        	  = F.AUC_DT
+			<if test='fhs_id_no != null and fhs_id_no != ""'>
+		         AND A.FHS_ID_NO         = #{fhs_id_no}
+			</if>
+			<if test='ftsnm != null and ftsnm != ""'>
+			      AND D.FTSNM             = #{ftsnm}
+			</if>
+	    GROUP BY A.AUC_DT
+		       , F.AUC_OBJ_DSC
+		       , D.FHS_ID_NO || '-' || D.FARM_AMNNO
+		       , D.FTSNM
+		       , D.DONGUP || ' ' || D.DONGBW
+	</select>
 	
 	
 	

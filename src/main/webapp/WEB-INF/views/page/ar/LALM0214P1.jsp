@@ -188,15 +188,23 @@
                 }
             }
             
-            var tmpObjectHeader = tmpObject.map((o,i)=> {return {'NA_BZPLNM' : o.NA_BZPLNM,'DONGUP' : o.DONGUP,'AUC_DT' : o.AUC_DT,'FTSNM' : o.FTSNM,'FHS_ID_NO' : o.FHS_ID_NO}});
-            var uniqueObject = [...new Set(tmpObjectHeader.map((o) => JSON.stringify(o)))].map((s) =>JSON.parse(s));
             if(App_na_bzplc == '8808990657622' ){// 홍성: 8808990657622 테스트: 8808990643625
-            	ReportPopupTemp('LALM0214R1_2',TitleData, uniqueObject,tmpObject, 'H');//V:가로 , H:세로
+	            var tmpObjectHeader = tmpObject.map((o,i)=> {return {'NA_BZPLNM' : o.NA_BZPLNM,'ZIP' : o.ZIP,'DONGUP' : o.DONGUP,'AUC_DT' : o.AUC_DT,'FTSNM' : o.FTSNM,'FHS_ID_NO' : o.FHS_ID_NO}});
+    	        var uniqueObject = [...new Set(tmpObjectHeader.map((o) => JSON.stringify(o)))].map((s) =>JSON.parse(s));
+    	        if($('#auc_obj_dsc').val() == '1'){
+                	ReportPopupTemp('LALM0214R1_2',TitleData, uniqueObject,tmpObject, 'H');//V:가로 , H:세로
+    	        }else{
+                	ReportPopupTemp('LALM0214R1_2_1',TitleData, uniqueObject,tmpObject, 'H');//V:가로 , H:세로    	        	
+    	        }
+            	//ReportPopup('LALM0214R1_2',TitleData, tmpObject, 'H');//V:가로 , H:세로
             }else {
             	ReportPopup('LALM0214R1_1',TitleData, tmpObject, 'H');//V:가로 , H:세로
-            }
-        
+            }            
+           
+        });        
     }); 
+
+    
     function ReportPopupTemp(p_reportName,p_titleObj, obj1,obj2, p_type){
     	
     	p_titleObj['filename'] = p_reportName;
@@ -222,7 +230,6 @@
         	
     	parent.layerPopupReport(p_reportName,p_titleObj.title,JSON.stringify(Data),p_type);
     }
-
     
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 초기화 함수
@@ -236,7 +243,8 @@
         fn_InitFrm('frm_Search');
         $( "#auc_obj_dsc" ).val(pageInfo.param.auc_obj_dsc).prop("selected",true);  
         $( "#auc_dt" ).datepicker().datepicker("setDate", pageInfo.param.auc_dt);
-        if(App_na_bzplc != '8808990657622') fn_Search();
+        
+        fn_Search();
     }
     
     /*------------------------------------------------------------------------------
@@ -245,11 +253,6 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Search(){ 
-
-        if(App_na_bzplc == '8808990657622' && fn_isNull($("#ftsnm").val())){
-            MessagePopup('OK','출하주 명을 입력하세요.');
-            return;
-        }
     	 $("#grd_CowBun").jqGrid("clearGridData", true);
         //정합성체크        
         var results = sendAjaxFrm("frm_Search", "/LALM0214P1_selList", "POST");        
@@ -281,7 +284,7 @@
         
         var searchResultColNames = [
         	                          "경제통합사업장명","전화번호","생년월일","최초등록일시"
-        	                          ,"경매일자","경매대상","경매번호","귀표번호","성별","출하자코드","출하자명","주소","비고내용" ];        
+        	                          ,"경매일자","경매대상","경매번호","귀표번호","성별","출하자코드","출하자명","우편번호","주소","비고내용" ];        
         var searchResultColModel = [
                                      {name:"NA_BZPLNM",          index:"NA_BZPLNM",          width:80,  align:'center', hidden:true},
         	                         
@@ -299,6 +302,7 @@
                                      {name:"INDV_SEX_C",         index:"INDV_SEX_C",         width:50,  align:'center', edittype:"select", formatter:"select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
                                      {name:"FHS_ID_NO",          index:"FHS_ID_NO",          width:80,  align:'center'},
                                      {name:"FTSNM",              index:"FTSNM",              width:80,  align:'center'},
+                                     {name:"ZIP",             	 index:"ZIP",             	 width:50,  align:'center'},
                                      {name:"DONGUP",             index:"DONGUP",             width:80,  align:'left'},
                                      {name:"RMK_CNTN",           index:"RMK_CNTN",           width:160, align:'left'},
                                      

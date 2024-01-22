@@ -85,6 +85,8 @@
         fn_InitFrm('frm_MhAucStn');        
         $("#cb_auc_dt").datepicker().datepicker("setDate", fn_getToday());
         $("#auc_obj_dsc").val('0');
+        //240112 : 양평축헙 초기 경매대상 일괄로 변경
+        if(App_na_bzplc =='8808990643625') fn_setChgRadio("hd_auc_obj_dsc",'0');
 
         $("#btn_Save").attr('disabled', true);
         $("#btn_Delete").attr('disabled', true);        

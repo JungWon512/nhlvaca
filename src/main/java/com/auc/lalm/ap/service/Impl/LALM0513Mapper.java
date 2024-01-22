@@ -30,6 +30,7 @@ public interface LALM0513Mapper {
 	List<Map<String, Object>> LALM0513_selList_14_IsMmMwmn(Map<String, Object> map) throws Exception;
 	List<Map<String, Object>> LALM0513_selList_15(Map<String, Object> map) throws Exception;
 	List<Map<String, Object>> LALM0513_selList_11_print(Map<String, Object> map) throws Exception;
+	List<Map<String, Object>> LALM0513_selList_11_print2(Map<String, Object> map) throws Exception;
 	
 
 }

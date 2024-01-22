@@ -25,5 +25,6 @@ public interface LALM0513Service {
 	List<Map<String, Object>> LALM0513_selList_14(Map<String, Object> map) throws Exception;
 	List<Map<String, Object>> LALM0513_selList_15(Map<String, Object> map) throws Exception;
 	List<Map<String, Object>> LALM0513_selList_11_print(Map<String, Object> map) throws Exception;
+	List<Map<String, Object>> LALM0513_selList_11_print2(Map<String, Object> map) throws Exception;
 	
 	}

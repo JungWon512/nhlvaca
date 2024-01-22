@@ -970,14 +970,24 @@
     		TitleData.unit = "";
     		TitleData.srch_condition=  '[경매일자 : ' + $('#auc_dt').val() + ']'
  	       +  '/ [경매대상 : ' + $( "#auc_obj_dsc option:selected").text()  + ']';
-    		
-    		ReportPopup('LALM0513R',TitleData, 'grd_ViewMhSogCow10', 'V'); 
+
+    		//임신감정료 추가[음성축협:8808990683973]
+    		if(na_bzplc == '8808990683973'){
+        		ReportPopup('LALM0513R_1',TitleData, 'grd_ViewMhSogCow10', 'V');    			
+    		}else{
+        		ReportPopup('LALM0513R',TitleData, 'grd_ViewMhSogCow10', 'V');    			
+    		}  
     		
     	}
     	
     	if($("#pb_tab11").hasClass("on")){
     		
-    		var tab11_results = sendAjaxFrm("frm_Search", "/LALM0513_selList_11_print", "POST");
+    		var tab11_results;
+    		if(App_na_bzplc=='8808990656687'){
+    			tab11_results = sendAjaxFrm("frm_Search", "/LALM0513_selList_11_print2", "POST");    			
+    		}else{
+    			tab11_results = sendAjaxFrm("frm_Search", "/LALM0513_selList_11_print", "POST");    			
+    		}
     		var tab11_result;
     		if(tab11_results.status != RETURN_SUCCESS) {
             	showErrorMessage(tab11_results);
@@ -994,7 +1004,7 @@
 	       
 	       var searchResultColModel1 = [
 	        							 {name:"AUC_DT",      index:"AUC_DT",      width:80, align:'center', },
-	        							 {name:"AUC_OBJ_DSC", index:"AUC_OBJ_DSC", width:65,  align:'center' , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
+	        							 {name:"AUC_OBJ_DSC", index:"AUC_OBJ_DSC", width:65,  align:'center' , edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},
 	        							 {name:"FHS_ID_NO",   index:"FHS_ID_NO",   width:80, align:'center', },
 	        							 {name:"FTSNM",       index:"FTSNM",       width:80, align:'center'},
 	                                     {name:"ADR",         index:"ADR",         width:100, align:'center'},
@@ -1021,7 +1031,11 @@
     		TitleData.sub_title = " "+"님의" +  fn_deleteNumber($( "#auc_obj_dsc option:selected").text()) + " 매매가 이루어졌습니다.";
     		TitleData.unit = "";
     		
-    		ReportPopup('LALM0513R9',TitleData, 'grd_MhSogCow11,grd_MhSogCow11_1', 'V'); 
+    		if(App_na_bzplc=='8808990656687'){
+	    		ReportPopup('LALM0513R9_1',TitleData, 'grd_MhSogCow11,grd_MhSogCow11_1', 'V'); 
+    		}else{
+	    		ReportPopup('LALM0513R9',TitleData, 'grd_MhSogCow11,grd_MhSogCow11_1', 'V'); 
+    		}
     		
     	}
     	

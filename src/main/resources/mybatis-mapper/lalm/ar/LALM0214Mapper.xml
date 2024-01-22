@@ -443,6 +443,7 @@
             , TO_CHAR(A.FSRG_DTM,'YYYY-MM-DD HH24:MI:SS') AS FSRG_DTM /* 최초등록일시                          */
             , A.FSRGMN_ENO                           /* 최초등록자개인번호         */
             , C.VHC_DRV_CAFFNM                       /* 수송자명                   */
+            , B.ZIP									 /* 우편번호 */
             , B.DONGUP                               /* 동이상주소                 */
             , B.FTSNM                                /* 농가명                     */
             , B.FHS_ID_NO                            /* 농가코드                   */
