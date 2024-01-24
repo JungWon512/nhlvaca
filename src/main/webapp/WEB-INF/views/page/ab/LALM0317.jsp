@@ -528,17 +528,20 @@ var mv_sqno_prc_dsc = "";
         data['auc_obj_dsc']      = $("#auc_obj_dsc").val();        
         data['auc_dt']           = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');     
         data['sra_mwmnnm']       = $("#grd_MhSogCow").jqGrid("getCell", rowid, 'SRA_MWMNNM');
+        var pre_trmn_amnno = $("#grd_MhSogCow").jqGrid("getCell", rowid, 'TRMN_AMNNO');
+        var pre_lvst_auc_ptc_mn_no = $("#grd_MhSogCow").jqGrid("getCell", rowid, 'LVST_AUC_PTC_MN_NO');
   	    fn_CallMwmnnmNoPopup(data,flag,function(result){
          	if(result){
   	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 'SRA_MWMNNM', result.SRA_MWMNNM);  
          		$("#grd_MhSogCow").jqGrid("setCell", rowid, 'TRMN_AMNNO', result.TRMN_AMNNO);
-  	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 'LVST_AUC_PTC_MN_NO', result.LVST_AUC_PTC_MN_NO); 
-
-          		$("#grd_MhSogCow").jqGrid('setCell', rowid, '_STATUS_', '*', GRID_MOD_BACKGROUND_COLOR);
+  	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 'LVST_AUC_PTC_MN_NO', result.LVST_AUC_PTC_MN_NO);
+  	            if(pre_trmn_amnno != result.TRMN_AMNNO || pre_lvst_auc_ptc_mn_no != result.LVST_AUC_PTC_MN_NO){
+  	          		$("#grd_MhSogCow").jqGrid('setCell', rowid, '_STATUS_', '*', GRID_MOD_BACKGROUND_COLOR);  	            	
+  	            }
           		$('#grd_MhSogCow').jqGrid('editCell',Number(rowid)+1,fn_GridColByName('grd_MhSogCow', 'SRA_MWMNNM'), true);
          	}
          });
-	}     
+	}
     
     ////////////////////////////////////////////////////////////////////////////////
     //  사용자 함수 시작

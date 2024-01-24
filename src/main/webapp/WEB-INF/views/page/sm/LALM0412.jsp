@@ -1112,6 +1112,8 @@ var mCnt = 0;
 	       //양평축협일시 그리드 하단에 문구 추가
 	       if(na_bzplc == '8808990643625'){
 		       TitleData.tmp_text = '금번 접종한 주사는 대사촉진제 및 구충제입니다.';	    	   
+	       }else if(na_bzplc == '8808990656106'){
+		       TitleData.tmp_text = '계산서 발행은 익월 10일 전까지 반드시 확인해주시기 바랍니다.';	    	   
 	       }
 	       
 	       fn_BtnAdj_fm_print(TitleData, "grd_MhSogCow");

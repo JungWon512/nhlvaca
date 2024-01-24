@@ -39,6 +39,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.Base64;
 import com.auc.common.util.StringUtils;
 import com.auc.lalm.ar.service.LALM0215Service;
+import com.auc.main.service.CommonService;
 import com.auc.main.service.LogService;
 import com.auc.main.service.Impl.LogMapper;
 
@@ -70,6 +71,9 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 	
 	@Autowired
 	LogMapper logMapper;
+	
+	@Autowired
+	CommonService commonService;
 	
 	@Override
 	public List<Map<String, Object>> LALM0215_selList(Map<String, Object> map) throws Exception {
@@ -381,6 +385,14 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 			map.put("anw_yn ", "9");
 			//개체 정보 업데이트
 			insertNum = insertNum + logService.insMmIndvLog(map);
+			if(map.get("re_indv_no") != null) {
+				try {
+					String barcode = (String)map.get("re_indv_no");
+					commonService.Common_selAiakInfo(barcode);					
+				}catch(Exception e){
+					log.error("종개협INF 연동 에러",e);
+				}				
+			}
 		}
 		
 		updateNum = updateNum + lalm0215Mapper.LALM0215_updMmFhs(map);

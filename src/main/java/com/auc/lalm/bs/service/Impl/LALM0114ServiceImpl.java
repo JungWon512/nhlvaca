@@ -4,20 +4,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.auc.common.exception.CusException;
 import com.auc.common.exception.ErrorCode;
+import com.auc.lalm.ar.service.Impl.LALM0215ServiceImpl;
 import com.auc.lalm.bs.service.LALM0114Service;
+import com.auc.main.service.CommonService;
 import com.auc.mca.McaUtil;
 
 
 @Service("LALM0114Service")
 public class LALM0114ServiceImpl implements LALM0114Service{
+	private static Logger log = LoggerFactory.getLogger(LALM0114ServiceImpl.class);
 	
 	@Autowired
 	LALM0114Mapper lalm0114Mapper;
+	@Autowired
+	CommonService commonService;
 	@Autowired
 	McaUtil mcaUtil;
 
@@ -53,6 +60,13 @@ public class LALM0114ServiceImpl implements LALM0114Service{
 		int insertNum = 0;
 		insertNum = lalm0114Mapper.LALM0114_insIndv(map);	
 		reMap.put("updateNum", insertNum);
+		try {
+			String barcode = (String)map.get("sra_indv_amnno");
+			commonService.Common_selAiakInfo(barcode);					
+		}catch(Exception e){
+			log.error("종개협INF 연동 에러",e);
+		}
+		
 		return reMap;
 	}
 
