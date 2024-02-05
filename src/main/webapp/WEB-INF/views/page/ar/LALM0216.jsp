@@ -804,7 +804,7 @@ var na_bzplc = App_na_bzplc;
             		 } else if(na_bzplc == '8808990659695') {
             			 ReportPopup('LALM0216R3_99',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
             		 // 밀양축협 : 8808990656663
-             		 } else if(na_bzplc == '8808990656663') {
+             		 } else if(na_bzplc == '8808990656663' || na_bzplc == '8808990656663') {
              			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
              		 // ★순정축협(순창): 8808990656960
              		 }  else if(na_bzplc == '8808990656960') {
@@ -1388,8 +1388,8 @@ var na_bzplc = App_na_bzplc;
              		 // ★순정축협(순창): 8808990656960
              		 }  else if(na_bzplc == '8808990656960') {
              			ReportPopup('LALM0216R3_8_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-             		// 밀양축협 : 8808990656663
-             		 } else if(na_bzplc == '8808990656663') {
+             		// 밀양축협 : 8808990656663, 문경축협 : 8808990656427
+             		 } else if(na_bzplc == '8808990656663' || na_bzplc == '8808990656427') {
              			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             	
              		// 의령축협 : 8808990656199
              		 } else if(na_bzplc == '8808990656199'){

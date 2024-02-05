@@ -1334,7 +1334,9 @@ var mCnt = 0;
 				ReportPopup('LALM0412R0_9_J_4',p_param, p_grid, 'T');
 			} else if(na_bzplc =='8808990762654'){ //당진 : 8808990762654
 				ReportPopup('LALM0412R0_9_J_6',p_param, p_grid, 'T');//원본
-			} else{
+			} else if(na_bzplc =='8808990656427'){ //문경 : 8808990656427 (응찰자 유의사항문구 추가)
+				ReportPopup('LALM0412R0_9_5',p_param, p_grid, 'T');//원본				
+			}else{
 				ReportPopup('LALM0412R0_0',p_param, p_grid, 'T');//원본
 			}
 		// 2형식
