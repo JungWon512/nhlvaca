@@ -216,9 +216,9 @@
          , A.LVST_AUC_PTC_MN_NO                          /* 가축경매참여자번호                */
          , A.SRA_SRS_DSC                                 /* 축산축종구분코드                  */
          , SUBSTR(A.SRA_INDV_AMNNO,4, 12) AS SRA_INDV_AMNNO12     /* 축산개체관리번호                  */
-         , A.COW_SOG_WT                                  /* 우출하중량                        */
+         , CASE WHEN A.COW_SOG_WT = '0' THEN '' ELSE A.COW_SOG_WT END COW_SOG_WT                                  /* 우출하중량                        */
          , A.FIR_LOWS_SBID_LMT_AM                        /* 최초최저낙찰한도금액              */
-         , A.LOWS_SBID_LMT_AM                            /* 최저낙찰한도금액                  */
+         , CASE WHEN A.LOWS_SBID_LMT_AM = '0' THEN '' ELSE A.LOWS_SBID_LMT_AM END /* 최저낙찰한도금액                  */
          , A.SRA_SBID_AM                                 /* 축산낙찰금액                      */
          , A.SEL_STS_DSC                                 /* 판매상태구분코드                  */
          , A.BRCL_ISP_CTFW_SMT_YN                        /* 브루셀라검사증명서제출여부        */
@@ -246,7 +246,7 @@
            WHEN  A.AFISM_MOD_DT = A.AFISM_MOD_DT THEN         SUBSTR(A.AFISM_MOD_DT,1,4) || '-' || SUBSTR(A.AFISM_MOD_DT,5,2) || '-' || SUBSTR(A.AFISM_MOD_DT,7,2) 
            else A.AFISM_MOD_DT end AS AFISM_MOD_DT 
                                                          /* 인공수정일자                      */
-         , A.PRNY_MTCN                                   /* 임신개월수                        */
+         , CASE WHEN A.PRNY_MTCN = '0' THEN '' ELSE A.PRNY_MTCN END PRNY_MTCN /* 임신개월수                        */
          , A.AFISM_MOD_CTFW_SMT_YN                       /* 인공수정증명서제출여부            */
          , A.RMHN_YN                                     /* 제각여부                          */
          , CASE WHEN #{ss_security} = '1' THEN A.SRA_PDMNM 
@@ -417,7 +417,8 @@
          , A.LVST_AUC_PTC_MN_NO                          /* 가축경매참여자번호                  */
          , A.SRA_SRS_DSC                                 /* 축산축종구분코드                    */
          , A.SRA_INDV_AMNNO                              /* 축산개체관리번호                    */
-         , A.COW_SOG_WT                                  /* 우출하중량                          */
+         /*20240126 : 해남진도 중량 0대신 NULL표기 요청 */
+         , CASE WHEN A.COW_SOG_WT = '0' THEN '' ELSE A.COW_SOG_WT END COW_SOG_WT /* 우출하중량                          */
          , A.FIR_LOWS_SBID_LMT_AM                        /* 최초최저낙찰한도금액                */
          , A.LOWS_SBID_LMT_AM                            /* 최저낙찰한도금액                    */
          , A.SRA_SBID_AM                                 /* 축산낙찰금액                        */
@@ -427,7 +428,7 @@
          
          , CASE WHEN A.BRCL_ISP_DT != null and A.BRCL_ISP_DT = '' THEN A.BRCL_ISP_DT 
            WHEN  A.BRCL_ISP_DT = A.BRCL_ISP_DT THEN  SUBSTR(A.BRCL_ISP_DT,1,4) || '-' || SUBSTR(A.BRCL_ISP_DT,5,2) || '-' || SUBSTR(A.BRCL_ISP_DT,7,2) 
-           else A.BRCL_ISP_DT end AS BRCL_ISP_DT         /* 브루셀라검사일자                    */
+           ELSE A.BRCL_ISP_DT end AS BRCL_ISP_DT         /* 브루셀라검사일자                    */
          , A.LWPR_CHG_NT                                 /* 최저가변경횟수                      */
          , A.VACN_DT                                     /* 예방접종일자                        */
          , A.LVST_MKT_TRPL_AMNNO                         /* 가축시장거래처관리번호              */

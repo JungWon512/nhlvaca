@@ -496,11 +496,11 @@
                     } else {
                     	fn_CallFtsnmPopup(true);
                     }
-    			}else if(App_na_bzplc == '8808990687094'){
-    				$("#ftsnm").focus();
-       			} else if(!fn_isNull($("#indv_sex_c").val()) || !fn_isNull($("#birth").val())) {
+    			} else if(!fn_isNull($("#indv_sex_c").val()) || !fn_isNull($("#birth").val())) {
     				$("#vacn_dt").focus();
-    			}
+    			} else{
+					$("#ftsnm").blur();
+				}
             }else{
 				$("#fhs_id_no").val("");
           	  	$("#farm_amnno").val("");
@@ -2702,7 +2702,10 @@
                 }
                 
         		//종축개량 데이터 연동
-        		fn_CallAiakInfoSync();
+        		fn_CallAiakInfoSync();        		
+				if(na_bzplc=='8808990660127' && !fn_isNull($("#mcow_sra_indv_amnno").val())){
+					fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());
+				}
                 if(App_na_bzplc == '8808990687094'){
     				$("#ftsnm").focus();
        			}else {
@@ -4273,9 +4276,12 @@
 	//**************************************
     function fn_CallAiakInfoSync(p_param) {
 		var p_sra_indv_amnno = "";
-		
-		if($("#sra_indv_amnno").val().replace("-", "").length == 12) {
-				p_sra_indv_amnno = $("#hed_indv_no").val() + $("#sra_indv_amnno").val().replace("-", "");        	
+		var mcowChk = 0;
+		if(!fn_isNull(p_param)){
+			mcowChk = 1;
+			p_sra_indv_amnno = p_param;			
+		}else if($("#sra_indv_amnno").val().replace("-", "").length == 12) {
+			p_sra_indv_amnno = $("#hed_indv_no").val() + $("#sra_indv_amnno").val().replace("-", "");        	
 		} else {
 			MessagePopup('OK','귀표번호를 확인하세요.',null,function(){
                 $("#sra_indv_amnno").focus();
@@ -4293,7 +4299,28 @@
         results = sendAjax(srchData, "/LALM0899_selAiakRestApi", "POST");
         
         if(results.status == RETURN_SUCCESS) {        	
-            result = setDecrypt(results);            
+            result = setDecrypt(results);
+            if(na_bzplc=='8808990660127'){
+				if(mcowChk == '1'){
+					$('#re_product_11').val(result.EPD_VAL_1);					
+					$('#re_product_12').val(result.EPD_VAL_2);
+					$('#re_product_13').val(result.EPD_VAL_3);					
+					$('#re_product_14').val(result.EPD_VAL_4);
+					$('#re_product_11_1').val(result.EPD_GRD_1);					
+					$('#re_product_12_1').val(result.EPD_GRD_2);					
+					$('#re_product_13_1').val(result.EPD_GRD_3);					
+					$('#re_product_14_1').val(result.EPD_GRD_4);		
+				}else{					
+					$('#re_product_1').val(result.EPD_VAL_1);					
+					$('#re_product_2').val(result.EPD_VAL_2);
+					$('#re_product_3').val(result.EPD_VAL_3);					
+					$('#re_product_4').val(result.EPD_VAL_4);
+					$('#re_product_1_1').val(result.EPD_GRD_1);					
+					$('#re_product_2_1').val(result.EPD_GRD_2);					
+					$('#re_product_3_1').val(result.EPD_GRD_3);					
+					$('#re_product_4_1').val(result.EPD_GRD_4);					
+				}			
+			}
         }
         return result;
     }
@@ -5219,6 +5246,9 @@
         
 		//종축개량 데이터 연동
 		fn_CallAiakInfoSync();
+		if(na_bzplc=='8808990660127' && !fn_isNull($("#mcow_sra_indv_amnno").val())){
+			fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());
+		}
         
  	}
     

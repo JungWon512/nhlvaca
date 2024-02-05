@@ -66,6 +66,22 @@
 		    , DNA_YN									/* 친자검사 결과 */
 		    , DNA_YN_CHK								/* 친자검사 여부 */
 		    , MOD_KPN_NO
+		    , RE_PRODUCT_1
+			, RE_PRODUCT_1_1
+			, RE_PRODUCT_2
+			, RE_PRODUCT_2_1
+			, RE_PRODUCT_3
+			, RE_PRODUCT_3_1
+			, RE_PRODUCT_4
+			, RE_PRODUCT_4_1
+			, RE_PRODUCT_11
+			, RE_PRODUCT_11_1
+			, RE_PRODUCT_12
+			, RE_PRODUCT_12_1
+			, RE_PRODUCT_13
+			, RE_PRODUCT_13_1
+			, RE_PRODUCT_14
+			, RE_PRODUCT_14_1
 		)VALUES(
 			#{ss_na_bzplc}                        	/* 경제통합사업장코드         */
 			, #{auc_obj_dsc}             				/* 경매대상구분코드           */
@@ -127,6 +143,22 @@
 		    , #{dna_yn}					/* 친자검사 결과 */
 		    , #{dna_yn_chk}				/* 친자검사 여부 */
 		    , #{mod_kpn}   
+		    , #{re_product_1}
+			, #{re_product_1_1}
+			, #{re_product_2}
+			, #{re_product_2_1}
+			, #{re_product_3}
+			, #{re_product_3_1}
+			, #{re_product_4}
+			, #{re_product_4_1}
+			, #{re_product_11}
+			, #{re_product_11_1}
+			, #{re_product_12}
+			, #{re_product_12_1}
+			, #{re_product_13}
+			, #{re_product_13_1}
+			, #{re_product_14}
+			, #{re_product_14_1}
 		)
 	</insert>
 	

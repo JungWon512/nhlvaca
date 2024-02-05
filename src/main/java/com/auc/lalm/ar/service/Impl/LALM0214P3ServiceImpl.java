@@ -549,68 +549,45 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				
 				/* e: 브루셀라 연동 */
 
-				/* s: EPD 연동 */
-				try {
-					temp.put("rc_na_trpl_c", "8808990768700");	//축산연구원
-					temp.put("indv_id_no", map.get("SRA_INDV_AMNNO"));
-					Map<String, Object> infEpdMap = mcaUtil.tradeMcaMsg("4200", temp);
-					Map<String, Object> infEpdJsonData = (Map<String, Object>) infEpdMap.get("jsonData");		
-					if(infEpdJsonData != null) {
-						result.put("RE_PRODUCT_1", infEpdJsonData.getOrDefault("GENE_BREDR_VAL2","").toString().trim());
-						result.put("RE_PRODUCT_2", infEpdJsonData.getOrDefault("GENE_BREDR_VAL3","").toString().trim());
-						result.put("RE_PRODUCT_3", infEpdJsonData.getOrDefault("GENE_BREDR_VAL4","").toString().trim());
-						result.put("RE_PRODUCT_4", infEpdJsonData.getOrDefault("GENE_BREDR_VAL5","").toString().trim());
-						result.put("RE_PRODUCT_1_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC2","").toString().trim());
-						result.put("RE_PRODUCT_2_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC3","").toString().trim());
-						result.put("RE_PRODUCT_3_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC4","").toString().trim());
-						result.put("RE_PRODUCT_4_1", infEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());					
-					}					
-				}catch (RuntimeException | SQLException e) {
-					result.put("CHK_INF_ERR", "1");
-					log.error("유전개체[4200] 연동중 error..",e);
-				}catch (Exception e) {
-					result.put("CHK_INF_ERR", "1");
-					log.error("유전개체[4200] 연동중 error..",e);
-				}
-				
-				/* e: EPD 연동 */
-                
-				/* s: EPD(모) 연동 */
-				if(!"".equals(map.get("MCOW_SRA_INDV_AMNNO"))) {
-					try {
-						temp.put("indv_id_no", map.get("MCOW_SRA_INDV_AMNNO"));
-						Map<String, Object> infMEpdMap = mcaUtil.tradeMcaMsg("4200", map);
-						Map<String, Object> infMEpdJsonData = (Map<String, Object>) infMEpdMap.get("jsonData");			
-						if(infMEpdMap != null) {
-							result.put("RE_PRODUCT_11", infMEpdJsonData.getOrDefault("GENE_BREDR_VAL2","").toString().trim());
-							result.put("RE_PRODUCT_12", infMEpdJsonData.getOrDefault("GENE_BREDR_VAL3","").toString().trim());
-							result.put("RE_PRODUCT_13", infMEpdJsonData.getOrDefault("GENE_BREDR_VAL4","").toString().trim());
-							result.put("RE_PRODUCT_14", infMEpdJsonData.getOrDefault("GENE_BREDR_VAL5","").toString().trim());
-							result.put("RE_PRODUCT_11_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC2","").toString().trim());
-							result.put("RE_PRODUCT_12_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC3","").toString().trim());
-							result.put("RE_PRODUCT_13_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC4","").toString().trim());
-							result.put("RE_PRODUCT_14_1", infMEpdJsonData.getOrDefault("GENE_EVL_RZT_DSC5","").toString().trim());						
-						}						
-					}catch (RuntimeException | SQLException e) {
-						result.put("CHK_INF_ERR", "1");
-						log.error("모 유전개체[4200] 연동중 error..",e);
-					}catch (Exception e) {
-						result.put("CHK_INF_ERR", "1");
-						log.error("모 유전개체[4200] 연동중 error..",e);
-					}
-				}
-				/* e: EPD(모) 연동 */
-
 				/* s: 종축개량 데이터 연동 */
 				try {
-					String barcode = (String) map.get("SRA_INDV_AMNNO");
-					commonService.Common_selAiakInfo(barcode);
+					String barcode = (String) result.get("SRA_INDV_AMNNO");
+					Map<String,Object> epdMap = commonService.Common_selAiakInfo(barcode);
+					/* s: 부여축협일시 EPD값 종개협 연둉 */
+					if("8808990660127".equals(result.get("ss_na_bzplc"))){
+						result.put("RE_PRODUCT_1", epdMap.get("EPD_VAL_1").toString().trim());
+						result.put("RE_PRODUCT_1_1", epdMap.get("EPD_GRD_1").toString().trim());
+						result.put("RE_PRODUCT_2", epdMap.get("EPD_VAL_2").toString().trim());
+						result.put("RE_PRODUCT_2_1", epdMap.get("EPD_GRD_2").toString().trim());
+						result.put("RE_PRODUCT_3", epdMap.get("EPD_VAL_3").toString().trim());
+						result.put("RE_PRODUCT_3_1", epdMap.get("EPD_GRD_3").toString().trim());
+						result.put("RE_PRODUCT_4", epdMap.get("EPD_VAL_4").toString().trim());
+						result.put("RE_PRODUCT_4_1", epdMap.get("EPD_GRD_4").toString().trim());						
+					}
 				}catch (Exception e) {
 					log.error("종축개량 데이터 연동중 error..",e);
 				}
 				/* e: 종축개량 데이터 연동 */
-				
-				
+
+				/* s: 부여축협일시 모개체 EPD값 종개협 연둉 */
+				if("8808990660127".equals(map.get("ss_na_bzplc")) && !"".equals(result.get("MCOW_SRA_INDV_AMNNO"))) {
+					try {
+						String barcode = (String) result.get("MCOW_SRA_INDV_AMNNO");
+						Map<String,Object> mEpdMap = commonService.Common_selAiakInfo(barcode);
+
+						result.put("RE_PRODUCT_11", mEpdMap.get("EPD_VAL_1").toString().trim());
+						result.put("RE_PRODUCT_11_1", mEpdMap.get("EPD_GRD_1").toString().trim());
+						result.put("RE_PRODUCT_12", mEpdMap.get("EPD_VAL_2").toString().trim());
+						result.put("RE_PRODUCT_12_1", mEpdMap.get("EPD_GRD_2").toString().trim());
+						result.put("RE_PRODUCT_13", mEpdMap.get("EPD_VAL_3").toString().trim());
+						result.put("RE_PRODUCT_13_1", mEpdMap.get("EPD_GRD_3").toString().trim());
+						result.put("RE_PRODUCT_14", mEpdMap.get("EPD_VAL_4").toString().trim());
+						result.put("RE_PRODUCT_14_1", mEpdMap.get("EPD_GRD_4").toString().trim());
+					}catch (Exception e) {
+						log.error("모개체 종축개량 데이터 연동중 error..",e);
+					}
+				}
+				/* e: 모개체 종축개량 데이터 연동 */			
 			}
 			reList.add(result);
 		}

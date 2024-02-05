@@ -35,11 +35,19 @@
      ------------------------------------------------------------------------------*/
     $(document).ready(function(){ 
         fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 2, true);	
-        fn_Init();      
+        fn_Init();
         
         //프로그램ID 대문자 변환
         $("#de_pgid").bind("keyup", function(){
             $(this).val($(this).val().toUpperCase());
+        });
+        
+        $('input[name=sanjung_cnt].radio').on('click',function(e){
+        	fn_setChgRadio('sanjung_cnt',$(this).val());
+        });
+        
+        $('#frm_Search').on('change',function(e){
+        	$("#mainGrid").jqGrid("clearGridData", true);
         });
         
     });    
@@ -50,13 +58,13 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Init(){        
-        //그리드 초기화
-        fn_CreateGrid();
-        
         //폼 초기화
-        fn_InitFrm('srchFrm_list');   
-        $("#auc_dt").datepicker().datepicker("setDate", fn_getToday());    
+        fn_InitFrm('srchFrm_list');
+        fn_setChgRadio('sanjung_cnt','2');
+        $("#auc_dt").datepicker().datepicker("setDate", fn_getToday());
         
+        //그리드 초기화
+        fn_CreateGrid();        
     }
     
     /*------------------------------------------------------------------------------
@@ -91,6 +99,8 @@
          for (var i = 0, len = ids.length; i < len; i++) {
         	 
              var rowData = $('#mainGrid').jqGrid('getRowData', ids[i]);
+             var sanjungCnt = $('#sanjung_cnt').val();
+             
              if(rowData._STATUS_ != "*" && rowData._STATUS_ != "+") continue;
              if(rowData.SANJUNG1 == 0){
                  var _index = fn_GridColByName('mainGrid', 'SANJUNG1');
@@ -99,21 +109,21 @@
                  });
                  return;                 
              }
-             if(rowData.SANJUNG2 == 0){
+             if(rowData.SANJUNG2 == 0 && sanjungCnt > 1){
                  var _index = fn_GridColByName('mainGrid', 'SANJUNG2');
                  MessagePopup("OK", "수정할 행의 모든 산정가를 입력하세요.",function(res){
                      setTimeout("$('#mainGrid').editCell(" + ids[i] + "," + _index + ", true);", 100);                     
                  });
                  return;                 
              }
-             if(rowData.SANJUNG3 == 0){
+             if(rowData.SANJUNG3 == 0 && sanjungCnt > 2){
                  var _index = fn_GridColByName('mainGrid', 'SANJUNG3');
                  MessagePopup("OK", "수정할 행의 모든 산정가를 입력하세요.",function(res){
                      setTimeout("$('#mainGrid').editCell(" + ids[i] + "," + _index + ", true);", 100);                     
                  });
                  return;                 
              }
-             if(rowData.SANJUNG4 == 0){
+             if(rowData.SANJUNG4 == 0 && sanjungCnt > 3){
                  var _index = fn_GridColByName('mainGrid', 'SANJUNG4');
                  MessagePopup("OK", "수정할 행의 모든 산정가를 입력하세요.",function(res){
                      setTimeout("$('#mainGrid').editCell(" + ids[i] + "," + _index + ", true);", 100);                     
@@ -261,21 +271,20 @@
                         	var v_sanjung4 = 0;                  	
                         	if( $("#mainGrid").jqGrid("getRowData", rowid).SANJUNG1 > 0 ){
                         		v_sanjung1 = parseInt($("#mainGrid").jqGrid("getRowData", rowid).SANJUNG1)
+                        		v_cnt++;
                         	}
                         	if( $("#mainGrid").jqGrid("getRowData", rowid).SANJUNG2 > 0 ){
                         		v_sanjung2 = parseInt($("#mainGrid").jqGrid("getRowData", rowid).SANJUNG2)
+                        		v_cnt++;
                         	}
                         	if( $("#mainGrid").jqGrid("getRowData", rowid).SANJUNG3 > 0 ){
                         		v_sanjung3 = parseInt($("#mainGrid").jqGrid("getRowData", rowid).SANJUNG3)
+                        		v_cnt++;
                         	}
                         	if( $("#mainGrid").jqGrid("getRowData", rowid).SANJUNG4 > 0 ){
                         		v_sanjung4 = parseInt($("#mainGrid").jqGrid("getRowData", rowid).SANJUNG4)
-                        	}                        	
-
-                        	if( v_sanjung1 > 0) { v_cnt = v_cnt +1;	}
-                        	if( v_sanjung2 > 0) { v_cnt = v_cnt +1;	}
-                        	if( v_sanjung3 > 0) { v_cnt = v_cnt +1;	}
-                        	if( v_sanjung4 > 0) { v_cnt = v_cnt +1;	}
+                        		v_cnt++;
+                        	}
 
                         	if( v_cnt > 0 ){
                         		v_sum = parseInt((v_sanjung1 + v_sanjung2 +v_sanjung3+v_sanjung4) / v_cnt);
@@ -335,6 +344,15 @@
             colNames: searchResultColNames,
             colModel: searchResultColModel,	
         });
+        //$('#mainGrid').jqGrid('getGridParam', 'colModel').filter((o)=>{if(o.name.indexOf('SANJUNG') > -1) return true;})
+        $('#mainGrid').jqGrid('getGridParam', 'colModel').forEach((o)=>{
+        	if(o.name.indexOf('SANJUNG') > -1){
+        		var temp = o.name.replace('SANJUNG','');
+        		if(temp > $('#sanjung_cnt').val()){
+        			$("#mainGrid").jqGrid("hideCol",o.name);
+        		}
+        	}
+        });
         
     }   
     
@@ -361,6 +379,7 @@
                             <col width="30">
                             <col width="10">
                             <col width="30">
+                            <col width="10">
                             <col width="100">
                         </colgroup>
                         <tbody>
@@ -374,6 +393,14 @@
                                     <div class="cellBox">
                                         <div class="cell"><input type="text" class="popup date" id="auc_dt" maxlength="10"></div>
                                     </div>
+                                </td>
+                                <th>산정위원</th>
+                                <td>
+                                	<input type="hidden" name="sanjung_cnt" id="sanjung_cnt" value=""/>
+                                	<input type="radio" name="sanjung_cnt" class="radio" id="sanjung_cnt_1" value="1"/><span>1명</span>
+                                	<input type="radio" name="sanjung_cnt" class="radio" id="sanjung_cnt_2" value="2"/><span>2명</span>
+                                	<input type="radio" name="sanjung_cnt" class="radio" id="sanjung_cnt_3" value="3"/><span>3명</span>
+                                	<input type="radio" name="sanjung_cnt" class="radio" id="sanjung_cnt_4" value="4"/><span>4명</span>
                                 </td>
                             </tr>
                         </tbody>
