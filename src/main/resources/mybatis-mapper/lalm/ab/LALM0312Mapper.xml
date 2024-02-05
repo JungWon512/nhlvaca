@@ -52,7 +52,8 @@
 	     AND A.SRA_INDV_AMNNO       = C.SRA_INDV_AMNNO
 	     AND A.SRA_SRS_DSC          = C.SRA_SRS_DSC
 	     AND A.SEL_STS_DSC          = '11'
-	     AND A.NA_BZPLC             = D.NA_BZPLC	     
+	     AND A.NA_BZPLC             = D.NA_BZPLC
+	     ORDER BY A.AUC_DT,A.AUC_PRG_SQ	     
     ]]>
     </select>
     

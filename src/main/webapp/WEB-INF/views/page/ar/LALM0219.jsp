@@ -582,6 +582,11 @@ window.addEventListener("contextmenu",function(event){
                         }
                     }                        
                 });
+            	if(cellname == 'AUC_PRG_SQ'){
+                	$("#"+rowid+"_"+cellname).on('focus',function(e) {
+                    	$(e.target).select()
+                    });            		
+            	}
             }, 
             colNames: searchResultColNames,
             colModel: searchResultColModel, 
