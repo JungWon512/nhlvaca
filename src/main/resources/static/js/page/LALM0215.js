@@ -86,7 +86,7 @@
 		fn_setCodeBox("rg_dsc", "SRA_INDV_BRDSRA_RG_DSC", 1);
 		fn_setCodeBox("mcow_dsc", "SRA_INDV_BRDSRA_RG_DSC", 1);
 		fn_setCodeBox("sel_sts_dsc", "SEL_STS_DSC", 1);
-		fn_setCodeBox("case_cow", "SRA_SOG_COW_DSC",1);
+		fn_setCodeBox("case_cow", "SRA_SOG_COW_DSC",1, null, "선택");
 	    fn_setCodeBox("ppgcow_fee_dsc", "PPGCOW_FEE_DSC",1);
 	    
 	    // 수의사 콤보박스 세팅
@@ -3000,7 +3000,6 @@
     	if(App_na_bzplc == "8808990779546") {
     		$("#brandnm").attr("disabled", false);
     	}
-    	$("#pb_sra_indv_amnno").attr("disabled", false);
 		
     	if($("#auc_obj_dsc").val() == "3") {
  			if($("#ppgcow_fee_dsc").val() == "3" || $("#ppgcow_fee_dsc").val() =="4") {
@@ -4302,19 +4301,19 @@
             result = setDecrypt(results);
             if(na_bzplc=='8808990660127'){
 				if(mcowChk == '1'){
-					$('#re_product_11').val(result.EPD_VAL_1);					
-					$('#re_product_12').val(result.EPD_VAL_2);
-					$('#re_product_13').val(result.EPD_VAL_3);					
-					$('#re_product_14').val(result.EPD_VAL_4);
+					$('#re_product_11').val(fn_isNum(result.EPD_VAL_1)?Number(result.EPD_VAL_1).toFixed(3):"");					
+					$('#re_product_12').val(fn_isNum(result.EPD_VAL_2)?Number(result.EPD_VAL_2).toFixed(3):"");
+					$('#re_product_13').val(fn_isNum(result.EPD_VAL_3)?Number(result.EPD_VAL_3).toFixed(3):"");					
+					$('#re_product_14').val(fn_isNum(result.EPD_VAL_4)?Number(result.EPD_VAL_4).toFixed(3):"");
 					$('#re_product_11_1').val(result.EPD_GRD_1);					
 					$('#re_product_12_1').val(result.EPD_GRD_2);					
 					$('#re_product_13_1').val(result.EPD_GRD_3);					
 					$('#re_product_14_1').val(result.EPD_GRD_4);		
 				}else{					
-					$('#re_product_1').val(result.EPD_VAL_1);					
-					$('#re_product_2').val(result.EPD_VAL_2);
-					$('#re_product_3').val(result.EPD_VAL_3);					
-					$('#re_product_4').val(result.EPD_VAL_4);
+					$('#re_product_1').val(fn_isNum(result.EPD_VAL_1)?Number(result.EPD_VAL_1).toFixed(3):"");					
+					$('#re_product_2').val(fn_isNum(result.EPD_VAL_2)?Number(result.EPD_VAL_2).toFixed(3):"");
+					$('#re_product_3').val(fn_isNum(result.EPD_VAL_3)?Number(result.EPD_VAL_3).toFixed(3):"");					
+					$('#re_product_4').val(fn_isNum(result.EPD_VAL_4)?Number(result.EPD_VAL_4).toFixed(3):"");
 					$('#re_product_1_1').val(result.EPD_GRD_1);					
 					$('#re_product_2_1').val(result.EPD_GRD_2);					
 					$('#re_product_3_1').val(result.EPD_GRD_3);					

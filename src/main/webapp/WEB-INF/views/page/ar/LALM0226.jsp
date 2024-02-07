@@ -1717,7 +1717,7 @@
 				console.log(resultBhCross);
 				var crossSort = resultBhCross.sort(function(pre,next){return next.CRSBD_DT - pre.CRSBD_DT;});
 				$('#mod_kpn_no').val($.trim(crossSort[0].SRA_KPN_NO));				
-				$('#afism_mod_dt').val($.trim(crossSort[0].CRSBD_DT)).focusout().change();						
+				$('#afism_mod_dt').val($.trim(crossSort[0].CRSBD_DT)).focusout().change();
 			}
 		}
 	}

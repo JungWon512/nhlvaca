@@ -1032,9 +1032,9 @@
     		TitleData.unit = "";
     		
     		if(App_na_bzplc=='8808990656687'){
-	    		ReportPopup('LALM0513R9_1',TitleData, 'grd_MhSogCow11,grd_MhSogCow11_1', 'V'); 
+	    		ReportPopup('LALM0513R9_1',TitleData, 'grd_MhSogCow11,grd_MhSogCow11_1', 'V'); 	
     		}else{
-	    		ReportPopup('LALM0513R9',TitleData, 'grd_MhSogCow11,grd_MhSogCow11_1', 'V'); 
+	    		ReportPopup('LALM0513R9',TitleData, 'grd_MhSogCow11,grd_MhSogCow11_1', 'V'); 	
     		}
     		
     	}

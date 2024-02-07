@@ -337,58 +337,61 @@ public class McaUtil {
 					if(bloodInfo.has("pgs_name")) result.put("GRFCOW_KPN_NO", bloodInfo.getString("pgs_name"));
 					if(bloodInfo.has("mgs_name")) result.put("MTGRFCOW_KPN_NO", bloodInfo.getString("mgs_name"));
 					
+					boolean errFlag = true;
 					//형매정보 저장
 					if(!siblingInfo.isEmpty()) {
-						siblingInfo.forEach(item ->{
-							if(item instanceof JSONObject) {				
-								Map<String, Object> map = new HashMap<String, Object>();
-								JSONObject obj = (JSONObject) item;
-								if(obj.has("barcode")) {
-									String sibBarcode = obj.getString("barcode").trim();
-									if(!sibBarcode.isEmpty()) {
-										map.put("SRA_INDV_AMNNO", "410"+barcode);
-										map.put("SIB_SRA_INDV_AMNNO", "410"+sibBarcode);								
-										map.put("BIRTH", obj.get("birthdate"));
-										map.put("RG_DSC", obj.get("reggu"));
-										map.put("INDV_SEX_C", obj.get("sex"));
+						for(int i = 0;i<siblingInfo.length();i++) {
+							Map<String, Object> map = new HashMap<String, Object>();
+							JSONObject obj = siblingInfo.getJSONObject(i);
+							if(obj.has("barcode")) {
+								String sibBarcode = obj.getString("barcode").trim();
+								if(!sibBarcode.isEmpty()){
+									map.put("SRA_INDV_AMNNO", "410"+barcode);
+									map.put("SIB_SRA_INDV_AMNNO", "410"+sibBarcode);								
+									map.put("BIRTH", obj.get("birthdate"));
+									map.put("RG_DSC", obj.get("reggu"));//1:기초,2:혈통,3:고등
+									map.put("INDV_SEX_C", obj.get("sex"));//1:암 ,2: 수
+									if(errFlag) {
 										Map<String,Object> butcherInfo= this.callApiOpenDataCattle((String)obj.get("barcode"));
-		                        
+										if(!(Boolean)butcherInfo.get("success")) errFlag=false;
 										map.put("METRB_BBDY_WT", butcherInfo.get("BUTCHERY_WEIGHT"));
 										map.put("MIF_BTC_DT", butcherInfo.get("BUTCHERY_YMD"));
-										map.put("METRB_METQLT_GRD", butcherInfo.get("Q_GRADE_NM"));
-										sibInfo.add(map);
+										map.put("METRB_METQLT_GRD", butcherInfo.get("Q_GRADE_NM"));									
 									}
-								}
-							}
-						});					
+									sibInfo.add(map);		
+									
+								}									
+							}				
+						}
 					}
 					result.put("sibInfo", sibInfo);
 					
 					//후대정보 저장
 					if(!posterityInfo.isEmpty()) {
-						posterityInfo.forEach(item ->{
-							if(item instanceof JSONObject) {
-								Map<String, Object> map = new HashMap<String, Object>();
-								JSONObject obj = (JSONObject) item;
-								if(obj.has("barcode")) {
-									String postBarcode = obj.getString("barcode").trim();
-									if(!postBarcode.isEmpty()) {
-										map.put("SRA_INDV_AMNNO", "410"+barcode);
-										map.put("POST_SRA_INDV_AMNNO", "410"+postBarcode);
-										map.put("BIRTH", obj.get("birthdate"));
-										map.put("RG_DSC", obj.get("reggu"));
-										map.put("INDV_SEX_C", obj.get("sex"));
-										map.put("KPN_NO", obj.get("sire_name"));
+						for(int i = 0;i<posterityInfo.length();i++) {
+							Map<String, Object> map = new HashMap<String, Object>();
+							JSONObject obj = posterityInfo.getJSONObject(i);
+							if(obj.has("barcode")) {
+								String postBarcode = obj.getString("barcode").trim();
+								if(!postBarcode.isEmpty()){
+									map.put("SRA_INDV_AMNNO", "410"+barcode);
+									map.put("POST_SRA_INDV_AMNNO", "410"+postBarcode);
+									map.put("BIRTH", obj.get("birthdate"));
+									map.put("RG_DSC", obj.get("reggu"));
+									map.put("INDV_SEX_C", obj.get("sex"));
+									map.put("KPN_NO", obj.get("sire_name"));
+									if(errFlag) {
 										Map<String,Object> butcherInfo= this.callApiOpenDataCattle((String)obj.get("barcode"));
-
+										if(!(Boolean)butcherInfo.get("success")) errFlag=false;
 										map.put("METRB_BBDY_WT", butcherInfo.get("BUTCHERY_WEIGHT"));
 										map.put("MIF_BTC_DT", butcherInfo.get("BUTCHERY_YMD"));
-										map.put("METRB_METQLT_GRD", butcherInfo.get("Q_GRADE_NM"));
-										postInfo.add(map);										
+										map.put("METRB_METQLT_GRD", butcherInfo.get("Q_GRADE_NM"));						
 									}
-								}
-							}
-						});					
+									postInfo.add(map);		
+									
+								}							
+							}						
+						}			
 					}
 					result.put("postInfo", postInfo);
 					
@@ -408,6 +411,7 @@ public class McaUtil {
 		String response = "";
 		String openDataApiKey ="Z5HnEP8ghGMEUD0ukiBNifYlBV6%2BwI7hxE8hlLI71yY3IirWjvlVwaGsbjRcTWhIzVisaI3%2Fyb4cDhdoa%2BYRcg%3D%3D"; 
 		//				"0OhBU7ZCGIobDVKDeBJDpmDRqK3IRNF6jlf%2FJB2diFAf%2FfR2czYO9A4UTGcsOwppV6W2HVUeho%2FFPwXoL6DwqA%3D%3D";
+    	result.put("success", true);
         try {        	
     		String tempUrl = "http://data.ekape.or.kr/openapi-data/service/user/mtrace/breeding/cattle";
     		tempUrl += "?cattleNo="+ barcode;
@@ -440,6 +444,7 @@ public class McaUtil {
         }
         catch (Exception e) {
         	log.error("Exception - 공공데이터 쇠고기이력정보 테스트 : ",e);
+        	result.put("success", false);
         } finally {
         	try {
                 if(con != null)con.disconnect();
@@ -463,7 +468,7 @@ public class McaUtil {
                 }
         	}
         	catch(Exception e) {
-                log.error("Exception - 공공데이터 쇠고기이력정보 테스트 : ",e);
+                log.error("Exception - 공공데이터 쇠고기이력정보 JSON변환 : ",e);
         	}
 		}
         return result;

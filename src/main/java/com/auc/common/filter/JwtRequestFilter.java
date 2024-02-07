@@ -183,10 +183,8 @@ public class JwtRequestFilter extends OncePerRequestFilter{
         	//claims
             UserDetails userDetails = this.jwtUserDetailsService.loadUserByUsername(username);
             if (jwtTokenUtil.validateToken(accessToken, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = 
-                		new UsernamePasswordAuthenticationToken(new JwtUser(claims), null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken
-                    .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(new JwtUser(claims), null, userDetails.getAuthorities());
+                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
             if(uri.lastIndexOf("/LALM") > -1) {

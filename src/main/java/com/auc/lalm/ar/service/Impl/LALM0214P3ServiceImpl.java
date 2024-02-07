@@ -554,15 +554,19 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 					String barcode = (String) result.get("SRA_INDV_AMNNO");
 					Map<String,Object> epdMap = commonService.Common_selAiakInfo(barcode);
 					/* s: 부여축협일시 EPD값 종개협 연둉 */
-					if("8808990660127".equals(result.get("ss_na_bzplc"))){
-						result.put("RE_PRODUCT_1", epdMap.get("EPD_VAL_1").toString().trim());
-						result.put("RE_PRODUCT_1_1", epdMap.get("EPD_GRD_1").toString().trim());
-						result.put("RE_PRODUCT_2", epdMap.get("EPD_VAL_2").toString().trim());
-						result.put("RE_PRODUCT_2_1", epdMap.get("EPD_GRD_2").toString().trim());
-						result.put("RE_PRODUCT_3", epdMap.get("EPD_VAL_3").toString().trim());
-						result.put("RE_PRODUCT_3_1", epdMap.get("EPD_GRD_3").toString().trim());
-						result.put("RE_PRODUCT_4", epdMap.get("EPD_VAL_4").toString().trim());
-						result.put("RE_PRODUCT_4_1", epdMap.get("EPD_GRD_4").toString().trim());						
+					if("8808990660127".equals(result.get("ss_na_bzplc")) && !epdMap.isEmpty()){
+						int updNum = (int) epdMap.get("updateNum");
+						log.debug(epdMap.toString());
+						if(updNum > 0) {
+							result.put("RE_PRODUCT_1", epdMap.get("EPD_VAL_1").toString().trim());
+							result.put("RE_PRODUCT_1_1", epdMap.get("EPD_GRD_1").toString().trim());
+							result.put("RE_PRODUCT_2", epdMap.get("EPD_VAL_2").toString().trim());
+							result.put("RE_PRODUCT_2_1", epdMap.get("EPD_GRD_2").toString().trim());
+							result.put("RE_PRODUCT_3", epdMap.get("EPD_VAL_3").toString().trim());
+							result.put("RE_PRODUCT_3_1", epdMap.get("EPD_GRD_3").toString().trim());
+							result.put("RE_PRODUCT_4", epdMap.get("EPD_VAL_4").toString().trim());
+							result.put("RE_PRODUCT_4_1", epdMap.get("EPD_GRD_4").toString().trim());								
+						}					
 					}
 				}catch (Exception e) {
 					log.error("종축개량 데이터 연동중 error..",e);
@@ -574,15 +578,18 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 					try {
 						String barcode = (String) result.get("MCOW_SRA_INDV_AMNNO");
 						Map<String,Object> mEpdMap = commonService.Common_selAiakInfo(barcode);
-
-						result.put("RE_PRODUCT_11", mEpdMap.get("EPD_VAL_1").toString().trim());
-						result.put("RE_PRODUCT_11_1", mEpdMap.get("EPD_GRD_1").toString().trim());
-						result.put("RE_PRODUCT_12", mEpdMap.get("EPD_VAL_2").toString().trim());
-						result.put("RE_PRODUCT_12_1", mEpdMap.get("EPD_GRD_2").toString().trim());
-						result.put("RE_PRODUCT_13", mEpdMap.get("EPD_VAL_3").toString().trim());
-						result.put("RE_PRODUCT_13_1", mEpdMap.get("EPD_GRD_3").toString().trim());
-						result.put("RE_PRODUCT_14", mEpdMap.get("EPD_VAL_4").toString().trim());
-						result.put("RE_PRODUCT_14_1", mEpdMap.get("EPD_GRD_4").toString().trim());
+						int updNum = (int) mEpdMap.get("updateNum");
+						if(!mEpdMap.isEmpty() && updNum > 0) {
+							log.debug(mEpdMap.toString());
+							result.put("RE_PRODUCT_11", mEpdMap.get("EPD_VAL_1").toString().trim());
+							result.put("RE_PRODUCT_11_1", mEpdMap.get("EPD_GRD_1").toString().trim());
+							result.put("RE_PRODUCT_12", mEpdMap.get("EPD_VAL_2").toString().trim());
+							result.put("RE_PRODUCT_12_1", mEpdMap.get("EPD_GRD_2").toString().trim());
+							result.put("RE_PRODUCT_13", mEpdMap.get("EPD_VAL_3").toString().trim());
+							result.put("RE_PRODUCT_13_1", mEpdMap.get("EPD_GRD_3").toString().trim());
+							result.put("RE_PRODUCT_14", mEpdMap.get("EPD_VAL_4").toString().trim());
+							result.put("RE_PRODUCT_14_1", mEpdMap.get("EPD_GRD_4").toString().trim());							
+						}
 					}catch (Exception e) {
 						log.error("모개체 종축개량 데이터 연동중 error..",e);
 					}

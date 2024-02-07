@@ -311,7 +311,7 @@
 	    </if> 
 	    <if test='sel_order == "22"'>           /* 21. 경매대상 + 수/암 + 경매번호     */
 			ORDER BY
-			(CASE WB.INDV_SEX_C WHEN '1' THEN 0  
+			(CASE B.INDV_SEX_C WHEN '1' THEN 0  
  								  WHEN '6' THEN 1 
  								  WHEN '4' THEN 2
  								  WHEN '2' THEN 3

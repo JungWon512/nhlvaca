@@ -140,8 +140,8 @@
         UPDATE TB_LA_IS_MH_SOG_COW SET
                LOWS_SBID_LMT_AM  = CASE 
 										WHEN #{am_rto_dsc} = '1' THEN DECODE(#{sbt_am},'0',FIR_LOWS_SBID_LMT_AM,LOWS_SBID_LMT_AM - #{sbt_am})
-                                   		ELSE DECODE(#{sbt_pmr},'0',FIR_LOWS_SBID_LMT_AM,( FLOOR((LOWS_SBID_LMT_AM - (LOWS_SBID_LMT_AM * ${sbt_pmr} / 100)) / 1000) * 1000 ))                                   
-                                   	END
+                                   		ELSE DECODE(#{sbt_pmr},'0',FIR_LOWS_SBID_LMT_AM,( FLOOR((LOWS_SBID_LMT_AM - (LOWS_SBID_LMT_AM * ${sbt_pmr} / 100)) / 1000) * 1000 ))
+                                   END
              , LWPR_CHG_NT       = LWPR_CHG_NT + 1
              , LSCHG_DTM         = SYSDATE
              , LS_CMENO          = #{ss_userid}

@@ -328,6 +328,17 @@
         fn_setCodeBox("sra_indv_stsc", "SRA_INDV_STSC", 1);
         fn_setCodeBox("sra_indv_mcow_brdsra_rg_dsc", "SRA_INDV_BRDSRA_RG_DSC", 1);
         
+
+        $("#btn_Close").unbind('click').click(function(event){
+            event.preventDefault();
+        	this.blur();
+
+            var len = $('#grd_BhCross').getRowData().length;
+            pageInfo.returnValue = {}; 
+            parent.$("#pop_result_" + pageInfo.popup_info.PGID ).val(true).trigger('change');
+            parent.PopupClose("#popupPage_LALM0222P");
+            return false;                  
+        });  
         /******************************
          * 개체이월일자 변경이벤트
          ******************************/
@@ -442,7 +453,20 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Select(){
-
+	   	 if(selresult == null){
+	   		MessagePopup('OK',"조회된 내역이 없습니다.");
+			 $('#sra_indv_amnno').focus();
+			 return;
+		 }else if(selresult.SRA_INDV_AMNNO == ''){
+	   		 MessagePopup('OK',"조회된 귀표번호가 없습니다.");
+			 $('#sra_indv_amnno').focus();
+			 return;			 
+		 }else if(selresult.FHS_ID_NO == '' && selresult.FARM_AMNNO == ''){
+	   		 MessagePopup('OK',"조회된 농가정보가 없습니다.");
+			 $('#sra_indv_amnno').focus();
+			 return;			 
+		 }
+	   	 	   	 
     	 selresult.LIST_SIB_INDV = $('#grd_SibIndv').getRowData();			//형매정보
     	 selresult.LIST_POST_INDV = $('#grd_PostIndv').getRowData();		//후대정보
     	 selresult.LIST_CATTLE_MOVE = $('#grd_CattleMove').getRowData();	//이동정보

@@ -20,7 +20,7 @@
            AND A.NA_BZPLC      = #{na_bzplc}
         <choose>
             <when test="blbd_dsc == null or blbd_dsc ==''">
-           AND A.BLBD_DSC      in ('2','3','4')
+           AND A.BLBD_DSC      in ('2','3')
             </when>
             <otherwise>
            AND A.BLBD_DSC      = #{blbd_dsc}

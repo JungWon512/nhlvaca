@@ -386,8 +386,14 @@
     		fn_DisableFrm('frm_MhAucStn', false);
     		fn_DisableAuc(false);
             $("#btn_Save").attr('disabled', false);
-            $("#btn_Delete").attr('disabled', true);     		
-    		$("#hd_auc_obj_dsc").val('1');
+            $("#btn_Delete").attr('disabled', true);    		
+    		
+    		if(App_na_bzplc =='8808990643625'){
+    			fn_setChgRadio("hd_auc_obj_dsc",'0');
+    			$("#hd_auc_obj_dsc").val('0');
+    		}else{
+    			$("#hd_auc_obj_dsc").val('1');
+    		}
     		$("#st_auc_no" ).focus();
     		
         });

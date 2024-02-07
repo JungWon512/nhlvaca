@@ -222,7 +222,7 @@
     	var tmpObject = new Array();
     	
     	gridSaveRow('grd_Msg');    	
-    	var ids = $('#grd_Msg').jqGrid('getDataIDs');
+    	var ids = $('#grd_Msg').jqGrid('getDataIDs');    	
     	for(var i = 0, len = ids.length; i < len; i++) {
             var rowId =ids[i];
             if($("input:checkbox[id='jqg_grd_Msg_"+rowId+"']").is(":checked")){

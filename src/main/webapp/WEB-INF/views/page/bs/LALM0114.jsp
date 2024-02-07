@@ -130,7 +130,8 @@
 	 * 2. 입 력 변 수 : N/A
 	 * 3. 출 력 변 수 : N/A
 	 ------------------------------------------------------------------------------*/
-	function fn_Search() {		
+	function fn_Search() {
+
 		if ($("#sh_sra_indv_amnno").val().length < 4) {
 			MessagePopup('OK', '귀표번호를 4자리 이상 입력하세요.');
 			return;

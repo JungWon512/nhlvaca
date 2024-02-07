@@ -365,10 +365,11 @@ var na_bzplc = App_na_bzplc;
              
              // ★포항: 8808990679549 테스트: 8808990643625
              } else if(na_bzplc == "8808990679549") {
+            	 var grid1 = fnSetGridDataEx('grd_MhSogCow1');
             	 if($("#auc_obj_dsc").val() == "1") {
-            		 ReportPopup('LALM0216R0_6',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R0_6',TitleData, grid1, 'V');              //V:세로 , H:가로  , T :콘솔로그
             	 } else {
-            		 ReportPopup('LALM0216R0_7',TitleData, 'grd_MhSogCow1', 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 ReportPopup('LALM0216R0_7',TitleData, grid1, 'V');              //V:세로 , H:가로  , T :콘솔로그
             	 }
              
              // ★영주: 8808990687094
@@ -804,7 +805,7 @@ var na_bzplc = App_na_bzplc;
             		 } else if(na_bzplc == '8808990659695') {
             			 ReportPopup('LALM0216R3_99',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
             		 // 밀양축협 : 8808990656663
-             		 } else if(na_bzplc == '8808990656663' || na_bzplc == '8808990656663') {
+             		 } else if(na_bzplc == '8808990656663') {
              			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
              		 // ★순정축협(순창): 8808990656960
              		 }  else if(na_bzplc == '8808990656960') {
@@ -835,9 +836,9 @@ var na_bzplc = App_na_bzplc;
             			 
             		 }
             	 
-            	 } else if($("#prto_tpc_7").is(":checked")) { //세로3형식
+            	 } else if($("#prto_tpc_7").is(":checked")) { //가로4형식
             		 if(na_bzplc == '8808990658995'){ //청주축협 : 8808990658995
-            			 ReportPopup('LALM0216R3_5_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }else{
                 		 ReportPopup('LALM0216R3_14',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
@@ -2271,11 +2272,8 @@ var na_bzplc = App_na_bzplc;
 			if(o.SRA_SBID_UPR == '0'){
 				o.SRA_SBID_UPR = '';
 			}
-			if(o.SRA_SBID_AM == '0'){
-				o.SRA_SBID_AM = '';
-			}else{
-				o.SRA_SBID_AM = o.SRA_SBID_UPR;
-			}
+			o.SRA_SBID_AM = o.SRA_SBID_UPR;
+			
 			if(o.DNA_YN_CHK == '부'){
 				o.DNA_YN_CHK = '';
 			}
@@ -2357,6 +2355,54 @@ var na_bzplc = App_na_bzplc;
 		$('#'+frmId).getRowData().forEach((o,i)=>{		
 			o.DONG = (o.DONG||'').split(' ').filter(function(e,i){if(i<3) return e;}).join(' ');
 			o.MTCN4 = (o.MTCN-1)+'개월 '+o.MTCN_DAYS+'일';
+			result.push(cloneObj(o));			
+			function cloneObj(source) {
+			  var target = {};
+			  for (let i in source) {			    
+			      target[i] = source[i];
+			  }
+			  return target;
+			}
+		}); 
+		
+		return result;
+    }
+
+    
+	//포항
+    function fnSetGridDataEx(frmId){
+    
+        gridSaveRow(frmId);
+        var colModel    = $('#'+frmId).jqGrid('getGridParam', 'colModel');
+        var gridData    = $('#'+frmId).jqGrid('getGridParam', 'data');        
+		var result = new Array();        
+        if (gridData.length == 0) {
+           MessagePopup("OK", '조회된 데이터가 없습니다.');
+           return result;
+        }
+		for (var i = 0, len = colModel.length; i < len; i++) {
+		   if (colModel[i].hidden === true) {
+		       continue;
+		   }
+		   
+		   if (colModel[i].formatter == 'select') {
+		       $('#'+frmId).jqGrid('setColProp', colModel[i].name, {
+		           unformat: gridUnfmt
+		       });
+		   }
+		}
+		var index = 0;
+		$('#'+frmId).getRowData().forEach((o,i)=>{
+			if(o.PRNY_MTCN == '0'){
+				o.PRNY_MTCN = '';
+			}
+			if(o.COW_SOG_WT == '0'){
+				o.COW_SOG_WT = '';
+			}
+			if(o.LOWS_SBID_LMT_AM == '0'){
+				o.LOWS_SBID_LMT_AM = '';
+			}
+			
 			result.push(cloneObj(o));			
 			function cloneObj(source) {
 			  var target = {};
