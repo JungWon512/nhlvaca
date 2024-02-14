@@ -620,14 +620,14 @@
     		
     		// 번식우
     		if($("#auc_obj_dsc").val() == "3") {
-   		        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
-   		      		// ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687
-   		        		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게 기존 false 고정
-   		        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825" && App_na_bzplc != "8808990656687") {
-   		            	fn_contrChBox(true, "prny_jug_yn", "");
-   		            }
-   		        } else {
-   		        	fn_contrChBox(false, "prny_jug_yn", "");
+	      		// ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687 || 보성 : 8808990656267 || 밀양 : 8808990656663
+        		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게 기존 false 고정
+	        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825" && App_na_bzplc != "8808990656687" && App_na_bzplc != "8808990656267"  && App_na_bzplc != "8808990656663"  ) {
+	   		        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
+		            	fn_contrChBox(true, "prny_jug_yn", "");
+	   		        } else {
+	   		        	fn_contrChBox(false, "prny_jug_yn", "");
+	   		        }
    		        }
 
    		  		// ★거창: 8808990659701
@@ -646,11 +646,6 @@
 	    	$("#pb_sra_indv_amnno").attr("disabled", true);
     		
     		// 번식우 선택시 임신감정여부 체크
-    		// ★밀양: 8808990656663
-    	    if(App_na_bzplc == '8808990656663') {
-    	    	fn_contrChBox(true, "prny_jug_yn", "");
-//     	    	$("#prny_jug_yn").val("1");
-    	    }
     	    if($("#chk_continue").is(":checked")) {
     	    	fn_ChkContinue();
     		}
@@ -1702,15 +1697,15 @@
     											} else {
     												// 보성 : 8808990656267, 장흥 : 8808990656533, 영광 : 8808990811710, 장성 : 8808990817675
     												if(App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-    													if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("ncss_yn").val() == "0") {
+    													if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("#ncss_yn").val() == "0") {
     														if($("#io_mwmn_maco_yn").val() == "1") {
     															v_upr = tmpResult[i]["MACO_FEE_UPR"];
     														} else {
     															v_upr = tmpResult[i]["NMACO_FEE_UPR"];
     														}
-    													} else if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "0" && $("ncss_yn").val() == "0") {
+    													} else if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "0" && $("#ncss_yn").val() == "0") {
     														v_upr = 0;
-    													} else if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("ncss_yn").val() == "1") {
+    													} else if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("#ncss_yn").val() == "1") {
     														v_upr = 0;
     													} else {
     														if($("#io_mwmn_maco_yn").val() == "1") {
@@ -2702,8 +2697,10 @@
                 }
                 
         		//종축개량 데이터 연동
-        		fn_CallAiakInfoSync();        		
-				if(na_bzplc=='8808990660127' && !fn_isNull($("#mcow_sra_indv_amnno").val())){
+        		fn_CallAiakInfoSync();
+        		//부여,창녕,진주 EPD 연계
+        		var arrNaBzplc = ['8808990660127','8808990656274','8808990657240'];        		
+				if((arrNaBzplc.includes(App_na_bzplc)) && !fn_isNull($("#mcow_sra_indv_amnno").val())){
 					fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());
 				}
                 if(App_na_bzplc == '8808990687094'){
@@ -2997,7 +2994,8 @@
     		$("#case_cow").attr("disabled", true);
     	}
     	//2023.12.06 고흥축협 브랜드명 disabled 해제
-    	if(App_na_bzplc == "8808990779546") {
+    	//2024.02.14 영천축협 브랜드명 수정 추가
+    	if(App_na_bzplc == "8808990779546" || App_na_bzplc == "8808990656687") {
     		$("#brandnm").attr("disabled", false);
     	}
 		
@@ -3015,15 +3013,16 @@
  			
  			// 번식우
  			if($("#auc_obj_dsc").val() == "3") {
- 			        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
- 			      		// ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687
- 			        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825" && App_na_bzplc != "8808990656687") {
-	   		        		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게 기존 false 고정
- 			            	fn_contrChBox(true, "prny_jug_yn", "");
- 			            }
- 			        } else {
- 			        	fn_contrChBox(false, "prny_jug_yn", "");
- 			        }
+				 
+		      		// ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687 || 보성 : 8808990656267 || 밀양 : 8808990656663
+	        		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게
+		        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825" && App_na_bzplc != "8808990656267" && App_na_bzplc != "8808990656663") {
+				        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
+			            	fn_contrChBox(true, "prny_jug_yn", "");
+				        } else {
+				        	fn_contrChBox(false, "prny_jug_yn", "");
+				        }
+			        }
 
  			  		// ★거창: 8808990659701
  			        if(App_na_bzplc == "8808990659701") {
@@ -3036,11 +3035,6 @@
  			    }
  			
  			// 번식우 선택시 임신감정여부 체크
- 			// ★밀양: 8808990656663
- 		    if(App_na_bzplc == '8808990656663') {
- 		    	fn_contrChBox(true, "prny_jug_yn", "");
- 		    	$("#prny_jug_yn").val("1");
- 		    }
  		    if($("#chk_continue").is(":checked")) {
  		    	fn_ChkContinue();
  			}
@@ -3675,7 +3669,7 @@
         		$("#thirdBody").show();
         		$("#pb_tab2").hide();
         		
-        		// ★영천: 8808990656687 포항: 8808990679549  테스트: 8808990643625
+        		// ★영천: 8808990656687 포항: 8808990679549   테스트: 8808990643625
         		// 20230920 : 영천축협 요청 임신감정여부 초기값 false로 설정
         		if (App_na_bzplc == '8808990656687' || App_na_bzplc == '8808990679549'){  
         			$("#ppgcow_fee_dsc").val("2");
@@ -4299,7 +4293,9 @@
         
         if(results.status == RETURN_SUCCESS) {        	
             result = setDecrypt(results);
-            if(na_bzplc=='8808990660127'){
+            //부여,창녕,진주 EPD 연계
+            var arrNaBzplc = ['8808990660127','8808990656274','8808990657240'];
+            if(arrNaBzplc.includes(na_bzplc)){
 				if(mcowChk == '1'){
 					$('#re_product_11').val(fn_isNum(result.EPD_VAL_1)?Number(result.EPD_VAL_1).toFixed(3):"");					
 					$('#re_product_12').val(fn_isNum(result.EPD_VAL_2)?Number(result.EPD_VAL_2).toFixed(3):"");
@@ -5245,7 +5241,9 @@
         
 		//종축개량 데이터 연동
 		fn_CallAiakInfoSync();
-		if(na_bzplc=='8808990660127' && !fn_isNull($("#mcow_sra_indv_amnno").val())){
+		//부여,창녕,진주 EPD 연계
+		var arrNaBzplc = ['8808990660127','8808990656274','8808990657240'];
+		if(arrNaBzplc.includes(na_bzplc) && !fn_isNull($("#mcow_sra_indv_amnno").val())){
 			fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());
 		}
         
