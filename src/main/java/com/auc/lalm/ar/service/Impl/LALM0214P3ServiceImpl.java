@@ -3,6 +3,7 @@ package com.auc.lalm.ar.service.Impl;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -550,11 +551,13 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				/* e: 브루셀라 연동 */
 
 				/* s: 종축개량 데이터 연동 */
+
+				String[] arrNaBzplc = {"8808990660127","8808990656274","8808990657240"};
 				try {
 					String barcode = (String) result.get("SRA_INDV_AMNNO");
 					Map<String,Object> epdMap = commonService.Common_selAiakInfo(barcode);
 					/* s: 부여축협일시 EPD값 종개협 연둉 */
-					if("8808990660127".equals(result.get("ss_na_bzplc")) && !epdMap.isEmpty()){
+					if(Arrays.asList(arrNaBzplc).contains(map.get("ss_na_bzplc")) && !epdMap.isEmpty()){
 						int updNum = (int) epdMap.get("updateNum");
 						log.debug(epdMap.toString());
 						if(updNum > 0) {
@@ -574,7 +577,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				/* e: 종축개량 데이터 연동 */
 
 				/* s: 부여축협일시 모개체 EPD값 종개협 연둉 */
-				if("8808990660127".equals(map.get("ss_na_bzplc")) && !"".equals(result.get("MCOW_SRA_INDV_AMNNO"))) {
+				
+				if(Arrays.asList(arrNaBzplc).contains(map.get("ss_na_bzplc")) && !"".equals(result.get("MCOW_SRA_INDV_AMNNO"))) {
 					try {
 						String barcode = (String) result.get("MCOW_SRA_INDV_AMNNO");
 						Map<String,Object> mEpdMap = commonService.Common_selAiakInfo(barcode);

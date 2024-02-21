@@ -37,6 +37,8 @@
     var mv_InitBoolean         = true;
     var mv_Tab_Boolean		   = false;
     var rowId                  = "";
+	//부여,창녕,진주 EPD 연계
+	var arrNaBzplc = ['8808990660127','8808990656274','8808990657240'];        		
     
 //    const endpoint = new AWS.Endpoint('https://kr.object.ncloudstorage.com');
 //	const region = 'kr-standard';
@@ -424,8 +426,8 @@
 						 var resultndv;
              	       
              	         if(resultsndv.status != RETURN_SUCCESS){
-             	        	 showErrorMessage(resultsndv);
-             	        	 return;
+             	        	 //showErrorMessage(resultsndv);
+     	            		 fn_CallIndvInfSrch();
              	         } else {
              	        	 resultIndv = setDecrypt(resultsndv);
              	             var t_sra_indv_amnno = resultIndv[0]["SRA_INDV_AMNNO"];
@@ -2698,8 +2700,6 @@
                 
         		//종축개량 데이터 연동
         		fn_CallAiakInfoSync();
-        		//부여,창녕,진주 EPD 연계
-        		var arrNaBzplc = ['8808990660127','8808990656274','8808990657240'];        		
 				if((arrNaBzplc.includes(App_na_bzplc)) && !fn_isNull($("#mcow_sra_indv_amnno").val())){
 					fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());
 				}
@@ -4293,8 +4293,6 @@
         
         if(results.status == RETURN_SUCCESS) {        	
             result = setDecrypt(results);
-            //부여,창녕,진주 EPD 연계
-            var arrNaBzplc = ['8808990660127','8808990656274','8808990657240'];
             if(arrNaBzplc.includes(na_bzplc)){
 				if(mcowChk == '1'){
 					$('#re_product_11').val(fn_isNum(result.EPD_VAL_1)?Number(result.EPD_VAL_1).toFixed(3):"");					
@@ -5241,8 +5239,6 @@
         
 		//종축개량 데이터 연동
 		fn_CallAiakInfoSync();
-		//부여,창녕,진주 EPD 연계
-		var arrNaBzplc = ['8808990660127','8808990656274','8808990657240'];
 		if(arrNaBzplc.includes(na_bzplc) && !fn_isNull($("#mcow_sra_indv_amnno").val())){
 			fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());
 		}
