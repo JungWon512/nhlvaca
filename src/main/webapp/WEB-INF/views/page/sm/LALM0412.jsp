@@ -1358,6 +1358,8 @@ var mCnt = 0;
    			//고령성주  ,나주, 구미칠곡, 김천, 충주, 의령
    			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615' || na_bzplc == '8808990659565' || na_bzplc == '8808990679549' || na_bzplc =='8808990656465' || na_bzplc =='8808990656199') {
    				ReportPopup('LALM0412R0_0_7',p_param, p_grid, 'V');
+   			}else if(na_bzplc == '8808990656427') { //문경
+   				ReportPopup('LALM0412R0_0_7_1',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990661315') { //화순 : 8808990661315
    				//ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'V');
    				ReportPopup('LALM0412R0_1_8_1',p_param, p_grid, 'V');

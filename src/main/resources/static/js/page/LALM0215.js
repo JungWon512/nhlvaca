@@ -38,7 +38,9 @@
     var mv_Tab_Boolean		   = false;
     var rowId                  = "";
 	//부여,창녕,진주 EPD 연계
-	var arrNaBzplc = ['8808990660127','8808990656274','8808990657240'];        		
+	var arrNaBzplc = ['8808990660127','8808990656274','8808990657240'];
+	//임신감정여부 예외적용조합 : ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687 || 보성 : 8808990656267 || 밀양 : 8808990656663
+	var arrPrnyJugNaBzplc = ['8808990227283','8808990652825','8808990656687','8808990656267','8808990656663'];        		
     
 //    const endpoint = new AWS.Endpoint('https://kr.object.ncloudstorage.com');
 //	const region = 'kr-standard';
@@ -188,10 +190,10 @@
     		
     		// 번식우 선택시 임신감정여부 체크
     		// ★밀양: 8808990656663
-    	    if(App_na_bzplc == '8808990656663') {
-    	    	fn_contrChBox(true, "prny_jug_yn", "");
-    	    	$("#prny_jug_yn").val("1");
-    	    }
+			//if(App_na_bzplc == '8808990656663') {
+			//	fn_contrChBox(true, "prny_jug_yn", "");
+			//	$("#prny_jug_yn").val("1");
+			//}
     	    if($("#chk_continue").is(":checked")) {
     	    	fn_ChkContinue();
     		}
@@ -621,10 +623,9 @@
     		}
     		
     		// 번식우
-    		if($("#auc_obj_dsc").val() == "3") {
-	      		// ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687 || 보성 : 8808990656267 || 밀양 : 8808990656663
+    		if($("#auc_obj_dsc").val() == "3") {	      		
         		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게 기존 false 고정
-	        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825" && App_na_bzplc != "8808990656687" && App_na_bzplc != "8808990656267"  && App_na_bzplc != "8808990656663"  ) {
+	        	if(!arrPrnyJugNaBzplc.includes(App_na_bzplc)) {
 	   		        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
 		            	fn_contrChBox(true, "prny_jug_yn", "");
 	   		        } else {
@@ -2333,15 +2334,15 @@
 											} else {
 												// 보성 : 8808990656267, 장흥 : 8808990656533, 영광 : 8808990811710, 장성 : 8808990817675
 												if(App_na_bzplc == "8808990656267" || App_na_bzplc == "8808990656533" || App_na_bzplc == "8808990811710" || App_na_bzplc == "8808990817675") {
-													if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("ncss_yn").val() == "0") {
+													if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("#ncss_yn").val() == "0") {
 														if($("#io_mwmn_maco_yn").val() == "1") {
 															v_upr = tmpResult[i]["MACO_FEE_UPR"];
 														} else {
 															v_upr = tmpResult[i]["NMACO_FEE_UPR"];
 														}
-													} else if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "0" && $("ncss_yn").val() == "0") {
+													} else if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "0" && $("#ncss_yn").val() == "0") {
 														v_upr = 0;
-													} else if(tmpResult[i]["na_fee_c"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("ncss_yn").val() == "1") {
+													} else if(tmpResult[i]["NA_FEE_C"] == "050" && $("#sel_sts_dsc").val() == "22" && $("#ncss_jug_yn").val() == "1" && $("#ncss_yn").val() == "1") {
 														v_upr = 0;
 													} else {
 														if($("#io_mwmn_maco_yn").val() == "1") {
@@ -3013,26 +3014,24 @@
  			
  			// 번식우
  			if($("#auc_obj_dsc").val() == "3") {
-				 
-		      		// ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687 || 보성 : 8808990656267 || 밀양 : 8808990656663
-	        		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게
-		        	if(App_na_bzplc != "8808990227283" && App_na_bzplc != "8808990652825" && App_na_bzplc != "8808990656267" && App_na_bzplc != "8808990656663") {
-				        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
-			            	fn_contrChBox(true, "prny_jug_yn", "");
-				        } else {
-				        	fn_contrChBox(false, "prny_jug_yn", "");
-				        }
+        		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게	        		
+				if(!arrPrnyJugNaBzplc.includes(App_na_bzplc)) {
+			        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
+		            	fn_contrChBox(true, "prny_jug_yn", "");
+			        } else {
+			        	fn_contrChBox(false, "prny_jug_yn", "");
 			        }
+		        }
 
- 			  		// ★거창: 8808990659701
- 			        if(App_na_bzplc == "8808990659701") {
- 			            if($("#ppgcow_fee_dsc").val() == "2" || $("#ppgcow_fee_dsc").val() == "4") {
- 			                $("#afism_mod_dt").val("");
- 			             	$("#prny_mtcn").val("");
- 			             	fn_AfismModDtModify();
- 			            }
- 			        }
- 			    }
+		  		// ★거창: 8808990659701
+		        if(App_na_bzplc == "8808990659701") {
+		            if($("#ppgcow_fee_dsc").val() == "2" || $("#ppgcow_fee_dsc").val() == "4") {
+		                $("#afism_mod_dt").val("");
+		             	$("#prny_mtcn").val("");
+		             	fn_AfismModDtModify();
+		            }
+		        }
+		    }
  			
  			// 번식우 선택시 임신감정여부 체크
  		    if($("#chk_continue").is(":checked")) {
