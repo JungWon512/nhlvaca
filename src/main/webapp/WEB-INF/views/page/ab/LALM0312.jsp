@@ -100,8 +100,10 @@
         	 
              var rowData = $('#mainGrid').jqGrid('getRowData', ids[i]);
              var sanjungCnt = $('#sanjung_cnt').val();
-             
+
              if(rowData._STATUS_ != "*" && rowData._STATUS_ != "+") continue;
+             if(rowData.SANJUNG1== 0 && rowData.SANJUNG2== 0 && rowData.SANJUNG3== 0 && rowData.SANJUNG4== 0) continue;
+             
              if(rowData.SANJUNG1 == 0){
                  var _index = fn_GridColByName('mainGrid', 'SANJUNG1');
                  MessagePopup("OK", "수정할 행의 모든 산정가를 입력하세요.",function(res){

@@ -2680,11 +2680,6 @@
            		
            		$("#io_sogmn_maco_yn").val(result.MACO_YN);
            		$("#sra_farm_acno").val(result.SRA_FARM_ACNO);
-           		
-        		if($('#auc_obj_dsc').val() == '3' && fn_isDate(result.PTUR_PLA_DT)){        			
-            		$('#ppgcow_fee_dsc').val('1').change();
-            		$('#afism_mod_dt').val(result.PTUR_PLA_DT).focusout().change();
-        		}
         		
         		fn_FtsnmModify();
         		
@@ -5038,6 +5033,9 @@
         	$("#re_indv_no").val($("#sra_indv_amnno").val().replace("-", ""));
         	fn_CallIndvInfSrchPopup(true, P_sra_indv_amnno);
 		}
+		
+		//TO - DO : 인공수정일자 + 수정KPN 연동
+		fn_SelBhCross();
  		
 	}
 	
@@ -5277,6 +5275,32 @@
 		}
 	}
  	
+	function fn_SelBhCross() {
+		if ($("#auc_obj_dsc").val() != "3") return;												// 번식우가 아닌 경우
+		if ($("#ppgcow_fee_dsc").val() != "1" && $("#ppgcow_fee_dsc").val() != "3") return;		// 임신우, 임신우+송아지가 아닌 경우
+		
+		var srchData = new Object();
+		var resultsBhCross = null;
+		var resultBhCross = null;
+		
+		srchData["ctgrm_cd"]  = "2400";
+		srchData["mcow_sra_indv_eart_no"] = "410" + $("#hed_indv_no").val() + $("#sra_indv_amnno").val();
+		resultsBhCross = sendAjax(srchData, "/LALM0899_selIfSend", "POST");
+		if(resultsBhCross.status != RETURN_SUCCESS){
+			showErrorMessage(resultsBhCross,'NOTFOUND');
+			return;
+		}
+		else {
+			resultBhCross = setDecrypt(resultsBhCross);
+			if (resultBhCross.length > 0) {
+				console.log(resultBhCross);
+				var crossSort = resultBhCross.sort(function(pre,next){return next.CRSBD_DT - pre.CRSBD_DT;});
+				$('#ppgcow_fee_dsc').val('1').change();
+				$('#mod_kpn_no').val($.trim(crossSort[0].SRA_KPN_NO));				
+				$('#afism_mod_dt').val($.trim(crossSort[0].CRSBD_DT)).focusout().change();
+			}
+		}
+	}
 	
 	////////////////////////////////////////////////////////////////////////////////
 	//  팝업 종료
