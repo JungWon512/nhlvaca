@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ls.service.Impl.LALM1002Mapper">
+
+    <select id="LALM1002_selList" resultType="hashMap">
+      SELECT NA_BZPLC                     /* 경제통합사업장코드      */
+          , APL_DT                       /* 적용일자                */
+          , AUC_OBJ_DSC                  /* 경매대상구분코드        */
+          , FEE_RG_SQNO                  /* 수수료등록일련번호      */
+          , NA_FEE_C                     /* 경제통합수수료코드      */
+          , SRA_FEENM                    /* 축산수수료명            */
+          , JNLZ_BSN_DSC                 /* 분개업무구분코드        */
+          , SRA_NA_FEE_C                 /* 축산경제통합수수료코드  */
+          , FEE_APL_OBJ_C                /* 수수료적용대상코드      */
+          , ST_SOG_WT                    /* 수수료 적용 하한 */
+          , ED_SOG_WT                    /* 수수료 적용 상한 */
+          , AM_RTO_DSC                   /* 금액비율구분코드        */
+          , SGNO_PRC_DSC                 /* 단수처리구분코드        */
+          , MACO_FEE_UPR                 /* 조합원수수료단가        */
+          , NMACO_FEE_UPR                /* 비조합원수수료단가      */
+          , (SELECT AMN_HCNT
+                FROM TB_LA_IS_MH_COMN_APL
+              WHERE SIMP_TPC = 'ANS_DSC'
+                AND SIMP_C   = ANS_DSC)  AS AMN_HCNT   /* 가감구분코드            */
+          , SBID_YN                      /* 낙찰여부                */
+          , PPGCOW_FEE_DSC               /* 번식우수수료구분코드    */
+          , DEL_YN                       /* 삭제여부                */
+          , FSRG_DTM                     /* 최초등록일시            */
+          , FSRGMN_ENO                   /* 최초등록자개인번호      */
+          , LSCHG_DTM                    /* 최종변경일시            */
+          , LS_CMENO                     /* 최종변경자개인번호      */
+        FROM TB_LA_IS_MH_FEE
+      WHERE NA_BZPLC             = #{ss_na_bzplc}
+        AND AUC_OBJ_DSC          = #{sc_auc_obj_dsc}
+        AND APL_DT               = (SELECT MAX(APL_DT)
+                                      FROM TB_LA_IS_MH_FEE
+                                      WHERE NA_BZPLC             = #{ss_na_bzplc}
+                                        AND AUC_OBJ_DSC          = #{sc_auc_obj_dsc}
+                                        AND APL_DT               <![CDATA[<=]]> #{sc_apl_dt}
+                                        AND DEL_YN               = '0')
+        AND DEL_YN               = '0'
+      ORDER BY AUC_OBJ_DSC
+          , FEE_APL_OBJ_C
+          , NA_FEE_C
+          , PPGCOW_FEE_DSC
+    </select>
+
+    <select id="LALM1002_selDetail" resultType="hashMap">
+      SELECT NA_BZPLC                    /* 경제통합사업장코드      */
+          , APL_DT                       /* 적용일자               */
+          , AUC_OBJ_DSC                  /* 경매대상구분코드        */
+          , FEE_RG_SQNO                  /* 수수료등록일련번호      */
+          , NA_FEE_C                     /* 경제통합수수료코드      */
+          , SRA_FEENM                    /* 축산수수료명           */
+          , JNLZ_BSN_DSC                 /* 분개업무구분코드        */
+          , SRA_NA_FEE_C                 /* 축산경제통합수수료코드  */
+          , FEE_APL_OBJ_C                /* 수수료적용대상코드      */
+          , ST_SOG_WT                    /* 수수료 적용 하한        */
+          , ED_SOG_WT                    /* 수수료 적용 상한        */
+          , AM_RTO_DSC                   /* 금액비율구분코드        */
+          , SGNO_PRC_DSC                 /* 단수처리구분코드        */
+          , MACO_FEE_UPR                 /* 조합원수수료단가        */
+          , NMACO_FEE_UPR                /* 비조합원수수료단가      */
+          , ANS_DSC                      /* 공제/지급 구분코드      */
+          , (SELECT AMN_HCNT
+                FROM TB_LA_IS_MH_COMN_APL
+              WHERE SIMP_TPC = 'ANS_DSC'
+                AND SIMP_C   = ANS_DSC)  AS AMN_HCNT   /* 가감구분코드            */
+          , SBID_YN                      /* 낙찰여부                */
+          , PPGCOW_FEE_DSC               /* 번식우수수료구분코드    */
+          , DEL_YN                       /* 삭제여부                */
+          , FSRG_DTM                     /* 최초등록일시            */
+          , FSRGMN_ENO                   /* 최초등록자개인번호      */
+          , LSCHG_DTM                    /* 최종변경일시            */
+          , LS_CMENO                     /* 최종변경자개인번호      */
+        FROM TB_LA_IS_MH_FEE
+      WHERE NA_BZPLC             = #{na_bzplc}
+        AND AUC_OBJ_DSC          = #{auc_obj_dsc}
+        AND APL_DT               = #{apl_dt}
+        AND FEE_RG_SQNO          = #{fee_rg_sqno}
+        AND DEL_YN               = '0'
+    </select>
+
+    <!-- 수수료 정보 저장 -->
+    <insert id="LALM1002_insFee" parameterType="hashMap">
+      INSERT INTO TB_LA_IS_MH_FEE (
+          NA_BZPLC,
+          APL_DT,
+          AUC_OBJ_DSC,
+          FEE_RG_SQNO,
+          NA_FEE_C,
+          SRA_FEENM,
+          JNLZ_BSN_DSC,
+          SRA_NA_FEE_C,
+          FEE_APL_OBJ_C,
+          AM_RTO_DSC,
+          SGNO_PRC_DSC,
+          MACO_FEE_UPR,
+          NMACO_FEE_UPR,
+          ANS_DSC,
+          SBID_YN,
+          PPGCOW_FEE_DSC,
+        <if test='"1".equals(jnlz_bsn_dsc)'>
+          ST_SOG_WT,
+          ED_SOG_WT,
+        </if>
+          DEL_YN,
+          FSRG_DTM,
+          FSRGMN_ENO,
+          LSCHG_DTM,
+          LS_CMENO
+        ) VALUES (
+          #{ss_na_bzplc}, 
+          #{apl_dt}, 
+          #{auc_obj_dsc}, 
+          (
+            SELECT NVL(MAX(FEE_RG_SQNO), 0) + 1
+              FROM TB_LA_IS_MH_FEE
+             WHERE NA_BZPLC = #{ss_na_bzplc}
+               AND APL_DT = #{apl_dt}
+              AND AUC_OBJ_DSC = #{auc_obj_dsc}
+          ), 
+          #{na_fee_c}, 
+          #{sra_feenm}, 
+          #{jnlz_bsn_dsc}, 
+          #{sra_na_fee_c}, 
+          #{fee_apl_obj_c}, 
+          #{am_rto_dsc}, 
+          #{sgno_prc_dsc}, 
+          #{maco_fee_upr}, 
+          #{nmaco_fee_upr}, 
+          #{ans_dsc}, 
+          #{sbid_yn}, 
+          #{ppgcow_fee_dsc},
+        <if test='"1".equals(jnlz_bsn_dsc)'>
+          #{st_sog_wt}, 
+          #{ed_sog_wt}, 
+        </if>
+          '0', 
+          SYSDATE, 
+          #{ss_userid}, 
+          SYSDATE, 
+          #{ss_userid}
+        )
+    </insert>
+
+    <update id="LALM1002_updFee" parameterType="map">
+      UPDATE TB_LA_IS_MH_FEE
+      SET
+          NA_FEE_C = #{na_fee_c},
+          SRA_FEENM = #{sra_feenm},
+          JNLZ_BSN_DSC = #{jnlz_bsn_dsc},
+          SRA_NA_FEE_C = #{sra_na_fee_c},
+          FEE_APL_OBJ_C = #{fee_apl_obj_c},
+          AM_RTO_DSC = #{am_rto_dsc},
+          SGNO_PRC_DSC = #{sgno_prc_dsc},
+          MACO_FEE_UPR = #{maco_fee_upr},
+          NMACO_FEE_UPR = #{nmaco_fee_upr},
+          ANS_DSC = #{ans_dsc},
+          SBID_YN = #{sbid_yn},
+          PPGCOW_FEE_DSC = #{ppgcow_fee_dsc},
+        <choose>
+        <when test='!"1".equals(jnlz_bsn_dsc)'>
+          ST_SOG_WT = 0,
+          ED_SOG_WT = 99999,
+        </when>
+        <otherwise>
+          ST_SOG_WT = #{st_sog_wt},
+          ED_SOG_WT = #{ed_sog_wt},
+        </otherwise>
+        </choose>
+          FSRG_DTM = SYSDATE,
+          FSRGMN_ENO = #{ss_userid},
+          LSCHG_DTM = SYSDATE,
+          LS_CMENO = #{ss_userid}
+      WHERE NA_BZPLC = #{na_bzplc}
+        AND APL_DT = #{apl_dt}
+        AND AUC_OBJ_DSC = #{auc_obj_dsc}
+        AND FEE_RG_SQNO = #{fee_rg_sqno}
+  </update>
+</mapper>

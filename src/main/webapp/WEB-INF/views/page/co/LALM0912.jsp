@@ -147,6 +147,13 @@
             if(result.SEAL_IMG_FLNM != ""){
             	$("#pb_SealImgView").show();
             }
+
+            /* 기타가축 경매항목 */
+            const etcAucObjDsc = result.ETC_AUC_OBJ_DSC.split(',');
+            etcAucObjDsc.forEach((o,i)=>{
+                $("#etc_auc_obj_dsc_" + o).prop('checked', true);
+            });
+
             g_newFlg = false;
         }                       
     } 
@@ -186,6 +193,12 @@
         });
         $('#sms_buffer_1').val(buffer_1);
         
+        /* 기타가축 경매 항목 */
+        const etcList = $(".etc_auc_obj_dsc").filter(":checked").map(function() {
+            return this.value;
+        }).get();
+        $('#etc_auc_obj_dsc').val(etcList.join(','));
+
         if(g_newFlg == true){
              MessagePopup('YESNO',"신규등록 하시겠습니까?",function(res){
                  if(res){
@@ -678,7 +691,6 @@
             <!-- //tab_box e -->
             <div class="sec_table">
                 <div class="grayTable rsp_v">
-                    
                     <table>
                         <colgroup>
                             <col width="200">
@@ -804,6 +816,70 @@
                         </tbody>
                     </table>
                     
+                </div>
+            </div>
+            <div class="tab_box clearfix">
+                <ul class="tab_list">
+                    <li><p class="dot_allow">기타가축경매정보</p></li>
+                </ul>
+            </div>
+            <!-- //tab_box e -->
+            <div class="sec_table">
+                <div class="grayTable rsp_v">
+                    <table>
+                        <colgroup>
+                            <col width="200">
+                            <col width="*">
+                            <col width="200">
+                            <col width="*">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row">기타가축항목</th>
+                                <td colspan="3">
+                                    <input type="hidden" id="etc_auc_obj_dsc" value=""/>
+                                    <input type="checkbox" id="etc_auc_obj_dsc_5" class="etc_auc_obj_dsc" value="5"/>
+                                    <label for="etc_auc_obj_dsc_5">염소</label>
+                                    <input type="checkbox" id="etc_auc_obj_dsc_6" class="etc_auc_obj_dsc" value="6"/>
+                                    <label for="etc_auc_obj_dsc_6">말</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">염소 단가기준</th>
+                                <td>
+                                    <select id="gt_auc_upr_dsc">
+                                        <option value="1">KG별</option>
+                                        <option value="2">두별</option>
+                                    </select>
+                                </td>
+                                <th scope="row">염소 응찰단위금액</th>
+                                <td>
+                                    <select id="gt_auc_atdr_unt_am">
+                                        <option value="1">원</option>
+                                        <option value="1000">천원</option>
+                                        <option value="10000">만원</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">말 단가기준</th>
+                                <td>
+                                    <select id="hs_auc_upr_dsc">
+                                        <option value="1">KG별</option>
+                                        <option value="2">두별</option>
+                                    </select>
+                                </td>
+                                <th scope="row">말 응찰단위금액</th>
+                                <td>
+                                    <select id="hs_auc_atdr_unt_am">
+                                        <option value="1">원</option>
+                                        <option value="1000">천원</option>
+                                        <option value="10000">만원</option>
+                                    </select>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div> 
         </form>    

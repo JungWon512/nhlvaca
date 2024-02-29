@@ -187,10 +187,61 @@ $(document).ready(function() {
         }
     }
 
+    //공판장기본 가져오기
+    var wmcListData  = sendAjaxFrm("", "/selectWmcListData", "POST");
+    if(wmcListData.status != RETURN_SUCCESS){
+        
+        if(wmcListData.status == NO_DATA_FOUND){
+            MessagePopup('OK','사업장 정보를 조회할수 없습니다.<br>사업장 정보관리 화면에서 정보를 등록하세요.<br>등록되지 않을경우 시스템 사용에 문제가 발생할 수 있습니다.',function(res){
+            	$.each(menuList, function(i){
+                    if(menuList[i].MENU_LVL_C == "3" &&  menuList[i].PGID == 'LALM0912'){                        
+                        var $treeview = $("#" + menuList[i].MENU_ID );
+                        activeTab($treeview);
+                    }
+                });
+            });
+        }else {
+        	showErrorMessage(wmcListData,"NOTFOUND","",function(res){
+                logout();
+            });
+        }
+        return;
+        
+    }else{      
+        wmcList = setDecrypt(wmcListData);        
+    }
+    //환경설정기본 가져오기
+    var envListData  = sendAjaxFrm("", "/selectEnvListData", "POST");
+        
+    if(envListData.status != RETURN_SUCCESS){
+    	
+        if(envListData.status == NO_DATA_FOUND){
+        	MessagePopup('OK','사업장 정보를 조회할수 없습니다.<br>사업장 정보관리 화면에서 정보를 등록하세요.<br>등록되지 않을경우 시스템 사용에 문제가 발생할 수 있습니다.',function(res){
+                $.each(menuList, function(i){
+                    if(menuList[i].MENU_LVL_C == "3" &&  menuList[i].PGID == 'LALM0912'){                        
+                        var $treeview = $("#" + menuList[i].MENU_ID );
+                        activeTab($treeview);
+                    }
+                });
+            });
+        }else {
+        	showErrorMessage(wmcListData,"NOTFOUND","",function(res){
+                logout();
+            });
+        }
+        return;
+    }    
+    envList = setDecrypt(envListData);
+    const etcAucYn = envList.find(x => x.ETC_AUC_OBJ_DSC !== "") ? 1 : 0;
+
 	const HC_MENU = ["000225", "000226"];
+    const ETC_AUC_MENU = ["001000"];
+    // TODO :: 메뉴리스트 생성(filter 추가할 것)
     $.each(menuList, function(i){
-        if(menuList[i].MENU_LVL_C == "2"){
-            var scd_menu_id = menuList[i].SCD_MENU_ID;            
+        <%-- console.log(ETC_AUC_MENU.includes(menuList[i].SCD_MENU_ID));
+        if (ETC_AUC_MENU.includes(menuList[i].SCD_MENU_ID)) continue; --%>
+        if(menuList[i].MENU_LVL_C == "2") {
+            var scd_menu_id = menuList[i].SCD_MENU_ID;
             var sideMenu = '<li class="treeview" id=' + menuList[i].SCD_MENU_ID + '>'
                          +     '<a href="javascript:;" title="' + menuList[i].MENU_NM + '">'
                          +         '<i class="fa ' + menuList[i].ICON_NM + '"></i> '
@@ -206,7 +257,7 @@ $(document).ready(function() {
                 	// 출장우 예약 접수, 예약 리스트는 합천에서만 노출되도록
                 	if(App_grp_c != "001" && HC_MENU.includes(menuList[j].MENU_ID) && App_na_bzplc != "8808990656236") continue;
 //                 	if(App_grp_c != "001" && HC_MENU.includes(menuList[j].MENU_ID) && App_na_bzplc != "8808990661315") continue;
-                		
+
                     depMenu += '<li>'
                              + '<a href="javascript:;" id="' + menuList[j].MENU_ID + '" pgid="' + menuList[j].PGID + '" pgmnm="' + menuList[j].PGMNM + '" flnm="' + menuList[j].FLNM + '" >'
                              + '<i class="fa fa-circle-o"></i> '
@@ -373,54 +424,6 @@ $(document).ready(function() {
     iform.submit();
     
     $("#iframeParam").remove();
-    
-    //공판장기본 가져오기
-    var wmcListData  = sendAjaxFrm("", "/selectWmcListData", "POST");
-        
-    if(wmcListData.status != RETURN_SUCCESS){
-        
-        if(wmcListData.status == NO_DATA_FOUND){
-            MessagePopup('OK','사업장 정보를 조회할수 없습니다.<br>사업장 정보관리 화면에서 정보를 등록하세요.<br>등록되지 않을경우 시스템 사용에 문제가 발생할 수 있습니다.',function(res){
-            	$.each(menuList, function(i){
-                    if(menuList[i].MENU_LVL_C == "3" &&  menuList[i].PGID == 'LALM0912'){                        
-                        var $treeview = $("#" + menuList[i].MENU_ID );
-                        activeTab($treeview);
-                    }
-                });
-            });
-        }else {
-        	showErrorMessage(wmcListData,"NOTFOUND","",function(res){
-                logout();
-            });
-        }
-        return;
-        
-    }else{      
-        wmcList = setDecrypt(wmcListData);        
-    }
-    //환경설정기본 가져오기
-    var envListData  = sendAjaxFrm("", "/selectEnvListData", "POST");
-        
-    if(envListData.status != RETURN_SUCCESS){
-    	
-        if(envListData.status == NO_DATA_FOUND){
-        	MessagePopup('OK','사업장 정보를 조회할수 없습니다.<br>사업장 정보관리 화면에서 정보를 등록하세요.<br>등록되지 않을경우 시스템 사용에 문제가 발생할 수 있습니다.',function(res){
-                $.each(menuList, function(i){
-                    if(menuList[i].MENU_LVL_C == "3" &&  menuList[i].PGID == 'LALM0912'){                        
-                        var $treeview = $("#" + menuList[i].MENU_ID );
-                        activeTab($treeview);
-                    }
-                });
-            });
-        }else {
-        	showErrorMessage(wmcListData,"NOTFOUND","",function(res){
-                logout();
-            });
-        }
-        return;
-    }    
-    envList = setDecrypt(envListData);
-    
 });
 
 //사업장명칭 및 회원정보 설정

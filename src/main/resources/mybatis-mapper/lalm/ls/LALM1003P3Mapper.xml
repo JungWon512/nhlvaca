@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ls.service.Impl.LALM1003P3Mapper">
+	<insert id="LALM1003P3_insSogCow">
+		INSERT  INTO TB_LA_IS_MH_SOG_COW (
+			NA_BZPLC                               	/* 경제통합사업장코드         */
+		    , AUC_OBJ_DSC                            	/* 경매대상구분코드           */
+		    , AUC_DT                                 	/* 경매일자                   */
+		    , OSLP_NO                                	/* 원표번호                   */
+		    , LED_SQNO                               	/* 원장일련번호               */
+		    , FHS_ID_NO                              	/* 농가식별번호               */
+		    , FARM_AMNNO                             	/* 농장관리번호               */
+		    , SOG_NA_TRPL_C                          	/* 출하경제통합거래처코드     */
+		    , VHC_SHRT_C                             	/* 차량단축코드               */
+		    , RC_DT                                  	/* 접수일자                   */
+		    , TRMN_AMNNO                             	/* 거래인관리번호             */
+		    , LVST_AUC_PTC_MN_NO                     	/* 가축경매참여자번호         */
+		    , SRA_SRS_DSC                            	/* 축산축종구분코드           */
+		    , SRA_INDV_AMNNO                         	/* 축산개체관리번호           */
+		    , COW_SOG_WT                             	/* 우출하중량                 */
+		    , FIR_LOWS_SBID_LMT_AM                   	/* 최초최저낙찰한도금액       */
+		    , LOWS_SBID_LMT_AM                       	/* 최저낙찰한도금액           */
+		    , SRA_SBID_UPR                           	/* 축산낙찰단가               */
+		    , SRA_SBID_AM                            	/* 축산낙찰금액               */
+		    , SEL_STS_DSC                            	/* 판매상태구분코드           */
+		    , BRCL_ISP_CTFW_SMT_YN                   	/* 브루셀라검사증명서제출여부 */
+		    , BRCL_ISP_RZT_C							/* 브루셀라검사 결과코드 */
+		    , BRCL_ISP_DT                            	/* 브루셀라검사일자           */
+		    , LWPR_CHG_NT                            	/* 최저가변경횟수             */
+		    , VACN_DT                                	/* 예방접종일자               */
+		    , VACN_ORDER                                /* 구제역 백신차수*/
+		    , BOVINE_DT                                	/* 우결해 검사일자               */
+		    , BOVINE_RSLTNM                             /* 우결핵 검사결과 */
+		    , LVST_MKT_TRPL_AMNNO                    	/* 가축시장거래처관리번호     */
+		    , MT12_OVR_YN                            	/* 12개월이상여부             */
+		    , PPGCOW_FEE_DSC                         	/* 번식우수수료구분코드       */
+		    , PRNY_JUG_YN                            	/* 임신감정여부               */
+		    , PRNY_YN                                	/* 임신여부                   */
+		    , NCSS_JUG_YN                            	/* 괴사감정여부               */
+		    , NCSS_YN                                	/* 괴사여부                   */
+		    , TRPCS_PY_YN                            	/* 운송비지급여부             */
+		    , SRA_TRPCS                              	/* 축산운송비                 */
+		    , SRA_PYIVA                              	/* 축산납입출자금             */
+		    , SRA_FED_SPY_AM                         	/* 축산사료공급금액           */
+		    , TD_RC_CST                              	/* 당일접수비용               */
+		    , MT12_OVR_FEE                           	/* 12개월이상수수료           */
+		    , AFISM_MOD_DT                           	/* 인공수정일자               */
+		    , PRNY_MTCN                              	/* 임신개월수                 */
+		    , AFISM_MOD_CTFW_SMT_YN                  	/* 인공수정증명서제출여부     */
+		    , RMHN_YN                                	/* 제각여부                   */
+		    , SRA_PDMNM                              	/* 축산생산자명               */
+		    , SRA_PD_RGNNM                           	/* 축산생산지역명             */
+		    , RMK_CNTN                               	/* 비고내용                   */
+		    , AUC_PRG_SQ                             	/* 경매진행순서               */
+		    , DEL_YN                                 	/* 삭제여부                   */
+		    , TMS_YN                                 	/* 전송여부                   */
+		    , MODL_NO                                   /* 거치대 번호 */
+			, AUC_YN         							/* 경매 여부 */
+		    , FSRG_DTM                               	/* 최초등록일시               */
+		    , FSRGMN_ENO                             	/* 최초등록자개인번호         */
+		    , LSCHG_DTM                              	/* 최종변경일시               */
+		    , LS_CMENO                               	/* 최종변경자개인번호         */
+		    , DNA_YN									/* 친자검사 결과 */
+		    , DNA_YN_CHK								/* 친자검사 여부 */
+		    , MOD_KPN_NO
+		)VALUES(
+			#{ss_na_bzplc}                        	/* 경제통합사업장코드         */
+			, #{auc_obj_dsc}             				/* 경매대상구분코드           */
+			, #{auc_dt}              					/* 경매이월일자               */
+			, #{oslp_no}                           	/* 원표번호                   */
+			, 1                                        /* 원장일련번호               */
+			, #{fhs_id_no}               				/* 농가식별번호               */
+			, #{farm_amnno}              				/* 농장관리번호               */
+			, #{sog_na_trpl_c}           				/* 출하경제통합거래처코드     */
+			, #{vhc_shrt_c}               				/* 차량단축코드               */
+			, #{rc_dt}                    				/* 접수일자                   */
+			, NULL                     
+			, NULL             
+			, '01'                    
+			, #{re_indv_no}                 
+			, 0
+			, NULL           
+			, NULL               
+			, NULL                   
+			, NULL                    
+			, '11'                    
+			, #{brcl_isp_ctfw_smt_yn}           
+		    , #{brcl_isp_rzt_c}
+			, #{brcl_isp_dt}                    
+			, 0                    
+		    , #{vacn_dt}                                	/* 예방접종일자               */
+		    , #{vacn_order}                                /* 구제역 백신차수*/
+		    , #{bovine_dt}                                	/* 우결해 검사일자               */
+		    , #{bovine_rsltnm}                             /* 우결핵 검사결과 */
+			, NULL            
+			, #{mt12_ovr_yn}                    
+			, #{ppgcow_fee_dsc}                 
+			, #{prny_jug_yn}
+			, #{prny_yn}
+			, #{ncss_jug_yn}
+			, #{ncss_yn}
+			, #{trpcs_py_yn}                    
+			, #{sra_trpcs }                     
+			, #{sra_pyiva}                      
+			, #{sra_fed_spy_am}                 
+			, #{td_rc_cst}                      
+			, #{mt12_ovr_fee}                   
+			, #{afism_mod_dt}
+			, #{prny_mtcn}
+			, #{afism_mod_ctfw_smt_yn}
+			, #{rmhn_yn}                        
+			, #{sra_pdmnm}
+			, #{sra_pd_rgnnm}                   
+			, #{rmk_cntn}
+			, #{auc_prg_sq}                     
+			, '0'                         
+			, '0'
+			, #{modl_no}                        
+			, '0'
+			, SYSDATE				
+			, #{ss_userid}			
+			, SYSDATE				
+			, #{ss_userid}	         
+		    , #{dna_yn}					/* 친자검사 결과 */
+		    , #{dna_yn_chk}				/* 친자검사 여부 */
+		    , #{mod_kpn}   
+		)
+	</insert>
+	
+</mapper>
+
+
+
+
+		
+
+
+
+
+
+
+
+
+

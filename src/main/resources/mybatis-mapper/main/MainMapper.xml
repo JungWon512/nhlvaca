@@ -186,6 +186,11 @@
 	        , BRKR_NAME_HOST                                            /* 수의사병원명                */
 	        , NVL(FEE_CHK_DNA_YN_FEE, 0) AS FEE_CHK_DNA_YN_FEE          /* 친자확인출하수수료          */
 	        , NVL(SELFEE_CHK_DNA_YN_FEE, 0) AS SELFEE_CHK_DNA_YN_FEE    /* 친자확인판매수수료          */
+          , (SELECT ETC_AUC_OBJ_DSC FROM TB_LA_IS_BM_BZLOC WHERE NA_BZPLC = #{ss_na_bzplc}) AS ETC_AUC_OBJ_DSC  /* 기타경매대상구분 */
+          , GT_AUC_UPR_DSC              /* 염소경매단가구분코드 */
+          , GT_AUC_ATDR_UNT_AM          /* 염소경매응찰단위금액 */
+          , HS_AUC_UPR_DSC              /* 말경매단가구분코드 */
+          , HS_AUC_ATDR_UNT_AM          /* 말경매응찰단위금액 */
 	    FROM TB_LA_IS_MM_ENV_EST
 	   WHERE NA_BZPLC = #{ss_na_bzplc}
     </select>

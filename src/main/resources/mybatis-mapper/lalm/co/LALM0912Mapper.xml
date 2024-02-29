@@ -84,6 +84,11 @@
 	         , C.SMS_BUFFER_2					/* 모바일 비고항목 */
 	         , C.KIOSK_YN                     /* 키오스크 사용여부           */
 	         , C.SBID_SMS_YN                  /* 낙찰 알림톡 자동 발송 여부  */
+           , C.ETC_AUC_OBJ_DSC              /* 기타가축 경매유형 */
+           , B.GT_AUC_UPR_DSC              /* 염소경매단가구분코드 */
+           , B.GT_AUC_ATDR_UNT_AM           /* 염소경매응찰단위금액 */
+           , B.HS_AUC_UPR_DSC              /* 말경매단가구분코드 */
+           , B.HS_AUC_ATDR_UNT_AM           /* 말경매응찰단위금액 */
 	      FROM TB_LA_IS_MM_WMC A
 	         , TB_LA_IS_MM_ENV_EST B
              , TB_LA_IS_BM_BZLOC   C
@@ -187,6 +192,10 @@
              , BRKR_NAME_HOST                                /* 수의사병원명                */
              , FEE_CHK_DNA_YN_FEE                            /* 친자확인출하수수료          */
              , SELFEE_CHK_DNA_YN_FEE                         /* 친자확인판매수수료          */
+             , GT_AUC_UPR_DSC                              /* 염소경매단가구분코드 */
+             , GT_AUC_ATDR_UNT_AM                          /* 염소경매응찰단위금액 */
+             , HS_AUC_UPR_DSC                              /* 말경매단가구분코드 */
+             , HS_AUC_ATDR_UNT_AM                          /* 말경매응찰단위금액 */
              , FSRG_DTM                                      /* 최초등록일시                */
              , FSRGMN_ENO                                    /* 최초등록자개인번호          */
              , LSCHG_DTM                                     /* 최종변경일사                */
@@ -233,6 +242,10 @@
              , #{brkr_name_host}                 /* 수의사병원명                */
              , #{fee_chk_dna_yn_fee}             /* 친자확인출하수수료          */
              , #{selfee_chk_dna_yn_fee}          /* 친자확인판매수수료          */
+             , #{gt_auc_upr_dsc}                 /* 염소경매단가구분코드 */
+             , #{gt_auc_atdr_unt_am}              /* 염소경매응찰단위금액 */
+             , #{hs_auc_upr_dsc}                 /* 말경매단가구분코드 */
+             , #{hs_auc_atdr_unt_am}              /* 말경매응찰단위금액 */
              , SYSDATE                           /* 최초등록일시                */
              , #{ss_userid}                      /* 최초등록자개인번호          */
              , SYSDATE                           /* 최종변경일시                */
@@ -264,6 +277,7 @@
              , SMS_BUFFER_1                 /* SMS BUFFER 1 */
              , KIOSK_YN                     /* 키오스크 사용여부 */
              , SBID_SMS_YN                  /* 낙찰 알림톡 자동 발송 여부 */
+             , ETC_AUC_OBJ_DSC              /* 기타가축 경매유형 */
              , FSRG_DTM                     /* 최초등록일시                */
              , FSRGMN_ENO                   /* 최초등록자개인번호          */
              , LSCHG_DTM                    /* 최종변경일사                */
@@ -285,10 +299,11 @@
              , #{kko_svc_id}                     /* 카카오서비스아이디          */
              , #{kko_svc_key}                    /* 카카오서비스키              */
              , #{kko_svc_cnt}                    /* 카카오서비스카운트          */
-             , #{sms_auth_yn}    
-             , #{sms_buffer_1}                  
-             , #{kiosk_yn}                  
-             , #{sbid_sms_yn}
+             , #{sms_auth_yn}                     /* SMS인증사용여부 */
+             , #{sms_buffer_1}                    /* SMS BUFFER 1 */
+             , #{kiosk_yn}                    /* 키오스크 사용여부 */
+             , #{sbid_sms_yn}                   /* 낙찰 알림톡 자동 발송 여부 */
+             , #{etc_auc_obj_dsc}              /* 기타가축 경매유형 */
              , SYSDATE                           /* 최초등록일시                */
              , #{ss_userid}                      /* 최초등록자개인번호          */
              , SYSDATE                           /* 최종변경일시                */
@@ -378,6 +393,10 @@
              , A.BRKR_NAME_HOST             = #{brkr_name_host}             /* 수의사병원명                */
              , A.FEE_CHK_DNA_YN_FEE         = #{fee_chk_dna_yn_fee}         /* 친자확인출하수수료          */
              , A.SELFEE_CHK_DNA_YN_FEE      = #{selfee_chk_dna_yn_fee}      /* 친자확인판매수수료          */
+             , A.GT_AUC_UPR_DSC             = #{gt_auc_upr_dsc}             /* 염소경매단가구분코드 */
+             , A.GT_AUC_ATDR_UNT_AM         = #{gt_auc_atdr_unt_am}         /* 염소경매응찰단위금액 */
+             , A.HS_AUC_UPR_DSC             = #{hs_auc_upr_dsc}             /* 말경매단가구분코드 */
+             , A.HS_AUC_ATDR_UNT_AM         = #{hs_auc_atdr_unt_am}         /* 말경매응찰단위금액 */
              , A.LSCHG_DTM                  = SYSDATE                       /* 최종변경일사                */
              , A.LS_CMENO                   = #{ss_userid}                  /* 최종변경자개인번호          */
          WHEN NOT MATCHED THEN
@@ -423,6 +442,10 @@
              , BRKR_NAME_HOST                                /* 수의사병원명                */
              , FEE_CHK_DNA_YN_FEE                            /* 친자확인출하수수료          */
              , SELFEE_CHK_DNA_YN_FEE                         /* 친자확인판매수수료          */
+             , GT_AUC_UPR_DSC                                /* 염소경매단가구분코드 */
+             , GT_AUC_ATDR_UNT_AM                            /* 염소경매응찰단위금액 */
+             , HS_AUC_UPR_DSC                                /* 말경매단가구분코드 */
+             , HS_AUC_ATDR_UNT_AM                            /* 말경매응찰단위금액 */
              , FSRG_DTM                                      /* 최초등록일시                */
              , FSRGMN_ENO                                    /* 최초등록자개인번호          */
              , LSCHG_DTM                                     /* 최종변경일사                */
@@ -469,6 +492,10 @@
              , #{brkr_name_host}                 /* 수의사병원명                */
              , #{fee_chk_dna_yn_fee}             /* 친자확인출하수수료          */
              , #{selfee_chk_dna_yn_fee}          /* 친자확인판매수수료          */
+             , #{gt_auc_upr_dsc}                 /* 염소경매단가구분코드 */
+             , #{gt_auc_atdr_unt_am}              /* 염소경매응찰단위금액 */
+             , #{hs_auc_upr_dsc}                 /* 말경매단가구분코드 */
+             , #{hs_auc_atdr_unt_am}              /* 말경매응찰단위금액 */
              , SYSDATE                           /* 최초등록일시                */
              , #{ss_userid}                      /* 최초등록자개인번호          */
              , SYSDATE                           /* 최종변경일시                */
@@ -499,9 +526,10 @@
              , A.KKO_SVC_KEY                = #{kko_svc_key}   /* 카카오서비스키              */
              , A.KKO_SVC_CNT                = #{kko_svc_cnt}   /* 카카오서비스카운트          */
              , A.SMS_AUTH_YN                = #{sms_auth_yn}   /* SMS인증사용여부 */
-           	 , A.SMS_BUFFER_1 				= #{sms_buffer_1}
+           	 , A.SMS_BUFFER_1               = #{sms_buffer_1}
              , A.KIOSK_YN                   = #{kiosk_yn}      /* 키오스크 사용여부           */
              , A.SBID_SMS_YN                = #{sbid_sms_yn}   /* 낙찰 알림톡 자동 발송 여부  */
+             , A.ETC_AUC_OBJ_DSC            = #{etc_auc_obj_dsc} /* 기타가축 경매유형 */
              , A.LSCHG_DTM                  = SYSDATE          /* 최종변경일사                */
              , A.LS_CMENO                   = #{ss_userid}     /* 최종변경자개인번호          */
          WHEN NOT MATCHED THEN
@@ -523,9 +551,10 @@
              , KKO_SVC_KEY                  /* 카카오서비스키              */
              , KKO_SVC_CNT                  /* 카카오서비스카운트          */
              , SMS_AUTH_YN                  /* SMS인증사용여부 */
-             , SMS_BUFFER_1					/* SMS BUFFER 1 */
+             , SMS_BUFFER_1                 /* SMS BUFFER 1 */
              , KIOSK_YN                     /* 키오스크 사용여부           */
              , SBID_SMS_YN                  /* 낙찰 알림톡 자동 발송 여부  */
+             , ETC_AUC_OBJ_DSC              /* 기타가축 경매유형 */
              , FSRG_DTM                     /* 최초등록일시                */
              , FSRGMN_ENO                   /* 최초등록자개인번호          */
              , LSCHG_DTM                    /* 최종변경일사                */
@@ -548,9 +577,10 @@
              , #{kko_svc_key}                    /* 카카오서비스키              */
              , #{kko_svc_cnt}                    /* 카카오서비스카운트          */
              , #{sms_auth_yn}                    /* SMS인증사용여부 */
-             , #{sms_buffer_1}					 /* SMS BUFFER 1 */
+             , #{sms_buffer_1}                   /* SMS BUFFER 1 */
              , #{kiosk_yn}                       /* 키오스크 사용여부           */
              , #{sbid_sms_yn}                    /* 낙찰 알림톡 자동 발송 여부  */
+             , #{etc_auc_obj_dsc}                /* 기타가축 경매유형 */
              , SYSDATE                           /* 최초등록일시                */
              , #{ss_userid}                      /* 최초등록자개인번호          */
              , SYSDATE                           /* 최종변경일시                */
