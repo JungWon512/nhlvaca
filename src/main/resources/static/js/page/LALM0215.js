@@ -39,8 +39,8 @@
     var rowId                  = "";
 	//부여,창녕,진주 EPD 연계
 	var arrNaBzplc = ['8808990660127','8808990656274','8808990657240'];
-	//임신감정여부 예외적용조합 : ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687 || 보성 : 8808990656267 || 밀양 : 8808990656663
-	var arrPrnyJugNaBzplc = ['8808990227283','8808990652825','8808990656687','8808990656267','8808990656663'];        		
+	//임신감정여부 예외적용조합 : ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687 || 보성 : 8808990656267 || 밀양 : 8808990656663 || 밀양 : 8808990656663 || 장성 : 8808990817675
+	var arrPrnyJugNaBzplc = ['8808990227283','8808990652825','8808990656687','8808990656267','8808990656663','8808990817675'];
     
 //    const endpoint = new AWS.Endpoint('https://kr.object.ncloudstorage.com');
 //	const region = 'kr-standard';
@@ -625,13 +625,13 @@
     		// 번식우
     		if($("#auc_obj_dsc").val() == "3") {	      		
         		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게 기존 false 고정
-	        	if(!arrPrnyJugNaBzplc.includes(App_na_bzplc)) {
-	   		        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
-		            	fn_contrChBox(true, "prny_jug_yn", "");
-	   		        } else {
-	   		        	fn_contrChBox(false, "prny_jug_yn", "");
-	   		        }
-   		        }
+	        	//if(!arrPrnyJugNaBzplc.includes(App_na_bzplc)) {
+	   		    //    if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
+		        //    	fn_contrChBox(true, "prny_jug_yn", "");
+	   		    //    } else {
+	   		    //    	fn_contrChBox(false, "prny_jug_yn", "");
+	   		    //    }
+   		        //}
 
    		  		// ★거창: 8808990659701
    		        if(App_na_bzplc == "8808990659701") {
@@ -2683,22 +2683,8 @@
         		
         		fn_FtsnmModify();
         		
-        		// 브루셀라검사 조회
-                fn_CallBrclIspSrch();
-        		// 친자확인 조회
-        		fn_CallLsPtntInfSrch();
-        		//유전체 분석 조회
-        		fn_CallGeneBredrInfSrch();
-        		//어미귀표번호가 존재할 시 어미유전체 조회
-        		if(!fn_isNull($("#mcow_sra_indv_amnno").val())){
-                	fn_CallGeneBredrInfSrch($("#mcow_sra_indv_amnno").val());
-                }
+        		fn_IndvInfSync();
                 
-        		//종축개량 데이터 연동
-        		fn_CallAiakInfoSync();
-				if((arrNaBzplc.includes(App_na_bzplc)) && !fn_isNull($("#mcow_sra_indv_amnno").val())){
-					fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());
-				}
                 if(App_na_bzplc == '8808990687094'){
     				$("#ftsnm").focus();
        			}else {
@@ -3010,13 +2996,13 @@
  			// 번식우
  			if($("#auc_obj_dsc").val() == "3") {
         		//2022.08.08 익산의 경우 값이 수정했을경우 수정한값으로 표기되게	        		
-				if(!arrPrnyJugNaBzplc.includes(App_na_bzplc)) {
-			        if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
-		            	fn_contrChBox(true, "prny_jug_yn", "");
-			        } else {
-			        	fn_contrChBox(false, "prny_jug_yn", "");
-			        }
-		        }
+				//if(!arrPrnyJugNaBzplc.includes(App_na_bzplc)) {
+			    //    if($("#ppgcow_fee_dsc").val() == "1" ||  $("#ppgcow_fee_dsc").val() == "3") {
+		        //    	fn_contrChBox(true, "prny_jug_yn", "");
+			    //    } else {
+			    //    	fn_contrChBox(false, "prny_jug_yn", "");
+			    //    }
+		        //}
 
 		  		// ★거창: 8808990659701
 		        if(App_na_bzplc == "8808990659701") {
@@ -5033,10 +5019,6 @@
         	$("#re_indv_no").val($("#sra_indv_amnno").val().replace("-", ""));
         	fn_CallIndvInfSrchPopup(true, P_sra_indv_amnno);
 		}
-		
-		//TO - DO : 인공수정일자 + 수정KPN 연동
-		fn_SelBhCross();
- 		
 	}
 	
 	//**************************************
@@ -5223,22 +5205,7 @@
             }
         }
         
-        // 브루셀라검사 조회
-        fn_CallBrclIspSrch();
-        // 친자확인 조회
-        fn_CallLsPtntInfSrch();
-     	// 유전체 분석 조회
-        fn_CallGeneBredrInfSrch();
-        // 어미귀표번호가 존재할 시 어미유전체 조회
-        if(!fn_isNull($("#mcow_sra_indv_amnno").val())){
-        	fn_CallGeneBredrInfSrch($("#mcow_sra_indv_amnno").val());
-        }
-        
-		//종축개량 데이터 연동
-		fn_CallAiakInfoSync();
-		if(arrNaBzplc.includes(na_bzplc) && !fn_isNull($("#mcow_sra_indv_amnno").val())){
-			fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());
-		}
+        fn_IndvInfSync();
         
  	}
     
@@ -5275,6 +5242,25 @@
 		}
 	}
  	
+ 	function fn_IndvInfSync(){        		
+		// 브루셀라검사 조회
+	    fn_CallBrclIspSrch();
+		// 친자확인 조회
+		fn_CallLsPtntInfSrch();
+		//유전체 분석 조회
+		fn_CallGeneBredrInfSrch();
+		//어미귀표번호가 존재할 시 어미유전체 조회
+		if(!fn_isNull($("#mcow_sra_indv_amnno").val())){
+	    	fn_CallGeneBredrInfSrch($("#mcow_sra_indv_amnno").val());
+	    }
+	    fn_SelBhCross();
+		//종축개량 데이터 연동
+		fn_CallAiakInfoSync();
+		if((arrNaBzplc.includes(App_na_bzplc)) && !fn_isNull($("#mcow_sra_indv_amnno").val())){
+			fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());
+		}
+ 	}
+ 	
 	function fn_SelBhCross() {
 		if ($("#auc_obj_dsc").val() != "3") return;												// 번식우가 아닌 경우
 		if ($("#ppgcow_fee_dsc").val() != "1" && $("#ppgcow_fee_dsc").val() != "3") return;		// 임신우, 임신우+송아지가 아닌 경우
@@ -5284,7 +5270,7 @@
 		var resultBhCross = null;
 		
 		srchData["ctgrm_cd"]  = "2400";
-		srchData["mcow_sra_indv_eart_no"] = "410" + $("#hed_indv_no").val() + $("#sra_indv_amnno").val();
+		srchData["mcow_sra_indv_eart_no"] = $("#hed_indv_no").val() + $("#sra_indv_amnno").val();
 		resultsBhCross = sendAjax(srchData, "/LALM0899_selIfSend", "POST");
 		if(resultsBhCross.status != RETURN_SUCCESS){
 			showErrorMessage(resultsBhCross,'NOTFOUND');

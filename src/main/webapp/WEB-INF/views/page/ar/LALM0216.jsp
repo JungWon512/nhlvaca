@@ -695,7 +695,12 @@ var na_bzplc = App_na_bzplc;
             		 }
             	 
             	 } else if($("#prto_tpc_2").is(":checked")) { //세로
-            		 ReportPopup('LALM0216R3_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            	 
+            		 if(na_bzplc == '8808990656274') {
+             			 ReportPopup('LALM0216R3_43',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             			
+            		 }else {
+                		 ReportPopup('LALM0216R3_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
+            		 }            	 
             	 } else if($("#prto_tpc_3").is(":checked")) { //가로2형식
             		 // ★동해삼척태백: 8808990652825 테스트: 8808990643625
             		 if(na_bzplc == '8808990652825') {
@@ -984,7 +989,9 @@ var na_bzplc = App_na_bzplc;
             		 } else if(na_bzplc == '8808990656656') {
             			 ReportPopup('LALM0216R3_97',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
-            		 } else {
+            		 }else if(na_bzplc == '8808990656274') {
+               			 ReportPopup('LALM0216R3_43',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+               		 } else {
             			 ReportPopup('LALM0216R3_4',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			              
             			 
@@ -1226,8 +1233,11 @@ var na_bzplc = App_na_bzplc;
              			 
              		 // ★하동축협: 8808990656656
              		 } else if(na_bzplc == '8808990656656') {
-             			 ReportPopup('LALM0216R3_97',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-             			 
+             			 ReportPopup('LALM0216R3_97',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             			
+            		 } else if(na_bzplc == '8808990656274') {
+             			 ReportPopup('LALM0216R3_43',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             			
             		 } else {
              			 ReportPopup('LALM0216R3_4',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
@@ -2248,7 +2258,7 @@ var na_bzplc = App_na_bzplc;
 			if((arrMtcnNaBzplc.includes(na_bzplc))){
 				o.MTCN = o.MTCN+'개월';
 			}else if(na_bzplc =='8808990812021'){ //  인천 : 8808990812021
-				o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일 ('=o.MTCN1+'일)';
+				o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일 ('+o.MTCN1+'일)';
 			}else{
 				o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';
 			}
