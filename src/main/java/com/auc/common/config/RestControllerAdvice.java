@@ -74,7 +74,9 @@ public class RestControllerAdvice<T> implements ResponseBodyAdvice<T> {
 		    			inMap.put("srch_cnd_cntrn", (param.length() > 2600 ? param.substring(0, 2600) : param));
 		    			inMap.put("apvrqr_rsnctt", "");
 		    			inMap.put("ss_userid", temp.get("ss_userid"));
-						commonService.Common_insDownloadLog(inMap);
+						if (!"0:0:0:0:0:0:0:1".equals(ip)) {
+							commonService.Common_insDownloadLog(inMap);
+						}
 	                }
 				} catch (RuntimeException | SQLException e) {
 					log.error("ControllerAdvice Log 작업중 에러...",e);

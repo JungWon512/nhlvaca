@@ -2247,10 +2247,13 @@ var na_bzplc = App_na_bzplc;
 
 			if((arrMtcnNaBzplc.includes(na_bzplc))){
 				o.MTCN = o.MTCN+'개월';
+				// o.MTCN = `${o.MTCN}개월`;
 			}else if(na_bzplc =='8808990812021'){ //  인천 : 8808990812021
-				o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일 ('=o.MTCN1+'일)';
+				o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일 (' + o.MTCN1+'일)';
+				// o.MTCN = `${o.MTCN-1}개월 ${o.MTCN4}일 (${o.MTCN1}일)`;
 			}else{
 				o.MTCN = (o.MTCN-1)+'개월 '+o.MTCN4+'일';
+				// o.MTCN = `${o.MTCN-1}개월 ${o.MTCN4}일`;
 			}
 		
 			if(o.SRA_INDV_PASG_QCN == '0'){

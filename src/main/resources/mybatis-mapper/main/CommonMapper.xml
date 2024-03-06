@@ -10,27 +10,74 @@
                NVL(
 		<choose>
 			<when test="flag != null and flag == 'init'.toString()">
-                   (SELECT MIN(AUC_DT)							/* 경매일자             */
+				(
+					SELECT MIN(AUC_DT)							/* 경매일자             */
                       FROM TB_LA_IS_MH_AUC_QCN
                      WHERE NA_BZPLC    = #{ss_na_bzplc}			/* 경제통합사업장코드 */
-                       AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
-                       AND DDL_YN      = '0')
-                  ,(SELECT MAX(AUC_DT)                     /* 경매일자             */
+                       AND DDL_YN      = '0'
+					<choose>
+					<!-- 축종 구분코드가 '01'이 아닌 경우 일괄 조회 X -->
+					<when test='!"01".equals(sra_srs_dsc)'>
+					   AND AUC_OBJ_DSC = #{auc_obj_dsc}
+					</when>
+					<otherwise>
+					   AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
+					</otherwise>
+					</choose>
+					   <!-- AND (
+							(#{auc_obj_dsc} IN ('0', '1', '2', '3') AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc}))
+							OR
+							(#{auc_obj_dsc} NOT IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC = #{auc_obj_dsc})	/* 경매대상구분코드   */
+						) -->
+				),
+				(
+					SELECT MAX(AUC_DT)                     /* 경매일자             */
                       FROM TB_LA_IS_MH_AUC_QCN
                      WHERE NA_BZPLC    = #{ss_na_bzplc}            /* 경제통합사업장코드 */
-                       AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})    /* 경매대상구분코드   */
-                       AND DDL_YN      = '1')
+                       AND DDL_YN      = '1'
+                    <choose>
+					<when test='!"01".equals(sra_srs_dsc)'>
+					   AND AUC_OBJ_DSC = #{auc_obj_dsc}
+					</when>
+					<otherwise>
+					   AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
+					</otherwise>
+					</choose>
+					   <!-- AND (
+							(#{auc_obj_dsc} IN ('0', '1', '2', '3') AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc}))
+							OR
+							(#{auc_obj_dsc} NOT IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC = #{auc_obj_dsc})	/* 경매대상구분코드   */
+						) -->
+				)
 			</when>
 			<otherwise>
-                   (SELECT AUC_DT								/* 경매일자             */
+				(
+					SELECT AUC_DT								/* 경매일자             */
                       FROM TB_LA_IS_MH_AUC_QCN
                      WHERE NA_BZPLC    = #{ss_na_bzplc}			/* 경제통합사업장코드 */
-                       AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
-                       AND AUC_DT = #{auc_dt})
-                  ,(SELECT MAX(AUC_DT)                     /* 경매일자             */
+                       AND AUC_DT = #{auc_dt}
+                	<choose>
+					<when test='!"01".equals(sra_srs_dsc)'>
+					   AND AUC_OBJ_DSC = #{auc_obj_dsc}
+					</when>
+					<otherwise>
+					   AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
+					</otherwise>
+					</choose>
+				),
+				(
+					SELECT MAX(AUC_DT)                     /* 경매일자             */
                       FROM TB_LA_IS_MH_AUC_QCN
                      WHERE NA_BZPLC    = #{ss_na_bzplc}            /* 경제통합사업장코드 */
-                       AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc}))    /* 경매대상구분코드   */
+                    <choose>
+					<when test='!"01".equals(sra_srs_dsc)'>
+					   AND AUC_OBJ_DSC = #{auc_obj_dsc}
+					</when>
+					<otherwise>
+					   AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
+					</otherwise>
+					</choose>
+				)
 			</otherwise>
 		</choose>
                  )

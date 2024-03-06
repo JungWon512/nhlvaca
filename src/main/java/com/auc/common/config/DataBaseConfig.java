@@ -20,8 +20,8 @@ public class DataBaseConfig {
 	 @Bean
 	 public DataSource dataSource() {
 	  return DataSourceBuilder.create()
-	     .driverClassName("com.tmax.tibero.jdbc.TbDriver")
-	     .url("jdbc:tibero:thin:@115.41.222.25:8629:tibero")
+	     .driverClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy")
+	     .url("jdbc:log4jdbc:tibero:thin:@115.41.222.25:8629:tibero")
 	     .username("lalm")
 	     .password("lalm123")
 	     .build();

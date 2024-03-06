@@ -451,7 +451,7 @@
             	 }
               } else {
             	  if(na_bzplc != '8808990656601') {
-            		  $("#sra_srs_dsc").val("");
+            		  $("#sra_srs_dsc").val("01");
             		  $("#fhs_id_no").val("");
             		  $("#farm_amnno").val("");
             		  $("#ftsnm").val("");
@@ -2801,6 +2801,7 @@
         }
 
 		if(mv_RunMode == 1) {
+			console.log('mode1')
 			$("#sra_indv_amnno").attr("disabled", false);
 			$("#pb_sra_indv_amnno").attr("disabled", false);
 			$("#pb_IndvHst").attr("disabled", false);
@@ -2835,7 +2836,8 @@
 	        $("#rc_dt").datepicker().datepicker("setDate", fn_getToday());
 	        $("#sel_sts_dsc").val("1");												// 진행상태
 	        $("#case_cow").val("1");												// 구분
-	        
+	        $("#sra_srs_dsc").val("01");
+			
 	     	// ★임실: 8808990660783 포항: 8808990679549 고성: 8808990656458  영광: 8808990811710 충주: 8808990656465 남원: 8808990227207  테스트: 8808990643625 경주 8808990659008
 			// 친자확인결과 미확인 자동 셋팅
 			if(App_na_bzplc=='8808990660783' || App_na_bzplc=='8808990679549' || App_na_bzplc=='8808990656458' || App_na_bzplc=='8808990811710' || App_na_bzplc=='8808990643625' || App_na_bzplc=='8808990659008') {
@@ -2865,7 +2867,6 @@
 		    }
 		    
 		    $("#sra_sbid_am").val("0");
-		    
 		} else {
 			$("#btn_Save").attr("disabled", false);
 	    	$("#btn_Delete").attr("disabled", false);

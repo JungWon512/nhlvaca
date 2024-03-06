@@ -13,6 +13,7 @@ import java.util.Map;
 
 import java.util.Set;
 
+import org.apache.ibatis.util.MapUtil;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -122,7 +123,7 @@ public class ConvertConfig {
 	    	    inMap.put("ss_na_bzplc", jwtuser.getNa_bzplc());
 	    	    inMap.put("ss_security", security);
 	    	    inMap.put("ss_grp_c"   , jwtuser.getGrp_c());
-	    	    
+
 	    	    getMap.put(entry.getKey(), inMap);
 	        }	
 	    }	    		
@@ -133,18 +134,42 @@ public class ConvertConfig {
 	    getMap.put("ss_na_bzplc", jwtuser.getNa_bzplc());
 	    getMap.put("ss_security",  security);
 	    getMap.put("ss_grp_c"   , jwtuser.getGrp_c());
-	    	    
+
+		// 기본 축종은 '우'로 설정
+		map.put("sra_srs_dsc", "01");
+		
 	    //키 소문자로 변환
 	    Set<String> set = getMap.keySet();
 	    Iterator<String> e = set.iterator();
-
+		// 경매 대상에 따라 축종 설정
+		// 0~4 : 소(01), 5 : 염소(06), 6 : 말(04), 7~9 : 미정
+		final Map<String, String> sraSrsDscMap = new HashMap<String, String>() {
+			{
+				put("0", "01");
+				put("1", "01");
+				put("2", "01");
+				put("3", "01");
+				put("4", "01");
+				put("5", "06");
+				put("6", "04");
+				put("7", "01");
+				put("8", "01");
+				put("9", "01");
+			}
+		};
+		
 	    while(e.hasNext()){
-	    	String key = e.next();
+			String key = e.next();
 	    	if(getMap.get(key) instanceof String) {
-	    		map.put(key.toLowerCase(), StringUtils.xxsFilter((String)getMap.get(key)));
+				map.put(key.toLowerCase(), StringUtils.xxsFilter((String)getMap.get(key)));
 	    	}else {
-	    		map.put(key.toLowerCase(), getMap.get(key));
+				map.put(key.toLowerCase(), getMap.get(key));
 	    	}
+			// 경매 대상에 따라 축종 설정
+			if (key.contains("auc_obj_dsc")) {
+				final String value = String.valueOf(getMap.getOrDefault(key, "0"));
+				map.put("sra_srs_dsc", sraSrsDscMap.get(value));
+			}
 	    }
 		
 		return map;
@@ -250,16 +275,46 @@ public class ConvertConfig {
 	    getMap.put("ss_na_bzplc", jwtuser.getNa_bzplc());
 	    getMap.put("ss_security",  security);
 	    getMap.put("ss_grp_c"   , jwtuser.getGrp_c());
+
+		// 기본 축종은 '우'로 설정
+		map.put("sra_srs_dsc", "01");
 	    	    
 	    //키 소문자로 변환
 	    Set<String> set = getMap.keySet();
 	    Iterator<String> e = set.iterator();
 
+		// 경매 대상에 따라 축종 설정
+		// 0~4 : 소(01), 5 : 염소(06), 6 : 말(04), 7~9 : 미정
+		final Map<String, String> sraSrsDscMap = new HashMap<String, String>() {
+			{
+				put("0", "01");
+				put("1", "01");
+				put("2", "01");
+				put("3", "01");
+				put("4", "01");
+				put("5", "06");
+				put("6", "04");
+				put("7", "01");
+				put("8", "01");
+				put("9", "01");
+			}
+		};
+
 	    while(e.hasNext()){
 	    	String key = e.next();
 	    	map.put(key.toLowerCase(), getMap.get(key));
+
+			// 경매 대상에 따라 축종 설정
+			if (key.toLowerCase().contains("auc_obj_dsc")) {
+				final String value = String.valueOf(getMap.getOrDefault(key, "0"));
+				map.put("sra_srs_dsc", sraSrsDscMap.get(value));
+			}
 	    }
 		
+		final String sraSrsDsc = String.valueOf(map.getOrDefault("sra_srs_dsc", ""));
+		if(sraSrsDsc.isEmpty()) {
+			map.put("sra_srs_dsc", "01");
+		}
 		return map;
 	}
 	

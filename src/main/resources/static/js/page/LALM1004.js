@@ -97,7 +97,7 @@
 	    fn_createVetCodeBox("lvst_mkt_trpl_amnno", null, "선택");
 	    
 	 	// 최초 라디오버튼 세팅
-	    fn_setCodeRadio("rd_auc_obj_dsc","auc_obj_dsc","AUC_OBJ_DSC", 1);
+	    fn_setCodeRadio("rd_auc_obj_dsc","auc_obj_dsc","AUC_OBJ_DSC", 8);
 	 	
 	    mv_auc_dt              = "";
 	    mv_auc_obj_dsc         = "1";

@@ -121,7 +121,13 @@
      ------------------------------------------------------------------------------*/
     function fn_Save(){
     	 
-    	if(fn_isNull($( "#hd_auc_obj_dsc" ).val())) {
+//    	if(fn_isNull($( "#hd_auc_obj_dsc" ).val())) {
+//        	MessagePopup('OK','경매대상구분을 선택하세요.',function(){
+//        		$( "#hd_auc_obj_dsc" ).focus();
+//        	});
+//            return;
+//        }
+    	if(fn_isNull($("input[name='hd_auc_obj_dsc_radio']").val())) {
         	MessagePopup('OK','경매대상구분을 선택하세요.',function(){
         		$( "#hd_auc_obj_dsc" ).focus();
         	});
@@ -144,7 +150,13 @@
                 $( "#pda_id" ).focus();
             });
             return;
-        }        
+        }
+        if(fn_isNull($("#lvst_mkt_trpl_amnno").val())){
+        	MessagePopup('OK','산정위원을 선택하세요.',function(){
+                $( "#lvst_mkt_trpl_amnno" ).focus();
+            });
+            return;
+        }
 		MessagePopup('YESNO',"저장하시겠습니까?",function(res){
 			if(res){
 				if(setRowStatus == "I") {					

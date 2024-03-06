@@ -25,6 +25,7 @@ var wmcList;
 var envList;
 var pop_zIndex = 10003;
 var inputRn;
+var etcAucYn = 0;
 $(document).ready(function() {
     //새로고침 및 페이지 이동 방지
     window.addEventListener('beforeunload', beforeunloadFunc, true);
@@ -232,14 +233,13 @@ $(document).ready(function() {
         return;
     }    
     envList = setDecrypt(envListData);
-    const etcAucYn = envList.find(x => x.ETC_AUC_OBJ_DSC !== "") ? 1 : 0;
+    etcAucYn = envList.find(x => x.ETC_AUC_OBJ_DSC !== "") ? 1 : 0;
 
 	const HC_MENU = ["000225", "000226"];
     const ETC_AUC_MENU = ["001000"];
-    // TODO :: 메뉴리스트 생성(filter 추가할 것)
     $.each(menuList, function(i){
-        <%-- console.log(ETC_AUC_MENU.includes(menuList[i].SCD_MENU_ID));
-        if (ETC_AUC_MENU.includes(menuList[i].SCD_MENU_ID)) continue; --%>
+        // 말 또는 염소 경매를 사용하는 조합만 상위메뉴코드가 001000(기타가축경매관리)인 메뉴 노출
+        if (!etcAucYn && ETC_AUC_MENU.includes(menuList[i].SCD_MENU_ID)) return false;
         if(menuList[i].MENU_LVL_C == "2") {
             var scd_menu_id = menuList[i].SCD_MENU_ID;
             var sideMenu = '<li class="treeview" id=' + menuList[i].SCD_MENU_ID + '>'

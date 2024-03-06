@@ -37,7 +37,7 @@
         fn_CreateGrid3();
         fn_CreateSubGrid();
                 
-        fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 2, true); 
+        fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 8, true); 
         //비고삭제버튼
         if(App_na_bzplc == '8808990659008'){//경주 8808990659008
         	$("#pb_CntnDel").show();

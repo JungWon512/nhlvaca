@@ -3,6 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- 산정위원관리 -->
 <mapper namespace="com.auc.lalm.ar.service.Impl.LALM0121Mapper">
 
     <select id="LALM0121_selList" resultType="hashMap">
@@ -17,13 +18,16 @@
 	    FROM TB_LA_IS_MH_RKON_CM A
 	       , TB_LA_IS_MM_TRPL    B
 	    WHERE A.NA_BZPLC               =  #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC            = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+        AND (
+            (#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+            OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+        )
 	      AND   A.AUC_DT               = #{auc_dt}
 	      AND   A.NA_BZPLC             = B.NA_BZPLC
 	      AND   B.LVST_MKT_TRPL_DSC    = '2'
 	      AND   A.LVST_MKT_TRPL_AMNNO  = B.LVST_MKT_TRPL_AMNNO
 	      AND   B.BRKR_NAME            LIKE #{brkr_name} || '%'
-	    ORDER BY A.AUC_OBJ_DSC, A.AUC_DT DESC, A.PDA_ID ;    
+	    ORDER BY A.AUC_OBJ_DSC, A.AUC_DT DESC, A.PDA_ID
 
     </select>
     

@@ -33,10 +33,10 @@
 
     	fn_CreateGrid();
 		// 조회조건
-        fn_setCodeBox("sc_auc_obj_dsc", "AUC_OBJ_DSC", 1, true); // 경매대상구분
+        fn_setCodeBox("sc_auc_obj_dsc", "AUC_OBJ_DSC", 8, true); // 경매대상구분
 
 		// 수수료정보입력
-        fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 1, true, "선택"); // 경매대상구분
+        fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 8, true, "선택"); // 경매대상구분
         fn_setCodeBox("fee_apl_obj_c", "FEE_APL_OBJ_C", 1, true, "선택"); // 적용대상
         fn_setCodeBox("ppgcow_fee_dsc", "PPGCOW_FEE_DSC", 1, true); // 수수료구분(코드가 1개밖에 없어서 일단 무조건 선택)
         fn_setCodeBox("na_fee_c", "NA_FEE_C", 1, true, "선택"); // 수수료정보

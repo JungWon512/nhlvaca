@@ -6,7 +6,6 @@
 <mapper namespace="com.auc.lalm.ar.service.Impl.LALM0212Mapper">
 
     <select id="LALM0212_selList" resultType="hashMap">
-    <![CDATA[
          SELECT A.NA_BZPLC                    /* 경제통합사업장코드	 TEST	*/
 	        , A.AUC_OBJ_DSC                 	/* 경매대상구분코드		*/
 	        , A.AUC_DT                      	/* 경매일자			*/
@@ -30,118 +29,105 @@
 	    FROM  TB_LA_IS_MH_AUC_QCN A
 	    LEFT JOIN TB_LA_IS_BM_BZLOC B ON A.NA_BZPLC = B.NA_BZPLC
 	   WHERE 1 = 1
-	   		AND A.NA_BZPLC    = #{ss_na_bzplc}                      /* 경제통합사업장코드	*/
-	]]>
-            <if test='cb_auc_obj_dsc != null and cb_auc_obj_dsc != ""'>
-            AND A.AUC_OBJ_DSC = #{cb_auc_obj_dsc}                   /* 경매대상구분코드	*/
-            </if>
-	<![CDATA[
-            AND A.AUC_DT BETWEEN #{auc_st_dt} AND #{auc_ed_dt}      /* 경매일자			*/
-            AND A.DEL_YN = '0'                                      /* 삭제여부			*/
-       ORDER BY A.AUC_DT DESC, A.AUC_OBJ_DSC
-	]]>
+	   	AND A.NA_BZPLC    = #{ss_na_bzplc}                      /* 경제통합사업장코드	*/
+  <if test='cb_auc_obj_dsc != null and cb_auc_obj_dsc != ""'>
+      AND A.AUC_OBJ_DSC = #{cb_auc_obj_dsc}                   /* 경매대상구분코드	*/
+  </if>
+      AND A.AUC_DT BETWEEN #{auc_st_dt} AND #{auc_ed_dt}      /* 경매일자			*/
+      AND A.DEL_YN = '0'                                      /* 삭제여부			*/
+      ORDER BY A.AUC_DT DESC, A.AUC_OBJ_DSC
     </select>
     
     <select id="LALM0212_selQcn" resultType="hashMap">
-    <![CDATA[
          SELECT
             COUNT(*) AS CNT
            FROM  TB_LA_IS_MH_AUC_QCN
           WHERE NA_BZPLC             = #{ss_na_bzplc}
-    ]]>
-          	<if test='hd_auc_obj_dsc != "0"'>
-          		AND AUC_OBJ_DSC      = '0'
-          	</if>
-          	<if test='hd_auc_obj_dsc == "0"'>
-          		AND AUC_OBJ_DSC     != '0'
-          	</if>
-    <![CDATA[
             AND AUC_DT               = #{auc_dt}
             AND DEL_YN               = '0'
-    ]]>
+          <choose>
+          <when test='"0".equals(hd_auc_obj_dsc)'>
+            AND AUC_OBJ_DSC    IN ( '1', '2', '3' )
+          </when>
+          <when test='"5".equals(hd_auc_obj_dsc)'>
+            AND AUC_OBJ_DSC    = '5'
+          </when>
+          <when test='"6".equals(hd_auc_obj_dsc)'>
+            AND AUC_OBJ_DSC    = '6'
+          </when>
+          <otherwise>
+            AND AUC_OBJ_DSC    = '0'
+          </otherwise>
+          </choose>
     </select>
     
     <select id="LALM0212_selMaxQcn" resultType="hashMap">
-    <![CDATA[
-         SELECT NVL(MAX(QCN), 0) + 1  AS MAXCNT
+     SELECT NVL(MAX(QCN), 0) + 1  AS MAXCNT
 		   FROM TB_LA_IS_MH_AUC_QCN
-          WHERE NA_BZPLC         = #{ss_na_bzplc}
-          	AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}    
-    ]]>
+      WHERE NA_BZPLC         = #{ss_na_bzplc}
+       	AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}    
     </select>
     
     <select id="LALM0212_selDisabledAucDsc" resultType="hashMap">
-    <![CDATA[
-         SELECT NVL(A.AUC_DSC, B.AUC_DSC) AS AUC_DSC /* 경매방식 */
-		   FROM TB_LA_IS_MH_AUC_QCN A
+      SELECT NVL(A.AUC_DSC, B.AUC_DSC) AS AUC_DSC /* 경매방식 */
+		    FROM TB_LA_IS_MH_AUC_QCN A
 		   INNER JOIN TB_LA_IS_BM_BZLOC B
 		   ON A.NA_BZPLC = B.NA_BZPLC
-          WHERE A.NA_BZPLC    = #{ss_na_bzplc}
-          	AND A.AUC_DT = #{auc_dt}
-          	AND ROWNUM = 1
-    ]]>
+       WHERE A.NA_BZPLC    = #{ss_na_bzplc}
+       	AND A.AUC_DT = #{auc_dt}
+       	AND ROWNUM = 1
     </select>
     
     <select id="LALM0212_selAucQcn" resultType="hashMap">
-    <![CDATA[
-         SELECT
-            COUNT(*) AS CNT
-           FROM  TB_LA_IS_MH_AUC_QCN
-          WHERE NA_BZPLC         = #{ss_na_bzplc}
-          	AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}    
-            AND AUC_DT           = #{auc_dt}
-            AND DEL_YN           = '0'
-    ]]>
+        SELECT
+          COUNT(*) AS CNT
+          FROM  TB_LA_IS_MH_AUC_QCN
+        WHERE NA_BZPLC         = #{ss_na_bzplc}
+          AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}    
+          AND AUC_DT           = #{auc_dt}
+          AND DEL_YN           = '0'
     </select>
     
     <select id="LALM0212_selmhSogCow" resultType="hashMap">
-    <![CDATA[
-          SELECT COUNT(*) AS CNT
+      SELECT COUNT(*) AS CNT
         FROM TB_LA_IS_MH_SOG_COW
         WHERE NA_BZPLC               = #{ss_na_bzplc}
-    ]]>
-          <if test='hd_auc_obj_dsc != null and hd_auc_obj_dsc != "" and hd_auc_obj_dsc != "0"'>
-          AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}
-          </if>
-    <![CDATA[
-          AND AUC_DT                 = #{auc_dt}
-          AND DEL_YN                 = '0'
-    ]]>
+        <if test='hd_auc_obj_dsc != null and hd_auc_obj_dsc != "" and hd_auc_obj_dsc != "0"'>
+        AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}
+        </if>
+        AND SRA_SRS_DSC            = #{sra_srs_dsc}
+        AND AUC_DT                 = #{auc_dt}
+        AND DEL_YN                 = '0'
     </select>
     
     <update id="LALM0212_updDdl">
-    <![CDATA[
-         UPDATE TB_LA_IS_MH_AUC_QCN SET
+      UPDATE TB_LA_IS_MH_AUC_QCN SET
 	          DDL_YN           = '1'
 	        , LSCHG_DTM        = SYSDATE
 	        , LS_CMENO         = #{ss_userid}
 	    WHERE NA_BZPLC         = #{ss_na_bzplc}
 	      AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}
 	      AND AUC_DT           = #{auc_dt}
-    ]]>
     </update>
     
     <update id="LALM0212_updCan">
-    <![CDATA[
-         UPDATE TB_LA_IS_MH_AUC_QCN SET
+      UPDATE TB_LA_IS_MH_AUC_QCN SET
 	          DDL_YN           = '0'
 	        , LSCHG_DTM        = SYSDATE
 	        , LS_CMENO         = #{ss_userid}
 	    WHERE NA_BZPLC         = #{ss_na_bzplc}
 	      AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}
 	      AND AUC_DT           = #{auc_dt}
-    ]]>
     </update>
     
     <insert id="LALM0212_insPgm">
-    <![CDATA[
         INSERT INTO TB_LA_IS_MH_AUC_QCN(
               NA_BZPLC                                	/* 경제통합사업장코드		*/
             , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
             , AUC_DT                                  	/* 경매일자			*/
             , QCN                                     	/* 차수				*/
             , AUC_DSC                         			/* 경매방식				*/
-	        , AUC_INFMSG                     		/* 경매안내문구				*/
+	          , AUC_INFMSG                     		/* 경매안내문구				*/
             , BASE_LMT_AM                             	/* 기초한도금액			*/
             , CUT_AM                                  	/* 절사단위금액(비육우)	*/
             , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
@@ -174,7 +160,6 @@
             , #{ss_userid}                             	/* 최종변경자개인번호		*/
             , #{female_kg}	                 			/* 수송아지(KG) 단가	*/
             , #{male_kg}               					/* 암송아지(KG) 단가	*/
-    ]]>
     		<choose>
 	            <when test="'8808990659701'.equals(ss_na_bzplc)">
 	            , '0'
@@ -187,14 +172,13 @@
     </insert>
     
     <insert id="LALM0212_insLogPgm">
-    <![CDATA[
     	INSERT INTO TB_LA_IS_MH_AUC_QCN_LOG(
               NA_BZPLC                                	/* 경제통합사업장코드		*/
             , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
             , AUC_DT                                  	/* 경매일자			*/
             , QCN                                     	/* 차수				*/
             , AUC_DSC                         			/* 경매방식				*/
-	        , AUC_INFMSG                     		/* 경매안내문구				*/
+	          , AUC_INFMSG                     		/* 경매안내문구				*/
             , BASE_LMT_AM                             	/* 기초한도금액			*/
             , CUT_AM                                  	/* 절사단위금액(비육우)	*/
             , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
@@ -231,7 +215,6 @@
             , #{male_kg}               					/* 암송아지(KG) 단가	*/
             , 'UI'                                    	/* 사용자등록			*/
             , ''										/* 등록PC IP			*/
-    ]]>
     		<choose>
 	            <when test="'8808990659701'.equals(ss_na_bzplc)">
 	            , '0'
@@ -244,23 +227,20 @@
     </insert>
     
     <update id="LALM0212_updInsPgm">
-    <![CDATA[
-         UPDATE TB_LA_IS_MH_AUC_QCN SET
+     UPDATE TB_LA_IS_MH_AUC_QCN SET
 	          DDL_YN                 = '1'								/* 마감여부			*/
 	        , LSCHG_DTM              = SYSDATE							/* 최종변경일시			*/
 	        , LS_CMENO               = #{ss_userid}						/* 최종변경자개인번호		*/
 	    WHERE NA_BZPLC               = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
 	      AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}				/* 경매대상구분코드		*/
-	      AND AUC_DT                 < TO_CHAR(SYSDATE, 'yyyymmdd')		/* 경매일자			*/
-    ]]>
+	      AND AUC_DT                 <![CDATA[<]]> TO_CHAR(SYSDATE, 'yyyymmdd')		/* 경매일자			*/
     </update>
     
     <update id="LALM0212_updPgm">
-    <![CDATA[
          UPDATE TB_LA_IS_MH_AUC_QCN SET
               QCN                    = #{qcn}					/* 차수					*/
             , AUC_DSC             = #{hd_auc_dsc}            			/* 경매방식				*/
-	        , AUC_INFMSG        = #{auc_infmsg}             		/* 경매안내문구				*/
+	          , AUC_INFMSG        = #{auc_infmsg}             		/* 경매안내문구				*/
             , BASE_LMT_AM            = #{base_lmt_am}			/* 기초한도금액				*/
             , CUT_AM                 = #{cut_am}				/* 절사단위금액(비육우)		*/
             , SGNO_PRC_DSC           = #{hd_sgno_prc_dsc}		/* 절사구분(비육우)			*/
@@ -272,18 +252,16 @@
         WHERE NA_BZPLC               = #{ss_na_bzplc}			/* 경제통합사업장코드			*/
           AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}		/* 경매대상구분코드			*/
           AND AUC_DT                 = #{auc_dt}				/* 경매일자				*/
-    ]]>
     </update>
     
     <insert id="LALM0212_updLogPgm">
-    <![CDATA[
     	INSERT INTO TB_LA_IS_MH_AUC_QCN_LOG(
               NA_BZPLC                                	/* 경제통합사업장코드		*/
             , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
             , AUC_DT                                  	/* 경매일자			*/
             , QCN                                     	/* 차수				*/
             , AUC_DSC                         			/* 경매방식				*/
-	        , AUC_INFMSG                     		/* 경매안내문구				*/
+	          , AUC_INFMSG                     		/* 경매안내문구				*/
             , BASE_LMT_AM                             	/* 기초한도금액			*/
             , CUT_AM                                  	/* 절사단위금액(비육우)	*/
             , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
@@ -320,27 +298,23 @@
             , 'UU'                                    	/* 사용자등록			*/
             , ''										/* 등록PC IP			*/
         )
-    ]]>
     </insert>
     
     <delete id="LALM0212_delPgm">
-    <![CDATA[
-        DELETE FROM TB_LA_IS_MH_AUC_QCN
+      DELETE FROM TB_LA_IS_MH_AUC_QCN
    		 WHERE NA_BZPLC               = #{ss_na_bzplc}		/* 경제통합사업장코드		*/
       	   AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}	/* 경매대상구분코드		*/
       	   AND AUC_DT                 = #{auc_dt}			/* 경매일자			*/
-    ]]>
     </delete>
     
     <insert id="LALM0212_delLogPgm">
-    <![CDATA[
     	INSERT INTO TB_LA_IS_MH_AUC_QCN_LOG(
               NA_BZPLC                                	/* 경제통합사업장코드		*/
             , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
             , AUC_DT                                  	/* 경매일자			*/
             , QCN                                     	/* 차수				*/
             , AUC_DSC                         			/* 경매방식				*/
-	        , AUC_INFMSG                     		/* 경매안내문구				*/
+	          , AUC_INFMSG                     		/* 경매안내문구				*/
             , BASE_LMT_AM                             	/* 기초한도금액			*/
             , CUT_AM                                  	/* 절사단위금액(비육우)	*/
             , SGNO_PRC_DSC                            	/* 절사구분(비육우)		*/
@@ -377,23 +351,19 @@
             , 'UD'                                    	/* 사용자등록			*/
             , ''										/* 등록PC IP			*/
         )
-    ]]>
     </insert>
     
     <update id ="LALM0212_updCommit">
-    <![CDATA[
-         UPDATE TB_LA_IS_MH_AUC_QCN SET
+      UPDATE TB_LA_IS_MH_AUC_QCN SET
 	          COMMIT_YN        = #{commit_yn}
 	        , LSCHG_DTM        = SYSDATE
 	        , LS_CMENO         = #{ss_userid}
 	    WHERE NA_BZPLC         = #{ss_na_bzplc}
 	      AND AUC_OBJ_DSC      = #{hd_auc_obj_dsc}
 	      AND AUC_DT           = #{auc_dt}
-    ]]>
     </update>
     
     <insert id="LALM0212_updLogPgmSel">
-    <![CDATA[
     	INSERT INTO TB_LA_IS_MH_AUC_QCN_LOG(
               NA_BZPLC                                	/* 경제통합사업장코드		*/
             , AUC_OBJ_DSC                             	/* 경매대상구분코드		*/
@@ -440,7 +410,6 @@
         AND AUC_OBJ_DSC = #{hd_auc_obj_dsc}
         AND AUC_DT = #{auc_dt}
         AND QCN = #{qcn} 
-    ]]>
     </insert>
     
 

@@ -86,7 +86,7 @@ public class LALM0215Controller {
 	@RequestMapping(value="/LALM0215_selPrgSq", method=RequestMethod.POST)
 	public Map<String, Object> LALM0215_selPrgSq(ResolverMap rMap) throws Exception{				
 		
-		Map<String, Object> map = convertConfig.conMap(rMap);		
+		Map<String, Object> map = convertConfig.conMap(rMap);
 		List<Map<String, Object>> reList = lalm0215Service.LALM0215_selPrgSq(map);				
 		Map<String, Object> reMap = commonFunc.createResultSetListData(reList); 	
 		

@@ -109,7 +109,7 @@
      * 3. 출 력 변 수 : result
      ------------------------------------------------------------------------------*/
     function sendAjax(objData, sendUrl, methodType){   
-    	
+    	console.log(sendUrl, objData);
         var encrypt = setEncrypt(objData);                    
         var result;
         $.ajax({
@@ -150,6 +150,7 @@
      * 3. 출 력 변 수 : result
      ------------------------------------------------------------------------------*/
     function sendAjaxFrm(frmStr, sendUrl, methodType){
+        console.log(sendUrl, setFrmToData(frmStr));
         var encrypt = setEncrypt(setFrmToData(frmStr));
         var result;
         
@@ -279,6 +280,7 @@
     
     //데이터 encript
     function setEncrypt(data){
+        // console.log(data);
         // String 형태로 변환
         var jsonData = JSON.stringify(data);
         var encrypt = CryptoJS.AES.encrypt(jsonData.toString(), keyutf, {iv:ivutf});          

@@ -716,7 +716,7 @@
 		                        		<input type="hidden" id="led_sqno">
 		                        	</td>
 		                        	<td>
-		                        		<input type="hidden" id="sra_srs_dsc">
+		                        		<input type="hidden" id="sra_srs_dsc" value="01">
 		                        	</td>
 		                        	<td>
 		                        		<input type="hidden" id="fir_lows_sbid_lmt_am" class="number">

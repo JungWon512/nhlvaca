@@ -3,6 +3,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <script type="text/javascript">
+const ETC_AUC_OBJ_DSC = parent.envList.find(x => x.ETC_AUC_OBJ_DSC !== "")?.ETC_AUC_OBJ_DSC??"";
+const EXC_PGID = ['LALM0214', 'LALM0114', 'LALM0211', 'LALM0215'];
+
 $(document).ready(function() {
     //컨텍스트 메뉴     
     window.addEventListener("contextmenu",function(event){
@@ -939,22 +942,45 @@ function fn_createVetCodeBox(p_obj,p_codeView, p_flag) {
 //* result     : N/A
 //***************************************
 function fn_setCodeBox(p_obj, p_simp_tpc, p_simp_c_grp_sqno, p_codeView, p_flag) {
-  <c:if test="${requestScope['javax.servlet.forward.request_uri'] != '/index'}">
-    var comboList = parent.comboList;
-  </c:if>
-  
-  $("#" + p_obj).empty().data('options');
+    <c:if test="${requestScope['javax.servlet.forward.request_uri'] != '/index'}">
+        var comboList = parent.comboList;
+    </c:if>
 
-  if (p_flag != null) {
-      $("#" + p_obj).append('<option value="">' + p_flag + '</option>');
-  }
-    
-  $.each(comboList, function(i){
-      if(comboList[i].SIMP_TPC == p_simp_tpc && comboList[i].SIMP_C_GRP_SQNO == p_simp_c_grp_sqno){
-          var v_simp_nm = (p_codeView)?('['+comboList[i].SIMP_C + '] ' + comboList[i].SIMP_CNM):'' + comboList[i].SIMP_CNM;
-          $("#" + p_obj).append('<option value=' + comboList[i].SIMP_C + '>' + v_simp_nm + '</option>');
-      }        
-  }); 
+    $("#" + p_obj).empty().data('options');
+
+    const codeArr = [];
+    const codeList = comboList.filter((item) => {
+        return item.SIMP_TPC === p_simp_tpc && item.SIMP_C_GRP_SQNO === p_simp_c_grp_sqno;
+    });
+
+    if (p_flag != null) {
+        codeArr.push('<option value="">' + p_flag + '</option>');
+    }
+
+    codeList.forEach((code) => {
+        const v_simp_nm = (p_codeView) ? ('[' + code.SIMP_C + '] ' + code.SIMP_CNM) : '' + code.SIMP_CNM;
+        codeArr.push('<option value=' + code.SIMP_C + '>' + v_simp_nm + '</option>');
+    });
+
+    // 코드 타입이 경매 대상인 경우 & 기타 경매를 사용하는 조합인 경우 & 코드 그룹이 1, 2, 9 인 경우 & 제외 대상 PGID가 아닌 경우
+    if (p_simp_tpc === "AUC_OBJ_DSC" && ETC_AUC_OBJ_DSC
+    && ['1', '2', '9'].includes(String(p_simp_c_grp_sqno))
+    && !EXC_PGID.includes(this.pageInfo.pgid)) {
+        const etcCodeList = comboList.filter((item) => {
+        return item.SIMP_TPC === "AUC_OBJ_DSC" && item.SIMP_C_GRP_SQNO === 8 && ETC_AUC_OBJ_DSC.includes(item.SIMP_C);
+        });
+
+        if (etcCodeList.length > 0) {
+            codeArr.push('<option value="" disabled>▶ 기타 경매 ------------------------------------------------------</option>')
+        }
+
+        etcCodeList.forEach((code) => {
+            const v_simp_nm = (p_codeView) ? ('[' + code.SIMP_C + '] ' + code.SIMP_CNM) : '' + code.SIMP_CNM;
+            codeArr.push('<option value=' + code.SIMP_C + '>' + v_simp_nm + '</option>');
+        });
+    }
+
+    $("#" + p_obj).append(codeArr.join(''));
 }
 
 //***************************************
@@ -986,23 +1012,49 @@ function fn_setCustomCodeBox(p_target, p_obj) {
 //***************************************
 function fn_setCodeRadio(p_target, p_obj, p_simp_tpc, p_simp_c_grp_sqno) {
     <c:if test="${requestScope['javax.servlet.forward.request_uri'] != '/index'}">
-    var comboList = parent.comboList;
+        var comboList = parent.comboList;
     </c:if>
 
     $("#" + p_target).empty();
-    
-    $.each(comboList, function(i){
-        if(comboList[i].SIMP_TPC == p_simp_tpc && comboList[i].SIMP_C_GRP_SQNO == p_simp_c_grp_sqno){
-        	var appendData = '<div class="cell">\n'
-        	               + '<input type="radio" id="' + p_obj + '_' + comboList[i].SIMP_C
-        	               + '" name="' + p_obj + '_radio" value="' + comboList[i].SIMP_C + '"'
-        	               + ' onclick="javascript:fn_setChgRadio(\''+p_obj+'\',\''+comboList[i].SIMP_C+'\');"/>\n'
-        	               + '<label for="' + p_obj + '_' + comboList[i].SIMP_C + '">' + comboList[i].SIMP_CNM + '</label>\n'
-        	               + '</div>';
-        	
-            $("#" + p_target).append(appendData);
-        }        
-    }); 
+
+    const codeArr = [];
+    const codeList = comboList.filter((item) => {
+        return item.SIMP_TPC === p_simp_tpc && item.SIMP_C_GRP_SQNO === p_simp_c_grp_sqno;
+    });
+
+    codeList.forEach((code) => {
+        const appendData = fn_createAppendData(p_obj, code);
+        codeArr.push(appendData);
+    });
+    // 코드 타입이 경매 대상인 경우 & 기타 경매를 사용하는 조합인 경우 & 코드 그룹이 1, 2, 9 인 경우 & 제외 대상 PGID가 아닌 경우
+    if (p_simp_tpc === "AUC_OBJ_DSC" && ETC_AUC_OBJ_DSC
+    && ['1', '2', '9'].includes(String(p_simp_c_grp_sqno))
+    && !EXC_PGID.includes(this.pageInfo.pgid)) {
+        const etcCodeList = comboList.filter((item) => {
+            return item.SIMP_TPC === "AUC_OBJ_DSC" && item.SIMP_C_GRP_SQNO === 8 && ETC_AUC_OBJ_DSC.includes(item.SIMP_C);
+        });
+
+        etcCodeList.forEach((code) => {
+            const appendData = fn_createAppendData(p_obj, code);
+            codeArr.push(appendData);
+        });
+    }
+
+    $("#" + p_target).append(codeArr.join(''));
+}
+
+//***************************************
+//* function   : fn_createAppendData
+//* paramater  : 
+//* result     : N/A
+//***************************************
+function fn_createAppendData(p_obj, code) {
+  return '<div class="cell">\n'
+    + '<input type="radio" id="' + p_obj + '_' + code.SIMP_C
+    + '" name="' + p_obj + '_radio" value="' + code.SIMP_C + '"'
+    + ' onclick="javascript:fn_setChgRadio(\''+p_obj+'\',\''+code.SIMP_C+'\');"/>\n'
+    + '<label for="' + p_obj + '_' + code.SIMP_C + '">' + code.SIMP_CNM + '</label>\n'
+    + '</div>';
 }
 
 //***************************************
@@ -1036,20 +1088,31 @@ function fn_setCodeString(p_simp_tpc, p_simp_c_grp_sqno, p_flag) {
   <c:if test="${requestScope['javax.servlet.forward.request_uri'] != '/index'}">
     var comboList = parent.comboList;
   </c:if>
-  
-  var resultString = '';
+
+  const codeArr = [];
+  const codeList = comboList.filter((item) => {
+    return item.SIMP_TPC === p_simp_tpc && item.SIMP_C_GRP_SQNO === p_simp_c_grp_sqno;
+  });
   
   if (p_flag != null) {
-	  resultString += ':'+p_flag;
+	  codeArr.push(':'+p_flag);
   }
-    
-  $.each(comboList, function(i){
-      if(comboList[i].SIMP_TPC == p_simp_tpc && comboList[i].SIMP_C_GRP_SQNO == p_simp_c_grp_sqno){
-    	  if(resultString != '')resultString += ';'
-    	  resultString += comboList[i].SIMP_C + ':' + comboList[i].SIMP_CNM;
-      }        
+
+  codeList.forEach((code) => {
+    codeArr.push(code.SIMP_C + ':' + code.SIMP_CNM);
   });
-  return resultString;
+
+  if (p_simp_tpc === "AUC_OBJ_DSC" && ETC_AUC_OBJ_DSC && ['1', '2', '9'].includes(String(p_simp_c_grp_sqno))) {
+    const etcCodeList = comboList.filter((item) => {
+      return item.SIMP_TPC === "AUC_OBJ_DSC" && item.SIMP_C_GRP_SQNO === 8 && ETC_AUC_OBJ_DSC.includes(item.SIMP_C);
+    });
+
+    etcCodeList.forEach((code) => {
+      codeArr.push(code.SIMP_C + ':' + code.SIMP_CNM);
+    });
+  }
+
+  return codeArr.join(';');
 }
  
 //***************************************
