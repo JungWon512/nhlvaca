@@ -86,7 +86,6 @@
     </select>
     
     <select id="Common_selAucQcn" resultType="hashMap">
-    <![CDATA[
          SELECT
               NA_BZPLC                                  /* 경제통합사업장코드        */
             , AUC_OBJ_DSC                               /* 경매대상구분코드     */
@@ -97,21 +96,32 @@
             , SGNO_PRC_DSC                              /* 단수처리구분코드     */
             , DDL_YN                                    /* 마감여부         */
             , DEL_YN                                    /* 삭제여부         */
-            , (SELECT WM_CONCAT(AUC_OBJ_DSC) FROM  TB_LA_IS_MH_AUC_QCN WHERE NA_BZPLC = #{ss_na_bzplc} AND AUC_DT = #{auc_dt} AND AUC_OBJ_DSC NOT IN ('0', #{auc_obj_dsc})) AS OT_AUC_OBJ_DSC
+            , (
+				SELECT WM_CONCAT(AUC_OBJ_DSC)
+				  FROM TB_LA_IS_MH_AUC_QCN
+				 WHERE NA_BZPLC = #{ss_na_bzplc}
+				   AND AUC_DT = #{auc_dt}
+				   AND AUC_OBJ_DSC NOT IN ('0', #{auc_obj_dsc})
+			) AS OT_AUC_OBJ_DSC
         FROM  TB_LA_IS_MH_AUC_QCN
         WHERE NA_BZPLC    = #{ss_na_bzplc}              /* 경제통합사업장코드        */
-    ]]>
     <choose>
-        <when test='auc_obj_dsc == "" or auc_obj_dsc == null'>
-            AND AUC_OBJ_DSC = '0'                       /* 경매대상구분코드     */
-        </when>
-        <otherwise>
-            AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})    /* 경매대상구분코드     */
-        </otherwise>
+	<when test='auc_obj_dsc == "" or auc_obj_dsc == null'>
+		AND AUC_OBJ_DSC = '0'                       /* 경매대상구분코드     */
+	</when>
+	<otherwise>
+		<choose>
+		<when test='!"01".equals(sra_srs_dsc)'>
+			AND AUC_OBJ_DSC = #{auc_obj_dsc}
+		</when>
+		<otherwise>
+			AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
+		</otherwise>
+		</choose>
+		<!-- AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})    /* 경매대상구분코드     */ -->
+	</otherwise>
     </choose>
-    <![CDATA[
           AND AUC_DT      = #{auc_dt};                  /* 경매일자         */
-    ]]>
     </select>
     
     
@@ -311,7 +321,7 @@
 		) VALUES (
 			  #{ss_na_bzplc}										/* 경제통합사업장코드                  */
 			, #{re_indv_no}											/* 축산개체관리번호                    */
-			, '01'													/* 축산축종구분코드                    */
+			, #{sra_srs_dsc}										/* 축산축종구분코드                    */
 			, #{fhs_id_no}											/* 농가식별번호                        */
 			, #{farm_amnno}											/* 농장관리번호                        */
 			<choose>
@@ -391,7 +401,7 @@
 			 , SRA_INDV_PASG_QCN     = #{sra_indv_pasg_qcn}
 		 WHERE NA_BZPLC              = #{ss_na_bzplc}
 		   AND SRA_INDV_AMNNO        = #{re_indv_no}
-		   AND SRA_SRS_DSC           ='01'
+		   AND SRA_SRS_DSC           = #{sra_srs_dsc}
 	</update>
 	<!-- ************************************************ 개체 등록/수정 관련 [e] ************************************************ -->
 	

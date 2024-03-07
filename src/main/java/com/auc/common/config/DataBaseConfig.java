@@ -5,13 +5,19 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import com.auc.common.interceptor.MybatisInterceptor;
 
 @Configuration
 @EnableTransactionManagement
@@ -35,13 +41,12 @@ public class DataBaseConfig {
 //		
 //		return ds;
 //	}
+	// @Bean
+	// SqlSessionFactory sqlSess 
 	
  	@Bean
  	public PlatformTransactionManager txManager() throws Exception {
  		return new DataSourceTransactionManager(dataSource());
  	}
-
-	
-	
 	
 }

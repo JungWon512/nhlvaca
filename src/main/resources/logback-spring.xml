@@ -7,6 +7,7 @@
         </encoder>
     </appender>
     
+    <logger name="log4jdbc.log4j2" level="OFF" additivity="false"/>
     
     <logger name="com.auc" level="debug" appender-ref="consle" />
     <root level="INFO" additivity="FALSE">

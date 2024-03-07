@@ -145,6 +145,7 @@
 	      AND A.AUC_DT         = #{hdn_auc_dt}
 	      AND A.OSLP_NO        = #{hdn_oslp_no}
 	      AND A.LED_SQNO       = '1'
+		  AND A.SRA_SRS_DSC    = NVL(#{sra_srs_dsc}, '01')
 	
 	      AND B.NA_BZPLC       = A.NA_BZPLC
 	      AND B.FHS_ID_NO      = A.FHS_ID_NO
@@ -161,7 +162,7 @@
     	FROM  TB_LA_IS_MH_SOG_COW
     	WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
       	  AND AUC_DT          = #{auc_dt}						/* 경매일자			*/
-		  AND SRA_SRS_DSC     = #{sra_srs_dsc}
+		  AND SRA_SRS_DSC     = NVL(#{sra_srs_dsc}, '01')
 	<if test='ss_na_bzplc == "8808990656571"'>
           AND FSRGMN_ENO      = #{ss_userid}
    	</if>
@@ -172,7 +173,7 @@
            FROM  TB_LA_IS_MH_SOG_COW
           WHERE 1 = 1
             AND NA_BZPLC     = #{ss_na_bzplc}
-			AND SRA_SRS_DSC  = #{sra_srs_dsc}
+			AND SRA_SRS_DSC  = NVL(#{sra_srs_dsc}, '01')
     <if test='auc_dt != null and auc_dt != ""'>
             AND AUC_DT       = #{auc_dt}
     </if>
@@ -189,7 +190,7 @@
            FROM TB_LA_IS_MH_SOG_COW
           WHERE 1 = 1
             AND NA_BZPLC     = #{ss_na_bzplc}
-			AND SRA_SRS_DSC  = #{sra_srs_dsc}
+			AND SRA_SRS_DSC  = NVL(#{sra_srs_dsc}, '01')
     <if test='auc_dt != null and auc_dt != ""'>
             AND AUC_DT       = #{auc_dt}
     </if>
@@ -292,7 +293,7 @@
 	          NVL(MAX(OSLP_NO)+1,1)  AS V_OSLP_NO
 		FROM  TB_LA_IS_MH_SOG_COW
 		WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
-		  AND AUC_DT          = #{auc_dt}					/* 이월일자			*/
+		  AND AUC_DT          = #{auc_dt}					    /* 이월일자			*/
     </select>
     
     <select id="LALM0215_selChgVoslpNo" resultType="hashMap">
@@ -692,7 +693,7 @@
 				, #{lvst_auc_ptc_mn_no}
 			</otherwise>
 		 </choose>
-         , '01'					                  	/* 축산축종구분코드           */
+         , NVL(#{sra_srs_dsc}, '01')              	/* 축산축종구분코드           */
          , #{re_indv_no}                   			/* 축산개체관리번호           */
          , #{cow_sog_wt}               				/* 우출하중량                 */
          , #{fir_lows_sbid_lmt_am}     				/* 최초최저낙찰한도금액       */
@@ -842,7 +843,7 @@
             (
                   #{ss_na_bzplc}										/* 경제통합사업장코드                  */
                 , #{re_indv_no}											/* 축산개체관리번호                    */
-                , '01'													/* 축산축종구분코드                    */
+                , NVL(#{sra_srs_dsc}, '01')								/* 축산축종구분코드                    */
                 , #{fhs_id_no}											/* 농가식별번호                        */
                 , #{farm_amnno}											/* 농장관리번호                        */
                 <choose>
@@ -1015,7 +1016,7 @@
                 , SRA_INDV_PASG_QCN     = #{sra_indv_pasg_qcn}
             WHERE NA_BZPLC              = #{ss_na_bzplc}
               AND SRA_INDV_AMNNO        = #{re_indv_no}
-              AND SRA_SRS_DSC           ='01'
+              AND SRA_SRS_DSC           = '01'
     </update>
     
     <!-- 출장우 이미지 조회 -->

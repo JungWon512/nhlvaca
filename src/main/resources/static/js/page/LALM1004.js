@@ -2748,9 +2748,9 @@
  	// result   : N/A
  	//**************************************
  	function fn_InitRadioSet() {
- 		fn_setChgRadio("auc_obj_dsc", "1");
+ 		fn_setChgRadio("auc_obj_dsc", "5");
 		fn_setRadioChecked("auc_obj_dsc");
-		$("#auc_obj_dsc").val("1");
+		$("#auc_obj_dsc").val("5");
 		$("input[name='rd_gvno_bascd']:radio[value='0']").prop("checked", true);
 		$("#gvno_bascd").val("0");
  	}
