@@ -127,7 +127,6 @@
         fn_CreateGrid(result); 
         
     }
-    
 
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 저장 함수
@@ -135,7 +134,6 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Save(){
-    	 
     	if(fn_isNull($( "#hd_auc_obj_dsc" ).val())) {
         	MessagePopup('OK','경매대상구분을 선택하세요.',function(){
         		$( "#hd_auc_obj_dsc" ).focus();
@@ -157,51 +155,49 @@
         //신규등록일 경우 경매구간 체크
         if(setRowStatus == "I") {	
 //         	fn_selAucStn ();
-	   		 var results = sendAjaxFrm("frm_MhAucStn", "/LALM0217_selAucStn", "POST");
-			 var result;
+	   		var results = sendAjaxFrm("frm_MhAucStn", "/LALM0217_selAucStn", "POST");
+			var result;
 			 
-			 if(results.status != RETURN_SUCCESS){
+			if(results.status != RETURN_SUCCESS){
 				 showErrorMessage(results);
 				 $("#st_auc_no").focus();
 				 return;
-			 }else{      
-		            result = setDecrypt(results);   
-		         	if(result[0]["MAXCNT"] > 0){
-	         			MessagePopup('YESNO','경매구간 중복건이 존재합니다. 계속하시겠습니까.?',function(res){
-		         			if(!res){
-		         				return;
-		         			} else {
-		         				if($("#st_auc_no").val() > $("#ed_auc_no").val()) {
-		         					MessagePopup('OK','시작 경매번호가 종료 경매번호보다 큽니다. 확인하세요 !!.',function(){
-		         						$( "#base_lmt_am" ).focus();
-		         					});        	
-		         					return;
-		         				}
-		         				if($("#st_auc_no").val() < 1) {
-		         					MessagePopup('OK','시작번호를 입력하세요.',function(){
-		         						$( "#st_auc_no" ).focus();
-		         					});        	
-		         					return;
-		         				}	
-		         				if($("#ed_auc_no").val() < 1) {
-		         					MessagePopup('OK','종료번호를 입력하세요.',function(){
-		         						$( "#ed_auc_no" ).focus();
-		         					});        	
-		         					return;
-		         				}		
-		         				
-		         				fn_inSave()	
-		         			}
-		         		});
-		         	} else {
-		         		fn_inSave()
-		         	}
-			 }
+			}else{
+                result = setDecrypt(results);   
+                if(result[0]["MAXCNT"] > 0){
+                    MessagePopup('YESNO','경매구간 중복건이 존재합니다. 계속하시겠습니까.?',function(res){
+                        if(!res){
+                            return;
+                        } else {
+                            if($("#st_auc_no").val() > $("#ed_auc_no").val()) {
+                                MessagePopup('OK','시작 경매번호가 종료 경매번호보다 큽니다. 확인하세요 !!.',function(){
+                                    $( "#base_lmt_am" ).focus();
+                                });        	
+                                return;
+                            }
+                            if($("#st_auc_no").val() < 1) {
+                                MessagePopup('OK','시작번호를 입력하세요.',function(){
+                                    $( "#st_auc_no" ).focus();
+                                });        	
+                                return;
+                            }	
+                            if($("#ed_auc_no").val() < 1) {
+                                MessagePopup('OK','종료번호를 입력하세요.',function(){
+                                    $( "#ed_auc_no" ).focus();
+                                });        	
+                                return;
+                            }		
+                            
+                            fn_inSave()	
+                        }
+                    });
+                } else {
+                    fn_inSave()
+                }
+			}
         } else {
         	fn_inSave();
         }
-                
-			
     }
     
 //  /*------------------------------------------------------------------------------
@@ -210,45 +206,42 @@
 //  * 3. 출 력 변 수 : N/A
 //  ------------------------------------------------------------------------------*/    
     function fn_inSave(){
-    	 
-			MessagePopup('YESNO',"저장하시겠습니까?",function(res){
-					if(res){
-						if(setRowStatus == "I") {					
-							var result = sendAjaxFrm("frm_MhAucStn", "/LALM0217_insPgm", "POST");            
-				            if(result.status == RETURN_SUCCESS){
-				            	MessagePopup("OK", "저장되었습니다.");
-				            	mv_RunMode = 3;
-				            	fn_Init();
-				            	fn_InitFrm('frm_MhAucStn');
-				                fn_Search();
-				            } else {
-				            	showErrorMessage(result);
-				                return;
-				            }
-				            
-						} else if(setRowStatus == "U") {					
-							var result = sendAjaxFrm("frm_MhAucStn", "/LALM0217_updPgm", "POST");            
-				            if(result.status == RETURN_SUCCESS){
-				            	MessagePopup("OK", "저장되었습니다.");
-				            	mv_RunMode = 3;
-				            	fn_Init();
-				            	fn_InitFrm('frm_MhAucStn');
-				                fn_Search();
-				            } else {
-				            	showErrorMessage(result);
-				                return;
-				            }
-				            
-						} else {
-							MessagePopup('OK','오류가 발생했습니다 처음부터다시 시도해주세요.');
-							fn_Init();
-							return;
-						}
-		    		}else{    			
-		    			MessagePopup('OK','취소되었습니다.');
-		    			return;
-		    		}
-				}); 
+        MessagePopup('YESNO',"저장하시겠습니까?",function(res){
+            if(res){
+                if(setRowStatus == "I") {
+                    var result = sendAjaxFrm("frm_MhAucStn", "/LALM0217_insPgm", "POST");
+                    if(result.status == RETURN_SUCCESS){
+                        MessagePopup("OK", "저장되었습니다.");
+                        mv_RunMode = 3;
+                        //fn_Init();
+                        fn_InitFrm('frm_MhAucStn');
+                        fn_Search();
+                    } else {
+                        showErrorMessage(result);
+                        return;
+                    }
+                } else if(setRowStatus == "U") {
+                    var result = sendAjaxFrm("frm_MhAucStn", "/LALM0217_updPgm", "POST");
+                    if(result.status == RETURN_SUCCESS){
+                        MessagePopup("OK", "저장되었습니다.");
+                        mv_RunMode = 3;
+                        //fn_Init();
+                        fn_InitFrm('frm_MhAucStn');
+                        fn_Search();
+                    } else {
+                        showErrorMessage(result);
+                        return;
+                    }
+                } else {
+                    MessagePopup('OK','오류가 발생했습니다 처음부터다시 시도해주세요.');
+                    fn_Init();
+                    return;
+                }
+            } else {
+                MessagePopup('OK','취소되었습니다.');
+                return;
+            }
+        }); 
     }    
        
     /*------------------------------------------------------------------------------
@@ -257,8 +250,7 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Delete (){
-    	 
-    	//프로그램삭제 validation check     
+    	//프로그램삭제 validation check
         if(setRowStatus != "U") {
         	MessagePopup("OK", "삭제할 대상을 선택하세요.");
             return;
@@ -284,18 +276,19 @@
         }
     	
         MessagePopup('YESNO',"삭제하시겠습니까?",function(res){
-			if(res){									
-				var result = sendAjaxFrm('frm_MhAucStn', "/LALM0217_delPgm", "POST");            
+			if(res){
+				var result = sendAjaxFrm('frm_MhAucStn', "/LALM0217_delPgm", "POST");
 	            if(result.status == RETURN_SUCCESS){
 	            	MessagePopup("OK", "삭제되었습니다.");
 	            	mv_RunMode = 3;
-	            	fn_Init();
+	            	//fn_Init();
+                    fn_InitFrm('frm_MhAucStn');
 	                fn_Search();
 	            } else {
 	            	showErrorMessage(result);
 	                return;
 	            }
-    		}else{    			
+    		}else{
     			MessagePopup('OK','취소되었습니다.');
     			fn_InitFrm('frm_MhAucStn');
     			return;
@@ -306,7 +299,6 @@
     ////////////////////////////////////////////////////////////////////////////////
     //  공통버튼 클릭함수 종료
     ////////////////////////////////////////////////////////////////////////////////
-        
     
     ////////////////////////////////////////////////////////////////////////////////
     //  그리드 함수 시작

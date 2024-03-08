@@ -4,7 +4,8 @@
 
 <script type="text/javascript">
 const ETC_AUC_OBJ_DSC = parent.envList.find(x => x.ETC_AUC_OBJ_DSC !== "")?.ETC_AUC_OBJ_DSC??"";
-const EXC_PGID = ['LALM0214', 'LALM0114', 'LALM0211', 'LALM0215'];
+// 기타 가축 노출 제외 프로그램 아이디
+const EXC_PGID = ['LALM0214', 'LALM0114', 'LALM0211', 'LALM0215', 'LALM0225', 'LALM0226'];
 
 $(document).ready(function() {
     //컨텍스트 메뉴     

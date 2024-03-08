@@ -177,7 +177,14 @@
         </otherwise>
         </choose>
         <if test='sra_indv_amnno != null and sra_indv_amnno != ""'>
-           AND A.SRA_INDV_AMNNO  LIKE '%'||#{sra_indv_amnno}||'_'
+        <choose>
+        <when test='!"01".equals(sra_srs_dsc)'>
+          AND A.SRA_INDV_AMNNO LIKE '%'||#{sra_indv_amnno}||'%'
+        </when>
+        <otherwise>
+          AND A.SRA_INDV_AMNNO LIKE '%'||#{sra_indv_amnno}||'_'
+        </otherwise>
+        </choose>
         </if>        
         <if test='fhs_id_no != null and fhs_id_no != ""'>        
            AND B.FHS_ID_NO            = #{fhs_id_no}
@@ -188,7 +195,7 @@
         <if test='auc_prg_sq != null and auc_prg_sq != ""'>
            AND A.AUC_PRG_SQ           = #{auc_prg_sq}
         </if>
-         AND A.SRA_SRS_DSC          = #{sra_srs_dsc}
+         AND A.SRA_SRS_DSC          = NVL(#{sra_srs_dsc}, '01')
 	       AND A.LED_SQNO             = '1'
 	       AND A.DEL_YN               = '0'	
 	       AND B.NA_BZPLC             = A.NA_BZPLC
@@ -283,7 +290,7 @@
            AND A.AUC_OBJ_DSC IN ( '1', '2', '3' )
         </otherwise>
         </choose>   
-           AND A.SRA_SRS_DSC          = #{sra_srs_dsc}
+           AND A.SRA_SRS_DSC          = NVL(#{sra_srs_dsc}, '01')
            AND A.LED_SQNO             = '1'
            AND A.DEL_YN               = '0' 
            AND B.NA_BZPLC             = A.NA_BZPLC
@@ -347,7 +354,7 @@
            AND AUC_OBJ_DSC IN ( '1', '2', '3' )
         </otherwise>
         </choose>
-           AND SRA_SRS_DSC    = #{sra_srs_dsc}
+           AND SRA_SRS_DSC    = NVL(#{sra_srs_dsc}, '01')
     </select>
     
     <select id="LALM0214_selFeeImps" resultType="hashMap">
@@ -379,7 +386,7 @@
            AND AUC_OBJ_DSC IN ( '1', '2', '3' )
         </otherwise>
         </choose>
-           AND SRA_SRS_DSC    = #{sra_srs_dsc}
+           AND SRA_SRS_DSC    = NVL(#{sra_srs_dsc}, '01')
     </update>
     
     <delete id="LALM0214_delSogCog">
@@ -499,7 +506,7 @@
         WHERE A.NA_BZPLC       = #{ss_na_bzplc} 
           AND A.AUC_DT         = #{auc_dt}          
           AND A.AUC_OBJ_DSC    = #{auc_obj_dsc}
-          AND A.SRA_SRS_DSC    = #{sra_srs_dsc}
+          AND A.SRA_SRS_DSC    = NVL(#{sra_srs_dsc}, '01')
           AND A.LED_SQNO       = '1'
           AND A.DEL_YN         = '0'
         <if test='fhs_id_no != null and fhs_id_no != ""'>
@@ -648,7 +655,7 @@
       <if test='ppgcow_fee_dsc != null and ppgcow_fee_dsc == "0"'>
         AND A.PPGCOW_FEE_DSC IN ('2','4')
       </if>
-        AND A.SRA_SRS_DSC    = #{sra_srs_dsc}
+        AND A.SRA_SRS_DSC    = NVL(#{sra_srs_dsc}, '01')
 	
 	      AND B.NA_BZPLC       = A.NA_BZPLC
 	      AND B.FHS_ID_NO      = A.FHS_ID_NO

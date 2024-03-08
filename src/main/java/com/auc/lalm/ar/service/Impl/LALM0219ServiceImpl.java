@@ -79,13 +79,22 @@ public class LALM0219ServiceImpl implements LALM0219Service{
 		List<Map<String, Object>> list = (List<Map<String, Object>>) map.get("grid_data");
 		String aucDt = (String) map.get("auc_dt");
 		String ss_na_bzplc = (String) map.get("ss_na_bzplc");
+		final Map<String, String> aucObjDscMap = new HashMap<String, String>() {
+			{
+				put("송아지", "1");
+				put("비육우", "2");
+				put("번식우", "3");
+				put("염소", "5");
+				put("말", "6");
+			}
+		};
 		
 		
 		for(Map<String, Object> tmp : list) {
 			String auc_obj_dsc = (String) tmp.get("auc_obj_dsc");
 			tmp.put("ss_na_bzplc", ss_na_bzplc);
 			tmp.put("auc_dt", aucDt);
-			tmp.put("auc_obj_dsc", "송아지".equals(auc_obj_dsc)?"1":("비육우".equals(auc_obj_dsc)?"2":"3"));
+			tmp.put("auc_obj_dsc", aucObjDscMap.get(auc_obj_dsc));
 			
 			updateNum += lalm0219Mapper.LALM0219P1_updExcelUpload(tmp);
 		}

@@ -291,6 +291,10 @@
              srchData["calf_auc_atdr_unt_am"] = parent.envList[0]["CALF_AUC_ATDR_UNT_AM"];
              srchData["nbfct_auc_atdr_unt_am"] = parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"];
              srchData["ppgcow_auc_atdr_unt_am"] = parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"];
+             // 기타 경매대상 축가
+             srchData["etc_auc_obj_dsc"] = parent.envList[0]["ETC_AUC_OBJ_DSC"];
+             srchData["gt_auc_atdr_unt_am"] = parent.envList[0]["GT_AUC_ATDR_UNT_AM"];
+             srchData["hs_auc_atdr_unt_am"] = parent.envList[0]["HS_AUC_ATDR_UNT_AM"];
                      
              if($("#ch_rmk_cntn").is(":checked")) {
                  result = sendAjax(srchData, "/LALM0311_updRmkPgm", "POST");

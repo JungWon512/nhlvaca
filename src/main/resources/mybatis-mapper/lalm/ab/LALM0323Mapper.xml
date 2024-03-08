@@ -22,16 +22,19 @@
  	         , A.COW_SOG_WT                                     /* 우출하중량                          */
  	         , A.FIR_LOWS_SBID_LMT_AM                           /* 최초최저낙찰한도금액                */
  	         , A.LOWS_SBID_LMT_AM                               /* 최저낙찰한도금액                    */
- 	         , CASE WHEN A.AUC_OBJ_DSC = '1' THEN F.ATDR_AM * #{calf_auc_atdr_unt_am}
- 	                WHEN A.AUC_OBJ_DSC = '1' THEN
- 	                CASE WHEN #{nbfct_auc_upr_dsc} = '1' THEN
- 	                     CASE WHEN #{sgno_prc_dsc} = '1' THEN FLOOR((F.ATDR_AM * A.COW_SOG_WT *  #{nbfct_auc_atdr_unt_am}) / #{cut_am}) * #{cut_am}
- 	                          WHEN #{sgno_prc_dsc} = '2' THEN  CEIL((F.ATDR_AM * A.COW_SOG_WT *  #{nbfct_auc_atdr_unt_am}) / #{cut_am}) * #{cut_am}
- 	                     ELSE                                 ROUND((F.ATDR_AM * A.COW_SOG_WT *  #{nbfct_auc_atdr_unt_am}) / #{cut_am}) * #{cut_am}
- 	                     END
- 	                ELSE F.ATDR_AM * #{nbfct_auc_atdr_unt_am}
- 	                END
- 	           ELSE F.ATDR_AM * #{ppgcow_auc_atdr_unt_am}
+ 	         , CASE WHEN A.AUC_OBJ_DSC = '1' THEN F.ATDR_AM * H.CALF_AUC_ATDR_UNT_AM
+ 	                WHEN A.AUC_OBJ_DSC = '2' THEN
+ 	                	CASE WHEN H.NBFCT_AUC_UPR_DSC = '1' THEN
+								CASE WHEN #{sgno_prc_dsc} = '1' THEN FLOOR((F.ATDR_AM * A.COW_SOG_WT *  H.NBFCT_AUC_ATDR_UNT_AM) / #{cut_am}) * #{cut_am}
+									WHEN #{sgno_prc_dsc} = '2' THEN  CEIL((F.ATDR_AM * A.COW_SOG_WT *  H.NBFCT_AUC_ATDR_UNT_AM) / #{cut_am}) * #{cut_am}
+									ELSE ROUND((F.ATDR_AM * A.COW_SOG_WT *  H.NBFCT_AUC_ATDR_UNT_AM) / #{cut_am}) * #{cut_am}
+								END
+ 	                		 ELSE F.ATDR_AM * H.NBFCT_AUC_ATDR_UNT_AM
+ 	                	END
+					WHEN A.AUC_OBJ_DSC = '3' THEN F.ATDR_AM * H.PPGCOW_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '5' THEN F.ATDR_AM * H.GT_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '6' THEN F.ATDR_AM * H.HS_AUC_ATDR_UNT_AM
+ 	           		ELSE F.ATDR_AM * 10000
  	           END AS SRA_SBID_AM                               /* 축산낙찰금액                        */
  	         , A.SEL_STS_DSC                                    /* 판매상태구분코드                    */
  	         , A.BRCL_ISP_CTFW_SMT_YN                           /* 브루셀라검사증명서제출여부          */
@@ -95,200 +98,216 @@
  	         , A.DNA_YN_CHK                                     /* 친자검사여부                        */
  	         , A.DNA_YN                                         /* 친자검사결과                        */
  	         , NVL(B.SRA_FED_SPY_YN, 0) AS SRA_FED_SPY_YN       /* 사료미사용여부                      */
- 	         
  	      FROM TB_LA_IS_MH_SOG_COW  A
- 	      LEFT OUTER JOIN (SELECT AAA.NA_BZPLC           /* 경제통합사업장코드  */
- 	                            , AAA.AUC_OBJ_DSC        /* 경매대상구분코드    */
- 	                            , AAA.AUC_DT             /* 경매일자            */
- 	                            , AAA.OSLP_NO            /* 원표번호            */
- 	                            , AAA.ATDR_AM            /* 응찰금액            */
- 	                            , AAA.ATDR_DTM           /* 응찰일시            */
- 	                            , BBB.AUC_PRG_C          /* 경매진행코드        */
- 	                            , CASE WHEN BBB.AUC_PRG_C = '1' THEN AAA.LVST_AUC_PTC_MN_NO END AS LVST_AUC_PTC_MN_NO
- 	                            , CASE WHEN BBB.AUC_PRG_C = '1' THEN AAA.TRMN_AMNNO END AS TRMN_AMNNO
- 	                         FROM (SELECT AA.*
- 	                                 FROM (SELECT A.NA_BZPLC
- 	                                            , A.AUC_OBJ_DSC
- 	                                            , A.AUC_DT
- 	                                            , A.OSLP_NO
- 	                                            , A.RG_SQNO
- 	                                            , A.TRMN_AMNNO
- 	                                            , A.LVST_AUC_PTC_MN_NO
- 	                                            , A.ATDR_AM
- 	                                            , A.ATDR_DTM
- 	                                         FROM TB_LA_IS_MH_ATDR_LOG A
- 	                                            , (SELECT NA_BZPLC
- 	                                                    , AUC_OBJ_DSC
- 	                                                    , AUC_DT
- 	                                                    , OSLP_NO
- 	                                                    , TRMN_AMNNO
- 	                                                    , MAX(RG_SQNO) AS RG_SQNO
- 	                                                 FROM TB_LA_IS_MH_ATDR_LOG
- 	                                                WHERE NA_BZPLC    = #{ss_na_bzplc}
- 	                                                  AND AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
- 	                                                  AND AUC_DT      = #{auc_dt}
- 	                                                GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, TRMN_AMNNO
- 	                                              ) B
- 	                                        WHERE A.NA_BZPLC    = B.NA_BZPLC
- 	                                          AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
- 	                                          AND A.AUC_DT      = B.AUC_DT
- 	                                          AND A.OSLP_NO     = B.OSLP_NO
- 	                                          AND A.TRMN_AMNNO  = B.TRMN_AMNNO
- 	                                          AND A.RG_SQNO     = B.RG_SQNO
- 	                                          AND A.ATDR_AM     <![CDATA[ > ]]> 0
- 	                                      ) AA
- 	                                    , (SELECT A.NA_BZPLC
- 	                                            , A.AUC_OBJ_DSC
- 	                                            , A.AUC_DT
- 	                                            , A.OSLP_NO
- 	                                            , MAX(A.ATDR_AM) AS ATDR_AM
- 	                                         FROM (SELECT A.NA_BZPLC
- 	                                                    , A.AUC_OBJ_DSC
- 	                                                    , A.AUC_DT
- 	                                                    , A.OSLP_NO
- 	                                                    , A.RG_SQNO
- 	                                                    , A.ATDR_AM
- 	                                                 FROM TB_LA_IS_MH_ATDR_LOG A
- 	                                                    , (SELECT NA_BZPLC
- 	                                                            , AUC_OBJ_DSC
- 	                                                            , AUC_DT
- 	                                                            , OSLP_NO
- 	                                                            , TRMN_AMNNO
- 	                                                            , MAX(RG_SQNO) AS RG_SQNO
- 	                                                         FROM TB_LA_IS_MH_ATDR_LOG
- 	                                                        WHERE NA_BZPLC    = #{ss_na_bzplc}
- 	                                                          AND AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
- 	                                                          AND AUC_DT      = #{auc_dt}
- 	                                                        GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, TRMN_AMNNO
- 	                                                      ) B
- 	                                                WHERE A.NA_BZPLC    = B.NA_BZPLC
- 	                                                  AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
- 	                                                  AND A.AUC_DT      = B.AUC_DT
- 	                                                  AND A.OSLP_NO     = B.OSLP_NO
- 	                                                  AND A.TRMN_AMNNO  = B.TRMN_AMNNO
- 	                                                  AND A.RG_SQNO     = B.RG_SQNO
- 	                                              ) A
- 	                                        WHERE A.ATDR_AM     <![CDATA[ > ]]> 0
- 	                                        GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO
- 	                                      ) BB
- 	                                WHERE AA.NA_BZPLC    = BB.NA_BZPLC
- 	                                  AND AA.AUC_OBJ_DSC = BB.AUC_OBJ_DSC
- 	                                  AND AA.AUC_DT      = BB.AUC_DT
- 	                                  AND AA.OSLP_NO     = BB.OSLP_NO
- 	                                  AND AA.ATDR_AM     = BB.ATDR_AM
- 	                              ) AAA
- 	                            , (SELECT AA.NA_BZPLC
- 	                                    , AA.AUC_OBJ_DSC
- 	                                    , AA.AUC_DT
- 	                                    , AA.OSLP_NO
- 	                                    , AA.ATDR_AM
- 	                                    , MIN(AA.ATDR_DTM) AS ATDR_DTM
- 	                                    , CASE WHEN COUNT(*) <![CDATA[ > ]]> 0 THEN '1' ELSE '0' END AS AUC_PRG_C
- 	                                 FROM (SELECT A.NA_BZPLC
- 	                                            , A.AUC_OBJ_DSC
- 	                                            , A.AUC_DT
- 	                                            , A.OSLP_NO
- 	                                            , A.RG_SQNO
- 	                                            , A.TRMN_AMNNO
- 	                                            , A.ATDR_AM
- 	                                            , A.ATDR_DTM
- 	                                         FROM TB_LA_IS_MH_ATDR_LOG A
- 	                                            , (SELECT NA_BZPLC
- 	                                                   , AUC_OBJ_DSC
- 	                                                   , AUC_DT
- 	                                                   , OSLP_NO
- 	                                                   , TRMN_AMNNO
- 	                                                   , MAX(RG_SQNO) AS RG_SQNO
- 	                                                FROM TB_LA_IS_MH_ATDR_LOG
- 	                                               WHERE NA_BZPLC    = #{ss_na_bzplc}
- 	                                                 AND AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
- 	                                                 AND AUC_DT      = #{auc_dt}
- 	                                               GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, TRMN_AMNNO
- 	                                              ) B
- 	                                        WHERE A.NA_BZPLC    = B.NA_BZPLC
- 	                                          AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
- 	                                          AND A.AUC_DT      = B.AUC_DT
- 	                                          AND A.OSLP_NO     = B.OSLP_NO
- 	                                          AND A.TRMN_AMNNO  = B.TRMN_AMNNO
- 	                                          AND A.RG_SQNO     = B.RG_SQNO
- 	                                          AND A.ATDR_AM     <![CDATA[ > ]]> 0
- 	                                      ) AA
- 	                                    , (SELECT A.NA_BZPLC
- 	                                            , A.AUC_OBJ_DSC
- 	                                            , A.AUC_DT
- 	                                            , A.OSLP_NO
- 	                                            , MAX(A.ATDR_AM) AS ATDR_AM
- 	                                         FROM (SELECT A.NA_BZPLC
- 	                                                    , A.AUC_OBJ_DSC
- 	                                                    , A.AUC_DT
- 	                                                    , A.OSLP_NO
- 	                                                    , A.RG_SQNO
- 	                                                    , A.ATDR_AM
- 	                                                 FROM TB_LA_IS_MH_ATDR_LOG A
- 	                                                    , (SELECT NA_BZPLC
- 	                                                            , AUC_OBJ_DSC
- 	                                                            , AUC_DT
- 	                                                            , OSLP_NO
- 	                                                            , TRMN_AMNNO
- 	                                                            , MAX(RG_SQNO) AS RG_SQNO
- 	                                                         FROM TB_LA_IS_MH_ATDR_LOG
- 	                                                        WHERE NA_BZPLC    = #{ss_na_bzplc}
- 	                                                          AND AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
- 	                                                          AND AUC_DT      = #{auc_dt}
- 	                                                        GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, TRMN_AMNNO
- 	                                                      ) B
- 	                                                WHERE A.NA_BZPLC    = B.NA_BZPLC
- 	                                                  AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
- 	                                                  AND A.AUC_DT      = B.AUC_DT
- 	                                                  AND A.OSLP_NO     = B.OSLP_NO
- 	                                                  AND A.TRMN_AMNNO  = B.TRMN_AMNNO
- 	                                                  AND A.RG_SQNO     = B.RG_SQNO
- 	                                              ) A
- 	                                        WHERE A.ATDR_AM    <![CDATA[ > ]]>0
- 	                                        GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO
- 	                                      ) BB
- 	                                WHERE AA.NA_BZPLC    = BB.NA_BZPLC
- 	                                  AND AA.AUC_OBJ_DSC = BB.AUC_OBJ_DSC
- 	                                  AND AA.AUC_DT      = BB.AUC_DT
- 	                                  AND AA.OSLP_NO     = BB.OSLP_NO
- 	                                  AND AA.ATDR_AM     = BB.ATDR_AM
- 	                                GROUP BY AA.NA_BZPLC, AA.AUC_OBJ_DSC, AA.AUC_DT, AA.OSLP_NO, AA.ATDR_AM
- 	                              ) BBB
- 	                        WHERE AAA.NA_BZPLC    = BBB.NA_BZPLC
- 	                          AND AAA.AUC_OBJ_DSC = BBB.AUC_OBJ_DSC
- 	                          AND AAA.AUC_DT      = BBB.AUC_DT
- 	                          AND AAA.OSLP_NO     = BBB.OSLP_NO
- 	                          AND AAA.ATDR_AM     = BBB.ATDR_AM
- 	                          AND AAA.ATDR_DTM    = BBB.ATDR_DTM
- 	                      ) F
- 	                   LEFT OUTER JOIN TB_LA_IS_MM_MWMN  G
- 	                     ON F.NA_BZPLC     = G.NA_BZPLC
- 	                    AND F.TRMN_AMNNO   = G.TRMN_AMNNO
- 	        ON A.NA_BZPLC         = F.NA_BZPLC
- 	       AND A.AUC_OBJ_DSC      = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE F.AUC_OBJ_DSC END
- 	       AND A.AUC_DT           = F.AUC_DT
- 	       AND A.OSLP_NO          = F.OSLP_NO
+		  LEFT OUTER JOIN (
+			SELECT AAA.NA_BZPLC           /* 경제통합사업장코드  */
+				, AAA.AUC_OBJ_DSC        /* 경매대상구분코드    */
+				, AAA.AUC_DT             /* 경매일자            */
+				, AAA.OSLP_NO            /* 원표번호            */
+				, AAA.ATDR_AM            /* 응찰금액            */
+				, AAA.ATDR_DTM           /* 응찰일시            */
+				, BBB.AUC_PRG_C          /* 경매진행코드        */
+				, CASE WHEN BBB.AUC_PRG_C = '1' THEN AAA.LVST_AUC_PTC_MN_NO END AS LVST_AUC_PTC_MN_NO
+				, CASE WHEN BBB.AUC_PRG_C = '1' THEN AAA.TRMN_AMNNO END AS TRMN_AMNNO
+				FROM (SELECT AA.*
+						FROM (SELECT A.NA_BZPLC
+									, A.AUC_OBJ_DSC
+									, A.AUC_DT
+									, A.OSLP_NO
+									, A.RG_SQNO
+									, A.TRMN_AMNNO
+									, A.LVST_AUC_PTC_MN_NO
+									, A.ATDR_AM
+									, A.ATDR_DTM
+								FROM TB_LA_IS_MH_ATDR_LOG A
+								, (SELECT NA_BZPLC
+										, AUC_OBJ_DSC
+										, AUC_DT
+										, OSLP_NO
+										, TRMN_AMNNO
+										, MAX(RG_SQNO) AS RG_SQNO
+										FROM TB_LA_IS_MH_ATDR_LOG
+									WHERE NA_BZPLC    = #{ss_na_bzplc}
+									AND (
+										(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+										OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+									)
+									AND AUC_DT      = #{auc_dt}
+									GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, TRMN_AMNNO
+								) B
+								WHERE A.NA_BZPLC    = B.NA_BZPLC
+								AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
+								AND A.AUC_DT      = B.AUC_DT
+								AND A.OSLP_NO     = B.OSLP_NO
+								AND A.TRMN_AMNNO  = B.TRMN_AMNNO
+								AND A.RG_SQNO     = B.RG_SQNO
+								AND A.ATDR_AM     <![CDATA[ > ]]> 0
+							) AA
+						, (SELECT A.NA_BZPLC
+								, A.AUC_OBJ_DSC
+								, A.AUC_DT
+								, A.OSLP_NO
+								, MAX(A.ATDR_AM) AS ATDR_AM
+							FROM (SELECT A.NA_BZPLC
+									, A.AUC_OBJ_DSC
+									, A.AUC_DT
+									, A.OSLP_NO
+									, A.RG_SQNO
+									, A.ATDR_AM
+									FROM TB_LA_IS_MH_ATDR_LOG A
+									, (SELECT NA_BZPLC
+											, AUC_OBJ_DSC
+											, AUC_DT
+											, OSLP_NO
+											, TRMN_AMNNO
+											, MAX(RG_SQNO) AS RG_SQNO
+										FROM TB_LA_IS_MH_ATDR_LOG
+										WHERE NA_BZPLC    = #{ss_na_bzplc}
+										AND (
+											(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+											OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+										)
+										AND AUC_DT      = #{auc_dt}
+										GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, TRMN_AMNNO
+									) B
+								WHERE A.NA_BZPLC    = B.NA_BZPLC
+									AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
+									AND A.AUC_DT      = B.AUC_DT
+									AND A.OSLP_NO     = B.OSLP_NO
+									AND A.TRMN_AMNNO  = B.TRMN_AMNNO
+									AND A.RG_SQNO     = B.RG_SQNO
+								) A
+						WHERE A.ATDR_AM     <![CDATA[ > ]]> 0
+						GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO
+						) BB
+					WHERE AA.NA_BZPLC    = BB.NA_BZPLC
+						AND AA.AUC_OBJ_DSC = BB.AUC_OBJ_DSC
+						AND AA.AUC_DT      = BB.AUC_DT
+						AND AA.OSLP_NO     = BB.OSLP_NO
+						AND AA.ATDR_AM     = BB.ATDR_AM
+				) AAA
+				, (SELECT AA.NA_BZPLC
+						, AA.AUC_OBJ_DSC
+						, AA.AUC_DT
+						, AA.OSLP_NO
+						, AA.ATDR_AM
+						, MIN(AA.ATDR_DTM) AS ATDR_DTM
+						, CASE WHEN COUNT(*) <![CDATA[ > ]]> 0 THEN '1' ELSE '0' END AS AUC_PRG_C
+						FROM (SELECT A.NA_BZPLC
+								, A.AUC_OBJ_DSC
+								, A.AUC_DT
+								, A.OSLP_NO
+								, A.RG_SQNO
+								, A.TRMN_AMNNO
+								, A.ATDR_AM
+								, A.ATDR_DTM
+							FROM TB_LA_IS_MH_ATDR_LOG A
+							, (SELECT NA_BZPLC
+									, AUC_OBJ_DSC
+									, AUC_DT
+									, OSLP_NO
+									, TRMN_AMNNO
+									, MAX(RG_SQNO) AS RG_SQNO
+								FROM TB_LA_IS_MH_ATDR_LOG
+								WHERE NA_BZPLC    = #{ss_na_bzplc}
+								AND AUC_DT      = #{auc_dt}
+								AND (
+									(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+									OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+								)
+								GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, TRMN_AMNNO
+							) B
+							WHERE A.NA_BZPLC    = B.NA_BZPLC
+								AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
+								AND A.AUC_DT      = B.AUC_DT
+								AND A.OSLP_NO     = B.OSLP_NO
+								AND A.TRMN_AMNNO  = B.TRMN_AMNNO
+								AND A.RG_SQNO     = B.RG_SQNO
+								AND A.ATDR_AM     <![CDATA[ > ]]> 0
+						) AA
+						, (SELECT A.NA_BZPLC
+								, A.AUC_OBJ_DSC
+								, A.AUC_DT
+								, A.OSLP_NO
+								, MAX(A.ATDR_AM) AS ATDR_AM
+							FROM (SELECT A.NA_BZPLC
+										, A.AUC_OBJ_DSC
+										, A.AUC_DT
+										, A.OSLP_NO
+										, A.RG_SQNO
+										, A.ATDR_AM
+									FROM TB_LA_IS_MH_ATDR_LOG A
+									, (SELECT NA_BZPLC
+											, AUC_OBJ_DSC
+											, AUC_DT
+											, OSLP_NO
+											, TRMN_AMNNO
+											, MAX(RG_SQNO) AS RG_SQNO
+										FROM TB_LA_IS_MH_ATDR_LOG
+										WHERE NA_BZPLC    = #{ss_na_bzplc}
+										AND (
+											(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+											OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+										)
+										AND AUC_DT      = #{auc_dt}
+										GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, TRMN_AMNNO
+									) B
+								WHERE A.NA_BZPLC    = B.NA_BZPLC
+									AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
+									AND A.AUC_DT      = B.AUC_DT
+									AND A.OSLP_NO     = B.OSLP_NO
+									AND A.TRMN_AMNNO  = B.TRMN_AMNNO
+									AND A.RG_SQNO     = B.RG_SQNO
+							) A
+							WHERE A.ATDR_AM    <![CDATA[ > ]]>0
+							GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO
+						) BB
+					WHERE AA.NA_BZPLC    = BB.NA_BZPLC
+					AND AA.AUC_OBJ_DSC = BB.AUC_OBJ_DSC
+					AND AA.AUC_DT      = BB.AUC_DT
+					AND AA.OSLP_NO     = BB.OSLP_NO
+					AND AA.ATDR_AM     = BB.ATDR_AM
+					GROUP BY AA.NA_BZPLC, AA.AUC_OBJ_DSC, AA.AUC_DT, AA.OSLP_NO, AA.ATDR_AM
+				) BBB
+			WHERE AAA.NA_BZPLC    = BBB.NA_BZPLC
+				AND AAA.AUC_OBJ_DSC = BBB.AUC_OBJ_DSC
+				AND AAA.AUC_DT      = BBB.AUC_DT
+				AND AAA.OSLP_NO     = BBB.OSLP_NO
+				AND AAA.ATDR_AM     = BBB.ATDR_AM
+				AND AAA.ATDR_DTM    = BBB.ATDR_DTM
+			) F
+ 	        ON (
+				A.NA_BZPLC         = F.NA_BZPLC
+				AND A.AUC_OBJ_DSC  = F.AUC_OBJ_DSC
+				AND A.AUC_DT       = F.AUC_DT
+				AND A.OSLP_NO      = F.OSLP_NO
+			)
+			LEFT OUTER JOIN TB_LA_IS_MM_MWMN  G
+			ON ( F.NA_BZPLC     = G.NA_BZPLC AND F.TRMN_AMNNO   = G.TRMN_AMNNO )
  	         , TB_LA_IS_MM_FHS         B
  	         , TB_LA_IS_MM_INDV        D
+			 , TB_LA_IS_MM_ENV_EST     H
  	     WHERE A.NA_BZPLC            = #{ss_na_bzplc}                       /* 경제통합사업장코드          */
- 	       AND A.AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END            /* 경매대상구분코드            */
  	       AND A.AUC_DT              = #{auc_dt}                            /* 경매일자                    */
  	       AND A.LED_SQNO            = 1
  	       AND A.SEL_STS_DSC        != '22'
  	       AND A.TMS_YN              = '0'
+ 	       AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)
  	       AND A.NA_BZPLC            = B.NA_BZPLC
  	       AND A.FHS_ID_NO           = B.FHS_ID_NO                          /* 농가식별번호                */
  	       AND A.FARM_AMNNO          = B.FARM_AMNNO                         /* 농장관리번호                */
  	       AND A.NA_BZPLC            = D.NA_BZPLC
  	       AND A.SRA_SRS_DSC         = D.SRA_SRS_DSC                        /* 축산축종구분코드            */
  	       AND A.SRA_INDV_AMNNO      = D.SRA_INDV_AMNNO                     /* 축산개체관리번호            */
- 	
+           AND A.NA_BZPLC            = H.NA_BZPLC
  	    ORDER BY A.AUC_PRG_SQ
     
     </select>
 
     <select id="LALM0323P_selList" resultType="hashMap">
-	<![CDATA[    
 	    SELECT
 	          A.AUC_PRG_SQ
 	        , A.AUC_OBJ_DSC
@@ -297,7 +316,7 @@
 	        , CCC.ATDR_AM
 	        , CCC.LVST_AUC_PTC_MN_NO
 	        , B.SRA_MWMNNM
-	        , TO_CHAR(CCC.ATDR_DTM, 'YYYYMMDD HH24:MI:SS')
+	        , TO_CHAR(CCC.ATDR_DTM, 'YYYY-MM-DD HH24:MI:SS') AS ATDR_DTM
 	    FROM TB_LA_IS_MH_SOG_COW  A
 	       , TB_LA_IS_MM_MWMN     B
 	       , (SELECT AAA.*
@@ -313,7 +332,10 @@
 	                          , MAX(RG_SQNO) AS RG_SQNO
 	                      FROM TB_LA_IS_MH_ATDR_LOG
 	                      WHERE NA_BZPLC    = #{ss_na_bzplc}
-	                        AND AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                        AND (
+								(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+								OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+							)
 	                        AND AUC_DT      = #{auc_dt}
 	                      GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, LVST_AUC_PTC_MN_NO, TRMN_AMNNO
 	                     ) B
@@ -350,7 +372,10 @@
 	                                      , MAX(RG_SQNO) AS RG_SQNO
 	                                  FROM TB_LA_IS_MH_ATDR_LOG
 	                                  WHERE NA_BZPLC    = #{ss_na_bzplc}
-	                                    AND AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                                    AND (
+											(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+											OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+										)
 	                                    AND AUC_DT      = #{auc_dt}
 	                                  GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, TRMN_AMNNO
 	                                 ) B
@@ -385,7 +410,10 @@
 	                                            , MAX(RG_SQNO) AS RG_SQNO
 	                                        FROM TB_LA_IS_MH_ATDR_LOG
 	                                        WHERE NA_BZPLC    = #{ss_na_bzplc}
-	                                          AND AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                                          AND (
+												(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+												OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+											  )
 	                                          AND AUC_DT      = #{auc_dt}
 	                                        GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, TRMN_AMNNO
 	                                       ) B
@@ -414,18 +442,19 @@
 	            AND AAA.ATDR_AM     = BBB.ATDR_AM
 	         ) CCC
 	    WHERE A.NA_BZPLC      = #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC   = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
 	      AND A.AUC_DT        = #{auc_dt}
 	      AND A.LED_SQNO      = 1
 	      AND A.SEL_STS_DSC  != '22'                             
+	      AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)
 	      AND A.NA_BZPLC      = CCC.NA_BZPLC
-	      AND A.AUC_OBJ_DSC   = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE CCC.AUC_OBJ_DSC END
 	      AND A.AUC_DT        = CCC.AUC_DT
 	      AND A.OSLP_NO       = CCC.OSLP_NO
 	      AND B.NA_BZPLC      = CCC.NA_BZPLC
 	      AND B.TRMN_AMNNO    = CCC.TRMN_AMNNO
 	    ORDER BY A.AUC_PRG_SQ
-    ]]>
     </select>
     
     <update id="LALM0323_updBatPrice">

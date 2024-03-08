@@ -84,11 +84,19 @@
 	    WHERE A.NA_BZPLC               =  #{ss_na_bzplc} /* jwt에서 들고온 통합 사업장 구분코드*/
 	      AND A.AUC_OBJ_DSC            =  CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
 	      AND A.AUC_DT                 =  #{auc_dt}
-	      <if test="sra_indv_amnno != null and sra_indv_amnno != ''">
-	      	AND SUBSTR(A.SRA_INDV_AMNNO,4, LENGTH(A.SRA_INDV_AMNNO)-3) LIKE '%' ||  #{sra_indv_amnno} || '%'
-	      </if>
-	      AND (to_number(#{st_auc_no})   =  0 OR A.AUC_PRG_SQ   >=  to_number(#{st_auc_no}))       /* 경매진행순서                */
-	      AND (to_number(#{ed_auc_no})   =  0 OR A.AUC_PRG_SQ   <![CDATA[<]]>=  to_number(#{ed_auc_no}))       /* 경매진행순서                */
+		  AND A.SRA_SRS_DSC            =  NVL(#{sra_srs_dsc}, '01')
+		<if test="sra_indv_amnno != null and sra_indv_amnno != ''">
+			<choose>
+			<when test='!"01".equals(sra_srs_dsc)'>
+				AND A.SRA_INDV_AMNNO LIKE '%' ||  #{sra_indv_amnno} || '%'
+			</when>
+			<otherwise>
+				AND SUBSTR(A.SRA_INDV_AMNNO,4, LENGTH(A.SRA_INDV_AMNNO)-3) LIKE '%' ||  #{sra_indv_amnno} || '%'
+			</otherwise>
+			</choose>
+  		</if>
+	      AND (to_number(#{st_auc_no})   =  0 OR A.AUC_PRG_SQ   <![CDATA[>=]]>  to_number(#{st_auc_no}))       /* 경매진행순서                */
+	      AND (to_number(#{ed_auc_no})   =  0 OR A.AUC_PRG_SQ   <![CDATA[<=]]>  to_number(#{ed_auc_no}))       /* 경매진행순서                */
 	      AND A.LED_SQNO               =  1
 	      AND A.DEL_YN                 =  '0'
 	      AND A.SEL_STS_DSC            =  '11'                                                 /* 송장등록상태                */

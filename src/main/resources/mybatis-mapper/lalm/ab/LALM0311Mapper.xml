@@ -6,7 +6,6 @@
 <mapper namespace="com.auc.lalm.ab.service.Impl.LALM0311Mapper">
 
     <select id="LALM0311_selList" resultType="hashMap">
-    <![CDATA[
          SELECT
           A.NA_BZPLC                            				/* 경제통합사업장코드			*/
         , A.AUC_OBJ_DSC                         				/* 경매대상구분코드			*/
@@ -21,37 +20,37 @@
         , A.FIR_LOWS_SBID_LMT_AM								/* 최초최저낙찰한도금액		*/
         , A.AUC_PRG_SQ											/* 경매번호				*/
         , A.MODL_NO									            /* 거치대 번호             */
-        , CASE A.AUC_OBJ_DSC WHEN '1' THEN A.LOWS_SBID_LMT_AM / #{calf_auc_atdr_unt_am}
-                             WHEN '2' THEN A.LOWS_SBID_LMT_AM / #{nbfct_auc_atdr_unt_am}
-                             ELSE A.LOWS_SBID_LMT_AM / #{ppgcow_auc_atdr_unt_am}
-          END LOWS_SBID_LMT_AM                  				/* 최저낙찰한도금액			*/
-    FROM  TB_LA_IS_MH_SOG_COW A
-        , TB_LA_IS_MM_FHS     B
-
-    WHERE A.NA_BZPLC      = #{ss_na_bzplc}
-      AND A.AUC_DT        = #{auc_dt}
-	]]>
-		<if test='cb_auc_obj_dsc != "0"'>
+        , A.LOWS_SBID_LMT_AM / (SELECT CASE WHEN #{cb_auc_obj_dsc} = '1' THEN CALF_AUC_ATDR_UNT_AM
+											WHEN #{cb_auc_obj_dsc} = '2' THEN NBFCT_AUC_ATDR_UNT_AM
+											WHEN #{cb_auc_obj_dsc} = '3' THEN PPGCOW_AUC_ATDR_UNT_AM
+											WHEN #{cb_auc_obj_dsc} = '5' THEN GT_AUC_ATDR_UNT_AM
+											WHEN #{cb_auc_obj_dsc} = '6' THEN HS_AUC_ATDR_UNT_AM
+											ELSE 10000 END
+									FROM TB_LA_IS_MM_ENV_EST
+									WHERE NA_BZPLC = #{ss_na_bzplc}) AS LOWS_SBID_LMT_AM /* 최저낙찰한도금액			*/
+		FROM  TB_LA_IS_MH_SOG_COW A
+			, TB_LA_IS_MM_FHS     B
+		WHERE A.NA_BZPLC      = #{ss_na_bzplc}
+		AND A.AUC_DT        = #{auc_dt}
+	<!-- <if test='cb_auc_obj_dsc != "0"'>
 		AND A.AUC_OBJ_DSC = #{cb_auc_obj_dsc}
-		</if>
-	<![CDATA[
-	
-      AND A.NA_BZPLC      = B.NA_BZPLC
-      AND A.FHS_ID_NO     = B.FHS_ID_NO
-      AND A.FARM_AMNNO    = B.FARM_AMNNO
-      AND A.DEL_YN    	  = '0'
-      AND A.SEL_STS_DSC	  = '11'
-	]]>
+	</if> -->
+		AND (
+			(#{cb_auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+			OR (#{cb_auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{cb_auc_obj_dsc})
+		)
+		AND A.NA_BZPLC      = B.NA_BZPLC
+		AND A.FHS_ID_NO     = B.FHS_ID_NO
+		AND A.FARM_AMNNO    = B.FARM_AMNNO
+		AND A.DEL_YN    	  = '0'
+		AND A.SEL_STS_DSC	  = '11'
 		<if test='fhs_id_no != "" and fhs_id_no != null'>
-		AND B.FHS_ID_NO     = #{fhs_id_no}
-		</if>
-	<![CDATA[
-    ORDER BY A.AUC_PRG_SQ
-    ]]>
+			AND B.FHS_ID_NO     = #{fhs_id_no}
+			</if>
+		ORDER BY A.AUC_PRG_SQ
     </select>
     
     <select id="LALM0311_selModlList" resultType="hashMap">
-    <![CDATA[
          SELECT
           A.NA_BZPLC                            				/* 경제통합사업장코드			*/
         , A.AUC_OBJ_DSC                         				/* 경매대상구분코드			*/
@@ -66,36 +65,36 @@
         , A.FIR_LOWS_SBID_LMT_AM								/* 최초최저낙찰한도금액		*/
         , A.AUC_PRG_SQ											/* 경매번호				*/
         , A.MODL_NO									            /* 거치대 번호             */
-        , CASE A.AUC_OBJ_DSC WHEN '1' THEN A.LOWS_SBID_LMT_AM / #{calf_auc_atdr_unt_am}
-                             WHEN '2' THEN A.LOWS_SBID_LMT_AM / #{nbfct_auc_atdr_unt_am}
-                             ELSE A.LOWS_SBID_LMT_AM / #{ppgcow_auc_atdr_unt_am}
-          END LOWS_SBID_LMT_AM                  				/* 최저낙찰한도금액			*/
-    FROM  TB_LA_IS_MH_SOG_COW A
-        , TB_LA_IS_MM_FHS     B
-
-    WHERE A.NA_BZPLC      = #{ss_na_bzplc}
-      AND A.AUC_DT        = #{auc_dt}
-	]]>
-		<if test='cb_auc_obj_dsc != "0"'>
+        , A.LOWS_SBID_LMT_AM / (SELECT CASE WHEN #{cb_auc_obj_dsc} = '1' THEN CALF_AUC_ATDR_UNT_AM
+											WHEN #{cb_auc_obj_dsc} = '2' THEN NBFCT_AUC_ATDR_UNT_AM
+											WHEN #{cb_auc_obj_dsc} = '3' THEN PPGCOW_AUC_ATDR_UNT_AM
+											WHEN #{cb_auc_obj_dsc} = '5' THEN GT_AUC_ATDR_UNT_AM
+											WHEN #{cb_auc_obj_dsc} = '6' THEN HS_AUC_ATDR_UNT_AM
+											ELSE 10000 END
+									FROM TB_LA_IS_MM_ENV_EST
+									WHERE NA_BZPLC = #{ss_na_bzplc}) AS LOWS_SBID_LMT_AM /* 최저낙찰한도금액			*/
+		FROM  TB_LA_IS_MH_SOG_COW A
+			, TB_LA_IS_MM_FHS     B
+		WHERE A.NA_BZPLC      = #{ss_na_bzplc}
+		AND A.AUC_DT        = #{auc_dt}
+		AND (
+			(#{cb_auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+			OR (#{cb_auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{cb_auc_obj_dsc})
+		)
+	<!-- <if test='cb_auc_obj_dsc != "0"'>
 		AND A.AUC_OBJ_DSC = #{cb_auc_obj_dsc}
-		</if>
-	<![CDATA[
-	
-      AND A.NA_BZPLC      = B.NA_BZPLC
-      AND A.FHS_ID_NO     = B.FHS_ID_NO
-      AND A.FARM_AMNNO    = B.FARM_AMNNO
-      AND A.DEL_YN    	  = '0'
-	]]>
-		<if test='fhs_id_no != "" and fhs_id_no != null'>
+	</if> -->
+		AND A.NA_BZPLC      = B.NA_BZPLC
+		AND A.FHS_ID_NO     = B.FHS_ID_NO
+		AND A.FARM_AMNNO    = B.FARM_AMNNO
+		AND A.DEL_YN    	  = '0'
+	<if test='fhs_id_no != "" and fhs_id_no != null'>
 		AND B.FHS_ID_NO     = #{fhs_id_no}
-		</if>
-	<![CDATA[
-    ORDER BY A.AUC_PRG_SQ
-    ]]>
+	</if>
+    	ORDER BY A.AUC_PRG_SQ
     </select>
     
     <update id="LALM0311_updModlPgm">
-    <![CDATA[
          UPDATE TB_LA_IS_MH_SOG_COW SET
                     MODL_NO = #{modl_no}
 					, LSCHG_DTM              = SYSDATE
@@ -106,27 +105,23 @@
                   AND OSLP_NO			    = #{oslp_no}
                   AND LED_SQNO              = '1'
                   AND DEL_YN				= '0'
-    ]]>
     </update>
     
     <update id="LALM0311_updRmkPgm">
-    <![CDATA[
-         UPDATE TB_LA_IS_MH_SOG_COW SET
-                    RMK_CNTN = #{rmk_cntn}
-					, LSCHG_DTM              = SYSDATE
-				    , LS_CMENO               = #{ss_userid}
-                WHERE NA_BZPLC				= #{ss_na_bzplc}
-                  AND AUC_DT				= #{auc_dt}
-                  AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
-                  AND OSLP_NO			    = #{oslp_no}
-                  AND LED_SQNO              = '1'
-                  AND SEL_STS_DSC			= '11'
-                  AND DEL_YN				= '0'
-    ]]>
+		UPDATE TB_LA_IS_MH_SOG_COW SET
+				RMK_CNTN = #{rmk_cntn}
+				, LSCHG_DTM              = SYSDATE
+				, LS_CMENO               = #{ss_userid}
+			WHERE NA_BZPLC				= #{ss_na_bzplc}
+				AND AUC_DT				= #{auc_dt}
+				AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
+				AND OSLP_NO			    = #{oslp_no}
+				AND LED_SQNO              = '1'
+				AND SEL_STS_DSC			= '11'
+				AND DEL_YN				= '0'
     </update>
     
     <insert id="LALM0311_insLogPgm">
-    <![CDATA[
         INSERT  INTO TB_LA_IS_MH_SOG_COW_LOG (
 				  NA_BZPLC									/* 경제통합사업장코드                */
 				, AUC_OBJ_DSC								/* 경매대상구분코드                  */
@@ -206,14 +201,20 @@
 				, A.SRA_INDV_AMNNO							/* 축산개체관리번호                  */
 				, #{cow_sog_wt}								/* 우출하중량                        */
 				, A.FIR_LOWS_SBID_LMT_AM					/* 최초최저낙찰한도금액              */
-				]]>
-				<if test='auc_obj_dsc != "2"'>
+				, #{lows_sbid_lmt_am} * (SELECT CASE WHEN #{auc_obj_dsc} = '1' THEN CALF_AUC_ATDR_UNT_AM
+													WHEN #{auc_obj_dsc} = '2' THEN NBFCT_AUC_ATDR_UNT_AM
+													WHEN #{auc_obj_dsc} = '3' THEN PPGCOW_AUC_ATDR_UNT_AM
+													WHEN #{auc_obj_dsc} = '5' THEN GT_AUC_ATDR_UNT_AM
+													WHEN #{auc_obj_dsc} = '6' THEN HS_AUC_ATDR_UNT_AM
+													ELSE 10000 END
+											FROM TB_LA_IS_MM_ENV_EST
+											WHERE NA_BZPLC = #{ss_na_bzplc}) AS LOWS_SBID_LMT_AM /* 최저낙찰한도금액			*/
+				<!-- <if test='auc_obj_dsc != "2"'>
 				, #{lows_sbid_lmt_am} * 10000				/* 최저낙찰한도금액                  */
 				</if>
 				<if test='auc_obj_dsc == "2"'>
 				, #{lows_sbid_lmt_am}						/* 최저낙찰한도금액                  */
-				</if>
-				<![CDATA[
+				</if> -->
 				, A.SRA_SBID_AM								/* 축산낙찰금액                      */
 				, A.SRA_SBID_UPR							/* 축산낙찰단가                      */
 				, A.SEL_STS_DSC								/* 판매상태구분코드                  */
@@ -262,115 +263,113 @@
 			AND  A.AUC_OBJ_DSC		= #{auc_obj_dsc}		/* 경매대상구분코드                   */
 			AND  A.AUC_DT			= #{auc_dt}				/* 경매일자                           */
 			AND  A.OSLP_NO			= #{oslp_no}			/* 원표번호                           */
-    ]]>
     </insert>
     
-    
     <update id="LALM0311_updPgm">
-	         UPDATE TB_LA_IS_MH_SOG_COW SET
-
-				<choose>
-					<when test='cow_sog_wt == "" or cow_sog_wt == null'>
-						COW_SOG_WT = 0													/* 우출하중량                             */
-					</when>
-					<otherwise>
-						COW_SOG_WT = #{cow_sog_wt}										/* 우출하중량                             */
-					</otherwise>
-				</choose>
-				
-				<choose>
-					<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "1"'>
-						, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}					/* 최초최저낙찰한도금액                   */
-					</when>
-					<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "2"'>
-						, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}					/* 최초최저낙찰한도금액                   */
-					</when>
-					<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "3"'>
-						, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}				/* 최초최저낙찰한도금액                   */
-					</when>
-					<otherwise>
-						, FIR_LOWS_SBID_LMT_AM = FIR_LOWS_SBID_LMT_AM					/* 최초최저낙찰한도금액                   */
-					</otherwise>
-				</choose>
-				
-				<choose>
-					<when test='auc_obj_dsc == "1"'>
-						, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}						/* 최저낙찰한도금액                       */
-					</when>
-					<when test='auc_obj_dsc == "2"'>
-						, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}					/* 최저낙찰한도금액                       */
-					</when>
-					<when test='auc_obj_dsc == "3"'>
-						, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}					/* 최저낙찰한도금액                       */
-					</when>
-					<otherwise>
-						, LOWS_SBID_LMT_AM = LOWS_SBID_LMT_AM							/* 최저낙찰한도금액                       */
-					</otherwise>
-				</choose>
-
-				, RMK_CNTN               = #{rmk_cntn}        						/* 비고내용                               */
-				, LSCHG_DTM              = SYSDATE
-			    , LS_CMENO               = #{ss_userid}
-			WHERE NA_BZPLC			= #{ss_na_bzplc}
-			  AND AUC_DT				= #{auc_dt}
-			  AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
-			  AND OSLP_NO			    = #{oslp_no}
-			  AND LED_SQNO            = '1'
-			  AND SEL_STS_DSC			= '11'
-			  AND DEL_YN				= '0'
+		UPDATE TB_LA_IS_MH_SOG_COW SET
+		<choose>
+			<when test='cow_sog_wt == "" or cow_sog_wt == null'>
+				COW_SOG_WT = 0													/* 우출하중량                             */
+			</when>
+			<otherwise>
+				COW_SOG_WT = #{cow_sog_wt}										/* 우출하중량                             */
+			</otherwise>
+		</choose>
+		<choose>
+			<when test='fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == ""'>
+				, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * (SELECT CASE WHEN #{auc_obj_dsc} = '1' THEN CALF_AUC_ATDR_UNT_AM
+																			WHEN #{auc_obj_dsc} = '2' THEN NBFCT_AUC_ATDR_UNT_AM
+																			WHEN #{auc_obj_dsc} = '3' THEN PPGCOW_AUC_ATDR_UNT_AM
+																			WHEN #{auc_obj_dsc} = '5' THEN GT_AUC_ATDR_UNT_AM
+																			WHEN #{auc_obj_dsc} = '6' THEN HS_AUC_ATDR_UNT_AM
+																			ELSE 10000 END
+																   FROM TB_LA_IS_MM_ENV_EST
+																  WHERE NA_BZPLC = #{ss_na_bzplc})					/* 최초최저낙찰한도금액                   */
+			</when>
+			<otherwise>
+				, FIR_LOWS_SBID_LMT_AM = FIR_LOWS_SBID_LMT_AM					/* 최초최저낙찰한도금액                   */
+			</otherwise>
+		</choose>
+		<choose>
+			<when test='!"".equals(auc_obj_dsc)'>
+				, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * (SELECT CASE WHEN #{auc_obj_dsc} = '1' THEN CALF_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '2' THEN NBFCT_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '3' THEN PPGCOW_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '5' THEN GT_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '6' THEN HS_AUC_ATDR_UNT_AM
+																		ELSE 10000 END
+															FROM TB_LA_IS_MM_ENV_EST
+															WHERE NA_BZPLC = #{ss_na_bzplc})
+			</when>
+			<otherwise>
+				, LOWS_SBID_LMT_AM = LOWS_SBID_LMT_AM							/* 최저낙찰한도금액                       */
+			</otherwise>
+		</choose>
+			, RMK_CNTN               = #{rmk_cntn}        						/* 비고내용                               */
+			, LSCHG_DTM              = SYSDATE
+			, LS_CMENO               = #{ss_userid}
+		WHERE NA_BZPLC			    = #{ss_na_bzplc}
+			AND AUC_DT				= #{auc_dt}
+			AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
+			AND OSLP_NO			    = #{oslp_no}
+			AND LED_SQNO            = '1'
+			AND SEL_STS_DSC			= '11'
+			AND DEL_YN				= '0'
     </update>
     
     <update id="LALM0311_updPgmOnlySave">
-	         UPDATE TB_LA_IS_MH_SOG_COW SET
-				LSCHG_DTM              = SYSDATE
-			    , LS_CMENO               = #{ss_userid}
-				<if test='"W".equals(chk_save_type)'>
-					<choose>
-						<when test='cow_sog_wt == "" or cow_sog_wt == null'>
-							, COW_SOG_WT = 0													/* 우출하중량                             */
-						</when>
-						<otherwise>
-							, COW_SOG_WT = #{cow_sog_wt}										/* 우출하중량                             */
-						</otherwise>
-					</choose>
-				</if>
-				<if test='"L".equals(chk_save_type)'>
-					<choose>
-						<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "1"'>
-							, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}					/* 최초최저낙찰한도금액                   */
-						</when>
-						<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "2"'>
-							, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}					/* 최초최저낙찰한도금액                   */
-						</when>
-						<when test='(fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == "") and auc_obj_dsc == "3"'>
-							, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}				/* 최초최저낙찰한도금액                   */
-						</when>
-						<otherwise>
-							, FIR_LOWS_SBID_LMT_AM = FIR_LOWS_SBID_LMT_AM					/* 최초최저낙찰한도금액                   */
-						</otherwise>
-					</choose>				
-					<choose>
-						<when test='auc_obj_dsc == "1"'>
-							, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}						/* 최저낙찰한도금액                       */
-						</when>
-						<when test='auc_obj_dsc == "2"'>
-							, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}					/* 최저낙찰한도금액                       */
-						</when>
-						<when test='auc_obj_dsc == "3"'>
-							, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}					/* 최저낙찰한도금액                       */
-						</when>
-						<otherwise>
-							, LOWS_SBID_LMT_AM = LOWS_SBID_LMT_AM							/* 최저낙찰한도금액                       */
-						</otherwise>
-					</choose>					
-				</if>
-			WHERE NA_BZPLC			= #{ss_na_bzplc}
-			  AND AUC_DT				= #{auc_dt}
-			  AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
-			  AND OSLP_NO			    = #{oslp_no}
-			  AND LED_SQNO            = '1'
-			  AND SEL_STS_DSC			= '11'
-			  AND DEL_YN				= '0'
+		UPDATE TB_LA_IS_MH_SOG_COW SET
+			LSCHG_DTM              = SYSDATE
+			, LS_CMENO               = #{ss_userid}
+			<if test='"W".equals(chk_save_type)'>
+				<choose>
+					<when test='cow_sog_wt == "" or cow_sog_wt == null'>
+						, COW_SOG_WT = 0													/* 우출하중량                             */
+					</when>
+					<otherwise>
+						, COW_SOG_WT = #{cow_sog_wt}										/* 우출하중량                             */
+					</otherwise>
+				</choose>
+			</if>
+			<if test='"L".equals(chk_save_type)'>
+				<choose>
+				<when test='fir_lows_sbid_lmt_am == "0" or fir_lows_sbid_lmt_am == ""'>
+					, FIR_LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * (SELECT CASE WHEN #{auc_obj_dsc} = '1' THEN CALF_AUC_ATDR_UNT_AM
+																				WHEN #{auc_obj_dsc} = '2' THEN NBFCT_AUC_ATDR_UNT_AM
+																				WHEN #{auc_obj_dsc} = '3' THEN PPGCOW_AUC_ATDR_UNT_AM
+																				WHEN #{auc_obj_dsc} = '5' THEN GT_AUC_ATDR_UNT_AM
+																				WHEN #{auc_obj_dsc} = '6' THEN HS_AUC_ATDR_UNT_AM
+																				ELSE 10000 END
+																	FROM TB_LA_IS_MM_ENV_EST
+																	WHERE NA_BZPLC = #{ss_na_bzplc})					/* 최초최저낙찰한도금액                   */
+				</when>
+				<otherwise>
+					, FIR_LOWS_SBID_LMT_AM = FIR_LOWS_SBID_LMT_AM					/* 최초최저낙찰한도금액                   */
+				</otherwise>
+				</choose>
+				<choose>
+				<when test='!"".equals(auc_obj_dsc)'>
+					, LOWS_SBID_LMT_AM = #{lows_sbid_lmt_am} * (SELECT CASE WHEN #{auc_obj_dsc} = '1' THEN CALF_AUC_ATDR_UNT_AM
+																			WHEN #{auc_obj_dsc} = '2' THEN NBFCT_AUC_ATDR_UNT_AM
+																			WHEN #{auc_obj_dsc} = '3' THEN PPGCOW_AUC_ATDR_UNT_AM
+																			WHEN #{auc_obj_dsc} = '5' THEN GT_AUC_ATDR_UNT_AM
+																			WHEN #{auc_obj_dsc} = '6' THEN HS_AUC_ATDR_UNT_AM
+																			ELSE 10000 END
+																FROM TB_LA_IS_MM_ENV_EST
+																WHERE NA_BZPLC = #{ss_na_bzplc})
+				</when>
+				<otherwise>
+					, LOWS_SBID_LMT_AM = LOWS_SBID_LMT_AM							/* 최저낙찰한도금액                       */
+				</otherwise>
+				</choose>					
+			</if>
+		WHERE NA_BZPLC			= #{ss_na_bzplc}
+		AND AUC_DT				= #{auc_dt}
+		AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
+		AND OSLP_NO			    = #{oslp_no}
+		AND LED_SQNO            = '1'
+		AND SEL_STS_DSC			= '11'
+		AND DEL_YN				= '0'
     </update>
     
     
