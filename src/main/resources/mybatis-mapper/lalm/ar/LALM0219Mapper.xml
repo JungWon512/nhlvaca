@@ -84,7 +84,7 @@
 	    WHERE A.NA_BZPLC               =  #{ss_na_bzplc} /* jwt에서 들고온 통합 사업장 구분코드*/
 	      AND A.AUC_OBJ_DSC            =  CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
 	      AND A.AUC_DT                 =  #{auc_dt}
-		  AND A.SRA_SRS_DSC            =  NVL(#{sra_srs_dsc}, '01')
+		  AND A.SRA_SRS_DSC            =  NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
 		<if test="sra_indv_amnno != null and sra_indv_amnno != ''">
 			<choose>
 			<when test='!"01".equals(sra_srs_dsc)'>

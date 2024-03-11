@@ -267,7 +267,6 @@
 		srhData["fee_rg_sqno"] = data.FEE_RG_SQNO;
 		
 		const results = sendAjax(srhData, "/LALM1002_selDetail", "POST");
-        console.log(setDecrypt(results));
     }
 </script>
 

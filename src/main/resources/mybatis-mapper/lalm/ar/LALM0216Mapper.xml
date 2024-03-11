@@ -153,7 +153,7 @@
     WHERE A.NA_BZPLC             = #{ss_na_bzplc}                                                                                  /* 경제통합사업장코드          */
       AND A.AUC_OBJ_DSC          = CASE WHEN  #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END                                          /* 경매대상구분코드            */
       AND A.AUC_DT               = #{auc_dt}                                                                                  /* 경매일자                    */
-      AND A.SRA_SRS_DSC          = NVL(#{sra_srs_dsc}, '01')
+      AND A.SRA_SRS_DSC          = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
       AND (B.FTSNM         = #{ftsnm}
        OR #{ftsnm}                     IS NULL)                                                                          
       AND (#{st_auc_no}  IS NULL 
@@ -360,7 +360,7 @@
        , TB_LA_IS_MM_ENV_EST	 J
     WHERE A.NA_BZPLC               = #{ss_na_bzplc}                                                                          /* 경제통합사업장코드          */
       AND A.AUC_OBJ_DSC            = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END   /* 경매대상구분코드            */
-      AND A.SRA_SRS_DSC            = NVL(#{sra_srs_dsc}, '01')
+      AND A.SRA_SRS_DSC            = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
       AND A.AUC_DT                 = #{auc_dt}                                                                                /* 경매일자                    */
       AND B.DONGUP  LIKE '%'||''||'%'                                                                                              /* 지역별 검색                 */
       AND (#{st_auc_no}  IS NULL 
@@ -561,7 +561,7 @@
     WHERE A.NA_BZPLC               = #{ss_na_bzplc}                                                                          /* 경제통합사업장코드          */
       AND A.AUC_OBJ_DSC            = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END   /* 경매대상구분코드            */
       AND A.AUC_DT                 = #{auc_dt}                                                                               /* 경매일자                    */
-      AND A.SRA_SRS_DSC            = NVL(#{sra_srs_dsc}, '01')
+      AND A.SRA_SRS_DSC            = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
       AND (#{st_auc_no}  IS NULL 
        OR A.AUC_PRG_SQ     <![CDATA[>=]]> #{st_auc_no})                                                                                               /* 경매진행순서                */
       AND (#{ed_auc_no} IS NULL                                                                                                               
@@ -783,7 +783,7 @@
     where a.na_bzplc               = #{ss_na_bzplc}                                                                          /* 경제통합사업장코드          */
       and a.auc_obj_dsc            = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END    /* 경매대상구분코드            */
       and a.auc_dt                 = #{auc_dt}  
-      AND A.SRA_SRS_DSC            = NVL(#{sra_srs_dsc}, '01')
+      AND A.SRA_SRS_DSC            = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
       AND (#{st_auc_no}  IS NULL 
        OR A.AUC_PRG_SQ     <![CDATA[>=]]> #{st_auc_no})                                                                                               /* 경매진행순서                */
       AND (#{ed_auc_no} IS NULL                                                                                                               

@@ -417,12 +417,12 @@
 			   AND AA.AUC_DT      = #{auc_dt}
 			<choose>
 			<when test='"4".equals(auc_obj_dsc)'>
-				AND A.AUC_OBJ_DSC IN ('2', '3')
+				AND AA.AUC_OBJ_DSC IN ('2', '3')
 			</when>
 			<otherwise>
 				AND (
-					(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
-					OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+					(#{auc_obj_dsc} = '0' AND AA.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND AA.AUC_OBJ_DSC = #{auc_obj_dsc})
 				)
 			</otherwise>
 			</choose>
@@ -742,16 +742,16 @@
 					WHEN A.AUC_OBJ_DSC = '2' 
 			<choose>
 				<when test='nbfct_auc_upr_dsc == "1" and mv_sqno_prc_dsc == "1"'>
-						THEN (FLOOR((C.ATDR_AM * A.COW_SOG_WT * #{nbfct_auc_atdr_unt_am}) / #{mv_cut_am})) * #{mv_cut_am}
+						THEN (FLOOR((C.ATDR_AM * A.COW_SOG_WT * E.NBFCT_AUC_ATDR_UNT_AM) / #{mv_cut_am})) * #{mv_cut_am}
 				</when>
 				<when test='nbfct_auc_upr_dsc == "1" and mv_sqno_prc_dsc == "2"'>
-						THEN (CEIL((C.ATDR_AM * A.COW_SOG_WT * #{nbfct_auc_atdr_unt_am}) / #{mv_cut_am})) * #{mv_cut_am}
+						THEN (CEIL((C.ATDR_AM * A.COW_SOG_WT * E.NBFCT_AUC_ATDR_UNT_AM) / #{mv_cut_am})) * #{mv_cut_am}
 				</when>
-				<when test='nbfct_auc_upr_dsc == "1" and mv_sqno_prc_dsc == "2"'>
-						THEN (ROUND((C.ATDR_AM * A.COW_SOG_WT * #{nbfct_auc_atdr_unt_am}) / #{mv_cut_am})) * #{mv_cut_am}
+				<when test='nbfct_auc_upr_dsc == "1" and mv_sqno_prc_dsc == "3"'>
+						THEN (ROUND((C.ATDR_AM * A.COW_SOG_WT * E.NBFCT_AUC_ATDR_UNT_AM) / #{mv_cut_am})) * #{mv_cut_am}
 				</when>
 				<when test='nbfct_auc_upr_dsc == "2"'>
-						THEN C.ATDR_AM * #{nbfct_auc_atdr_unt_am}
+						THEN C.ATDR_AM * E.NBFCT_AUC_ATDR_UNT_AM
 				</when>
 			</choose>
 					WHEN A.AUC_OBJ_DSC = '3' THEN C.ATDR_AM * E.PPGCOW_AUC_ATDR_UNT_AM
@@ -1024,8 +1024,12 @@
 		FROM TB_LA_IS_MH_AUC_QCN
 		WHERE NA_BZPLC     =  #{ss_na_bzplc}	  /* 경제통합사업장코드          */
 	    AND AUC_DT         =  #{auc_dt}           /* 경매일자                 */
-	<if test='auc_obj_dsc != null and auc_obj_dsc != "" and auc_obj_dsc != 0'>
-		AND AUC_OBJ_DSC    =  #{auc_obj_dsc}      /* 경매대상                 */
+	<if test='auc_obj_dsc != null and auc_obj_dsc != ""'>
+		<!-- AND AUC_OBJ_DSC    =  #{auc_obj_dsc}      /* 경매대상                 */ -->
+		AND (
+			(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+			OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+		)
 	</if>
     </select>
     
