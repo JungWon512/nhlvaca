@@ -169,7 +169,8 @@
             where a.na_bzplc    = #{ss_na_bzplc}
               and a.na_bzplc    = b.na_bzplc
               and a.trmn_amnno  = b.trmn_amnno  
-              and b.auc_dt      = #{auc_dt}    
+              and b.auc_dt      = #{auc_dt}
+			  and b.auc_obj_dsc in ( '0', '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca1300" resultType="HashMap">
@@ -209,6 +210,7 @@
 				      and a.na_bzplc    = b.na_bzplc
 				      and a.trmn_amnno  = b.trmn_amnno  
 				      and b.auc_dt      = #{auc_dt}
+					  and b.auc_obj_dsc in ( '0', '1', '2', '3' )
 				    order by a.trmn_amnno
 				    ) A)
                 WHERE NO BETWEEN #{st_pos} AND #{ed_pos}
@@ -609,6 +611,7 @@
                ,tb_la_is_mh_sog_cow b
         where a.na_bzplc    = #{ss_na_bzplc}
           and a.auc_dt      = #{auc_dt}
+		  and a.auc_obj_dsc in ( '0', '1', '2', '3' )
           and a.auc_dt      =   b.auc_dt
           and a.na_bzplc    =  b.na_bzplc
           and b.sel_sts_dsc  != '11'
@@ -643,6 +646,7 @@
 	           ,tb_la_is_mh_sog_cow b
 	    where a.na_bzplc    = #{ss_na_bzplc}
 	      and a.auc_dt      = #{auc_dt}
+		  and a.auc_obj_dsc in ( '0', '1', '2', '3' )
 	      and a.auc_dt      =   b.auc_dt
 	      and a.na_bzplc    =  b.na_bzplc
 	      and b.sel_sts_dsc  != '11'
@@ -661,7 +665,7 @@
         from  tb_la_is_mh_mwmn_adj
         where na_bzplc   = #{ss_na_bzplc}
           and auc_dt     = #{auc_dt}
-    
+		  and auc_obj_dsc in ( '0', '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca2000" resultType="HashMap">
@@ -688,6 +692,7 @@
 	    from   tb_la_is_mh_mwmn_adj
 	    where na_bzplc   = #{ss_na_bzplc}
 	      and auc_dt     = #{auc_dt}
+		  and auc_obj_dsc in ( '0', '1', '2', '3' )
         order by trmn_amnno,auc_dt,auc_obj_dsc, rv_sqno  
         ) A)
         WHERE NO BETWEEN #{st_pos} AND #{ed_pos} 
@@ -702,6 +707,7 @@
         where na_bzplc    = #{ss_na_bzplc}
           and auc_obj_dsc = case when #{auc_obj_dsc} = '0' then auc_obj_dsc else #{auc_obj_dsc} end
           and auc_dt      = #{auc_dt}
+		  and auc_obj_dsc in ( '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca2100" resultType="HashMap">
@@ -725,6 +731,7 @@
 			    where na_bzplc    = #{ss_na_bzplc}
 			      and auc_obj_dsc = case when #{auc_obj_dsc} = '0' then auc_obj_dsc else #{auc_obj_dsc} end
 			      and auc_dt      = #{auc_dt}
+				  and auc_obj_dsc in ( '1', '2', '3' )
 			      order by auc_dt
         ) A)
         WHERE NO BETWEEN #{st_pos} AND #{ed_pos} 
@@ -738,6 +745,7 @@
 	        from  tb_la_is_mh_auc_entr
 	        where na_bzplc    = #{ss_na_bzplc}
 	          and auc_dt      = #{auc_dt}
+			  and auc_obj_dsc in ( '0', '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca2700" resultType="HashMap">
@@ -758,6 +766,7 @@
 		from  tb_la_is_mh_auc_entr
 		where na_bzplc    = #{ss_na_bzplc}
 		  and auc_dt      = #{auc_dt}
+		  and auc_obj_dsc in ( '0', '1', '2', '3' )
 	    order by auc_dt, auc_obj_dsc, lvst_auc_ptc_mn_no
         ) A)
         WHERE NO BETWEEN #{st_pos} AND #{ed_pos} 
@@ -1438,6 +1447,7 @@
         from tb_la_is_mh_rkon_cm
         where na_bzplc    = #{ss_na_bzplc}
           and auc_dt      = #{auc_dt}
+		  and auc_obj_dsc in ('0', '1', '2', '3')
     </select>
     
     <select id="LALM0899_selMca3500" resultType="HashMap">
@@ -1452,6 +1462,7 @@
 	    from tb_la_is_mh_rkon_cm
 	    where na_bzplc    = #{ss_na_bzplc}
 	      and auc_dt      = #{auc_dt}
+		  and auc_obj_dsc in ('0', '1', '2', '3')
     </select>
     <!-- 3500 -->
     
@@ -1481,6 +1492,7 @@
 	    from tb_la_is_mh_calf
 	    where na_bzplc    = #{ss_na_bzplc}
 	      and auc_dt      = #{auc_dt}
+		  and auc_obj_dsc = '3'
                ORDER BY oslp_no
                ) A)
             WHERE NO BETWEEN #{st_pos} AND #{ed_pos}
@@ -1556,6 +1568,7 @@
 			    from  tb_la_is_mh_fee_imps
 			    where na_bzplc    = #{ss_na_bzplc}
 			      and auc_dt      = #{auc_dt}
+				  and auc_obj_dsc in ( '1', '2', '3' )
 	           ORDER BY oslp_no
 	           ) A)
 	        WHERE NO BETWEEN #{st_pos} AND #{ed_pos}
@@ -1597,6 +1610,7 @@
 	      and a.farm_amnno   = b.farm_amnno
 	      and a.na_bzplc     = c.na_bzplc
 	      and a.anw_yn       = '9'
+		  and a.sra_srs_dsc  = '01'
 	    order by a.lschg_dtm desc
     </select>
     
@@ -1607,6 +1621,7 @@
          where a.na_bzplc       = #{ss_na_bzplc}
            and a.anw_yn         = '9'
            and a.sra_indv_amnno = ''
+		   and a.sra_srs_dsc    = '01'
     </select>
     
     <select id="LALM0899_selMca1600_ChkAucObjDsc" resultType="_int">
@@ -1614,6 +1629,7 @@
       from TB_LA_IS_MH_SOG_COW
 	 where na_bzplc      = #{ss_na_bzplc}                     /* 경제통합사업장코드          */
 	   and auc_dt        = #{auc_dt}
+	   and auc_obj_dsc not in ( '1', '2', '3' )
 	   and (auc_obj_dsc  = '' or auc_obj_dsc is null)
     </select>
     
@@ -1622,6 +1638,7 @@
 	      from TB_LA_IS_MH_SOG_COW
 	     where na_bzplc      = #{ss_na_bzplc}                     /* 경제통합사업장코드          */
 	       and auc_dt        = #{auc_dt}
+		   and auc_obj_dsc in ( '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca3900Cnt" resultType="_int">

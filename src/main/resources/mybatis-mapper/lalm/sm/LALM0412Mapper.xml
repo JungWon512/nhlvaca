@@ -4,25 +4,25 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.auc.lalm.sm.service.Impl.LALM0412Mapper">
-<select id="Lalm0412_selList_MhAucQcn" resultType ="hashMap">
-	select
-		 na_bzplc          /* 경제통합사업장코드 */
-		, auc_obj_dsc       /* 경매대상구분코드   */
-		, auc_dt            /* 경매일자           */
-		, qcn               /* 차수               */
-		, base_lmt_am       /* 기초한도금액       */
-		, ddl_yn            /* 마감여부           */
-		, tms_yn            /* 전송여부           */
-		, del_yn            /* 삭제여부           */
-		, fsrg_dtm          /* 최초등록일시       */
-		, fsrgmn_eno        /* 최초등록자개인번호 */
-		, lschg_dtm         /* 최종변경일시       */
-		, ls_cmeno          /* 최종변경자개인번호 */
+	<select id="Lalm0412_selList_MhAucQcn" resultType ="hashMap">
+		select
+			na_bzplc          /* 경제통합사업장코드 */
+			, auc_obj_dsc       /* 경매대상구분코드   */
+			, auc_dt            /* 경매일자           */
+			, qcn               /* 차수               */
+			, base_lmt_am       /* 기초한도금액       */
+			, ddl_yn            /* 마감여부           */
+			, tms_yn            /* 전송여부           */
+			, del_yn            /* 삭제여부           */
+			, fsrg_dtm          /* 최초등록일시       */
+			, fsrgmn_eno        /* 최초등록자개인번호 */
+			, lschg_dtm         /* 최종변경일시       */
+			, ls_cmeno          /* 최종변경자개인번호 */
 		from TB_LA_IS_MH_AUC_QCN
 		where na_bzplc       =  #{ss_na_bzplc}
 		and auc_obj_dsc    =   #{auc_obj_dsc}
 		and auc_dt         =  #{auc_dt}
-		</select>
+	</select>
 	<select id="LALM0412_selListTbl_Mmmwmn" resultType = "hashMap">
 		select
 			na_bzplc                   /* 경제통합사업장코드         */
@@ -159,7 +159,12 @@
 	        AND A.TRMN_AMNNO          = F.TRMN_AMNNO              /* 거래인관리번호              */
 	        , tb_la_is_mh_auc_entr d
 	        where a.na_bzplc          = #{ss_na_bzplc}
-	        and a.auc_obj_dsc         = case when #{auc_obj_dsc} = '0' then a.auc_obj_dsc else #{auc_obj_dsc} end
+	        <!-- and a.auc_obj_dsc         = case when #{auc_obj_dsc} = '0' then a.auc_obj_dsc else #{auc_obj_dsc} end -->
+			and (
+				(#{auc_obj_dsc} = '0' and a.auc_obj_dsc in ('0', '1', '2', '3'))
+				or (#{auc_obj_dsc} != '0' and a.auc_obj_dsc = #{auc_obj_dsc})
+			)
+			and a.sra_srs_dsc         = nvl(#{sra_srs_dsc}, a.sra_srs_dsc)
 	        and a.auc_dt              = #{auc_dt}
 	        and a.lvst_auc_ptc_mn_no  = #{lvst_auc_ptc_mn_no}
 	        and a.trmn_amnno          = #{trmn_amnno}
@@ -169,6 +174,7 @@
 	        and a.auc_dt              = d.auc_dt
 	        and a.auc_obj_dsc         = case when #{auc_obj_dsc} = '0' then a.auc_obj_dsc else d.auc_obj_dsc end
 	        and a.lvst_auc_ptc_mn_no  = d.lvst_auc_ptc_mn_no
+			and a.trmn_amnno          = d.trmn_amnno
 	        group by a.na_bzplc, a.auc_dt, a.lvst_auc_ptc_mn_no, a.trmn_amnno, b.tot_csh_rv_am, b.tot_ck_rv_am, b.tot_bb_rv_am, b.tot_etc_rv_am, b.sra_rv_am, d.auc_entr_grn_am, F.SRA_MWMNNM
     </select>
     
@@ -203,19 +209,16 @@
 	        
 		FROM TB_LA_IS_MH_SOG_COW   A
 		
-			LEFT OUTER JOIN (SELECT
-							          NA_BZPLC
-							        , AUC_OBJ_DSC
-							        , AUC_DT
-							        , TRMN_AMNNO
-							        , SUM(CASE WHEN SRA_RV_TPC = '1' THEN SRA_RV_AM ELSE 0 END) AS TOT_CSH_RV_AM    /* 현금입금액 */
-							        , SUM(CASE WHEN SRA_RV_TPC = '2' THEN SRA_RV_AM ELSE 0 END) AS TOT_CK_RV_AM     /* 수표입금액 */
-							        , SUM(CASE WHEN SRA_RV_TPC = '3' THEN SRA_RV_AM ELSE 0 END) AS TOT_BB_RV_AM     /* 통장입금액 */
-							        , SUM(CASE WHEN SRA_RV_TPC = '4' THEN SRA_RV_AM ELSE 0 END) AS TOT_ETC_RV_AM    /* 기타입금액 */
-							        , SUM(SRA_RV_AM) AS SRA_RV_AM                                                   /* 총입금액   */
-							        
+		LEFT OUTER JOIN (SELECT NA_BZPLC
+								, AUC_OBJ_DSC
+								, AUC_DT
+								, TRMN_AMNNO
+								, SUM(CASE WHEN SRA_RV_TPC = '1' THEN SRA_RV_AM ELSE 0 END) AS TOT_CSH_RV_AM    /* 현금입금액 */
+								, SUM(CASE WHEN SRA_RV_TPC = '2' THEN SRA_RV_AM ELSE 0 END) AS TOT_CK_RV_AM     /* 수표입금액 */
+								, SUM(CASE WHEN SRA_RV_TPC = '3' THEN SRA_RV_AM ELSE 0 END) AS TOT_BB_RV_AM     /* 통장입금액 */
+								, SUM(CASE WHEN SRA_RV_TPC = '4' THEN SRA_RV_AM ELSE 0 END) AS TOT_ETC_RV_AM    /* 기타입금액 */
+								, SUM(SRA_RV_AM) AS SRA_RV_AM                                                   /* 총입금액   */
 							FROM TB_LA_IS_MH_MWMN_ADJ
-							        
 							WHERE NA_BZPLC          = #{ss_na_bzplc}
 							  AND AUC_OBJ_DSC         = #{auc_obj_dsc}
 							  AND AUC_DT              = #{auc_dt}
@@ -228,8 +231,7 @@
 	        AND A.AUC_DT            = B.AUC_DT
 	        AND A.TRMN_AMNNO        = B.TRMN_AMNNO
 	        
-	        LEFT OUTER JOIN (SELECT
-							          NA_BZPLC
+	        LEFT OUTER JOIN (SELECT NA_BZPLC
 							        , AUC_OBJ_DSC
 							        , AUC_DT
 							        , OSLP_NO
@@ -262,7 +264,10 @@
 							        (CASE WHEN ANS_DSC  = '1'                           THEN 1          ELSE - 1 END)) AS SRA_ETC_CST      /* 축산기타비용             */
 					        FROM TB_LA_IS_MH_FEE_IMPS
 					          WHERE NA_BZPLC          = #{ss_na_bzplc}
-					            AND AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+					            AND (
+									(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+									OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+								)
 					            AND AUC_DT              = #{auc_dt}
 					            AND FEE_APL_OBJ_C       = '2' /* 대상구분 - 1.출하자, 2.낙찰자 */
 					        GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, LED_SQNO
@@ -284,7 +289,12 @@
 	        
 	        , TB_LA_IS_MH_AUC_ENTR D
        WHERE A.NA_BZPLC          = #{ss_na_bzplc}
-         AND A.AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+         <!-- AND A.AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END -->
+		 AND (
+			(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+			OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+		 )
+		 AND A.SRA_SRS_DSC         = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
          AND A.AUC_DT              = #{auc_dt}
          AND A.LVST_AUC_PTC_MN_NO  = #{lvst_auc_ptc_mn_no}
          AND A.TRMN_AMNNO          = #{trmn_amnno}
@@ -294,6 +304,7 @@
          AND A.AUC_DT              = D.AUC_DT
          AND A.AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE D.AUC_OBJ_DSC END
          AND A.LVST_AUC_PTC_MN_NO  = D.LVST_AUC_PTC_MN_NO
+		 AND A.TRMN_AMNNO          = D.TRMN_AMNNO
          
 	<choose>
 		<when test='fm_gbn == "f"'>	/* 암수 구분 코드*/
@@ -489,7 +500,12 @@
         , tb_la_is_mm_indv     b
         , tb_la_is_mm_fhs      d        
         where a.na_bzplc          = #{ss_na_bzplc}
-        and a.auc_obj_dsc         = case when #{auc_obj_dsc} = '0' then a.auc_obj_dsc else #{auc_obj_dsc} end
+        <!-- and a.auc_obj_dsc         = case when #{auc_obj_dsc} = '0' then a.auc_obj_dsc else #{auc_obj_dsc} end -->
+		and (
+			(#{auc_obj_dsc} = '0' and a.auc_obj_dsc in ('0', '1', '2', '3'))
+			or (#{auc_obj_dsc} != '0' and a.auc_obj_dsc = #{auc_obj_dsc})
+		)
+		and a.sra_srs_dsc         = nvl(#{sra_srs_dsc}, a.sra_srs_dsc)
         and a.auc_dt              = #{auc_dt}
         and a.trmn_amnno          = #{trmn_amnno}
         and a.led_sqno            = 1
@@ -692,7 +708,12 @@
         , TB_LA_IS_MM_FHS      D
                 
         WHERE A.NA_BZPLC          = #{ss_na_bzplc}
-          AND A.AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+          <!-- AND A.AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END -->
+		  AND (
+			(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+			OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+		  )
+		  AND A.SRA_SRS_DSC      = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
           AND A.AUC_DT              = #{auc_dt}
           AND A.TRMN_AMNNO          = #{trmn_amnno}
           AND A.LED_SQNO            = 1

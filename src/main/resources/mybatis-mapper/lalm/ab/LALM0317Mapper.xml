@@ -23,6 +23,13 @@
              , A.COW_SOG_WT                     /* 우출하중량                           */
              , A.FIR_LOWS_SBID_LMT_AM           /* 최초최저낙찰한도금액                 */
              , A.LOWS_SBID_LMT_AM               /* 최저낙찰한도금액                     */
+             , CASE WHEN A.AUC_OBJ_DSC = '1' THEN A.LOWS_SBID_LMT_AM / F.CALF_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '2' THEN A.LOWS_SBID_LMT_AM / F.NBFCT_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '3' THEN A.LOWS_SBID_LMT_AM / F.PPGCOW_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '5' THEN A.LOWS_SBID_LMT_AM / F.GT_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '6' THEN A.LOWS_SBID_LMT_AM / F.HS_AUC_ATDR_UNT_AM
+                    ELSE A.LOWS_SBID_LMT_AM / 10000
+                END AS LOWS_SBID_LMT_AM_EX
              , A.SRA_SBID_UPR                   /* 축산낙찰단가                         */
              , A.SRA_SBID_AM                    /* 축산낙찰금액                         */
              , A.SEL_STS_DSC                    /* 판매상태구분코드                     */
@@ -99,6 +106,7 @@
           AND A.VHC_SHRT_C   = E.VHC_SHRT_C
             , TB_LA_IS_MM_INDV     B
             , TB_LA_IS_MM_FHS      D
+            , TB_LA_IS_MM_ENV_EST     F
         WHERE A.NA_BZPLC           = #{ss_na_bzplc}
           <!-- AND A.AUC_OBJ_DSC        = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END -->
           AND (
@@ -122,6 +130,7 @@
           AND A.FHS_ID_NO          = D.FHS_ID_NO
           AND A.FARM_AMNNO         = D.FARM_AMNNO
           AND A.LOWS_SBID_LMT_AM  != 0
+          AND A.NA_BZPLC           = F.NA_BZPLC
         ORDER BY A.AUC_PRG_SQ  
     </select>
     

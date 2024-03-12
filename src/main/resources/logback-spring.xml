@@ -1,17 +1,53 @@
-<configuration scan="true" scanPeriod="30 seconds" debug="true">
+<configuration>
     
-    <appender name="consle" class="ch.qos.logback.core.ConsoleAppender">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <!-- <charset>UTF-8</charset> -->
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%logger{5}:%line] : %msg%n</pattern>
         </encoder>
     </appender>
-    
-    <!-- <logger name="log4jdbc.log4j2" level="OFF" additivity="false"/> -->
-    
-    <logger name="com.auc" level="debug" appender-ref="consle" />
-    <root level="INFO" additivity="FALSE">
-        <appender-ref ref="consle"/>
-    </root>
-    
+
+    <!-- 로컬 설정 -->
+    <logger name="jdbc" level="OFF" />
+    <logger name="jdbc.audit" level="OFF" />
+    <logger name="jdbc.connection" level="OFF" />
+    <logger name="jdbc.sqlonly" level="OFF" />
+    <logger name="jdbc.sqltiming" level="INFO" />
+    <logger name="jdbc.resultset" level="OFF" />
+    <logger name="jdbc.resultsettable" level="INFO" />
+
+    <logger name="com.auc" level="DEBUG" appender-ref="CONSOLE" />
+    <!-- sql 관련 설정 우선 모두 제거-->
+
+    <logger name="log4jdbc.log4j2" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- 전역설정 -->
+    <springProfile name="local">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <springProfile name="develop">
+        <!-- override, log 많아지므로 안정화되면 차후 삭제 -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <springProfile name="intergration">
+        <!-- override, log 많아지므로 안정화되면 차후 삭제 -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <springProfile name="production">
+        <!-- override, log 많아지므로 안정화되면 차후 삭제 -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
 </configuration>

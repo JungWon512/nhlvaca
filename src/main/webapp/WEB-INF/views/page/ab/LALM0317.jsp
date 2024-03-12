@@ -24,8 +24,8 @@
      * 2. 입 력 변 수 : N/A
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
-var mv_cut_am = 0;
-var mv_sqno_prc_dsc = "";
+    var mv_cut_am = 0;
+    var mv_sqno_prc_dsc = "";
 
     $(document).ready(function(){
     	fn_CreateGrid(); 
@@ -438,46 +438,19 @@ var mv_sqno_prc_dsc = "";
                 });
             },
             afterSaveCell: function(rowid, cellname, value, iRow, iCol) {
-            	// 그리드 중량, 낙찰금액 변경 이벤트 
-         	    if(cellname == 'COW_SOG_WT' || cellname == 'SRA_SBID_UPR') {
-         		   var v_sra_sbid_am = 0;
-         		   
-         		   // 송아지
-         		   if($("#grd_MhSogCow").jqGrid("getCell", iRow, 'AUC_OBJ_DSC') == "1") {
-         			   v_sra_sbid_am = parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR')) * parseInt(parent.envList[0]["CALF_AUC_ATDR_UNT_AM"]);
-         			   $("#grd_MhSogCow").jqGrid("setCell", iRow, 'SRA_SBID_AM', v_sra_sbid_am);
-         		   
-         		   // 비육우   
-         		   } else if($("#grd_MhSogCow").jqGrid("getCell", iRow, 'AUC_OBJ_DSC') == "2") {
-         			   // kg별
-         			   if(parent.envList[0]["NBFCT_AUC_UPR_DSC"] == "1") {
-         				   v_sra_sbid_am = parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR')) * parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'COW_SOG_WT')) * parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]);
-             			   
-             			   if(mv_sqno_prc_dsc == "1") {
-             				   v_sra_sbid_am = Math.floor(parseInt(v_sra_sbid_am) / parseInt(mv_cut_am)) * parseInt(mv_cut_am);
-             			   } else if(mv_sqno_prc_dsc == "2") {
-             				   v_sra_sbid_am = Math.ceil(parseInt(v_sra_sbid_am) / parseInt(mv_cut_am)) * parseInt(mv_cut_am);
-             			   } else {
-             				   v_sra_sbid_am = Math.round(parseInt(v_sra_sbid_am) / parseInt(mv_cut_am)) * parseInt(mv_cut_am);
-             			   }
-             			   
-             			   $("#grd_MhSogCow").jqGrid("setCell", iRow, 'SRA_SBID_AM', v_sra_sbid_am);
-         			   } else {
-         				   v_sra_sbid_am = v_sra_sbid_am = parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR')) * parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]);
-         				   $("#grd_MhSogCow").jqGrid("setCell", iRow, 'SRA_SBID_AM', v_sra_sbid_am);
-         			   }
-         		   // 번식우
-         		   } else if($("#grd_MhSogCow").jqGrid("getCell", iRow, 'AUC_OBJ_DSC') == "3") {
-         			   v_sra_sbid_am = v_sra_sbid_am = parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR')) * parseInt(parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"]);
-     				   $("#grd_MhSogCow").jqGrid("setCell", iRow, 'SRA_SBID_AM', v_sra_sbid_am);
-         		   }
-         	    } else if(cellname == 'SRA_SBID_UPR') {
+                if(cellname == 'SRA_SBID_UPR') {
             		if(parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR')) > 0 
             		&& parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR')) < parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'LOWS_SBID_LMT_AM_EX'))) {
             			MessagePopup('OK','낙찰가가 예정가보다 작습니다.');
+                        return;
             		}
-            		
-            	}            	
+            	}
+                
+            	// 그리드 중량, 낙찰금액 변경 이벤트 
+         	    if(cellname == 'COW_SOG_WT' || cellname == 'SRA_SBID_UPR') {
+         		    const v_sra_sbid_am = fn_calcSraSbidAm(iRow)
+                    $("#grd_MhSogCow").jqGrid("setCell", iRow, 'SRA_SBID_AM', v_sra_sbid_am);
+                }
             },
             colNames: searchResultColNames,
             colModel: searchResultColModel,          
@@ -492,7 +465,37 @@ var mv_sqno_prc_dsc = "";
 	    
 	  	//가로스크롤 있는경우 추가(마지막 컬럼 길이 조절)
 	    $("#grd_MhSogCow .jqgfirstrow td:last-child").width($("#grd_MhSogCow .jqgfirstrow td:last-child").width() - 17);
-	      
+    }
+
+    function fn_calcSraSbidAm(iRow) {
+        // 경매대상
+        const auc_obj_dsc = $("#grd_MhSogCow").jqGrid("getCell", iRow, 'AUC_OBJ_DSC');
+        // 낙찰단가
+        const sra_sbid_upr = $("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR');
+        // 중량
+        const cow_sog_wt = $("#grd_MhSogCow").jqGrid("getCell", iRow, 'COW_SOG_WT') ?? 0;
+        // 단가 기준 ( 사업장 정보에서 관리하는 비육우, 염소, 말을 제외한 나머지는 2 (두 별))
+        const auc_upr_dsc = parent.envList[0][AUC_UPR_DSC[auc_obj_dsc]] ?? "2";
+        // 응찰단위금액
+        const auc_atdr_unt_am = parent.envList[0][AUC_ATDR_UNT_AM[auc_obj_dsc]] ?? 10000;
+        // 절사단위(경매차수에서 설정 > 원, 십원, 백원, 천원, 만원)
+        const cut_am = mv_cut_am ?? 1;
+        // 절사구분(경매차수에서 설정 > 절사(1), 절상(2), 사사오입(3))
+        const sqno_prc_dsc = mv_sqno_prc_dsc;
+
+        // 단가 기준이 두 별이면 낙찰단가 * 응찰단위를 계산하여 반환
+        if (auc_upr_dsc === "2") {
+            return parseInt(sra_sbid_upr) * parseInt(auc_atdr_unt_am);
+        } else {
+            const sbid_am = parseInt(sra_sbid_upr) * parseInt(auc_atdr_unt_am) * parseInt(cow_sog_wt);
+            if (sqno_prc_dsc === "1") {
+                return Math.floor(sbid_am / cut_am) * cut_am;
+            } else if (sqno_prc_dsc === "2") {
+                return Math.ceil(sbid_am / cut_am) * cut_am;
+            } else {
+                return Math.round(sbid_am / cut_am) * cut_am;
+            }
+        }
     }
      
     function fn_setChgRadioAmRtoDsc(p_value){
@@ -590,6 +593,10 @@ var mv_sqno_prc_dsc = "";
             			lows_sbid_lmt_am_ex = parseInt($("#grd_MhSogCow").jqGrid("getCell", rowid, 'LOWS_SBID_LMT_AM')) / parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]);
             		} else if($("#grd_MhSogCow").jqGrid("getCell", rowid, 'AUC_OBJ_DSC') == "3") {
             			lows_sbid_lmt_am_ex = parseInt($("#grd_MhSogCow").jqGrid("getCell", rowid, 'LOWS_SBID_LMT_AM')) / parseInt(parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"]);
+            		} else if($("#grd_MhSogCow").jqGrid("getCell", rowid, 'AUC_OBJ_DSC') == "5") {
+            			lows_sbid_lmt_am_ex = parseInt($("#grd_MhSogCow").jqGrid("getCell", rowid, 'LOWS_SBID_LMT_AM')) / parseInt(parent.envList[0]["GT_AUC_ATDR_UNT_AM"]);
+            		} else if($("#grd_MhSogCow").jqGrid("getCell", rowid, 'AUC_OBJ_DSC') == "6") {
+            			lows_sbid_lmt_am_ex = parseInt($("#grd_MhSogCow").jqGrid("getCell", rowid, 'LOWS_SBID_LMT_AM')) / parseInt(parent.envList[0]["HS_AUC_ATDR_UNT_AM"]);
             		}
             		
             		rowData.LOWS_SBID_LMT_AM_EX = lows_sbid_lmt_am_ex;
@@ -639,7 +646,11 @@ var mv_sqno_prc_dsc = "";
     			lows_sbid_lmt_am_ex = parseInt($("#grd_MhSogCow").jqGrid("getCell", rowid, 'LOWS_SBID_LMT_AM')) / parseInt(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]);
     		} else if($("#grd_MhSogCow").jqGrid("getCell", rowid, 'AUC_OBJ_DSC') == "3") {
     			lows_sbid_lmt_am_ex = parseInt($("#grd_MhSogCow").jqGrid("getCell", rowid, 'LOWS_SBID_LMT_AM')) / parseInt(parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"]);
-    		}
+    		} else if($("#grd_MhSogCow").jqGrid("getCell", rowid, 'AUC_OBJ_DSC') == "5") {
+                lows_sbid_lmt_am_ex = parseInt($("#grd_MhSogCow").jqGrid("getCell", rowid, 'LOWS_SBID_LMT_AM')) / parseInt(parent.envList[0]["GT_AUC_ATDR_UNT_AM"]);
+            } else if($("#grd_MhSogCow").jqGrid("getCell", rowid, 'AUC_OBJ_DSC') == "6") {
+                lows_sbid_lmt_am_ex = parseInt($("#grd_MhSogCow").jqGrid("getCell", rowid, 'LOWS_SBID_LMT_AM')) / parseInt(parent.envList[0]["HS_AUC_ATDR_UNT_AM"]);
+            }
     		
     		rowData.LOWS_SBID_LMT_AM_EX = lows_sbid_lmt_am_ex;
     		
