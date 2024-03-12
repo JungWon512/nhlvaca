@@ -826,79 +826,80 @@
     </insert>
     
     
-    <select id="LALM0899_selMca3100_101" resultType="HashMap">
-        select
-               a.na_bzplc
-		     , replace(a.cus_mpno,'-','')     as cus_mpno          /* 고객휴대폰   */
-		     , a.sra_mwmnnm || '님'  as usrnm                      /* 응찰자명     */
-		     , b.na_bzplnm || substr(c.auc_dt,5,2) || '월'
-		                    || substr(c.auc_dt,7,2) || '일'
+    <select id="LALM0899_selMca3100_101" resultType="HashMap">    	
+        SELECT /* LALM0899_selMca3100_101 */  
+               A.NA_BZPLC
+		     , REPLACE(A.CUS_MPNO,'-','')     AS CUS_MPNO          /* 고객휴대폰   */
+		     , A.SRA_MWMNNM || '님'  AS USRNM                      /* 응찰자명     */
+		     , B.NA_BZPLNM || SUBSTR(C.AUC_DT,5,2) || '월'
+		                    || SUBSTR(C.AUC_DT,7,2) || '일'
 		                    || ' 경매시장예정'
-		                    || (SELECT '(' || LISTAGG(auc_obj_dsc,',') WITHIN GROUP (ORDER BY auc_obj_dsc) || ')' AS msg
+		                    || (SELECT '(' || LISTAGG(AUC_OBJ_DSC,',') WITHIN GROUP (ORDER BY AUC_OBJ_DSC) || ')' AS MSG
 		                        FROM(
-		                        select case when auc_obj_dsc = '1' then '송아지'
-		                                    when auc_obj_dsc = '2' then '비육우'
-		                                    else '번식우'
-		                               end as auc_obj_dsc
-		                          from tb_la_is_mh_sog_cow
-		                         where na_bzplc = #{ss_na_bzplc}                    /* 경제통합사업장코드          */
-		                           and auc_dt   = #{auc_dt}
-		                           and auc_obj_dsc = case when #{auc_obj_dsc} = '1' then '1'
-		                                                  when #{auc_obj_dsc} = '2' then '2'
-		                                                  when #{auc_obj_dsc} = '3' then '3'
-		                                                  else auc_obj_dsc
-		                                             end
-		                                group by auc_obj_dsc
+		                        SELECT CASE WHEN AUC_OBJ_DSC = '1' THEN '송아지'
+		                                    WHEN AUC_OBJ_DSC = '2' THEN '비육우'
+		                                    ELSE '번식우'
+		                               END AS AUC_OBJ_DSC
+		                          FROM TB_LA_IS_MH_SOG_COW
+		                         WHERE NA_BZPLC = #{ss_na_bzplc}                    /* 경제통합사업장코드          */
+		                           AND AUC_DT   = #{auc_dt}
+		                           AND AUC_OBJ_DSC = DECODE(#{auc_obj_dsc},'0',AUC_OBJ_DSC,#{auc_obj_dsc})
+		                                GROUP BY AUC_OBJ_DSC
 		                        ))
-		                    || '총'  || TO_CHAR(c.tot_cnt) || '두'
-		                    || '(암' || TO_CHAR(c.am) || ','
-		                    || '수'  || TO_CHAR(c.su) || ') 입니다.'
-		                         as msg_cntn          /* 메세지내용   */
+		                    || '총'  || TO_CHAR(C.TOT_CNT) || '두'
+		                    || '(암' || TO_CHAR(C.AM) || ','
+		                    || '수'  || TO_CHAR(C.SU) || ') 입니다.'
+		                         AS MSG_CNTN          /* 메세지내용   */
                , D.TMS_YN
                , D.SMS_FWDG_DT
                , #{auc_obj_dsc} AS AUC_OBJ_DSC
-               , A.TRMN_AMNNO
+               , #{auc_dt} || LPAD(A.TRMN_AMNNO, 5, '0') TRMN_AMNNO
                , A.SRA_MWMNNM    AS RMS_MN_NAME    /* 수신자명         */
                , A.CUS_MPNO      AS SMS_RMS_MPNO   /* 수신자전화번호   */
                , B.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
                , B.TELNO         AS SMS_TRMS_TELNO /* 발신자전화번호   */
-		    from tb_la_is_mm_mwmn    a
-		       , tb_la_is_mm_wmc     b
-		       , (select
-		                a.na_bzplc
-		              , a.auc_dt
-		              , count(a.auc_dt)                                                      as tot_cnt
-		              , sum(case when b.indv_sex_c     in ('1', '4', '6') then 1 else 0 end) as am
-		              , sum(case when b.indv_sex_c not in ('1', '4', '6') then 1 else 0 end) as su
+		    FROM TB_LA_IS_MM_MWMN    A
+		       , TB_LA_IS_MM_WMC     B
+		       , (SELECT
+		                A.NA_BZPLC
+		              , A.AUC_DT
+		              , COUNT(A.AUC_DT)                                                      AS TOT_CNT
+		              , SUM(CASE WHEN B.INDV_SEX_C     IN ('1', '4', '6') THEN 1 ELSE 0 END) AS AM
+		              , SUM(CASE WHEN B.INDV_SEX_C NOT IN ('1', '4', '6') THEN 1 ELSE 0 END) AS SU
 		
-		          from tb_la_is_mh_sog_cow a
-		             , tb_la_is_mm_indv    b
-		          where  a.na_bzplc            = #{ss_na_bzplc}
-		            and  a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
-		                                              when #{auc_obj_dsc} = '2' then '2'
-		                                              when #{auc_obj_dsc} = '3' then '3'
-		                                              else a.auc_obj_dsc
-		                                              end
-		            and  a.auc_dt              = #{auc_dt}
-		            and  a.del_yn              = '0'
-		            and  a.na_bzplc            = b.na_bzplc
-		            and  a.sra_indv_amnno      = b.sra_indv_amnno
-		            and  a.sra_srs_dsc         = b.sra_srs_dsc
-		          group by a.na_bzplc, a.auc_dt
-		         ) c		         
-              , tb_la_is_mm_sms d
-		    where  a.na_bzplc            = #{ss_na_bzplc}
-		      and  a.del_yn              = '0'
-		      and  a.na_bzplc            = b.na_bzplc
-		      and  a.na_bzplc            = c.na_bzplc
-			  and  a.na_bzplc            = d.na_bzplc(+)
-			  and  a.trmn_amnno          = d.trmn_amnno(+)
-			  and  d.auc_obj_dsc(+)      = #{auc_obj_dsc}
-              and  d.dpamn_dsc(+)        = '1'
-              and  d.sel_sts_dsc(+)      = '01'
-           	  and  d.tms_type(+)		= #{tms_type}
-           	  and  length(REGEXP_REPLACE(a.cus_mpno, '[^0-9]')) <![CDATA[>=]]> 10
-		    order by a.trmn_amnno
+		          FROM TB_LA_IS_MH_SOG_COW A
+		             , TB_LA_IS_MM_INDV    B
+		          <where> 
+		            A.NA_BZPLC            = #{ss_na_bzplc}
+		            AND  A.AUC_OBJ_DSC         = DECODE(#{auc_obj_dsc},'0',A.AUC_OBJ_DSC,#{auc_obj_dsc})
+		            AND  A.AUC_DT              = #{auc_dt}
+		            AND  A.DEL_YN              = '0'
+		            AND  A.NA_BZPLC            = B.NA_BZPLC
+		            AND  A.SRA_INDV_AMNNO      = B.SRA_INDV_AMNNO
+		            AND  A.SRA_SRS_DSC         = B.SRA_SRS_DSC
+ 	              </where>
+		          GROUP BY A.NA_BZPLC, A.AUC_DT
+		         ) C		         
+              , (
+				SELECT NA_BZPLC,TRMN_AMNNO,MAX(SMS_FWDG_DT) SMS_FWDG_DT,CASE WHEN COUNT(*) >= 1 THEN '1' ELSE '0' END TMS_YN
+				FROM TB_LA_IS_MM_SMS
+				WHERE 1=1
+				AND  AUC_OBJ_DSC    = #{auc_obj_dsc}
+				AND  DPAMN_DSC      = '1'
+				AND  SEL_STS_DSC    = '01'
+				AND  TMS_TYPE		= #{tms_type}
+				GROUP BY NA_BZPLC,TRMN_AMNNO
+              ) D
+              <where>
+			      AND  A.NA_BZPLC            = #{ss_na_bzplc}
+			      AND  A.DEL_YN              = '0'
+			      AND  A.NA_BZPLC            = B.NA_BZPLC
+			      AND  A.NA_BZPLC            = C.NA_BZPLC
+				  AND  A.NA_BZPLC            = D.NA_BZPLC(+)
+				  AND  D.TRMN_AMNNO(+) 		 = #{auc_dt} || LPAD(A.TRMN_AMNNO, 5, '0')
+	           	  AND  LENGTH(REGEXP_REPLACE(A.CUS_MPNO, '[^0-9]')) <![CDATA[>=]]> 10
+              </where>
+		    ORDER BY A.TRMN_AMNNO
     </select>
     
     <select id="LALM0899_selMca3100_102" resultType="HashMap">
@@ -939,7 +940,7 @@
                , D.TMS_YN
                , D.SMS_FWDG_DT
                , #{auc_obj_dsc} AS AUC_OBJ_DSC
-               , A.TRMN_AMNNO
+               , #{auc_dt} || LPAD(A.TRMN_AMNNO, 5, '0') TRMN_AMNNO
                , A.SRA_MWMNNM    AS RMS_MN_NAME    /* 수신자명         */
                , A.CUS_MPNO      AS SMS_RMS_MPNO   /* 수신자전화번호   */
                , B.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
@@ -969,18 +970,23 @@
 		        and  a.sra_indv_amnno      = b.sra_indv_amnno
 		        and  a.sra_srs_dsc         = b.sra_srs_dsc
 		      group by a.na_bzplc, a.auc_dt
-		     ) c 
-          , tb_la_is_mm_sms d 
+		     ) c 		         
+			, (
+				SELECT NA_BZPLC,TRMN_AMNNO,MAX(SMS_FWDG_DT) SMS_FWDG_DT,CASE WHEN COUNT(*) >= 1 THEN '1' ELSE '0' END TMS_YN
+				FROM TB_LA_IS_MM_SMS
+				WHERE 1=1
+		        AND  AUC_OBJ_DSC      = #{auc_obj_dsc}
+		        AND  DPAMN_DSC        = '1'
+		        AND  SEL_STS_DSC      = '02'
+		        AND  TMS_TYPE		  = #{tms_type}
+				GROUP BY NA_BZPLC,TRMN_AMNNO
+			) D
 		where  a.na_bzplc            = #{ss_na_bzplc}
 		  and  a.del_yn              = '0'
 		  and  a.na_bzplc            = b.na_bzplc
 		  and  a.na_bzplc            = c.na_bzplc
           and  a.na_bzplc            = d.na_bzplc(+)
-          and  a.trmn_amnno          = d.trmn_amnno(+)
-          and  d.auc_obj_dsc(+)      = #{auc_obj_dsc}
-          and  d.dpamn_dsc(+)        = '1'
-          and  d.sel_sts_dsc(+)      = '02'
-          and  d.tms_type(+)				= #{tms_type}
+          and  d.trmn_amnno(+)		 = #{auc_dt} || LPAD(A.TRMN_AMNNO, 5, '0')
           and  length(REGEXP_REPLACE(a.cus_mpno, '[^0-9]')) <![CDATA[>=]]> 10
 		order by a.trmn_amnno
     </select>
@@ -1018,7 +1024,7 @@
                , E.TMS_YN
                , E.SMS_FWDG_DT
                , #{auc_obj_dsc} AS AUC_OBJ_DSC
-               , A.TRMN_AMNNO
+               , #{auc_dt} || LPAD(A.TRMN_AMNNO, 5, '0') TRMN_AMNNO
                , A.SRA_MWMNNM    AS RMS_MN_NAME    /* 수신자명         */
                , A.CUS_MPNO      AS SMS_RMS_MPNO   /* 수신자전화번호   */
                , B.NA_BZPLNM     AS IO_TRMSNM      /* 발신자명         */
@@ -1048,16 +1054,21 @@
 	            and  a.sra_srs_dsc         = b.sra_srs_dsc
 	          group by a.na_bzplc, a.auc_dt
 	         ) c
-          , tb_la_is_mm_sms e
+          , (
+				SELECT NA_BZPLC,TRMN_AMNNO,MAX(SMS_FWDG_DT) SMS_FWDG_DT,CASE WHEN COUNT(*) >= 1 THEN '1' ELSE '0' END TMS_YN
+				FROM TB_LA_IS_MM_SMS
+				WHERE 1=1
+				AND  AUC_OBJ_DSC      = #{auc_obj_dsc}
+				AND  DPAMN_DSC        = '1'
+				AND  SEL_STS_DSC      = '03'
+				AND  TMS_TYPE		  = #{tms_type}
+				GROUP BY NA_BZPLC,TRMN_AMNNO
+          ) e
 	    where  a.na_bzplc            = #{ss_na_bzplc}
 	      and  a.del_yn              = '0'
 	      and  a.na_bzplc            = b.na_bzplc
           and  a.na_bzplc            = e.na_bzplc(+)
-          and  a.trmn_amnno          = e.trmn_amnno(+)
-          and  e.auc_obj_dsc(+)      = #{auc_obj_dsc}
-          and  e.dpamn_dsc(+)        = '1'
-          and  e.sel_sts_dsc(+)      = '03'
-       	  and  e.tms_type	(+)		= #{tms_type}
+          and  e.trmn_amnno(+)		 = #{auc_dt} || LPAD(A.TRMN_AMNNO, 5, '0')
        	  and  length(REGEXP_REPLACE(a.cus_mpno, '[^0-9]')) <![CDATA[>=]]> 10
 	    order by a.trmn_amnno
     </select>

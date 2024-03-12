@@ -1266,7 +1266,29 @@ var mCnt = 0;
 		// 1형식
 		if (($("#prto_tpc_1").is(":checked"))) {
 
-			
+			/*** 중도매인정산서 1형식 공통약식(딸송정보없X)
+			* 전김완 : 8808990656441  | 전김완 : 8808990766485 | 파주연천:8808990659787 | 고창부안: 8808990657189 | 횡성: 8808990656885 | 강진완도 :  8808990657103 | 양평 :  8808990643625
+			* | 장흥 : 8808990656533 | 영광  : 8808990811710 | 동삼태: 8808990652825 | 고령성주 : 8808990659695 | 강릉 : 8808990656878 | 영천 : 8808990656687 | 나주 : 8808990659275  
+			* | 서산 : 8808990656694 | 진천 : 8808990656502 | 홍천 : 8808990674605 | 충주 : 8808990656465 | 함평 : 8808990656601 | 청양 : 8808990657646
+			, | 남해 : 8808990656700 | 곡성 : 8808990656717 | 제주 : 8808990656618 | 수원 : 8808990656496 | 고성 : 8808990812007 | 세종공주 : 8808990656588 | 옥천 : 8808990671086
+			* | 평택 : 8808990795874 |청주 : 8808990658995 | 해남 : 8808990656106 | 고흥 : 8808990779546 | 음성 : 8808990683973 | 보령 : 8808990684321 | 인천강화옹진 : 8808990812021
+			* | 예산 : 8808990657196 | 홍성 : 8808990657622 | 제천단양 : 8808990656526 | 부여 : 8808990660127 | 논산계룡 : 8808990659268 | 순천광양 : 8808990658896 | 울산 : 8808990656632
+			* | 목무신 : 8808990656915 | 구미 : 8808990657615
+			*/
+			var arrLalm0412R0_9 = [
+				'8808990656441' , '8808990766485' , '8808990659787', '8808990657189' , '8808990656885' , '8808990657103', '8808990643625'
+				, '8808990656533' , '8808990811710' , '8808990652825' , '8808990659695' , '8808990656878' , '8808990656687' , '8808990659275' 
+				, '8808990656694' , '8808990656502' , '8808990657240' , '8808990674605' , '8808990656465' , '8808990656601' ,'8808990657646' 
+				, '8808990656700' , '8808990656717' , '8808990656618' , '8808990656496' , '8808990812007' , '8808990656588' , '8808990671086' 
+				, '8808990795874' , '8808990658995' , '8808990656106' , '8808990779546' , '8808990683973' , '8808990684321' , '8808990812021'
+				, '8808990657196' , '8808990657622' , '8808990656526' , '8808990660127' , '8808990659268' , '8808990658896' , '8808990656632'
+				, '8808990656915'
+			];
+			/*** 번식우 제외 중도매인정산서 1형식 공통약식(딸송정보없X)
+			* 염암 : 8808990689760 | 거창 : 8808990659701 | 영덕울진 : 8808990785431 | 보성 : 8808990656267
+			***/
+			var arrObjEx3Lalm0412R0_9 = ['8808990689760' , '8808990659701' , '8808990785431' , '8808990656267'];
+			 
 			// 영주:8808990687094
 			if (na_bzplc == '8808990687094') {   
 				p_param.title = "일반가축경매(" + $('#auc_obj_dsc option:checked').text().replace(/[^가-힣]/g,'') +")개별정산서 제"+$('#auc_dt').val() +"차";
@@ -1274,30 +1296,7 @@ var mCnt = 0;
 			}else if(na_bzplc == '8808990659008') { //경주
    				ReportPopup('LALM0412R0_0_4_2',p_param, p_grid, 'V');
    			} else if(na_bzplc == '8808990656649') { //의성
-				ReportPopup('LALM0412R0_0_4',p_param, p_grid, 'T');//원본
-			/*** 중도매인정산서 1형식 공통약식(딸송정보없X)
-			* 전주김제완주 보은옥천 옥천지점:8808990671086 , 파주연천:8808990659787
-			* 고창부안:8808990657189, 횡성: 8808990656885, 강진완도 :  8808990657103, 양평 :  8808990643625 
-			* 장흥 :  8808990656533, 영광 :  8808990811710, 동해삼척태백축협 :  8808990652825, 고령성주 : 8808990659695, 강릉 : 8808990656878
-			* 영천 : 8808990656687 , 나주 : 8808990659275 , 서산 : 8808990656694 , 진천 : 8808990656502 , 진주 : 8808990657240
-			* 홍천 : 8808990674605 , 충주 : 8808990656465 , 함평 : 8808990656601, 청양 : 8808990657646, 남해 : 8808990656700 , 곡성 : 8808990656717
-			* 제주 : 8808990656618 , 수원 : 8808990656496 , 고성 : 8808990812007, 세종공주 : 8808990656588 , 옥천 : 8808990671086 , 평택 : 8808990795874
-			* 청주 : 8808990658995  , 해남 : 8808990656106, 고흥 : 8808990779546, 음성 : 8808990683973, 보령 : 8808990684321, 인천강화옹진 : 8808990812021
-			* 예산 : 8808990657196 , 홍성 : 8808990657622, 제천단양 : 8808990656526, 부여 : 8808990660127 , 논산계룡 : 8808990659268, 순천광양 : 8808990658896
-			* 번식우 제외: 영암:8808990659701, 거창:8808990659701 , 영덕울진 : 8808990785431 , 보성 : 8808990656267 
-			*/
-			} else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485' || na_bzplc == '8808990671086' || na_bzplc == '8808990659787'  
-				|| na_bzplc == '8808990657189' || na_bzplc == '8808990656885' || na_bzplc == '8808990657103'|| na_bzplc == '8808990643625'
-				|| na_bzplc == '8808990656533' || na_bzplc == '8808990811710' || na_bzplc =='8808990652825'  || na_bzplc =='8808990659695' || na_bzplc =='8808990656878'
-				|| na_bzplc =='8808990656687' || na_bzplc =='8808990659275' || na_bzplc =='8808990656694' || na_bzplc =='8808990656502' || na_bzplc =='8808990657240'
-				|| na_bzplc =='8808990674605' || na_bzplc =='8808990656465' || na_bzplc =='8808990656601' || na_bzplc =='8808990657646' || na_bzplc == '8808990656700'|| na_bzplc == '8808990656717'
-				|| na_bzplc =='8808990656618' || na_bzplc =='8808990656496' || na_bzplc =='8808990812007' || na_bzplc == '8808990656588' || na_bzplc == '8808990671086' || na_bzplc == '8808990795874'
-				|| na_bzplc == '8808990658995' || na_bzplc == '8808990656106' || na_bzplc == '8808990779546' || na_bzplc == '8808990683973'  || na_bzplc == '8808990684321' || na_bzplc == '8808990812021'
-				|| na_bzplc == '8808990657196' || na_bzplc == '8808990657622' || na_bzplc == '8808990656526' || na_bzplc == '8808990660127' || na_bzplc == '8808990659268' || na_bzplc == '8808990658896'
-				|| ((na_bzplc == '8808990689760' || na_bzplc == '8808990659701' || na_bzplc =='8808990785431' || na_bzplc == '8808990656267') && $("#auc_obj_dsc").val() != '3' )
-			){
-				ReportPopup('LALM0412R0_9',p_param, p_grid, 'T');//원본
-				//ReportPopup('LALM0412R0_1_3',p_param, p_grid, 'V');
+				ReportPopup('LALM0412R0_0_4',p_param, p_grid, 'V');//원본
 			}else if(na_bzplc == '8808990656519' && $("#auc_obj_dsc").val() != '3') { //사천
    				ReportPopup('LALM0412R0_10',p_param, p_grid, 'V');
    			}else if(na_bzplc =='8808990661315') { //화순 : 8808990661315
@@ -1315,29 +1314,37 @@ var mCnt = 0;
    			}else if(na_bzplc == '8808990689180') { //안동
    				ReportPopup('LALM0412R0_0_5_7',p_param, p_grid, 'V');
    			} else if(na_bzplc == '8808990660783'){ //임실
-				ReportPopup('LALM0412R0_T_0',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM0412R0_T_0',p_param, p_grid, 'V');//원본
 			} else if(na_bzplc == '8808990659565'){ //김천
-				ReportPopup('LALM0412R0_9_3',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM0412R0_9_3',p_param, p_grid, 'V');//원본
 			} else if(na_bzplc == '8808990679549'){ //포항 : 8808990679549
-				ReportPopup('LALM0412R0_9_J_0',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM0412R0_9_J_0',p_param, p_grid, 'V');//원본
 			} else if(na_bzplc =='8808990656571'){ //청도 : 8808990656571
-				ReportPopup('LALM0412R0_9_J_1',p_param, p_grid, 'T');
+				ReportPopup('LALM0412R0_9_J_1',p_param, p_grid, 'V');
 			} else if(na_bzplc =='8808990656670'){	//괴산증평 : 8808990656670
-				ReportPopup('LALM0412R0_9_4',p_param, p_grid, 'T');
+				ReportPopup('LALM0412R0_9_4',p_param, p_grid, 'V');
 			} else if($("#auc_obj_dsc").val() == '1' && na_bzplc =='8808990817675'){	//송아지 장성 : 8808990817675
-				ReportPopup('LALM0412R0_9_J_3',p_param, p_grid, 'T');
+				ReportPopup('LALM0412R0_9_J_3',p_param, p_grid, 'V');
 			} else if($("#auc_obj_dsc").val() == '2' && na_bzplc =='8808990817675'){	//큰소 장성 :8808990817675
-				ReportPopup('LALM0412R0_9_J_5',p_param, p_grid, 'T');
+				ReportPopup('LALM0412R0_9_J_5',p_param, p_grid, 'V');
 			} else if(na_bzplc =='8808990817675'){	//큰소 장성 :8808990817675
-				ReportPopup('LALM0412R0_9_J_4',p_param, p_grid, 'T');
+				ReportPopup('LALM0412R0_9_J_4',p_param, p_grid, 'V');
 			} else if(na_bzplc =='8808990656267'){	//보성 번식우 이외 :8808990656267
-				ReportPopup('LALM0412R0_9_J_7',p_param, p_grid, 'T');
+				ReportPopup('LALM0412R0_9_J_7',p_param, p_grid, 'V');
 			} else if(na_bzplc =='8808990762654'){ //당진 : 8808990762654
-				ReportPopup('LALM0412R0_9_J_6',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM0412R0_9_J_6',p_param, p_grid, 'V');//원본
+			} else if(na_bzplc =='8808990656427'){ //상주 : 8808990657639
+				ReportPopup('LALM0412R0_9_6',p_param, p_grid, 'V');
+			} else if(na_bzplc =='8808990657240'){ //진주 : 8808990657240 
+				ReportPopup('LALM0412R0_9_0',p_param, p_grid, 'V'); //기본양식에서 임신개월없음
 			} else if(na_bzplc =='8808990656427'){ //문경 : 8808990656427 (응찰자 유의사항문구 추가)
-				ReportPopup('LALM0412R0_9_5',p_param, p_grid, 'T');//원본				
-			}else{
-				ReportPopup('LALM0412R0_0',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM0412R0_9_5',p_param, p_grid, 'V');//원본
+			//중도매인정산서 1형식 공통약식(딸송정보없X)
+			} else if(arrLalm0412R0_9.includes(na_bzplc) || (arrObjEx3Lalm0412R0_9 && $("#auc_obj_dsc").val() != '3' ) ){
+				ReportPopup('LALM0412R0_9',p_param, p_grid, 'V');//원본
+				//ReportPopup('LALM0412R0_1_3',p_param, p_grid, 'V');
+			} else{
+				ReportPopup('LALM0412R0_0',p_param, p_grid, 'V');//원본
 			}
 		// 2형식
 		} else {
@@ -1355,8 +1362,8 @@ var mCnt = 0;
    				ReportPopup('LALM0412R0_0_1_1',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656434') { //원주
    				ReportPopup('LALM0412R0_0_6',p_param, p_grid, 'V');
-   			//고령성주  ,나주, 구미칠곡, 김천, 충주, 의령
-   			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615' || na_bzplc == '8808990659565' || na_bzplc == '8808990679549' || na_bzplc =='8808990656465' || na_bzplc =='8808990656199' || na_bzplc == '8808990656700') {
+   			//고령성주  ,나주, 구미칠곡, 김천, 충주, 의령 , 상주
+   			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615' || na_bzplc == '8808990659565' || na_bzplc == '8808990679549' || na_bzplc =='8808990656465' || na_bzplc =='8808990656199' || na_bzplc == '8808990656700' || na_bzplc == '8808990657639') {
    				ReportPopup('LALM0412R0_0_7',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656427') { //문경
    				ReportPopup('LALM0412R0_0_7_1',p_param, p_grid, 'V');
@@ -1370,7 +1377,7 @@ var mCnt = 0;
    			}else if(na_bzplc == '8808990660783') { //임실
    				ReportPopup('LALM0412R0_T_1',p_param, p_grid, 'V');
    			}else if (na_bzplc == '8808990806426') { //속초양양
-				ReportPopup('LALM0412R0_J_0',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM0412R0_J_0',p_param, p_grid, 'V');//원본
 			} else if((na_bzplc == '8808990656236' || na_bzplc == '8808990656519') && $("#auc_obj_dsc").val()=='3'){
  				ReportPopup('LALM0412R0_0_3',p_param, p_grid, 'V');
    			} else if((na_bzplc == '8808990671086') && $("#auc_obj_dsc").val()=='3'){ //보은옥천영동축협 옥천지점
@@ -1382,7 +1389,7 @@ var mCnt = 0;
    			}
 			
    			//} else if(na_bzplc == '8808990661315' || na_bzplc == '8808990656960' || na_bzplc == '8808990656953') { //화순,정읍,순창
-			//	ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'T');//원본	
+			//	ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'V');//원본	
 		}
 		fn_chgAucEntrDdl();
 	}
@@ -1439,12 +1446,12 @@ var mCnt = 0;
 		 	}
 	   		 
 			if (na_bzplc == '8808990687094') {  // 영주:              8808990687094
-				ReportPopup('LALM0412R1_4',TitleData, 'grd_MhSogCow', 'T');
+				ReportPopup('LALM0412R1_4',TitleData, 'grd_MhSogCow', 'V');
 			}else if(na_bzplc == '8808990656557') { //예천
-   				ReportPopup('LALM0412R1_0',TitleData, 'grd_MhSogCow', 'T');
+   				ReportPopup('LALM0412R1_0',TitleData, 'grd_MhSogCow', 'V');
    			}else{
-				ReportPopup('LALM0412R1_9',TitleData, 'grd_MhSogCow', 'T');
-				//ReportPopup('LALM0412R1_1',TitleData, 'grd_MhSogCow', 'T');
+				ReportPopup('LALM0412R1_9',TitleData, 'grd_MhSogCow', 'V');
+				//ReportPopup('LALM0412R1_1',TitleData, 'grd_MhSogCow', 'V');
 			}
 			//fn_chgAucEntrDdl();
 			
@@ -1482,9 +1489,9 @@ var mCnt = 0;
 			
 			//춘천철원 : 8808990656229
 			if(na_bzplc == '8808990656229'){
-				ReportPopup('LALM0412R2_1',TitleData, 'grd_MhSogCow', 'T');
+				ReportPopup('LALM0412R2_1',TitleData, 'grd_MhSogCow', 'V');
 			}else{
-				ReportPopup('LALM0412R2',TitleData, 'grd_MhSogCow', 'T');
+				ReportPopup('LALM0412R2',TitleData, 'grd_MhSogCow', 'V');
 			}
 		}
 		
@@ -1517,7 +1524,7 @@ var mCnt = 0;
  			TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
  			TitleData.sra_mwmnnm = $("#sra_mwmnnm").val(); //축산중도매인명
 			//$("#qcn").val(result_6[0].QCN)
-	        ReportPopup('LALM0412R3',TitleData, 'grd_MhSogCow', 'T');
+	        ReportPopup('LALM0412R3',TitleData, 'grd_MhSogCow', 'V');
 		}
 		
 		function fn_getKNumber(number){
