@@ -163,13 +163,13 @@
     <!-- 1300 -->
     <select id="LALM0899_selMca1300Cnt" resultType="_int">
         select   
-                  count(*)
-            from  tb_la_is_mm_mwmn a
-                 ,tb_la_is_mh_auc_entr b
-            where a.na_bzplc    = #{ss_na_bzplc}
-              and a.na_bzplc    = b.na_bzplc
-              and a.trmn_amnno  = b.trmn_amnno  
-              and b.auc_dt      = #{auc_dt}    
+			count(*)
+		from tb_la_is_mm_mwmn a
+			,tb_la_is_mh_auc_entr b
+		where a.na_bzplc    = #{ss_na_bzplc}
+		and a.na_bzplc    = b.na_bzplc
+		and a.trmn_amnno  = b.trmn_amnno  
+		and b.auc_dt      = #{auc_dt}    
     </select>
     
     <select id="LALM0899_selMca1300" resultType="HashMap">
