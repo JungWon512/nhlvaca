@@ -38,7 +38,7 @@
 		// 수수료정보입력
         fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 8, true, "선택"); // 경매대상구분
         fn_setCodeBox("fee_apl_obj_c", "FEE_APL_OBJ_C", 1, true, "선택"); // 적용대상
-        fn_setCodeBox("ppgcow_fee_dsc", "PPGCOW_FEE_DSC", 1, true); // 수수료구분(코드가 1개밖에 없어서 일단 무조건 선택)
+        //fn_setCodeBox("ppgcow_fee_dsc", "PPGCOW_FEE_DSC", 1, true); // 수수료구분(코드가 1개밖에 없어서 일단 무조건 선택)
         fn_setCodeBox("na_fee_c", "NA_FEE_C", 1, true, "선택"); // 수수료정보
         fn_setCodeBox("sgno_prc_dsc", "SGNO_PRC_DSC", 1, true, "선택"); // 단수처리(절상/절사/사사오입)
         fn_setCodeBox("am_rto_dsc", "AM_RTO_DSC", 1, true, "선택"); // 금액/비율
@@ -212,9 +212,10 @@
             rowNoValue = data.length;
         }
 
-        const searchResultColNames = ["경제통합사업장코드(H)", "등록일련번호(H)", "경매대상구분", "적용일자", "적용대상", "수수료구분", "수수료코드",
-                                      "수수료명", "단수처리", "공제/지급", "적용기준", "구간하한", "구간상한", "금액/비율", "조합원수수료", "비조합원수수료"
-                                     , "낙찰구분"];
+        const searchResultColNames = [
+                                      "경제통합사업장코드(H)", "등록일련번호(H)", "경매대상구분", "적용일자", "적용대상", "수수료구분", "수수료코드", "수수료명",
+                                      "낙찰구분", "공제/지급", "적용기준", "구간하한", "구간상한", "금액/비율", "단수처리", "조합원수수료", "비조합원수수료"
+                                     ];
         const searchResultColModel = [
                                      {name:"NA_BZPLC",       index:"NA_BZPLC",       width:100, align:'center', hidden: true},
                                      {name:"FEE_RG_SQNO",    index:"FEE_RG_SQNO",    width:100, align:'center', hidden: true},
@@ -223,18 +224,17 @@
                                      {name:"FEE_APL_OBJ_C",  index:"FEE_APL_OBJ_C",  width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("FEE_APL_OBJ_C", 1)}},
                                      {name:"PPGCOW_FEE_DSC", index:"PPGCOW_FEE_DSC", width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("PPGCOW_FEE_DSC", 1)}},
                                      {name:"NA_FEE_C",       index:"NA_FEE_C",       width:100, align:'center'},
-
                                      {name:"SRA_FEENM",      index:"SRA_FEENM",      width:100, align:'center'},
-                                     {name:"SGNO_PRC_DSC",   index:"SGNO_PRC_DSC",   width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SGNO_PRC_DSC", 1)}},
+
+                                     {name:"SBID_YN",        index:"SBID_YN",        width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"AMN_HCNT",       index:"AMN_HCNT",       width:60, align:'center'},
                                      {name:"JNLZ_BSN_DSC",   index:"JNLZ_BSN_DSC",   width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:'1:구간(KG);2:마리'}},
                                      {name:"ST_SOG_WT",      index:"ST_SOG_WT",      width:100, align:'right', formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"ED_SOG_WT",      index:"ED_SOG_WT",      width:100, align:'right', formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"AM_RTO_DSC",     index:"AM_RTO_DSC",     width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AM_RTO_DSC", 1)}},
+                                     {name:"SGNO_PRC_DSC",   index:"SGNO_PRC_DSC",   width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SGNO_PRC_DSC", 1)}},
                                      {name:"MACO_FEE_UPR",   index:"MACO_FEE_UPR",   width:100, align:'right', formatter:'currency', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"NMACO_FEE_UPR",  index:"NMACO_FEE_UPR",  width:100, align:'right', formatter:'currency', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-
-                                     {name:"SBID_YN",        index:"SBID_YN",        width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                     ];
 
         $("#grd_MhFee").jqGrid("GridUnload");
@@ -344,7 +344,7 @@
                                 <!-- 가축시장에서는 해당없음, 임신우, 비임신우 등으로 나누는데 쓰이는데 나중에 비슷하게 나누는에 쓰일 경우를 대비해 남겨둠(현재는 해당사항 없음으로 고정) -->
                                 <th scope="row">수수료구분</th>
                                 <th scope="row">수수료종류</th>
-                                <th scope="row">단수처리</th><!-- 절사, 절상, 사사오입 -->
+                                <th scope="row">낙찰구분</th><!-- 여, 부 -->
                                 <th scope="row">공제/지급</th><!-- 공제, 지급 -->
                             </tr>
                             <tr>
@@ -367,7 +367,9 @@
                                 </td>
                                 <td>
                                     <div>
-                                        <select id="ppgcow_fee_dsc" class="required" name="ppgcow_fee_dsc" alt="수수료 구분"></select>
+                                        <select id="ppgcow_fee_dsc" class="required" name="ppgcow_fee_dsc" alt="수수료 구분">
+                                            <option value="5">해당없음</option>
+                                        </select>
                                     </div>
                                 </td>
                                 <td>
@@ -378,7 +380,10 @@
                                 </td>
                                 <td>
                                     <div>
-                                        <select id="sgno_prc_dsc" class="required" name="SGNO_PRC_DSC" alt="단수처리"></select>
+                                        <select id="sbid_yn" class="required" name="sbid_yn" alt="낙찰구분">
+											<option value="1" selected>여</option>
+											<option value="0">부</option>
+										</select>
                                     </div>
                                 </td>
                                 <td>
@@ -395,9 +400,9 @@
                                 <th scope="row">수수료적용기준</th><!-- 마리 별/KG구간 별 -->
                                 <th scope="row" colspan="2">적용구간(이상 ~ 미만)</th>
                                 <th scope="row">금액/비율</th>
+                                <th scope="row">단수처리</th><!-- 절사, 절상, 사사오입 -->
                                 <th scope="row">조합원수수료</th>
                                 <th scope="row">비조합원수수료</th>
-								<th scope="row">낙찰구분</th><!-- 여, 부 -->
                             </tr>
 							<tr>
 								<td>
@@ -425,6 +430,11 @@
                                     </div>
                                 </td>
 								<td>
+                                    <div>
+                                        <select id="sgno_prc_dsc" class="required" name="SGNO_PRC_DSC" alt="단수처리"></select>
+                                    </div>
+                                </td>
+								<td>
 									<div class="cellBox">
 	                                    <div class="cell">
 											<input type="text" id="maco_fee_upr" class="integer required" alt="조합원수수료" maxlength="15" />
@@ -438,14 +448,6 @@
 										</div>
 									</div>
 								</td>
-								<td>
-                                    <div>
-                                        <select id="sbid_yn" class="required" name="sbid_yn" alt="낙찰구분">
-											<option value="1" selected>여</option>
-											<option value="0">부</option>
-										</select>
-                                    </div>
-                                </td>
 							</tr>
                         </tbody>
                     </table>

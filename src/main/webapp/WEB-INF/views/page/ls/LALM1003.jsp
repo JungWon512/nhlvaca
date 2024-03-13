@@ -11,13 +11,12 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <!-- Tell the browser to be responsive to screen width -->
- <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 </head>
 <style>
-#gbox_grd_MhSogCow_1 .ui-jqgrid-hbox{width:100% !important; padding-right:0 !important;}
-#gbox_grd_MhSogCow_1 .ui-jqgrid-bdiv{overflow-y:hidden !important;}
-.ui-jqgrid tr.jqgrow{height: 30px;white-space: nowrap;}
-
+    #gbox_grd_MhSogCow_1 .ui-jqgrid-hbox{width:100% !important; padding-right:0 !important;}
+    #gbox_grd_MhSogCow_1 .ui-jqgrid-bdiv{overflow-y:hidden !important;}
+    .ui-jqgrid tr.jqgrow{height: 30px;white-space: nowrap;}
 </style>
 
 <script type="text/javascript">

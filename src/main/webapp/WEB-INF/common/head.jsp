@@ -970,7 +970,7 @@ function fn_setCodeBox(p_obj, p_simp_tpc, p_simp_c_grp_sqno, p_codeView, p_flag)
     && ['1', '2', '9'].includes(String(p_simp_c_grp_sqno))
     && !EXC_PGID.includes(this.pageInfo.pgid)) {
         const etcCodeList = comboList.filter((item) => {
-        return item.SIMP_TPC === "AUC_OBJ_DSC" && item.SIMP_C_GRP_SQNO === 8 && ETC_AUC_OBJ_DSC.includes(item.SIMP_C);
+            return item.SIMP_TPC === "AUC_OBJ_DSC" && item.SIMP_C_GRP_SQNO === 8 && ETC_AUC_OBJ_DSC.includes(item.SIMP_C);
         });
 
         if (etcCodeList.length > 0) {
@@ -2111,6 +2111,24 @@ function fn_XXSEncode(p_str){
 	}
 }
 
+/*------------------------------------------------------------------------------
+// function  : fn_RequiredValueValidation(저장 또는 수정시 필수데이터 입력 여부 체크) 
+// description : 저장 또는 수정시 필수인 항목은 required 클래스를 부여하고 alt 속성에 해당 데이터의 설명을 입력한다.
+//               이 alt 속성을 바탕으로 select 및 checkbox인 경우 
+//               suffix는 '를 선택하세요.' 나머지는 '를 입력하세요' 형식으로 메시지를 출력한다.
+// paramater : N/A
+// result   : boolean
+------------------------------------------------------------------------------*/
+function fn_RequiredValueValidation() {
+	const filterList = $(".required").filter((i, e) => e.value === '');
+	if (filterList.length) {
+		const suffix = $(filterList[0]).prop("tagName") === "SELECT" || $(filterList[0]).prop("type") === "checkbox" ? "을(를) 선택하세요." : "을(를) 입력하세요.";
+		MessagePopup('OK', $(filterList[0]).attr("alt") + suffix, () => $(filterList[0]).focus());
+		return false;
+	} else {
+		return true;
+	}
+}
 </script>
 
 
