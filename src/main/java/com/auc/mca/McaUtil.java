@@ -118,8 +118,8 @@ public class McaUtil {
 	        log.debug(sb.toString());
 	        JSONObject json = XML.toJSONObject(sb.toString());
 	        
-	        if(json != null && json.getJSONObject("response") != null && json.getJSONObject("response").getJSONObject("body") !=null
-	        		&& json.getJSONObject("response").getJSONObject("body").getJSONObject("items") != null) {
+	        if(json != null && json.getJSONObject("response") != null && json.getJSONObject("response").has("body")
+	        		&& json.getJSONObject("response").getJSONObject("body").has("items")) {
 		        JSONArray jArr = json.getJSONObject("response").getJSONObject("body").getJSONObject("items").getJSONArray("item");
 		        for(Object item : jArr) {
 		        	JSONObject jItem = (JSONObject) item;
@@ -186,8 +186,10 @@ public class McaUtil {
 	        log.debug(sb.toString());
 	        JSONObject json = XML.toJSONObject(sb.toString());
 	        
-	        if(json != null && json.getJSONObject("response") != null && json.getJSONObject("response").getJSONObject("body") !=null
-	        		&& json.getJSONObject("response").getJSONObject("body").getJSONObject("items") != null) {
+	        if(json != null 
+	        		&& json.getJSONObject("response") != null && json.getJSONObject("response").has("body")
+	        		&& json.getJSONObject("response").getJSONObject("body").has("items")
+    		) {
 		        
 	        	Object resultObj = json.getJSONObject("response").getJSONObject("body").getJSONObject("items").get("item");		        		
 		        if(resultObj instanceof JSONObject) {
