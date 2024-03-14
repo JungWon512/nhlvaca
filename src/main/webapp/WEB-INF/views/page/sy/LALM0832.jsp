@@ -225,9 +225,9 @@
     }
     
     //그리드 생성
-    function fn_CreateGrid(data){       
+    function fn_CreateGrid(data){
         
-        var rowNoValue = 0;     
+        var rowNoValue = 0;
         if(data != null){
             rowNoValue = data.length;
         }
