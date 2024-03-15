@@ -102,9 +102,6 @@
      ------------------------------------------------------------------------------*/
     function fn_Disabled(p_simp_tpc, p_simp_tpc_second, p_simp_tpc_third, p_simp_tpc_val) {
         $(document).on('change', p_simp_tpc, function() {
-
-
-            
             // disabled처리대상 요소 적용.
             // p_simp_tpc 요소의 p_simp_tpc_val 값이 아닐 경우 disabled.
             $(p_simp_tpc_second).prop("disabled", $(this).val() !== p_simp_tpc_val);
@@ -210,31 +207,25 @@
         // TODO(구현필요) 기존 데이터 없을 때는 추가 가능.
         var results = sendAjax(params, "/LALM1002_selList", "POST"); 
         var result;
-        // if(results.status != RETURN_SUCCESS && results.dataCnt !== 0){
-        //     showErrorMessage(results);
-        //     return;
-        // } else {      
-        //     result = setDecrypt(results);
-        // }      
-        
+ 
         if(results.dataCnt > 0 && results.status === RETURN_SUCCESS ) {
             result = setDecrypt(results);
             result = result.filter((el) => el.APL_DT === $("#apl_dt").val().replace(/-/g, ''));
-
+            
             // 2. 추가하려는 적용기준이 무엇이던간에 이미 데이터에 마리별이 있으면 무조건 추가 안됨. 
-            if((result.some((el) => el.JNLZ_BSN_DSC !== "2")) === false) {
+            if((result.some((el) => el.JNLZ_BSN_DSC !== "2")) === false && result.length > 0) {
                 MessagePopup('OK', "같은 적용일자 기준 마리별 수수료 데이터가 존재합니다.", () => {
                     $("#jnlz_bsn_dsc").focus();
                 }) 
                 return false;
             // 3. 적용기준이 같으면 true, 아니면 fale (추가하려는 적용기준이 마리별인데 이미있는 데이터에 구간별이 있으면 안됨)
-            } else if ((result.some((el) => el.JNLZ_BSN_DSC === $("#jnlz_bsn_dsc").val())) === false) {
+            } else if ((result.some((el) => el.JNLZ_BSN_DSC === $("#jnlz_bsn_dsc").val())) === false && result.length > 0) {
                 MessagePopup('OK', "같은 적용일자 기준 동일한 적용기준으로 입력해주세요.", () => {
                     $("#jnlz_bsn_dsc").focus();
                 }) 
                 return false;
             // 4. 적용기준이 "1"일 경우, 적용구간이 result내의 적용구간과 겹치면 안됨. st_sog_wt(하한) / st_sog_wt(상한)
-            } else if ($("#jnlz_bsn_dsc").val() === "1") {
+            } else if ($("#jnlz_bsn_dsc").val() === "1" && result.length > 0) {
                 var stVal = $("#st_sog_wt").val();
                 var edVal = $("#ed_sog_wt").val();
                 
@@ -265,81 +256,7 @@
             showErrorMessage(results);
             return;
         } return true;
-        
-        // 1. 적용일자가 같은 data 기준. 
-        // result = result.filter((el) => el.APL_DT === $("#apl_dt").val().replace(/-/g, ''));
-        
-        
-        // // 2. 추가하려는 적용기준이 무엇이던간에 이미 데이터에 마리별이 있으면 무조건 추가 안됨. 
-        // if((result.some((el) => el.JNLZ_BSN_DSC !== "2")) === false) {
-        //     MessagePopup('OK', "같은 적용일자 기준 마리별 수수료 데이터가 존재합니다.", () => {
-        //         $("#jnlz_bsn_dsc").focus();
-        //     }) 
-        //     return false;
-        // // 3. 적용기준이 같으면 true, 아니면 fale (추가하려는 적용기준이 마리별인데 이미있는 데이터에 구간별이 있으면 안됨)
-        // } else if ((result.some((el) => el.JNLZ_BSN_DSC === $("#jnlz_bsn_dsc").val())) === false) {
-        //     MessagePopup('OK', "같은 적용일자 기준 동일한 적용기준으로 입력해주세요.", () => {
-        //         $("#jnlz_bsn_dsc").focus();
-        //     }) 
-        //     return false;
-        // // 4. 적용기준이 "1"일 경우, 적용구간이 result내의 적용구간과 겹치면 안됨. st_sog_wt(하한) / st_sog_wt(상한)
-        // } else if ($("#jnlz_bsn_dsc").val() === "1") {
-        //     var stVal = $("#st_sog_wt").val();
-        //     var edVal = $("#ed_sog_wt").val();
-            
-        //     var isOverlap = result.some((el) => {
-        //         if(el.JNLZ_BSN_DSC === "1") {
-        //             var resultStVal = el.ST_SOG_WT;
-        //             var resultEdVal = el.ED_SOG_WT;
-
-        //             // 구간이 겹치면 true. 겹치는 구간이 없으면 false
-        //             // 사실상 기존 상한 값과 추가하려는 하한값만 비교하면 됨.(resultEdVal <= stVal )
-        //             if(  stVal < resultEdVal ) {
-        //                 return true;
-        //             } 
-        //         }
-        //         return false;
-        //     })
-
-        //     // 겹치는지 check
-        //     if(isOverlap === true) {
-        //         MessagePopup('OK', "적용구간이 겹치는 데이터가 이미 존재합니다.", () => {
-        //         $("#st_sog_wt").focus();
-        //         $("#ed_sog_wt").focus();
-        //     });
-        //         return false;
-        //     }
-        // } return true;
-
-        // 4. 적용기준이 "1"일 경우, 적용구간이 result내의 적용구간과 겹치면 안됨. st_sog_wt(하한) / st_sog_wt(상한)
-        // if($("#jnlz_bsn_dsc").val() === "1") {
-        //     // console.log(result.some((el) => el.ST_SOG_WT <= $("#st_sog_wt")))
-        //     var stVal = $("#st_sog_wt").val();
-        //     var edVal = $("#ed_sog_wt").val();
-            
-        //     var isOverlap = result.some((el) => {
-        //         if(el.JNLZ_BSN_DSC === "1") {
-        //             var resultStVal = el.ST_SOG_WT;
-        //             var resultEdVal = el.ED_SOG_WT;
-
-        //             // 구간이 겹치면 true. 겹치는 구간이 없으면 false
-        //             // 사실상 기존 상한 값과 추가하려는 하한값만 비교하면 됨.(resultEdVal <= stVal )
-        //             if(  stVal < resultEdVal ) {
-        //                 return true;
-        //             } 
-        //         }
-        //         return false;
-        //     })
-
-        //     // 겹치는지 check
-        //     if(isOverlap === true) {
-        //         MessagePopup('OK', "적용구간이 겹치는 데이터가 이미 존재합니다.", () => {
-        //         $("#st_sog_wt").focus();
-        //         $("#ed_sog_wt").focus();
-        //     });
-        //         return false;
-        //     }
-        // }
+    
     }
 
 
