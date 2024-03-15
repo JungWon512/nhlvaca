@@ -56,7 +56,7 @@ var isFrmOrgData = null;
 		$("#birth").datepicker({
 			yearRange : 'c-100:c'
 		});
-		
+
 		/******************************
 		* 주소 검색
 		******************************/
@@ -78,8 +78,9 @@ var isFrmOrgData = null;
 			//    }
 			//});
 		});
+
 		fn_Init();
-	});   
+	});
 	
 	/*------------------------------------------------------------------------------
 	 * 1. 함 수 명    : 초기화 함수
@@ -213,25 +214,29 @@ var isFrmOrgData = null;
 		else{
 			MessagePopup('YESNO',"저장하시겠습니까?", function(res){
 				if(res){
-					var srchData           = new Object(); 
-					srchData["ctgrm_cd"]   = "4500";
-					srchData["na_bzplc"] = App_na_bzplc;
-					
-					var results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");
-					var result;
-					
-					if(results.status != RETURN_SUCCESS){
-						showErrorMessage(results,'NOTFOUND');
-					}
-					else{
-						result = setDecrypt(results);
-						if(result) {
-							$('#sra_fhs_id_no').val(result.FHS_ID_NO);
+					if ($("#etc_auc_obj_dsc_yn").is(":checked") == false) {
+						var srchData           = new Object(); 
+						srchData["ctgrm_cd"]   = "4500";
+						srchData["na_bzplc"] = App_na_bzplc;
+						
+						var results = sendAjax(srchData, "/LALM0899_selIfSend", "POST");
+						var result;
+						
+						if(results.status != RETURN_SUCCESS){
+							showErrorMessage(results,'NOTFOUND');
 						}
 						else{
-							MessagePopup("OK", "농가번호 채번중에 오류가 발생하였습니다.");
-							return;
+							result = setDecrypt(results);
+							if(result) {
+								$('#sra_fhs_id_no').val(result.FHS_ID_NO);
+							}
+							else{
+								MessagePopup("OK", "농가번호 채번중에 오류가 발생하였습니다.");
+								return;
+							}
 						}
+					} else {
+						// 기타 가축이면 IF 채번 하지 않음
 					}
 
 					fhs_results = sendAjaxFrm("frm_Farm", "/LALM0111_insFarm", "POST");
@@ -344,31 +349,32 @@ var isFrmOrgData = null;
 		var searchResultColNames = ["경제통합사업장코드", "농가식별번호", "농가식별번호_sra", "통합회원번호", "농장관리번호","경제통합거래처코드"
 									, "농가명", "조합원여부", "관내외구분", "우편번호", "동이상주소"
 									, "동이하주소", "전화번호", "휴대전화번호", "계좌번호", "생년월일"
-									, "비고내용", "SMS인증번호","농장식별번호", "한우종합여부", "사료사용여부", "삭제여부"];
+									, "비고내용", "SMS인증번호","농장식별번호", "한우종합여부", "사료사용여부", "삭제여부", "기타가축여부"];
 		
 		var searchResultColModel = [
-									{name:"NA_BZPLC",         index:"NA_BZPLC",         width:60, align:'center', hidden:true},
-									{name:"FHS_ID_NO",        index:"FHS_ID_NO",        width:60, align:'center'},
-									{name:"SRA_FHS_ID_NO",    index:"SRA_FHS_ID_NO",    width:60, align:'center', hidden:true},
-									{name:"MB_INTG_NO",       index:"MB_INTG_NO",       width:60, align:'center'},
-									{name:"FARM_AMNNO",       index:"FARM_AMNNO",       width:60, align:'center', hidden:true},
-									{name:"NA_TRPL_C",        index:"NA_TRPL_C",        width:60, align:'center', hidden:true},
-									{name:"FTSNM",            index:"FTSNM",            width:60, align:'center'},
-									{name:"MACO_YN",          index:"MACO_YN",          width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"JRDWO_DSC",        index:"JRDWO_DSC",        width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:"1:관내;2:관외;"}},
-									{name:"ZIP",              index:"ZIP",              width:60, align:'center', formatter:'gridPostFormat'},
-									{name:"DONGUP",           index:"DONGUP",           width:120, align:'left'},
-									{name:"DONGBW",           index:"DONGBW",           width:100, align:'left'},
-									{name:"OHSE_TELNO",       index:"OHSE_TELNO",       width:60, align:'center'},
-									{name:"CUS_MPNO",         index:"CUS_MPNO",         width:70, align:'center'},
-									{name:"SRA_FARM_ACNO",    index:"SRA_FARM_ACNO",    width:80, align:'left'},
-									{name:"BIRTH",            index:"BIRTH",            width:60, align:'center', formatter:'gridDateFormat'},
-									{name:"RMK_CNTN",         index:"RMK_CNTN",         width:120,  align:'left'},
-									{name:"SMS_NO",         index:"SMS_NO",         width:60,  align:'center'},
-									{name:"FARM_ID_NO",       index:"FARM_ID_NO",       width:100, align:'center', hidden:true},
-									{name:"ANW_YN",           index:"ANW_YN",           width:100, align:'center', hidden:true},
-									{name:"SRA_FED_SPY_YN",   index:"SRA_FED_SPY_YN",   width:50,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"DEL_YN",           index:"DEL_YN",           width:40,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"NA_BZPLC",            index:"NA_BZPLC",            width:60, align:'center', hidden:true},
+									{name:"FHS_ID_NO",           index:"FHS_ID_NO",           width:60, align:'center'},
+									{name:"SRA_FHS_ID_NO",       index:"SRA_FHS_ID_NO",       width:60, align:'center', hidden:true},
+									{name:"MB_INTG_NO",          index:"MB_INTG_NO",          width:60, align:'center'},
+									{name:"FARM_AMNNO",          index:"FARM_AMNNO",          width:60, align:'center', hidden:true},
+									{name:"NA_TRPL_C",           index:"NA_TRPL_C",           width:60, align:'center', hidden:true},
+									{name:"FTSNM",               index:"FTSNM",               width:60, align:'center'},
+									{name:"MACO_YN",             index:"MACO_YN",             width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"JRDWO_DSC",           index:"JRDWO_DSC",           width:60, align:'center', edittype:"select", formatter : "select", editoptions:{value:"1:관내;2:관외;"}},
+									{name:"ZIP",                 index:"ZIP",                 width:60, align:'center', formatter:'gridPostFormat'},
+									{name:"DONGUP",              index:"DONGUP",              width:120, align:'left'},
+									{name:"DONGBW",              index:"DONGBW",              width:100, align:'left'},
+									{name:"OHSE_TELNO",          index:"OHSE_TELNO",          width:60, align:'center'},
+									{name:"CUS_MPNO",            index:"CUS_MPNO",            width:70, align:'center'},
+									{name:"SRA_FARM_ACNO",       index:"SRA_FARM_ACNO",       width:80, align:'left'},
+									{name:"BIRTH",               index:"BIRTH",               width:60, align:'center', formatter:'gridDateFormat'},
+									{name:"RMK_CNTN",            index:"RMK_CNTN",            width:120,  align:'left'},
+									{name:"SMS_NO",              index:"SMS_NO",              width:60,  align:'center'},
+									{name:"FARM_ID_NO",          index:"FARM_ID_NO",          width:100, align:'center', hidden:true},
+									{name:"ANW_YN",              index:"ANW_YN",              width:100, align:'center', hidden:true},
+									{name:"SRA_FED_SPY_YN",      index:"SRA_FED_SPY_YN",      width:50,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"DEL_YN",              index:"DEL_YN",              width:40,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"ETC_AUC_OBJ_DSC_YN",  index:"ETC_AUC_OBJ_DSC_YN",  width:40,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 									];
 
 		$("#grd_MmFhs").jqGrid("GridUnload");
@@ -433,6 +439,17 @@ var isFrmOrgData = null;
 		}
 	}
 
+	//체크박스 html 강제변경 (기타가축 여부)
+	function fn_ChkEtc(){
+		if ($("#etc_auc_obj_dsc_yn").is(":checked") == false) {
+			$("#etc_auc_obj_dsc_yn_nm").html(" 부");
+		} else {
+			$("#etc_auc_obj_dsc_yn_nm").html(" 여");
+		}
+
+		if($("#sra_fhs_id_no").val()) $("#etc_auc_obj_dsc_yn").prop("disabled", true);
+	}
+
 	function fn_Reset(){
 		//그리드 초기화
 		$("#grd_MmFhs").jqGrid("clearGridData", true);
@@ -450,6 +467,15 @@ var isFrmOrgData = null;
 		
 		$("#btn_Save").attr('disabled', true);
 		$("#btn_Delete").attr('disabled', true);
+
+		// 
+		if (ETC_AUC_OBJ_DSC) {
+			$("#last_tr").append('<th scope="row">기타가축여부</th>');
+			$("#last_tr").append('<td><div><input type="checkbox" id="etc_auc_obj_dsc_yn" name="etc_auc_obj_dsc_yn" onclick="fn_ChkEtc();" /><label id="etc_auc_obj_dsc_yn_nm" for="etc_auc_obj_dsc_yn"> 부</label></div></td>');
+			$("#last_tr").append('<td colspan="4"></td>');
+		} else {
+			$("#last_tr").append('<td colspan="5"></td>');
+		}
 	}
 	
 	function fn_FrmInit(){
@@ -483,12 +509,14 @@ var isFrmOrgData = null;
 		$("#btn_Save").attr('disabled', false);
 		$("#btn_Delete").attr('disabled', true);
 
+		$("#etc_auc_obj_dsc_yn").prop("disabled", false)
+
 		$("#maco_yn").val('0');
 		$("#jrdwo_dsc").val('1');
 		$("#farm_id_no").val('0');
 		$("#farm_amnno").val('1');
 		$("#anw_yn").val('9');
-		
+
 		$("#ftsnm").focus();
 	}
 	
@@ -521,6 +549,7 @@ var isFrmOrgData = null;
 		$("#btn_Delete").attr('disabled', false);
 		
 		fn_ChkSpa();
+		fn_ChkEtc();
 		
 		fn_orgFormValue();
 	}
@@ -732,7 +761,7 @@ var isFrmOrgData = null;
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr id="last_tr">
                                 <th scope="row">통합회원번호</th>
                                 <td>
 	                                <div>
@@ -745,7 +774,6 @@ var isFrmOrgData = null;
                                         <input type="text" id="sms_no" name="sms_no" readonly="readonly" />
                                     </div>
                                 </td>
-                                <td colspan="5"></td>
                             </tr>
                         </tbody>
                     </table>

@@ -60,6 +60,9 @@
             , a.DEL_YN            as DEL_YN
             , a.MB_INTG_NO
             , a.SMS_NO
+            , case when SUBSTR(fhs_id_no, 1, 1) = 'G' then ''
+                   else '0'
+              end as etc_auc_obj_dsc_yn                           -- 기타가축여부
          FROM tb_la_is_mm_fhs a
          left outer join tb_la_is_mm_mbintg b
 		   on ( a.mb_intg_no = b.mb_intg_no and b.mb_intg_gb = '02')
@@ -79,6 +82,19 @@
     </select>
     
     <insert id="LALM0111_insFarm">
+          <selectKey keyProperty="sra_fhs_id_no" resultType="string" order="BEFORE">
+            <choose>
+                <when test='etc_auc_obj_dsc_yn == "1"'>
+                  select 'G' || (nvl(max(SUBSTRING(fhs_id_no, 2)), 100000) + 1) as sra_fhs_id_no
+                  from tb_la_is_mm_fhs
+                  where fhs_id_no like 'G%'
+                  and na_bzplc = #{ss_na_bzplc}
+                </when>
+                <otherwise>
+                  select #{sra_fhs_id_no} as sra_fhs_id_no from dual
+                </otherwise>
+            </choose>
+          </selectKey>
         insert into tb_la_is_mm_fhs(
               na_bzplc
             , fhs_id_no
@@ -260,6 +276,9 @@
             , DEL_YN            as DEL_YN
             , MB_INTG_NO
             , SMS_NO
+            , case when SUBSTR(fhs_id_no, 1, 1) = 'G' then '1'
+                   else '0'
+              end               as etc_auc_obj_dsc_yn
          FROM tb_la_is_mm_fhs
         WHERE fhs_id_no  = #{sra_fhs_id_no}
           AND farm_amnno = #{farm_amnno}
