@@ -60,7 +60,7 @@
             , a.DEL_YN            as DEL_YN
             , a.MB_INTG_NO
             , a.SMS_NO
-            , case when SUBSTR(fhs_id_no, 1, 1) = 'G' then ''
+            , case when SUBSTR(fhs_id_no, 1, 1) = 'G' then '1'
                    else '0'
               end as etc_auc_obj_dsc_yn                           -- 기타가축여부
          FROM tb_la_is_mm_fhs a
