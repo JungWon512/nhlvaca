@@ -212,7 +212,10 @@
 	                           , SUM(CASE WHEN NA_FEE_C NOT IN ('011') THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END)                       AS SRA_ETC_CST
 	                       FROM TB_LA_IS_MH_FEE_IMPS
 	                       WHERE NA_BZPLC            = #{ss_na_bzplc}
-	                         AND AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                         AND (
+								(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+								OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+							)
 	                         AND AUC_DT              = #{auc_dt}
 	                         AND FEE_APL_OBJ_C       = '2'                           /* 1출하자, 2낙찰자  */
 	                       GROUP BY NA_BZPLC
@@ -221,7 +224,10 @@
 	                              , OSLP_NO
 	                              , LED_SQNO) B
                      WHERE A.NA_BZPLC        = #{ss_na_bzplc}
-                       AND A.AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+						AND (
+							(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+							OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+						)
                        AND A.AUC_DT          = #{auc_dt}
                        AND A.NA_BZPLC        = B.NA_BZPLC                    /* 경제통합사업장코드  */
                        AND A.AUC_DT          = B.AUC_DT                      /* 경매일자            */
@@ -286,11 +292,17 @@
                     )F
          ON  A.NA_BZPLC               = F.NA_BZPLC                                                                               /* 경제통합사업장코드          */
          AND A.TRMN_AMNNO             = F.TRMN_AMNNO                                                                             /* 거래인번호                  */
-         AND A.AUC_OBJ_DSC            = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE F.AUC_OBJ_DSC END    /* 대상구분코드                */
+         AND (
+			(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+			OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+		 )																														 /* 대상구분코드 : 일괄 조회시 염소,말 조회되지 않도록 수정 */
          AND A.AUC_DT                 = F.AUC_DT                                                                                 /* 경매일자                    */
 
     WHERE A.NA_BZPLC             = #{ss_na_bzplc}
-      AND A.AUC_OBJ_DSC          = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+      AND (
+			(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+			OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+		 )	
       AND A.AUC_DT               = #{auc_dt}
       AND A.SEL_STS_DSC          = '22'                   /* 판매상태구분코드	         */
       AND A.DEL_YN               = '0'
@@ -378,7 +390,10 @@
 		                              ) AS SRA_ETC_CST
 		                     FROM TB_LA_IS_MH_FEE_IMPS
 		                     WHERE NA_BZPLC            = #{ss_na_bzplc}
-		                       AND AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+								AND (
+									(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+									OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+								)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 		                       AND AUC_DT              = #{auc_dt}
 		                       AND FEE_APL_OBJ_C       = '2'           				      /* 대상구분 - 1.출하자, 2.낙찰자 */
 		                     GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, LED_SQNO
@@ -393,7 +408,10 @@
 		       , TB_LA_IS_MM_INDV     E
 		
 		    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
-		      AND A.AUC_OBJ_DSC    = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+			  AND (
+					(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 		      AND A.AUC_DT         = #{auc_dt}
 		      AND A.DEL_YN         = '0'
 		      AND A.LED_SQNO       = 1
@@ -490,7 +508,10 @@
 	       , TB_LA_IS_MM_FHS      B
 	       , TB_LA_IS_MM_INDV     C
 	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	      AND A.AUC_DT            = #{auc_dt}
 	      AND A.DEL_YN            = '0'
 	      AND A.LED_SQNO          = 1
@@ -602,7 +623,10 @@
 	
 	                     FROM TB_LA_IS_MH_MWMN_ADJ
 	                     WHERE NA_BZPLC       = #{ss_na_bzplc}
-	                       AND AUC_OBJ_DSC    = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                       AND (
+								(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+								OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+							)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	                       AND AUC_DT         = #{auc_dt}
 	                     GROUP BY TRMN_AMNNO
 	                    ) D
@@ -610,7 +634,10 @@
 	    LEFT OUTER JOIN TB_LA_IS_MH_AUC_ENTR E
 	         ON  A.NA_BZPLC      = E.NA_BZPLC
 	         AND A.AUC_DT        = E.AUC_DT
-	         AND A.AUC_OBJ_DSC   = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE E.AUC_OBJ_DSC END
+	         AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	         AND A.TRMN_AMNNO    = E.TRMN_AMNNO
 	         AND A.LVST_AUC_PTC_MN_NO = E.LVST_AUC_PTC_MN_NO
 	         AND A.AUC_OBJ_DSC = E.AUC_OBJ_DSC
@@ -618,7 +645,10 @@
 	       , TB_LA_IS_MM_MWMN     B
 	
 	    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC    = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	      AND A.AUC_DT         = #{auc_dt}
 	      AND A.DEL_YN         = '0'
 	      AND A.LED_SQNO       = 1
@@ -837,7 +867,10 @@
 	                         , SUM(CASE WHEN NA_FEE_C NOT IN ('010', '030','040') THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END)  AS SRA_ETC_CST
 	                     FROM TB_LA_IS_MH_FEE_IMPS
 	                     WHERE NA_BZPLC        = #{ss_na_bzplc}
-	                       AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                       AND (
+								(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+								OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+							)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	                       AND AUC_DT          = #{auc_dt}
 	                       AND FEE_APL_OBJ_C   = '1'
 	                     GROUP BY NA_BZPLC
@@ -876,7 +909,10 @@
 	                                , SUM(CASE WHEN ANS_DSC = '1' THEN 1 ELSE - 1 END * SRA_TR_FEE) AS SRA_TR_FEE
 	   	                       FROM TB_LA_IS_MH_FEE_IMPS
 	                           WHERE NA_BZPLC      = #{ss_na_bzplc}
-	                             AND AUC_OBJ_DSC   = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                             AND (
+									(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+									OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+								)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	                             AND AUC_DT        = #{auc_dt}
 	                             AND FEE_APL_OBJ_C = '2'
 	                           GROUP BY NA_BZPLC
@@ -886,7 +922,10 @@
 	                                  , LED_SQNO
 	                          ) B
 	                     WHERE A.NA_BZPLC    = #{ss_na_bzplc}
-	                       AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                       AND (
+								(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+								OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+							)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	                       AND A.AUC_DT      = #{auc_dt}
 	                       AND A.NA_BZPLC    = B.NA_BZPLC
 	                       AND A.AUC_DT      = B.AUC_DT
@@ -907,7 +946,10 @@
 	       , TB_LA_IS_MM_FHS     G
 	
 	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	      AND A.AUC_DT            = #{auc_dt}
 	      AND A.DEL_YN            = '0'
 	      AND A.LED_SQNO          = 1
@@ -1029,7 +1071,10 @@
 	                         , SUM(CASE WHEN NA_FEE_C NOT IN ('010', '030','040') THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END) AS SRA_ETC_CST
 	                     FROM TB_LA_IS_MH_FEE_IMPS
 	                     WHERE NA_BZPLC        = #{ss_na_bzplc}
-	                       AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                       AND (
+								(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+								OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+							)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	                       AND AUC_DT          = #{auc_dt}
 	                       AND FEE_APL_OBJ_C   = '1'                           /* 1:출하자, 2:낙찰자  */
 	                     GROUP BY NA_BZPLC
@@ -1057,7 +1102,10 @@
 	       , TB_LA_IS_MM_FHS     G
 	
 	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	      AND A.AUC_DT            = #{auc_dt}
 	      AND A.DEL_YN            = '0'
 	      AND A.LED_SQNO          = 1
@@ -1149,7 +1197,10 @@
 								   ) AS SRA_ETC_CST     
 	                     FROM TB_LA_IS_MH_FEE_IMPS
 	                     WHERE NA_BZPLC       = #{ss_na_bzplc}
-	                       AND AUC_OBJ_DSC    = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	                       AND (
+								(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+								OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+							)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	                       AND AUC_DT         = #{auc_dt}
 	                       AND FEE_APL_OBJ_C       = '1'        
 	                     GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, LED_SQNO
@@ -1166,7 +1217,10 @@
 	       , TB_LA_IS_MM_FHS      B
 	
 	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	      AND A.AUC_DT            = #{auc_dt}
 	      AND A.DEL_YN            = '0'
 	      AND A.LED_SQNO          = 1
@@ -1223,7 +1277,10 @@
 	
 	          FROM TB_LA_IS_MH_FEE_IMPS
 	          WHERE NA_BZPLC        = #{ss_na_bzplc}
-	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND (
+					(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	            AND AUC_DT          = #{auc_dt}
 	            AND FEE_APL_OBJ_C   = '1'
 	          GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, LED_SQNO
@@ -1231,7 +1288,10 @@
 	       , TB_LA_IS_MM_VHC     B
 	
 	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	      AND A.AUC_DT            = #{auc_dt}
 	      AND A.DEL_YN            = '0'
 	      AND A.LED_SQNO          = 1
@@ -1986,7 +2046,10 @@
 			        FROM TB_LA_IS_MH_FEE_IMPS
 	                WHERE NA_BZPLC        = #{ss_na_bzplc}                                                                                         /* 경제통합사업장코드  */
 	                  AND AUC_DT          = #{auc_dt}                                                                                      /* 경매일자            */
-	                  AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END          /* 경매대상구분코드    */
+	                  AND (
+							(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+							OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+						)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */ 
 	                  AND FEE_APL_OBJ_C   = '1'                                                                                                       /* 1:출하자, 2:낙찰자  */
 	
 	                GROUP BY NA_BZPLC
@@ -1997,7 +2060,10 @@
 	               ) C
 	
 	          WHERE A.NA_BZPLC          = #{ss_na_bzplc}
-	            AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND (
+					(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	            AND A.AUC_DT            = #{auc_dt}
 	            AND A.DEL_YN            = '0'
 	            AND A.LED_SQNO          = 1
@@ -2086,7 +2152,10 @@
 	                FROM TB_LA_IS_MH_FEE_IMPS
 	                WHERE NA_BZPLC        = #{ss_na_bzplc}                                                                                         /* 경제통합사업장코드  */
 	                  AND AUC_DT          = #{auc_dt}                                                                                      /* 경매일자            */
-	                  AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END          /* 경매대상구분코드    */
+	                  AND (
+							(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+							OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+						)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	                  AND FEE_APL_OBJ_C   = '2'                                                                                                       /* 1:출하자, 2:낙찰자  */
 	
 	                GROUP BY NA_BZPLC
@@ -2097,7 +2166,10 @@
 	               ) C
 	
 	          WHERE A.NA_BZPLC        = #{ss_na_bzplc}
-	            AND A.AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND (
+					(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	            AND A.AUC_DT          = #{auc_dt}
 	            AND A.DEL_YN          = '0'
 	            AND A.LED_SQNO        = 1
@@ -2123,7 +2195,10 @@
 	                SUM(SRA_RV_AM)    AS SRA_RV_AM
 	          FROM TB_LA_IS_MH_MWMN_ADJ
 	          WHERE NA_BZPLC        = #{ss_na_bzplc}
-	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND (
+					(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	            AND AUC_DT          = #{auc_dt}
 	            AND DEL_YN          = '0') D
 	
@@ -2131,7 +2206,10 @@
 	                SUM(AUC_ENTR_GRN_AM)   AS AUC_ENTR_GRN_AM          /* 경매참가보증금액    */
 	          FROM TB_LA_IS_MH_AUC_ENTR
 	          WHERE NA_BZPLC        = #{ss_na_bzplc}
-	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND (
+					(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	            AND AUC_DT          = #{auc_dt}
 	            AND DEL_YN          = '0') E
 	
@@ -2195,7 +2273,10 @@
 						  FROM TB_LA_IS_MH_FEE_IMPS
 						 WHERE NA_BZPLC        = #{ss_na_bzplc}
 						   AND AUC_DT          = #{auc_dt}
-						   AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+						   AND (
+								(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+								OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+							)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 						   AND FEE_APL_OBJ_C   = '2'
 						   AND SRA_TR_FEE        <> 0
 						 GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, LED_SQNO
@@ -2242,7 +2323,10 @@
 			ON (
 				A.NA_BZPLC               = G.NA_BZPLC
 				AND A.TRMN_AMNNO         = G.TRMN_AMNNO
-				AND A.AUC_OBJ_DSC        = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE G.AUC_OBJ_DSC END
+				AND (
+					(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 				AND A.AUC_DT             = G.AUC_DT
 			 )
 		 INNER JOIN TB_LA_IS_MM_MWMN E
@@ -2283,13 +2367,19 @@
 										 , SUM(CASE WHEN ANS_DSC = '1' THEN 1 ELSE -1 END * SRA_TR_FEE) AS SRA_TR_FEE
 									  FROM TB_LA_IS_MH_FEE_IMPS
 									 WHERE NA_BZPLC            = #{ss_na_bzplc}
-									   AND AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+									   AND (
+											(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+											OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+										)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 									   AND AUC_DT              = #{auc_dt}
 									   AND FEE_APL_OBJ_C       = '2'
 									 GROUP BY NA_BZPLC, AUC_OBJ_DSC, AUC_DT, OSLP_NO, LED_SQNO
 								) B
 							 WHERE A.NA_BZPLC        = #{ss_na_bzplc}
-							   AND A.AUC_OBJ_DSC     =  CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+							   AND (
+									(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+									OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+								)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 							   AND A.AUC_DT          = #{auc_dt}
 							   AND A.NA_BZPLC        = B.NA_BZPLC(+)
 							   AND A.AUC_DT          = B.AUC_DT(+)
@@ -2307,7 +2397,10 @@
 				A.LVST_AUC_PTC_MN_NO = H.LVST_AUC_PTC_MN_NO
 			 )
 		 WHERE A.NA_BZPLC           = #{ss_na_bzplc}
-		   AND A.AUC_OBJ_DSC        = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+		   AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 		   AND A.AUC_DT             = #{auc_dt}
 		   AND A.LED_SQNO           = 1
 		   AND A.SEL_STS_DSC        = '22'
@@ -2422,7 +2515,10 @@
 	          FROM TB_LA_IS_MH_FEE_IMPS
 	          WHERE NA_BZPLC        = #{ss_na_bzplc}
 	            AND AUC_DT          = #{auc_dt}
-	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND (
+					(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	            AND FEE_APL_OBJ_C   = CASE WHEN NA_FEE_C = '011' THEN  '2' ELSE  '1' END
 	
 	          GROUP BY NA_BZPLC
@@ -2434,7 +2530,10 @@
 	
 	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
 	      AND A.AUC_DT            = #{auc_dt}
-	      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	      AND A.DEL_YN            = '0'
 	      AND A.LED_SQNO          = 1
 	      AND A.LOWS_SBID_LMT_AM  > 0
@@ -2509,7 +2608,10 @@
 	          FROM TB_LA_IS_MH_FEE_IMPS
 	          WHERE NA_BZPLC        = #{ss_na_bzplc}
 	            AND AUC_DT          = #{auc_dt}
-	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND (
+					(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	            AND FEE_APL_OBJ_C   = CASE WHEN NA_FEE_C = '011' THEN  '2' ELSE  '1' END	
 	          GROUP BY NA_BZPLC
 	                 , AUC_OBJ_DSC
@@ -2519,7 +2621,10 @@
 	         ) B	
 		    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
 		      AND A.AUC_DT            = #{auc_dt}
-		      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+		      AND (
+					(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 		      AND A.DEL_YN            = '0'
 		      AND A.LED_SQNO          = 1
 		      AND A.LOWS_SBID_LMT_AM  > 0	
@@ -2597,7 +2702,10 @@
 	          FROM TB_LA_IS_MH_FEE_IMPS
 	          WHERE NA_BZPLC        = #{ss_na_bzplc}
 	            AND AUC_DT          = #{auc_dt}
-	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND (
+					(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	            AND FEE_APL_OBJ_C   = CASE WHEN NA_FEE_C = '011' THEN  '2' ELSE  '1' END	
 	          GROUP BY NA_BZPLC
 	                 , AUC_OBJ_DSC
@@ -2607,7 +2715,10 @@
 	         ) B	
 		    WHERE A.NA_BZPLC          = #{ss_na_bzplc}
 		      AND A.AUC_DT            = #{auc_dt}
-		      AND A.AUC_OBJ_DSC       = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+		      AND (
+					(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 		      AND A.DEL_YN            = '0'
 		      AND A.LED_SQNO          = 1
 		      AND A.LOWS_SBID_LMT_AM  > 0	
@@ -2674,7 +2785,10 @@
 	          FROM TB_LA_IS_MH_FEE_IMPS
 	          WHERE NA_BZPLC        = #{ss_na_bzplc}
 	            AND AUC_DT          = #{auc_dt}
-	            AND AUC_OBJ_DSC     = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	            AND (
+					(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+				)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	
 	          GROUP BY NA_BZPLC
 	                 , AUC_OBJ_DSC
@@ -2685,7 +2799,10 @@
 	
 	    WHERE A.NA_BZPLC            = #{ss_na_bzplc}
 	      AND A.AUC_DT              = #{auc_dt}
-	      AND A.AUC_OBJ_DSC         = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	      AND A.DEL_YN              = '0'
 	      AND A.LED_SQNO            = 1
 	      AND A.LOWS_SBID_LMT_AM    > 0
@@ -3165,7 +3282,10 @@
 	       , TB_LA_IS_MM_FHS     B
 	
 	    WHERE A.NA_BZPLC     = #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC  = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	      AND A.AUC_DT       = #{auc_dt}
 	]]>
 	<if test='name != null and name != ""'>
@@ -3229,7 +3349,10 @@
 	       , TB_LA_IS_MM_MWMN    E
 	
 	    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC    = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	      AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	      AND A.AUC_DT         = #{auc_dt}
 	]]>
 	<if test='name != null and name != ""'>
