@@ -39,9 +39,18 @@
         fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 8, true, "선택"); // 경매대상구분
         fn_setCodeBox("fee_apl_obj_c", "FEE_APL_OBJ_C", 1, true, "선택"); // 적용대상
         //fn_setCodeBox("ppgcow_fee_dsc", "PPGCOW_FEE_DSC", 1, true); // 수수료구분(코드가 1개밖에 없어서 일단 무조건 선택)
-        fn_setCodeBox("na_fee_c", "NA_FEE_C", 1, true, "선택"); // 수수료정보
+        fn_setCodeBox("na_fee_c", "NA_FEE_C", 1, true, "선택"); // 수수료종류
         fn_setCodeBox("sgno_prc_dsc", "SGNO_PRC_DSC", 1, true, "선택"); // 단수처리(절상/절사/사사오입)
         fn_setCodeBox("am_rto_dsc", "AM_RTO_DSC", 1, true, "선택"); // 금액/비율
+
+        // 수수료적용기준이 마리별(2)일 경우, 적용구간 input disabled처리.
+        // TODO(구현완료) 이 경우, 적용구간 필수값 validation 해제 필요. 
+        fn_Disabled("#jnlz_bsn_dsc", "#st_sog_wt", "#ed_sog_wt", "1");
+
+        // 금액/비율이 금액(1)일 경우, 단수처리 select box disabled처리.
+        // TODO(구현완료) 이 경우, 단수처리 필수값 validation 해제 필요.
+        // TODO(구현필요) 세번째 인자로 넘겨줄 것이 없어서 undefined처리. -> 확인필요
+        fn_Disabled("#am_rto_dsc", "#sgno_prc_dsc", undefined, "2");
 
         $(".date").datepicker({
 			yearRange : 'c-10:c+10'
@@ -84,6 +93,36 @@
         $("#sc_apl_dt").datepicker().datepicker("setDate", fn_getToday());
         $("#sc_auc_obj_dsc").focus();
     }
+
+    /*------------------------------------------------------------------------------
+     * 1. 함 수 명    : 입력 칸 disabled처리 함수
+     * 2. 입 력 변 수 : p_simp_tpc, p_simp_tpc_second, p_simp_tpc_third, p_simp_tpc_value (입력 칸 id, disable처리하고자하는 id, value값)
+     * 3. 출 력 변 수 : N/A
+     * 4. 설 명 : 입력 칸의 value가 바뀔 때마다 특정 입력 칸 disabled처리 시 사용
+     ------------------------------------------------------------------------------*/
+    function fn_Disabled(p_simp_tpc, p_simp_tpc_second, p_simp_tpc_third, p_simp_tpc_val) {
+        $(document).on('change', p_simp_tpc, function() {
+
+
+            
+            // disabled처리대상 요소 적용.
+            // p_simp_tpc 요소의 p_simp_tpc_val 값이 아닐 경우 disabled.
+            $(p_simp_tpc_second).prop("disabled", $(this).val() !== p_simp_tpc_val);
+            var secondEle = document.getElementById(p_simp_tpc_second.replace(/#/g, ''));
+            if( $(this).val() !== p_simp_tpc_val) secondEle.classList.remove("required");
+
+            // 세번째 인자가 있는 경우..
+            var disableThird = p_simp_tpc_third !== undefined; 
+
+            if(disableThird) {
+                $(p_simp_tpc_third).prop("disabled", $(this).val() !== p_simp_tpc_val);
+                var thirdEle = document.getElementById(p_simp_tpc_third.replace(/#/g, ''));
+                // 해당 요소 필수 값 클래스 제거.
+                if( $(this).val() !== p_simp_tpc_val) thirdEle.classList.remove("required");
+                
+            }
+        });
+    };
 
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 조회 함수
@@ -143,7 +182,7 @@
      * 3. 출 력 변 수 : N/A
      * 4. 설 명 : 필수 값 입력외에 체크가 필요한 경우 사용
      ------------------------------------------------------------------------------*/
-    function fn_ValueValidation() {
+     function fn_ValueValidation() {
         if (Number($("#st_sog_wt").val().replace(/[^0-9]/g,'')) > Number($("#ed_sog_wt").val().replace(/[^0-9]/g,''))) {
             MessagePopup('OK', "적용구간 상/하한 값을 확인해주세요.", () => {
                 $("#ed_sog_wt").focus();
@@ -154,15 +193,121 @@
     }
 
     /*------------------------------------------------------------------------------
+     * 1. 함 수 명    : 추가(신규) / 수정 적용기준 관련 validation check 함수
+     * 2. 입 력 변 수 : N/A
+     * 3. 출 력 변 수 : N/A
+     * 4. 설 명 : 적용기준 관련 체크가 필요한 경우 사용.
+     ------------------------------------------------------------------------------*/
+     function fn_ResultValidation() {
+        // TODO(완료) 적용기준이 구간별일 경우, 적용구간이 겹치면 안됨.
+        // TODO(완료) 같은 적용일자 기준 추가하려는 데이터의 수수료 적용기준이 조회api로 조회한 데이터와 상이할 경우, "수수료 적용기준을 확인해주세요." 등의 alert.
+        // TODO(완료) + 마리별 적용기준은 한 적용일자의 한 건만 존재해야함.
+        var params = {
+            ...setFrmToData("frm_Search"),
+            sc_apl_dt: $("#apl_dt").val().replace(/-/g, '')
+        }
+
+        var results = sendAjax(params, "/LALM1002_selList", "POST");
+        var result;
+        if(results.status != RETURN_SUCCESS){
+            showErrorMessage(results);
+            return;
+        }else{      
+            result = setDecrypt(results);
+        }        
+
+        // 1. 적용일자가 같은 data 기준. 
+        result = result.filter((el) => el.APL_DT === $("#apl_dt").val().replace(/-/g, ''));
+        
+        // 2. 추가하려는 적용기준이 무엇이던간에 이미 데이터에 마리별이 있으면 무조건 추가 안됨. 
+        if((result.some((el) => el.JNLZ_BSN_DSC !== "2")) === false) {
+            MessagePopup('OK', "같은 적용일자 기준 마리별 수수료 데이터가 존재합니다.", () => {
+                $("#jnlz_bsn_dsc").focus();
+            }) 
+            return false;
+        // 3. 적용기준이 같으면 true, 아니면 fale (추가하려는 적용기준이 마리별인데 이미있는 데이터에 구간별이 있으면 안됨)
+        } else if ((result.some((el) => el.JNLZ_BSN_DSC === $("#jnlz_bsn_dsc").val())) === false) {
+            MessagePopup('OK', "같은 적용일자 기준 동일한 적용기준으로 입력해주세요.", () => {
+                $("#jnlz_bsn_dsc").focus();
+            }) 
+            return false;
+        // 4. 적용기준이 "1"일 경우, 적용구간이 result내의 적용구간과 겹치면 안됨. st_sog_wt(하한) / st_sog_wt(상한)
+        } else if ($("#jnlz_bsn_dsc").val() === "1") {
+            var stVal = $("#st_sog_wt").val();
+            var edVal = $("#ed_sog_wt").val();
+            
+            var isOverlap = result.some((el) => {
+                if(el.JNLZ_BSN_DSC === "1") {
+                    var resultStVal = el.ST_SOG_WT;
+                    var resultEdVal = el.ED_SOG_WT;
+
+                    // 구간이 겹치면 true. 겹치는 구간이 없으면 false
+                    // 사실상 기존 상한 값과 추가하려는 하한값만 비교하면 됨.(resultEdVal <= stVal )
+                    if(  stVal < resultEdVal ) {
+                        return true;
+                    } 
+                }
+                return false;
+            })
+
+            // 겹치는지 check
+            if(isOverlap === true) {
+                MessagePopup('OK', "적용구간이 겹치는 데이터가 이미 존재합니다.", () => {
+                $("#st_sog_wt").focus();
+                $("#ed_sog_wt").focus();
+            });
+                return false;
+            }
+        } return true;
+
+        // 4. 적용기준이 "1"일 경우, 적용구간이 result내의 적용구간과 겹치면 안됨. st_sog_wt(하한) / st_sog_wt(상한)
+        // if($("#jnlz_bsn_dsc").val() === "1") {
+        //     // console.log(result.some((el) => el.ST_SOG_WT <= $("#st_sog_wt")))
+        //     var stVal = $("#st_sog_wt").val();
+        //     var edVal = $("#ed_sog_wt").val();
+            
+        //     var isOverlap = result.some((el) => {
+        //         if(el.JNLZ_BSN_DSC === "1") {
+        //             var resultStVal = el.ST_SOG_WT;
+        //             var resultEdVal = el.ED_SOG_WT;
+
+        //             // 구간이 겹치면 true. 겹치는 구간이 없으면 false
+        //             // 사실상 기존 상한 값과 추가하려는 하한값만 비교하면 됨.(resultEdVal <= stVal )
+        //             if(  stVal < resultEdVal ) {
+        //                 return true;
+        //             } 
+        //         }
+        //         return false;
+        //     })
+
+        //     // 겹치는지 check
+        //     if(isOverlap === true) {
+        //         MessagePopup('OK', "적용구간이 겹치는 데이터가 이미 존재합니다.", () => {
+        //         $("#st_sog_wt").focus();
+        //         $("#ed_sog_wt").focus();
+        //     });
+        //         return false;
+        //     }
+        // }
+    }
+
+
+
+    /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 추가(신규) 함수
      * 2. 입 력 변 수 : N/A
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
 	function fn_Insert() {
+
         // 필수값 입력여부 체크
         if (!fn_RequiredValueValidation()) return;
         // 입력값 체크
         if (!fn_ValueValidation()) return;
+        // 기존데이터와 수수료적용기준 관련 체크
+        if (!fn_ResultValidation()) return;
+
+        // 
 
         MessagePopup('YESNO', '저장하시겠습니까?', (res) => {
             if(res){
@@ -191,6 +336,8 @@
         if (!fn_RequiredValueValidation()) return;
         // 입력값 체크
         if (!fn_ValueValidation()) return;
+        // 기존데이터와 수수료적용기준 관련 체크
+        if (!fn_ResultValidation()) return;
 	}
 
     /*------------------------------------------------------------------------------
