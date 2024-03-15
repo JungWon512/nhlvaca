@@ -551,8 +551,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				/* e: 브루셀라 연동 */
 
 				/* s: 종축개량 데이터 연동 */
-
-				String[] arrNaBzplc = {"8808990660127","8808990656274","8808990657240"};
+				//부여 : 8808990660127 | 창녕 : 8808990656274 | 진주 : 8808990657240 | 함양산청 : 8808990656410 | 합천 : 8808990656236
+				String[] arrNaBzplc = {"8808990660127","8808990656274","8808990657240","8808990656410","8808990656236"};
 				try {
 					String barcode = (String) result.get("SRA_INDV_AMNNO");
 					Map<String,Object> epdMap = commonService.Common_selAiakInfo(barcode);

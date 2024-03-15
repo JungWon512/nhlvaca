@@ -378,7 +378,10 @@
 							</colgroup>
 							<tbody> 
 	                            <tr>
-	                            	<th scope="row"><span>브루셀라검사일</span></th>
+	                            	<th scope="row">
+	                            		<span>브루셀라검사일</span>
+	                            		<button class="tb_btn" id="pb_syncVacn" value="연계">접종일 연계</button>
+	                            	</th>
 	                            	<td>
 	                            		<div class="cellBox">
 	                                        <div class="cell"><input type="text" class="date" id="brcl_isp_dt" style="font-weight:bold;"></div>                                        
@@ -604,7 +607,10 @@
 	                            		<input type="checkbox" id="epd_yn" name="epd_yn" value="0">
 	                            		<label id="epd_yn_text" for="ncss_yn"> 부</label>
 	                            	</td>
-	                        		<th scope="row"><span>유전능력(EPD)</span></th>
+	                        		<th scope="row">
+	                        			<span>유전능력(EPD)</span><br/>
+	                        			<button class="tb_btn" id="pb_syncEpd" value="연계">EPD 연계</button>	                        			
+	                        		</th>
 	                        		<th scope="row"><span>냉도체중</span></th>
 	                        		<td colspan=2>
 	                            		<input type="text" class="minusnumber" id="re_product_1" style="width:100px">
@@ -658,7 +664,10 @@
 	                        			<input type="checkbox" id="fed_spy_yn" name="epd_yn" value="0">
 	                            		<label id="fed_spy_yn_text" for="ncss_yn"> 부</label>
 	                        		</td>
-	                        		<th scope="row"><span>유전능력(모개체)</span></th>
+	                        		<th scope="row">
+	                        			<span>유전능력(모개체)</span><br/>
+	                        			<button class="tb_btn" id="pb_syncMEpd" value="연계">EPD(모) 연계</button>
+                        			</th>
 	                        		<th scope="row"><span>냉도체중</span></th>
 	                        		<td colspan=2>
 	                            		<input type="text" class="minusnumber" id="re_product_11" style="width:100px">
@@ -716,7 +725,7 @@
 		                        		<input type="hidden" id="led_sqno">
 		                        	</td>
 		                        	<td>
-		                        		<input type="hidden" id="sra_srs_dsc">
+		                        		<input type="hidden" id="sra_srs_dsc" value="01">
 		                        	</td>
 		                        	<td>
 		                        		<input type="hidden" id="fir_lows_sbid_lmt_am" class="number">

@@ -37,10 +37,11 @@
     var mv_InitBoolean         = true;
     var mv_Tab_Boolean		   = false;
     var rowId                  = "";
-	//부여,창녕,진주 EPD 연계
-	var arrNaBzplc = ['8808990660127','8808990656274','8808990657240'];
-	//임신감정여부 예외적용조합 : ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687 || 보성 : 8808990656267 || 밀양 : 8808990656663 || 밀양 : 8808990656663 || 장성 : 8808990817675
-	var arrPrnyJugNaBzplc = ['8808990227283','8808990652825','8808990656687','8808990656267','8808990656663','8808990817675'];
+	//EPD 연계 
+	//부여 : 8808990660127 | 창녕 : 8808990656274 | 진주 : 8808990657240 | 함양산청 : 8808990656410 | 합천 : 8808990656236
+	var arrNaBzplc = ['8808990660127','8808990656274','8808990657240','8808990656410'];
+	//임신감정여부 예외적용조합 : ★익산: 8808990227283 || 동삼태 : 8808990652825 || 영천 : 8808990656687 || 보성 : 8808990656267 || 밀양 : 8808990656663
+	var arrPrnyJugNaBzplc = ['8808990227283','8808990652825','8808990656687','8808990656267','8808990656663'];        		
     
 //    const endpoint = new AWS.Endpoint('https://kr.object.ncloudstorage.com');
 //	const region = 'kr-standard';
@@ -253,6 +254,23 @@
     		fn_IoSogmnMacoYnModify();
     	});
     	
+    	
+    	$('#pb_syncVacn').on('click',(e)=>{
+            e.preventDefault();            
+			fn_CallBrclIspSrch();
+		});
+		
+    	$('#pb_syncEpd').on('click',(e)=>{
+            e.preventDefault();            
+			fn_CallAiakInfoSync();
+		});
+		
+    	$('#pb_syncMEpd').on('click',(e)=>{
+            e.preventDefault();
+            if(!fn_isNull($("#mcow_sra_indv_amnno").val())){
+				fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());				
+			}
+		});
     	/******************************
          * 중도매인 검색 팝업 호출 이벤트(엔터)
          ******************************/
@@ -451,7 +469,7 @@
             	 }
               } else {
             	  if(na_bzplc != '8808990656601') {
-            		  $("#sra_srs_dsc").val("");
+            		  $("#sra_srs_dsc").val("01");
             		  $("#fhs_id_no").val("");
             		  $("#farm_amnno").val("");
             		  $("#ftsnm").val("");
