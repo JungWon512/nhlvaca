@@ -225,6 +225,7 @@
                 }) 
                 return false;
             // 4. 적용기준이 "1"일 경우, 적용구간이 result내의 적용구간과 겹치면 안됨. st_sog_wt(하한) / st_sog_wt(상한)
+            // TODO(수정필요) 적용구간이 같더라도 수수료 종류가 다르면 OK    
             } else if ($("#jnlz_bsn_dsc").val() === "1" && result.length > 0) {
                 var stVal = $("#st_sog_wt").val();
                 var edVal = $("#ed_sog_wt").val();
@@ -233,12 +234,17 @@
                     if(el.JNLZ_BSN_DSC === "1") {
                         var resultStVal = el.ST_SOG_WT;
                         var resultEdVal = el.ED_SOG_WT;
+                        var isOverLapNaFeeC = $("#na_fee_c").val() === el.NA_FEE_C; // 수수료 종류 겹침 여부
 
                         // 구간이 겹치면 true. 겹치는 구간이 없으면 false
                         // 사실상 기존 상한 값과 추가하려는 하한값만 비교하면 됨.(resultEdVal <= stVal )
-                        if(  stVal < resultEdVal ) {
+                        // 구간 겹치고 && 수수료종류 다르면 겹치지 않는 것으로 판단.
+                        if(  stVal < resultEdVal &&  !isOverLapNaFeeC) {
+                            return false;
+                        // 구간 겹치고 && 수수료종류도 같으면 겹치는 것으로 판단.
+                        } else if(stVal < resultEdVal && isOverLapNaFeeC) {
                             return true;
-                        } 
+                        }
                     }
                     return false;
                 })
