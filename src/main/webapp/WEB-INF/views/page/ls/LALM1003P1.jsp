@@ -756,8 +756,8 @@
         	data = [];
         }
         
-        const searchResultColNames = ["* 경매번호","* 경매대상","* 출하자코드","* 출하자","조합원<br/>여부","관내외<br>구분","생산자","접수일자","진행상태"
-                                   ,"낙찰자명","참가<br/>번호","* 개체번호","성별","구제역백신<br/>접종여부","구제역백신<br/>접종일","중량","예정가","낙찰단가","낙찰가","비고"
+        const searchResultColNames = ["* 경매번호","* 경매대상","* 농가식별번호","* 농가명","조합원<br/>여부","관내외<br>구분","접수일자"
+                                   ,"* 개체번호","성별","구제역백신<br/>접종여부","구제역백신<br/>접종일","중량","예정가","비고"
                                   ];
 
         const searchResultColModel = [
@@ -767,20 +767,14 @@
                                      {name:"FTSNM",                index:"FTSNM",                width:75,  sortable:false, align:'center'},
                                      {name:"MACO_YN",              index:"MACO_YN",              width:65,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_MACO_YN_DATA}},
                                      {name:"JRDWO_DSC",            index:"JRDWO_DSC",            width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("JRDWO_DSC", 1)}},
-                                     {name:"SRA_PDMNM",            index:"SRA_PDMNM",            width:80,  sortable:false, align:'center'},
                                      {name:"RC_DT",                index:"RC_DT",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
-                                     {name:"SEL_STS_DSC",          index:"SEL_STS_DSC",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SEL_STS_DSC", 1)}},
-                                     {name:"SRA_MWMNNM",           index:"SRA_MWMNNM",           width:80,  sortable:false, align:'center'},
-                                     {name:"LVST_AUC_PTC_MN_NO",   index:"LVST_AUC_PTC_MN_NO",   width:40,  sortable:false, align:'center', sorttype: "number"},
                                      {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, sortable:false, align:'center', formatter:'gridIndvFormat'},
                                      {name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
                                      {name:"VACN_DT_YN",           index:"FMD_V_YN",             width:70,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"VACN_DT",              index:"FMD_V_DT",             width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
                                      {name:"COW_SOG_WT",           index:"COW_SOG_WT",           width:70,  sortable:false, align:'right', formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"SRA_SBID_E",           index:"SRA_SBID_E",           width:70,  sortable:false, align:'right', sorttype: "number" , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-                                     {name:"SRA_SBID_UPR",         index:"SRA_SBID_UPR",         width:70,  sortable:false, align:'right', sorttype: "number" , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-                                     {name:"SRA_SBID_AM",          index:"SRA_SBID_AM",          width:70,  sortable:false, align:'right' , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-                                     {name:"NOTE",                 index:"NOTE",                 width:150,  sortable:false, align:'center'},
+                                     {name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable:false, align:'left'},
                                     ];
 
         $("#grd_MmInsSogCow").jqGrid("GridUnload");
@@ -910,24 +904,18 @@
 
 				ExcelData['AUC_OBJ_DSC'          ] = item[0 ]  ?? ''; // 경매대상구분코드
 				ExcelData['AUC_PRG_SQ'           ] = item[1 ]  ?? ''; // 경매번호
-				ExcelData['FHS_ID_NO'          	 ] = item[2 ]  ?? ''; // 출하자코드
-				ExcelData['FTSNM'          		 ] = item[3 ]  ?? ''; // 출하자명
+				ExcelData['FHS_ID_NO'          	 ] = item[2 ]  ?? ''; // 출하자코드 (농가식별번호)
+				ExcelData['FTSNM'          		 ] = item[3 ]  ?? ''; // 출하자명 (농가명)
 				ExcelData['MACO_YN'          	 ] = item[4 ]  ?? ''; // 조합원여부
 				ExcelData['JRDWO_DSC'          	 ] = item[5 ]  ?? ''; // 관내외구분
-				ExcelData['SRA_PDMNM'          	 ] = item[6 ]  ?? ''; // 생산자명
-				ExcelData['RC_DT'          		 ] = item[7 ]  ?? ''; // 접수일자
-				ExcelData['SEL_STS_DSC'          ] = item[8 ]  ?? ''; // 진행상태
-				ExcelData['SRA_MWMNNM'           ] = item[9 ]  ?? ''; // 낙찰자명
-				ExcelData['LVST_AUC_PTC_MN_NO'   ] = item[10 ] ?? ''; // 참가번호
-				ExcelData['SRA_INDV_AMNNO'       ] = item[11 ] ?? ''; // 개체번호
-				ExcelData['INDV_SEX_C'           ] = item[12 ] ?? ''; // 성별
-				ExcelData['VACN_DT_YN'           ] = item[13 ] ?? ''; // 구제역백신접종여부
-				ExcelData['VACN_DT'              ] = item[14 ] ?? ''; // 구제역백신접종일
-				ExcelData['COW_SOG_WT'           ] = item[15 ] ?? ''; // 중량
-				ExcelData['SRA_SBID_E'           ] = item[16 ] ?? ''; // 예정가
-				ExcelData['SRA_SBID_UPR'         ] = item[17 ] ?? ''; // 낙찰단가
-				ExcelData['SRA_SBID_AM'          ] = item[18 ] ?? ''; // 낙찰가
-				ExcelData['NOTE'                 ] = item[19 ] ?? ''; // 비고
+				ExcelData['RC_DT'          		 ] = item[6 ]  ?? ''; // 접수일자
+				ExcelData['SRA_INDV_AMNNO'       ] = item[7 ] ?? ''; // 개체번호
+				ExcelData['INDV_SEX_C'           ] = item[8 ] ?? ''; // 성별
+				ExcelData['VACN_DT_YN'           ] = item[9 ] ?? ''; // 구제역백신접종여부
+				ExcelData['VACN_DT'              ] = item[10 ] ?? ''; // 구제역백신접종일
+				ExcelData['COW_SOG_WT'           ] = item[11 ] ?? ''; // 중량
+				ExcelData['SRA_SBID_E'           ] = item[12 ] ?? ''; // 예정가
+				ExcelData['RMK_CNTN'             ] = item[13 ] ?? ''; // 비고
 
     			if($('#auc_obj_dsc').val() == ExcelData['AUC_OBJ_DSC']) ExcelList.push(ExcelData);
     		}
