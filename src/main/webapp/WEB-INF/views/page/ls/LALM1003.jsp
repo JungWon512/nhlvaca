@@ -115,7 +115,7 @@
          $("#pb_ExcelUpload").on('click', function(e){
              e.preventDefault();
              this.blur();
-             const pgid = 'LALM1003P3';
+             const pgid = 'LALM1003P1';
              const menu_id = $("#menu_info").attr("menu_id");
              const param = {
                 auc_obj_dsc : $('#auc_obj_dsc').val()

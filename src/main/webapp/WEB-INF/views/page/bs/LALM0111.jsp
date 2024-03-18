@@ -374,7 +374,7 @@ var isFrmOrgData = null;
 									{name:"ANW_YN",              index:"ANW_YN",              width:100, align:'center', hidden:true},
 									{name:"SRA_FED_SPY_YN",      index:"SRA_FED_SPY_YN",      width:50,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
 									{name:"DEL_YN",              index:"DEL_YN",              width:40,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"ETC_AUC_OBJ_DSC_YN",  index:"ETC_AUC_OBJ_DSC_YN",  width:40,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"ETC_AUC_OBJ_DSC_YN",  index:"ETC_AUC_OBJ_DSC_YN",  width:40,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}, hidden: !ETC_AUC_OBJ_DSC},
 									];
 
 		$("#grd_MmFhs").jqGrid("GridUnload");
