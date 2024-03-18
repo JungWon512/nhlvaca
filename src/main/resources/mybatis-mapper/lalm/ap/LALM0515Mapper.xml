@@ -151,7 +151,10 @@
 	       , TB_LA_IS_MM_FHS     G
 	       , TB_LA_IS_MM_MWMN F
 	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}                                                                   /* 경제통합사업장코드            */
-	      AND A.AUC_OBJ_DSC     = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END
+		  AND (
+				(#{cb_auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{cb_auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{cb_auc_obj_dsc})
+			)	/* 일괄검색시 흑염소/말 조회되지 않도록 조건 수정 */
 	      AND A.AUC_DT            BETWEEN #{auc_st_dt} AND #{auc_ed_dt}                                              /* 경매일자                   */
 	      AND A.DEL_YN            = '0'
 	      AND A.LED_SQNO          = 1

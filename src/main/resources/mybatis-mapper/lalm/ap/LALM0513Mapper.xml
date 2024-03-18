@@ -2956,6 +2956,7 @@
 		      AND A.NA_BZPLC       = D.NA_BZPLC
 		      AND A.SRA_INDV_AMNNO = D.SRA_INDV_AMNNO
 		      AND A.SRA_SRS_DSC    = D.SRA_SRS_DSC
+			  AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3')
 	]]>
 		<if test="chk_calf_cow == 1">
 		    	UNION ALL
@@ -3086,6 +3087,7 @@
 			      AND f.NA_BZPLC       = D.NA_BZPLC
 			      AND f.SRA_INDV_AMNNO = D.SRA_INDV_AMNNO
 			      AND f.SRA_SRS_DSC    = D.SRA_SRS_DSC
+				  AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3')
 			</if> 
 		) T
 		ORDER BY TO_NUMBER(T.AUC_PRG_SQ), T.SRA_INDV_AMNNO_P
