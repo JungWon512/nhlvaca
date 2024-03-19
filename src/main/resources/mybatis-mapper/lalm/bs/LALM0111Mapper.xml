@@ -85,7 +85,7 @@
           <selectKey keyProperty="sra_fhs_id_no" resultType="string" order="BEFORE">
             <choose>
                 <when test='etc_auc_obj_dsc_yn == "1"'>
-                  select 'G' || (nvl(max(SUBSTRING(fhs_id_no, 2)), 100000) + 1) as sra_fhs_id_no
+                  select 'G' || LPAD(nvl(max(SUBSTRING(fhs_id_no, 2)), 0) + 1, 6, '0') as sra_fhs_id_no
                   from tb_la_is_mm_fhs
                   where fhs_id_no like 'G%'
                   and na_bzplc = #{ss_na_bzplc}
