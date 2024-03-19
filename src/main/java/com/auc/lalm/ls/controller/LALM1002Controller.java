@@ -55,5 +55,12 @@ public class LALM1002Controller {
 		return reMap;
 	}
 
+	@PostMapping(value = "/LALM1002_updFee")
+	public Map<String, Object> LALM1002_updFee(ResolverMap rMap) throws Exception {
+		final Map<String, Object> map = convertConfig.conMap(rMap);
+		final Map<String, Object> inMap = lsam0103Service.LALM1002_updFee(map);
+		final Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
+		return reMap;
+	}
 
 }

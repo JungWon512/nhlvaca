@@ -13,24 +13,32 @@ import com.auc.lalm.ls.service.LALM1002Service;
 public class LALM1002ServiceImpl implements LALM1002Service {
 
 	@Autowired
-	private LALM1002Mapper lsam0103Mapper;
+	private LALM1002Mapper lalm1002Mapper;
 
 	@Override
 	public List<Map<String, Object>> LALM1002_selList(Map<String, Object> map) throws Exception {
-		return lsam0103Mapper.LALM1002_selList(map);
+		return lalm1002Mapper.LALM1002_selList(map);
+	}
+
+	@Override
+	public Map<String, Object> LALM1002_selDetail(Map<String, Object> map) throws Exception {
+		return lalm1002Mapper.LALM1002_selDetail(map);
 	}
 
 	@Override
 	public Map<String, Object> LALM1002_insFee(Map<String, Object> map) throws Exception {
 		final Map<String, Object> reMap = new HashMap<String, Object>();
-		final int insertNum = lsam0103Mapper.LALM1002_insFee(map);
+		final int insertNum = lalm1002Mapper.LALM1002_insFee(map);
 		reMap.put("insertNum", insertNum);
 		return reMap;
 	}
 
 	@Override
-	public Map<String, Object> LALM1002_selDetail(Map<String, Object> map) throws Exception {
-		return lsam0103Mapper.LALM1002_selDetail(map);
+	public Map<String, Object> LALM1002_updFee(Map<String, Object> map) throws Exception {
+		final Map<String, Object> reMap = new HashMap<String, Object>();
+		int updateNum = 0;
+		updateNum = lalm1002Mapper.LALM1002_updFee(map);
+		reMap.put("updateNum", updateNum);
+		return reMap;
 	}
-
 }

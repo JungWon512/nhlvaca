@@ -102,6 +102,7 @@
      ------------------------------------------------------------------------------*/
     function fn_Disabled(p_simp_tpc, p_simp_tpc_second, p_simp_tpc_third, p_simp_tpc_val) {
         $(document).on('change', p_simp_tpc, function() {
+            console.log($(this).val())
             // disabled처리대상 요소 적용.
             // p_simp_tpc 요소의 p_simp_tpc_val 값이 아닐 경우 disabled.
             $(p_simp_tpc_second).prop("disabled", $(this).val() !== p_simp_tpc_val);
@@ -195,23 +196,39 @@
      * 3. 출 력 변 수 : N/A
      * 4. 설 명 : 적용기준 관련 체크가 필요한 경우 사용.
      ------------------------------------------------------------------------------*/
-     function fn_ResultValidation() {
+     function fn_ResultValidation(sqno) {
         // TODO(완료) 적용기준이 구간별일 경우, 적용구간이 겹치면 안됨.
         // TODO(완료) 같은 적용일자 기준 추가하려는 데이터의 수수료 적용기준이 조회api로 조회한 데이터와 상이할 경우, "수수료 적용기준을 확인해주세요." 등의 alert.
         // TODO(완료) + 마리별 적용기준은 한 적용일자의 한 건만 존재해야함.
+        // console.log(sqno)
         var params = {
             ...setFrmToData("frm_Search"),
             sc_apl_dt: $("#apl_dt").val().replace(/-/g, '')
         }
 
-        // TODO(구현필요) 기존 데이터 없을 때는 추가 가능.
+        // TODO(구현완료) 기존 데이터 없을 때는 추가 가능.
         var results = sendAjax(params, "/LALM1002_selList", "POST"); 
         var result;
- 
+
+            // 수정 시, 파라미터로 등록일련번호 넘겨줌.
+            // 등록일련번호 파라미터가 있는 경우에만 수정하려는 아이템과 다른 것만 비교대상!
+            // 구간만 변경하려할 때, 기존 데이터와 구간이 겹치다고 validation에 걸려버림.
+            // if(sqno) {
+            //     result = result.filter((el) => el.FEE_RG_SQNO !== sqno );
+            // } else {
+
+            // }
+        
         if(results.dataCnt > 0 && results.status === RETURN_SUCCESS ) {
             result = setDecrypt(results);
-            result = result.filter((el) => el.APL_DT === $("#apl_dt").val().replace(/-/g, ''));
-            
+            // console.log(result)
+            if(sqno) {
+                result = result.filter((el) => parseInt(el.FEE_RG_SQNO) !== parseInt(sqno) );
+                console.log('수정 시, result:', result)
+            } else {
+                result = result.filter((el) => el.APL_DT === $("#apl_dt").val().replace(/-/g, ''));
+            }
+
             // 2. 추가하려는 적용기준이 무엇이던간에 이미 데이터에 마리별이 있으면 무조건 추가 안됨. 
             if((result.some((el) => el.JNLZ_BSN_DSC !== "2")) === false && result.length > 0) {
                 MessagePopup('OK', "같은 적용일자 기준 마리별 수수료 데이터가 존재합니다.", () => {
@@ -225,7 +242,7 @@
                 }) 
                 return false;
             // 4. 적용기준이 "1"일 경우, 적용구간이 result내의 적용구간과 겹치면 안됨. st_sog_wt(하한) / st_sog_wt(상한)
-            // TODO(수정필요) 적용구간이 같더라도 수수료 종류가 다르면 OK    
+            // TODO(완료) 적용구간이 같더라도 수수료 종류가 다르면 OK    
             } else if ($("#jnlz_bsn_dsc").val() === "1" && result.length > 0) {
                 var stVal = $("#st_sog_wt").val();
                 var edVal = $("#ed_sog_wt").val();
@@ -257,7 +274,8 @@
                 });
                     return false;
                 }
-            } return true;
+            } 
+            return true;
         } else if(results.status != RETURN_SUCCESS && results.dataCnt !== 0) {
             showErrorMessage(results);
             return;
@@ -281,8 +299,6 @@
         // 기존데이터와 수수료적용기준 관련 체크
         if (!fn_ResultValidation()) return;
 
-        // 
-
         MessagePopup('YESNO', '저장하시겠습니까?', (res) => {
             if(res){
                 const results = sendAjaxFrm("frm_fee", "/LALM1002_insFee", "POST");
@@ -305,13 +321,49 @@
      * 2. 입 력 변 수 : N/A
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
-	function fn_Save() {
-        // 필수값 입력여부 체크
-        if (!fn_RequiredValueValidation()) return;
-        // 입력값 체크
-        if (!fn_ValueValidation()) return;
-        // 기존데이터와 수수료적용기준 관련 체크
-        if (!fn_ResultValidation()) return;
+	function fn_Save(sqno) {
+        // console.log(parent.envList)
+        // var srchData = new Object();
+        
+        // srchData["na_bzplc"]   = parseInt(parent.envList[0]["NA_BZPLC"]);
+        // srchData["apl_dt"] = parseInt(parent.envList[0]["APL_DT"]);
+        // srchData["auc_obj_dsc"]  = parseInt(parent.envList[0]["AUC_OBJ_DSC"]);
+        // srchData["fee_rg_sqno"] = parseInt(parent.envList[0]["FEE_RG_SQNO"]);
+
+        // 저장버튼 클릭했을 때에만 실행됨.
+        $('#btn_Save').click(function() {
+            // 필수값 입력여부 체크
+            if (!fn_RequiredValueValidation()) return;
+            // 입력값 체크
+            if (!fn_ValueValidation()) return;
+            if (!fn_ResultValidation(sqno)) return;
+            MessagePopup('YESNO', '저장하시겠습니까?', (res) => {
+                if(res){
+    
+                    const results = sendAjaxFrm("frm_fee", "/LALM1002_updFee", "POST");
+                    if(results.status != RETURN_SUCCESS){
+                        showErrorMessage(results);
+                        return;
+                    }
+                    else{
+                        MessagePopup("OK", "정상적으로 처리되었습니다.", () => {
+                            fn_Init();
+                            fn_Search();
+                        });
+                    }
+                }
+            });
+        })
+
+        // 일련번호가 있으면 
+        // if(sqno) {
+        //     if (!fn_ResultValidation(sqno)) return;
+        // } 
+
+        // 기존데이터와 수수료적용기준 관련 체크 
+        // TODO(구현필요) 여기서 수정하고자 하는 item의 일련번호 넘겨줘야함.!!!!
+        // if (!fn_ResultValidation(sqno)) return;
+
 	}
 
     /*------------------------------------------------------------------------------
@@ -380,14 +432,43 @@
         $("#grd_MhFee").jqGrid("setLabel", "rn","No");
     }
 
-    function fn_SetGridData(data) {
+    // 그리드 row 클릭 시
+    function fn_SetGridData (data) {
         const srhData = new Object();
 		srhData["na_bzplc"] = data.NA_BZPLC;
 		srhData["auc_obj_dsc"] = data.AUC_OBJ_DSC;
 		srhData["apl_dt"] = data.APL_DT;
-		srhData["fee_rg_sqno"] = data.FEE_RG_SQNO;
-		
+		srhData["fee_rg_sqno"] = data.FEE_RG_SQNO; // 선택된 데이터의 등록일련번호 validation 함수에 인자로 넘겨줘야함.
+		console.log('클릭했을때,', data)
+        // TODO(완료) 상세정보 result데이터 input에 바인딩 시키기 
 		const results = sendAjax(srhData, "/LALM1002_selDetail", "POST");
+        const result = setDecrypt(results);
+        fn_setFrmByObject("frm_fee", result);
+
+        $("#btn_Save, #btn_Delete").prop("disabled", false);
+        $("#frm_fee").find("input, select").prop("disabled", false);
+
+
+        // fn_ResultValition함수에 인자로 현재 선택한 요소의 일련번호를 넘겨줌.
+        fn_Save(data.FEE_RG_SQNO); 
+
+
+        // 수수료 적용기준이 마리별 일 때 적용구간 disabled 처리, "required" 클래스 제거
+        if(data.JNLZ_BSN_DSC === "2") {
+            var firstEle = document.getElementById('st_sog_wt');
+            var secondEle = document.getElementById('ed_sog_wt');
+            $("#st_sog_wt").prop("disabled", true);
+            $("#ed_sog_wt").prop("disabled", true);
+            firstEle.classList.remove("required");
+            secondEle.classList.remove("required");
+        // 금액/비율이 금액 일 때 단수처리 disabled 처리, "required" 클래스 제거
+        } else if(data.AM_RTO_DSC === "1") {
+            var ele = document.getElementById('sgno_prc_dsc');
+            $("#sgno_prc_dsc").prop("disabled", true);
+            ele.classList.remove("required");
+        }
+
+
     }
 </script>
 
