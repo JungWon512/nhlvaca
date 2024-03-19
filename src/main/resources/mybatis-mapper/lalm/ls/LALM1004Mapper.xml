@@ -371,6 +371,20 @@
 	      AND  AUC_OBJ_DSC  = #{auc_obj_dsc}    /* 경매대상                   */
 	      AND  AUC_PRG_SQ   = #{auc_prg_sq}     /* 경매번호                   */
 	]]>
+	<if test='auc_obj_dsc == "5" or auc_obj_dsc == "6"'>
+          AND  FHS_ID_NO like 'G%'
+    </if>
+    </select>
+
+    <select id="LALM1004_selFtsnm" resultType="hashMap">
+    <![CDATA[
+        SELECT FHS_ID_NO								  /* 농가식별번호               */
+		, FARM_AMNNO                      				  /* 농장식별코드               */
+	     FROM  TB_LA_IS_MM_FHS
+	    WHERE  NA_BZPLC     = #{ss_na_bzplc}              /* 경제통합사업장코드         */
+		  AND  FTSNM		= #{ftsnm}
+		  AND  FHS_ID_NO like 'G%'
+	]]>
     </select>
     
     <select id="LALM1004_selMacoFee" resultType="hashMap">

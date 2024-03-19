@@ -32,17 +32,6 @@ public class LALM1003P3Controller {
 	LALM1003P3Service lsam0202P3Service;
 
 	@ResponseBody
-	@RequestMapping(value = "/LALM1003P3_insFhs", method = RequestMethod.POST)
-	public Map<String, Object> LALM1003P3Service(ResolverMap rMap) throws Exception {
-		// Map<String, Object> map = convertConfig.conMap(rMap);
-		// Map<String, Object> inMap = LALM1003P3Service.LALM1003P3_insFhs(map);
-		// Map<String, Object> reMap = commonFunc.createResultSetMapData(inMap);
-		// return reMap;
-		return null;
-
-	}
-
-	@ResponseBody
 	@RequestMapping(value = "/LALM1003P3_insSogCow", method = RequestMethod.POST)
 	public Map<String, Object> LALM1003P3_insSogCow(ResolverMap rMap) throws Exception {
 
@@ -55,16 +44,14 @@ public class LALM1003P3Controller {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@ResponseBody
-	@RequestMapping(value = "/LALM1003P3_selSogCowVaild", method = RequestMethod.POST)
-	public Map<String, Object> LALM1003P3_selSogCowVaild(ResolverMap rMap) throws Exception {
+	@RequestMapping(value = "/LALM1003P3_insEtc", method = RequestMethod.POST)
+	public Map<String, Object> LALM1003P3_insEtc(ResolverMap rMap) throws Exception {
 
 		Map<String, Object> map = convertConfig.conMapWithoutXxs(rMap);
 
-		Map<String, Object> inMap = lsam0202P3Service.LALM1003P3_selSogCowVaild(map);
-		Map<String, Object> reMap = commonFunc
-				.createResultSetListData((List<Map<String, Object>>) inMap.get("resultList"));
+		Map<String, Object> inMap = lsam0202P3Service.LALM1003P3_insEtc(map);
+		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
 
 		return reMap;
 
@@ -72,12 +59,12 @@ public class LALM1003P3Controller {
 
 	@SuppressWarnings("unchecked")
 	@ResponseBody
-	@RequestMapping(value = "/LALM1003P3_selIndvSync", method = RequestMethod.POST)
-	public Map<String, Object> LALM1003P3_selIndvSync(ResolverMap rMap) throws Exception {
+	@RequestMapping(value = "/LALM1003P3_selEtcVaild", method = RequestMethod.POST)
+	public Map<String, Object> LALM1003P3_selEtcVaild(ResolverMap rMap) throws Exception {
 
 		Map<String, Object> map = convertConfig.conMapWithoutXxs(rMap);
 
-		Map<String, Object> inMap = lsam0202P3Service.LALM1003P3_selIndvSync(map);
+		Map<String, Object> inMap = lsam0202P3Service.LALM1003P3_selEtcVaild(map);
 		Map<String, Object> reMap = commonFunc
 				.createResultSetListData((List<Map<String, Object>>) inMap.get("resultList"));
 

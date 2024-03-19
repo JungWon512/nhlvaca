@@ -297,7 +297,19 @@
                 FROM TB_LA_IS_MM_INDV A
                  WHERE NA_BZPLC		= #{ss_na_bzplc}
               AND SRA_INDV_AMNNO	= #{re_indv_no}
-              AND SRA_SRS_DSC		='01'
+              AND SRA_SRS_DSC		
+			  <choose>
+				<when test='auc_obj_dsc == "5"'>			/* 축산축종구분코드 */
+				='06'
+				</when>
+				<when test='auc_obj_dsc == "6"'>
+				='04'
+				</when>
+				<otherwise>
+				='01'
+				</otherwise>
+			</choose>
+			  
     </insert>
     
     <insert id="insMwmnLog">

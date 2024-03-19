@@ -38,6 +38,8 @@ public interface LALM1004Mapper {
 
 	List<Map<String, Object>> LALM1004_selAucPrg(Map<String, Object> map) throws Exception;
 
+	Map<String, Object> LALM1004_selFtsnm(Map<String, Object> map) throws Exception;
+
 	List<Map<String, Object>> LALM1004_selAmnno(Map<String, Object> map) throws Exception;
 
 	List<Map<String, Object>> LALM1004_selChgVoslpNo(Map<String, Object> map) throws Exception;

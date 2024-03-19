@@ -4,9 +4,16 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.auc.lalm.ls.service.Impl.LALM1003P3Mapper">
-	<insert id="LALM1003P3_insSogCow">
+	<insert id="LALM1003P3_insEtc" parameterType="hashMap">
+		<selectKey keyProperty="sra_indv_amnno" resultType="string" order="BEFORE">
+			SELECT CASE WHEN #{auc_obj_dsc} = '5' THEN '06'
+						WHEN #{auc_obj_dsc} = '6' THEN '04'
+						ELSE '01'
+					END || TO_CHAR(SYSDATE, 'YYYYMMdd') || LPAD(#{oslp_no}, 5, '0') AS sra_indv_amnno
+			FROM DUAL
+		</selectKey>
 		INSERT  INTO TB_LA_IS_MH_SOG_COW (
-			NA_BZPLC                               	/* 경제통합사업장코드         */
+			NA_BZPLC                               		/* 경제통합사업장코드         */
 		    , AUC_OBJ_DSC                            	/* 경매대상구분코드           */
 		    , AUC_DT                                 	/* 경매일자                   */
 		    , OSLP_NO                                	/* 원표번호                   */
@@ -67,69 +74,148 @@
 		    , DNA_YN_CHK								/* 친자검사 여부 */
 		    , MOD_KPN_NO
 		)VALUES(
-			#{ss_na_bzplc}                        	/* 경제통합사업장코드         */
+			#{ss_na_bzplc}                        		/* 경제통합사업장코드         */
 			, #{auc_obj_dsc}             				/* 경매대상구분코드           */
 			, #{auc_dt}              					/* 경매이월일자               */
-			, #{oslp_no}                           	/* 원표번호                   */
-			, 1                                        /* 원장일련번호               */
+			, #{oslp_no}                           		/* 원표번호                   */
+			, 1                                        	/* 원장일련번호               */
 			, #{fhs_id_no}               				/* 농가식별번호               */
 			, #{farm_amnno}              				/* 농장관리번호               */
-			, #{sog_na_trpl_c}           				/* 출하경제통합거래처코드     */
-			, #{vhc_shrt_c}               				/* 차량단축코드               */
+			, NULL           							/* 출하경제통합거래처코드     */
+			, NULL               						/* 차량단축코드               */
 			, #{rc_dt}                    				/* 접수일자                   */
 			, NULL                     
 			, NULL             
-			, '01'                    
-			, #{re_indv_no}                 
-			, 0
+			<choose>
+				<when test='auc_obj_dsc == "5"'>			/* 축산축종구분코드 */
+					, '06'
+				</when>
+				<when test='auc_obj_dsc == "6"'>
+					, '04'
+				</when>
+				<otherwise>
+					, '01'
+				</otherwise>
+			</choose>
+			, #{sra_indv_amnno}
+			, #{cow_sog_wt}
 			, NULL           
-			, NULL               
+			, #{lows_sbid_lmt_am}
 			, NULL                   
 			, NULL                    
 			, '11'                    
-			, #{brcl_isp_ctfw_smt_yn}           
-		    , #{brcl_isp_rzt_c}
-			, #{brcl_isp_dt}                    
+			, NULL     
+		    , NULL
+			, NULL
 			, 0                    
-		    , #{vacn_dt}                                	/* 예방접종일자               */
-		    , #{vacn_order}                                /* 구제역 백신차수*/
-		    , #{bovine_dt}                                	/* 우결해 검사일자               */
-		    , #{bovine_rsltnm}                             /* 우결핵 검사결과 */
-			, NULL            
-			, #{mt12_ovr_yn}                    
-			, #{ppgcow_fee_dsc}                 
-			, #{prny_jug_yn}
-			, #{prny_yn}
-			, #{ncss_jug_yn}
-			, #{ncss_yn}
-			, #{trpcs_py_yn}                    
-			, #{sra_trpcs }                     
-			, #{sra_pyiva}                      
-			, #{sra_fed_spy_am}                 
-			, #{td_rc_cst}                      
-			, #{mt12_ovr_fee}                   
-			, #{afism_mod_dt}
-			, #{prny_mtcn}
-			, #{afism_mod_ctfw_smt_yn}
-			, #{rmhn_yn}                        
-			, #{sra_pdmnm}
-			, #{sra_pd_rgnnm}                   
+		    , #{vacn_dt}                                /* 예방접종일자               */
+		    , #{vacn_order}                             /* 구제역 백신차수*/
+		    , NULL
+		    , NULL
+			, NULL        								/* 가축시장거래처관리번호     */    
+			, NULL
+			, NULL
+			, NULL
+			, NULL
+			, NULL
+			, NULL
+			, NULL
+			, NULL
+			, NULL
+			, NULL
+			, NULL										/* 당일접수비용               */
+			, NULL
+			, NULL
+			, NULL
+			, NULL
+			, NULL
+			, #{sra_pdmnm}								/* 축산생산자명               */
+			, #{sra_pd_rgnnm}                   		/* 축산생산지역명             */
 			, #{rmk_cntn}
 			, #{auc_prg_sq}                     
 			, '0'                         
 			, '0'
-			, #{modl_no}                        
+			, #{modl_no}                	        	/* 거치대 번호 */
 			, '0'
 			, SYSDATE				
 			, #{ss_userid}			
 			, SYSDATE				
 			, #{ss_userid}	         
-		    , #{dna_yn}					/* 친자검사 결과 */
-		    , #{dna_yn_chk}				/* 친자검사 여부 */
-		    , #{mod_kpn}   
+		    , NULL
+		    , NULL
+		    , NULL
 		)
 	</insert>
 	
+	<insert id="LALM1003P3_insIndv" parameterType="hashMap">
+        insert into tb_la_is_mm_indv
+         (
+            na_bzplc									/* 경제통합사업장코드 */
+          , sra_indv_amnno								/* 축산개체관리번호   */
+          , sra_srs_dsc									/* 축산축종구분코드   */
+          , fhs_id_no									/* 농가식별번호       */
+          , farm_amnno									/* 농장관리번호       */
+          , birth
+          , mcow_dsc
+          , kpn_no
+          , indv_sex_c									/* 개체성별코드       */
+          , mcow_sra_indv_amnno
+          , matime
+          , sra_indv_pasg_qcn
+          , indv_id_no									/* 개체식별번호       */
+          , sra_indv_brdsra_rg_no
+          , rg_dsc										/* 등록구분코드       */
+          , anw_yn										/* 한우종합등록여부   */
+          , grfa_sra_kpn_no 
+          , grfa_sra_indv_eart_no 
+          , grmo_sra_indv_eart_no 
+          , mtgrfa_sra_kpn_no 
+          , mtgrfa_sra_indv_eart_no 
+          , mtgrmo_sra_indv_eart_no
+          , fsrg_dtm
+          , fsrgmn_eno
+          , lschg_dtm
+          , ls_cmeno
+         ) values
+         (
+             #{ss_na_bzplc}
+           , #{sra_indv_amnno}
+		   <choose>
+				<when test='auc_obj_dsc == "5"'>		  	 	/* 축산축종구분코드	 */
+					, '06'
+				</when>
+				<when test='auc_obj_dsc == "6"'>
+					, '04'
+				</when>
+				<otherwise>
+					, '01'
+				</otherwise>
+		   </choose>
+           , #{fhs_id_no}
+           , #{farm_amnno}
+           , NULL
+           , NULL
+           , NULL
+           , #{indv_sex_c}
+           , NULL
+           , NULL
+           , NULL
+           , NULL
+           , NULL
+           , NULL
+           , '0'
+           , NULL
+           , NULL
+           , NULL
+           , NULL
+           , NULL
+           , NULL
+           , SYSDATE
+           , #{ss_userid}
+           , SYSDATE
+           , #{ss_userid}
+         );
+    </insert>
 </mapper>
 
 
