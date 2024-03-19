@@ -44,13 +44,16 @@
         fn_setCodeBox("am_rto_dsc", "AM_RTO_DSC", 1, true, "선택"); // 금액/비율
 
         // 수수료적용기준이 마리별(2)일 경우, 적용구간 input disabled처리.
-        // TODO(구현완료) 이 경우, 적용구간 필수값 validation 해제 필요. 
+        // TODO(완료) 이 경우, 적용구간 필수값 validation 해제 필요. 
         fn_Disabled("#jnlz_bsn_dsc", "#st_sog_wt", "#ed_sog_wt", "1");
 
         // 금액/비율이 금액(1)일 경우, 단수처리 select box disabled처리.
-        // TODO(구현완료) 이 경우, 단수처리 필수값 validation 해제 필요.
+        // TODO(완료) 이 경우, 단수처리 필수값 validation 해제 필요.
         // TODO(구현필요) 세번째 인자로 넘겨줄 것이 없어서 undefined처리. -> 확인필요
         fn_Disabled("#am_rto_dsc", "#sgno_prc_dsc", undefined, "2");
+        
+        // TODO(완료) 금액/비율이 비율(2)일 경우, 조합원 수수료 / 비조합원 수수료 최대 100까지만 입력되도록.
+        fn_limitFee();
 
         $(".date").datepicker({
 			yearRange : 'c-10:c+10'
@@ -95,6 +98,49 @@
     }
 
     /*------------------------------------------------------------------------------
+     * 1. 함 수 명    : 수수료 금액 비율 선택 시, 비율 제한.
+     * 2. 입 력 변 수 : N/A
+     * 3. 출 력 변 수 : N/A
+     * 4. 설 명 : 수수료 금액 비율 선택 시, 비율 최대 100%까지 허용.
+     ------------------------------------------------------------------------------*/
+    function fn_limitFee() {
+        $(document).on('change', '#am_rto_dsc', function() {
+            $("#maco_fee_upr").val("");
+            $("#nmaco_fee_upr").val("");
+
+            // 이전의 이벤트 제거 하지 않으면, 값 수정이 안됨. 또는 이벤트가 엉킴?
+            $("#maco_fee_upr").off("input");
+            $("#nmaco_fee_upr").off("input");
+
+            // 비율(2) 선택 시,  
+            if($(this).val() === '2') {
+                // 조합원 수수료 값 100 이하인지 체크
+                $("#maco_fee_upr").on("input", function() {
+                    let macoValue = $(this).val();
+
+                    if (parseInt(macoValue) <= 100) {
+                    } else {
+                        $(this).val("100");
+                    }
+                });
+                // 비조합원 수수료 값 100 이하인지 체크
+                $("#nmaco_fee_upr").on("input", function() {
+                    let nmacoValue = $(this).val();
+
+                    if (parseInt(nmacoValue) <= 100) {
+                    } else {
+                        $(this).val("100");
+                    }
+                });
+            } else {
+                $("#maco_fee_upr").off("input");
+                $("#nmaco_fee_upr").off("input");
+            }   
+        });
+
+    }
+
+    /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 입력 칸 disabled처리 함수
      * 2. 입 력 변 수 : p_simp_tpc, p_simp_tpc_second, p_simp_tpc_third, p_simp_tpc_value (입력 칸 id, disable처리하고자하는 id, value값)
      * 3. 출 력 변 수 : N/A
@@ -102,7 +148,7 @@
      ------------------------------------------------------------------------------*/
     function fn_Disabled(p_simp_tpc, p_simp_tpc_second, p_simp_tpc_third, p_simp_tpc_val) {
         $(document).on('change', p_simp_tpc, function() {
-            console.log($(this).val())
+            // console.log($(this).val())
             // disabled처리대상 요소 적용.
             // p_simp_tpc 요소의 p_simp_tpc_val 값이 아닐 경우 disabled.
             $(p_simp_tpc_second).prop("disabled", $(this).val() !== p_simp_tpc_val);
@@ -117,7 +163,6 @@
                 var thirdEle = document.getElementById(p_simp_tpc_third.replace(/#/g, ''));
                 // 해당 요소 필수 값 클래스 제거.
                 if( $(this).val() !== p_simp_tpc_val) thirdEle.classList.remove("required");
-                
             }
         });
     };
@@ -200,28 +245,19 @@
         // TODO(완료) 적용기준이 구간별일 경우, 적용구간이 겹치면 안됨.
         // TODO(완료) 같은 적용일자 기준 추가하려는 데이터의 수수료 적용기준이 조회api로 조회한 데이터와 상이할 경우, "수수료 적용기준을 확인해주세요." 등의 alert.
         // TODO(완료) + 마리별 적용기준은 한 적용일자의 한 건만 존재해야함.
-        // console.log(sqno)
+
         var params = {
             ...setFrmToData("frm_Search"),
             sc_apl_dt: $("#apl_dt").val().replace(/-/g, '')
         }
 
-        // TODO(구현완료) 기존 데이터 없을 때는 추가 가능.
+        // TODO(완료) 기존 데이터 없을 때는 추가 가능.
         var results = sendAjax(params, "/LALM1002_selList", "POST"); 
         var result;
 
-            // 수정 시, 파라미터로 등록일련번호 넘겨줌.
-            // 등록일련번호 파라미터가 있는 경우에만 수정하려는 아이템과 다른 것만 비교대상!
-            // 구간만 변경하려할 때, 기존 데이터와 구간이 겹치다고 validation에 걸려버림.
-            // if(sqno) {
-            //     result = result.filter((el) => el.FEE_RG_SQNO !== sqno );
-            // } else {
-
-            // }
-        
         if(results.dataCnt > 0 && results.status === RETURN_SUCCESS ) {
             result = setDecrypt(results);
-            // console.log(result)
+
             if(sqno) {
                 result = result.filter((el) => parseInt(el.FEE_RG_SQNO) !== parseInt(sqno) );
                 console.log('수정 시, result:', result)
@@ -241,7 +277,7 @@
                     $("#jnlz_bsn_dsc").focus();
                 }) 
                 return false;
-            // 4. 적용기준이 "1"일 경우, 적용구간이 result내의 적용구간과 겹치면 안됨. st_sog_wt(하한) / st_sog_wt(상한)
+            // 4. 적용기준이 "1"일 경우, 적용구간이 result내의 적용구간과 겹치면 안됨. st_sog_wt(하한) / ed_sog_wt(상한)
             // TODO(완료) 적용구간이 같더라도 수수료 종류가 다르면 OK    
             } else if ($("#jnlz_bsn_dsc").val() === "1" && result.length > 0) {
                 var stVal = $("#st_sog_wt").val();
@@ -249,17 +285,21 @@
                 
                 var isOverlap = result.some((el) => {
                     if(el.JNLZ_BSN_DSC === "1") {
-                        var resultStVal = el.ST_SOG_WT;
-                        var resultEdVal = el.ED_SOG_WT;
+                        var resultStVal = parseInt(el.ST_SOG_WT);
+                        var resultEdVal = parseInt(el.ED_SOG_WT);
                         var isOverLapNaFeeC = $("#na_fee_c").val() === el.NA_FEE_C; // 수수료 종류 겹침 여부
 
                         // 구간이 겹치면 true. 겹치는 구간이 없으면 false
                         // 사실상 기존 상한 값과 추가하려는 하한값만 비교하면 됨.(resultEdVal <= stVal )
                         // 구간 겹치고 && 수수료종류 다르면 겹치지 않는 것으로 판단.
-                        if(  stVal < resultEdVal &&  !isOverLapNaFeeC) {
+                        if(  (stVal < resultEdVal &&  !isOverLapNaFeeC) || (edVal === resultStVal &&  !isOverLapNaFeeC) ) {
                             return false;
                         // 구간 겹치고 && 수수료종류도 같으면 겹치는 것으로 판단.
-                        } else if(stVal < resultEdVal && isOverLapNaFeeC) {
+                        } else if(
+                            (stVal < resultEdVal && edVal > resultStVal && isOverLapNaFeeC) ||
+                            (edVal === resultStVal && isOverLapNaFeeC) ||
+                            (stVal === resultEdVal && isOverLapNaFeeC)
+                        ) {
                             return true;
                         }
                     }
@@ -309,6 +349,7 @@
                 else{
                     MessagePopup("OK", "정상적으로 처리되었습니다.", () => {
                         fn_Init();
+                        // TODO (구현필요) 추가 완료 후, 추가했던 적용일자로 조회
                         fn_Search();
                     });
                 }
@@ -321,26 +362,30 @@
      * 2. 입 력 변 수 : N/A
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
-	function fn_Save(sqno) {
-        // console.log(parent.envList)
-        // var srchData = new Object();
-        
-        // srchData["na_bzplc"]   = parseInt(parent.envList[0]["NA_BZPLC"]);
-        // srchData["apl_dt"] = parseInt(parent.envList[0]["APL_DT"]);
-        // srchData["auc_obj_dsc"]  = parseInt(parent.envList[0]["AUC_OBJ_DSC"]);
-        // srchData["fee_rg_sqno"] = parseInt(parent.envList[0]["FEE_RG_SQNO"]);
+	function fn_Save() {
 
-        // 저장버튼 클릭했을 때에만 실행됨.
-        $('#btn_Save').click(function() {
+        // hidden으로 숨겨놓은 일련번호 데이터 가져오기
+        var fee_rg_sqno = $("#fee_rg_sqno").val();
+
             // 필수값 입력여부 체크
             if (!fn_RequiredValueValidation()) return;
             // 입력값 체크
             if (!fn_ValueValidation()) return;
-            if (!fn_ResultValidation(sqno)) return;
+            // 기존 데이터와 유효성 체크
+            if (!fn_ResultValidation(fee_rg_sqno)) return;
+
+
             MessagePopup('YESNO', '저장하시겠습니까?', (res) => {
                 if(res){
-    
-                    const results = sendAjaxFrm("frm_fee", "/LALM1002_updFee", "POST");
+                    
+                    // 파라미터 객체에 NA_BZPLC, FEE_RG_SQNO가 NULL 값으로 들어감. 
+                    let params = {
+                        ...setFrmToData("frm_fee"),
+                        // na_bzplc: srhData.na_bzplc,
+                        fee_rg_sqno: fee_rg_sqno
+                    }
+                    console.log('수정파라미터:', params)
+                    const results = sendAjax(params, "/LALM1002_updFee", "POST");
                     if(results.status != RETURN_SUCCESS){
                         showErrorMessage(results);
                         return;
@@ -348,22 +393,12 @@
                     else{
                         MessagePopup("OK", "정상적으로 처리되었습니다.", () => {
                             fn_Init();
+                            // TODO (구현필요) 수정 완료 후, 수정했던 적용일자로 조회
                             fn_Search();
                         });
                     }
                 }
             });
-        })
-
-        // 일련번호가 있으면 
-        // if(sqno) {
-        //     if (!fn_ResultValidation(sqno)) return;
-        // } 
-
-        // 기존데이터와 수수료적용기준 관련 체크 
-        // TODO(구현필요) 여기서 수정하고자 하는 item의 일련번호 넘겨줘야함.!!!!
-        // if (!fn_ResultValidation(sqno)) return;
-
 	}
 
     /*------------------------------------------------------------------------------
@@ -439,19 +474,15 @@
 		srhData["auc_obj_dsc"] = data.AUC_OBJ_DSC;
 		srhData["apl_dt"] = data.APL_DT;
 		srhData["fee_rg_sqno"] = data.FEE_RG_SQNO; // 선택된 데이터의 등록일련번호 validation 함수에 인자로 넘겨줘야함.
-		console.log('클릭했을때,', data)
+
         // TODO(완료) 상세정보 result데이터 input에 바인딩 시키기 
 		const results = sendAjax(srhData, "/LALM1002_selDetail", "POST");
         const result = setDecrypt(results);
+
         fn_setFrmByObject("frm_fee", result);
 
         $("#btn_Save, #btn_Delete").prop("disabled", false);
         $("#frm_fee").find("input, select").prop("disabled", false);
-
-
-        // fn_ResultValition함수에 인자로 현재 선택한 요소의 일련번호를 넘겨줌.
-        fn_Save(data.FEE_RG_SQNO); 
-
 
         // 수수료 적용기준이 마리별 일 때 적용구간 disabled 처리, "required" 클래스 제거
         if(data.JNLZ_BSN_DSC === "2") {
@@ -649,6 +680,7 @@
 											<input type="text" id="nmaco_fee_upr" class="integer required" alt="비조합원수수료" maxlength="15" />
 										</div>
 									</div>
+                                    <input type="hidden" id="fee_rg_sqno">
 								</td>
 							</tr>
                         </tbody>

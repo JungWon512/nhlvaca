@@ -145,7 +145,7 @@
         )
     </insert>
 
-    <update id="LALM1002_updFee" parameterType="map">
+    <update id="LALM1002_updFee" parameterType="hashMap">
       UPDATE TB_LA_IS_MH_FEE
       SET
           NA_FEE_C = #{na_fee_c},
@@ -174,7 +174,7 @@
           FSRGMN_ENO = #{ss_userid},
           LSCHG_DTM = SYSDATE,
           LS_CMENO = #{ss_userid}
-      WHERE NA_BZPLC = #{na_bzplc}
+      WHERE NA_BZPLC = #{ss_na_bzplc}
         AND APL_DT = #{apl_dt}
         AND AUC_OBJ_DSC = #{auc_obj_dsc}
         AND FEE_RG_SQNO = #{fee_rg_sqno}
