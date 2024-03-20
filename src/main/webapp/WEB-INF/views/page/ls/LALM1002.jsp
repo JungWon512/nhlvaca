@@ -526,6 +526,9 @@
         $("#btn_Save, #btn_Delete").prop("disabled", false);
         $("#frm_fee").find("input, select").prop("disabled", false);
 
+
+        // TODO(구현필요) 아래 분기문 해당 데이터 change될 때 마다 적용되도록 수정 필요.
+
         // 수수료 적용기준이 마리별 일 때 적용구간 disabled 처리, "required" 클래스 제거
         // 수수료 적용기준이 구간별 일 때 required 클래스 추가
         var firstEle = document.getElementById('st_sog_wt');
