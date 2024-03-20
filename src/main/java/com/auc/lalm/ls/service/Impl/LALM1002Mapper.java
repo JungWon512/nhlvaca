@@ -16,4 +16,6 @@ public interface LALM1002Mapper {
 
 	int LALM1002_updFee(Map<String, Object> map) throws Exception;
 
+	int LALM1002_delFee(Map<String, Object> map) throws Exception;
+
 }

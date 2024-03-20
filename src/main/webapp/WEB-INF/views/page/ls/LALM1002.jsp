@@ -260,7 +260,7 @@
 
             if(sqno) {
                 result = result.filter((el) => parseInt(el.FEE_RG_SQNO) !== parseInt(sqno) );
-                console.log('수정 시, result:', result)
+                // console.log('수정 시, result:', result)
             } else {
                 result = result.filter((el) => el.APL_DT === $("#apl_dt").val().replace(/-/g, ''));
             }
@@ -363,43 +363,44 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
 	function fn_Save() {
-
         // hidden으로 숨겨놓은 일련번호 데이터 가져오기
         var fee_rg_sqno = $("#fee_rg_sqno").val();
+        var apl_dt = new Date($("#apl_dt").val());
+        var today = new Date();
 
-            // 필수값 입력여부 체크
-            if (!fn_RequiredValueValidation()) return;
-            // 입력값 체크
-            if (!fn_ValueValidation()) return;
-            // 기존 데이터와 유효성 체크
-            if (!fn_ResultValidation(fee_rg_sqno)) return;
-            // TODO(구현필요) 오늘날짜 이후 데이터만 수정가능.
-
-
+        // 필수값 입력여부 체크
+        if (!fn_RequiredValueValidation()) return;
+        // 입력값 체크
+        if (!fn_ValueValidation()) return;
+        // 기존 데이터와 유효성 체크
+        if (!fn_ResultValidation(fee_rg_sqno)) return;
+        // TODO(완료) 오늘날짜 이후 데이터만 수정가능.
+        if(apl_dt > today) {
             MessagePopup('YESNO', '저장하시겠습니까?', (res) => {
                 if(res){
-                    
                     // 파라미터 객체에 NA_BZPLC, FEE_RG_SQNO가 NULL 값으로 들어감. 
-                    let params = {
+                    var params = {
                         ...setFrmToData("frm_fee"),
                         // na_bzplc: srhData.na_bzplc,
                         fee_rg_sqno: fee_rg_sqno
                     }
-                    console.log('수정파라미터:', params)
-                    const results = sendAjax(params, "/LALM1002_updFee", "POST");
+                    // console.log('수정파라미터:', params)
+                    var results = sendAjax(params, "/LALM1002_updFee", "POST");
                     if(results.status != RETURN_SUCCESS){
                         showErrorMessage(results);
                         return;
-                    }
-                    else{
+                    } else {
                         MessagePopup("OK", "정상적으로 처리되었습니다.", () => {
-                            fn_Init();
-                            // TODO (구현필요) 수정 완료 후, 수정했던 적용일자로 조회
-                            fn_Search();
+                        fn_Init();
+                        // TODO (구현필요) 수정 완료 후, 수정했던 적용일자로 조회
+                        fn_Search();
                         });
                     }
                 }
             });
+        } else {
+            MessagePopup('OK', "오늘 이후 적용일자만 수정 가능합니다.");
+        }
 	}
 
     /*------------------------------------------------------------------------------
@@ -408,7 +409,38 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
      function fn_Delete() {
-        // TODO(구현필요) 오늘날짜 이후 데이터만 삭제가능.
+         // hidden 값으로 숨겨둔 일련번호 데이터 가져오기.! (현재선택된.)
+         var fee_rg_sqno = $("#fee_rg_sqno").val();
+         var apl_dt = new Date($("#apl_dt").val());
+         var today = new Date();
+         
+         // TODO(완료) 적용일자가 오늘날짜 이후일 경우에만 삭제가능.
+         if(apl_dt > today) {
+            MessagePopup('YESNO', "삭제하시겠습니까?", function(res) {
+                if(res) {
+                    var params = {
+                        ...setFrmToData("frm_fee"),
+                        fee_rg_sqno: fee_rg_sqno
+                    }
+                    var results = sendAjax(params, "/LALM1002_delFee", "POST");
+                    if(results.status !== RETURN_SUCCESS) {
+                        showErrorMessage(results);
+                        return;
+                    } else {
+                        MessagePopup("OK", "정상적으로 처리되었습니다.", () => {
+                            fn_Init();
+                            fn_Search();
+                        })
+                    }
+                }
+            })
+         } else {
+            MessagePopup('OK', "오늘 이후 적용일자만 삭제 가능합니다.");
+         }
+        // console.log($("#apl_dt").val())
+
+
+
      }
 
     /*------------------------------------------------------------------------------
@@ -495,19 +527,32 @@
         $("#frm_fee").find("input, select").prop("disabled", false);
 
         // 수수료 적용기준이 마리별 일 때 적용구간 disabled 처리, "required" 클래스 제거
+        // 수수료 적용기준이 구간별 일 때 required 클래스 추가
+        var firstEle = document.getElementById('st_sog_wt');
+        var secondEle = document.getElementById('ed_sog_wt');
         if(data.JNLZ_BSN_DSC === "2") {
-            var firstEle = document.getElementById('st_sog_wt');
-            var secondEle = document.getElementById('ed_sog_wt');
             $("#st_sog_wt").prop("disabled", true);
             $("#ed_sog_wt").prop("disabled", true);
             firstEle.classList.remove("required");
             secondEle.classList.remove("required");
+        } else if (data.JNLZ_BSN_DSC === "1") {
+            $("#st_sog_wt").prop("disabled", false);
+            $("#ed_sog_wt").prop("disabled", false);
+            firstEle.classList.add("required");
+            secondEle.classList.add("required");
+        } else;
+        
+        
         // 금액/비율이 금액 일 때 단수처리 disabled 처리, "required" 클래스 제거
-        } else if(data.AM_RTO_DSC === "1") {
-            var ele = document.getElementById('sgno_prc_dsc');
+        // 금액/비율이 비율 일 때 required 클래스 추가
+        var ele = document.getElementById('sgno_prc_dsc');
+        if(data.AM_RTO_DSC === "1") {
             $("#sgno_prc_dsc").prop("disabled", true);
             ele.classList.remove("required");
-        }
+        } else if (data.AM_RTO_DSC === "2"){
+            $("#sgno_prc_dsc").prop("disabled", false);
+            ele.classList.add("required");
+        } else;
 
 
     }

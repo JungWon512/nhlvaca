@@ -12,4 +12,6 @@ public interface LALM1002Service {
     Map<String, Object> LALM1002_selDetail(Map<String, Object> map) throws Exception;
 
     Map<String, Object> LALM1002_updFee(Map<String, Object> map) throws Exception;
+
+    Map<String, Object> LALM1002_delFee(Map<String, Object> map) throws Exception;
 }

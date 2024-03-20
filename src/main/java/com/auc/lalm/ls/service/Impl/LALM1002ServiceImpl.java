@@ -41,4 +41,14 @@ public class LALM1002ServiceImpl implements LALM1002Service {
 		reMap.put("updateNum", updateNum);
 		return reMap;
 	}
+
+	@Override
+	public Map<String, Object> LALM1002_delFee(Map<String, Object> map) throws Exception {
+		final Map<String, Object> reMap = new HashMap<String, Object>();
+		// DEL_YN 컬럼 '0'에서 '1'로 update된 것이므로 반환객체에 updateNum 넘겨줌.
+		int updateNum = 0;
+		updateNum = lalm1002Mapper.LALM1002_delFee(map);
+		reMap.put("updateNum", updateNum);
+		return reMap;
+	}
 }
