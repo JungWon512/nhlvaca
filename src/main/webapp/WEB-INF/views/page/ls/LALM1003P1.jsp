@@ -319,8 +319,8 @@
         	data = [];
         }
         
-        const searchResultColNames = ["", "* 경매번호","* 경매대상","* 농가식별번호","* 농가명","조합원<br/>여부","관내외<br>구분","접수일자"
-                                   ,"성별","구제역백신<br/>접종여부","구제역백신<br/>접종일","중량","예정가","비고"
+        const searchResultColNames = ["", "* 경매번호","* 경매대상","* 농가식별번호","* 농가명","접수일자"
+                                   ,"성별","구제역백신<br/>접종일","중량","예정가","비고"
 								   , "Err Yn", "경매번호 ErrYn", "농가식별번호 ErrYn", "농장관리번호"
                                   ];
 
@@ -330,11 +330,8 @@
                                      {name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:80,  sortable: false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
                                      {name:"FHS_ID_NO",            index:"FHS_ID_NO",            width:80,  sortable: false, align:'center'},
                                      {name:"FTSNM",                index:"FTSNM",                width:75,  sortable: false, align:'center'},
-                                     {name:"MACO_YN",              index:"MACO_YN",              width:65,  sortable: false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_MACO_YN_DATA}},
-                                     {name:"JRDWO_DSC",            index:"JRDWO_DSC",            width:50,  sortable: false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("JRDWO_DSC", 1)}},
                                      {name:"RC_DT",                index:"RC_DT",                width:70,  sortable: false, align:'center', formatter:'gridDateFormat'},
                                      {name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable: false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
-                                     {name:"VACN_DT_YN",           index:"FMD_V_YN",             width:70,  sortable: false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
                                      {name:"VACN_DT",              index:"FMD_V_DT",             width:70,  sortable: false, align:'center', formatter:'gridDateFormat'},
                                      {name:"COW_SOG_WT",           index:"COW_SOG_WT",           width:70,  sortable: false, align:'right', formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"LOWS_SBID_LMT_AM",     index:"LOWS_SBID_LMT_AM",     width:70,  sortable: false, align:'right', sorttype: "number" , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
@@ -457,16 +454,13 @@
 
 				ExcelData['AUC_OBJ_DSC'          ] = item[0 ]  ?? ''; // 경매대상구분코드
 				ExcelData['AUC_PRG_SQ'           ] = item[1 ]  ?? ''; // 경매번호
-				ExcelData['FTSNM'          		 ] = item[2 ]  ?? ''; // 출하자명 (농가명)
-				ExcelData['MACO_YN'          	 ] = item[3 ]  ?? ''; // 조합원여부
-				ExcelData['JRDWO_DSC'          	 ] = item[4 ]  ?? ''; // 관내외구분
-				ExcelData['RC_DT'          		 ] = item[5 ]  ?? ''; // 접수일자
-				ExcelData['INDV_SEX_C'           ] = item[6 ] ?? '';  // 성별
-				ExcelData['VACN_DT_YN'           ] = item[7 ] ?? '';  // 구제역백신접종여부
-				ExcelData['VACN_DT'              ] = item[8 ] ?? '';  // 구제역백신접종일
-				ExcelData['COW_SOG_WT'           ] = item[9 ] ?? '';  // 중량
-				ExcelData['LOWS_SBID_LMT_AM'     ] = item[10 ] ?? ''; // 예정가
-				ExcelData['RMK_CNTN'             ] = item[11 ] ?? ''; // 비고
+				ExcelData['FTSNM'          		 ] = item[2 ]  ?? ''; // 농가명(출하자명)
+				ExcelData['RC_DT'          		 ] = item[3 ]  ?? ''; // 접수일자
+				ExcelData['INDV_SEX_C'           ] = item[4 ] ?? '';  // 성별
+				ExcelData['VACN_DT'              ] = item[5 ] ?? '';  // 구제역백신접종일
+				ExcelData['COW_SOG_WT'           ] = item[6 ] ?? '';  // 중량
+				ExcelData['LOWS_SBID_LMT_AM'     ] = item[7 ] ?? ''; // 예정가
+				ExcelData['RMK_CNTN'             ] = item[8 ] ?? ''; // 비고
 
     			if($('#auc_obj_dsc').val() == ExcelData['AUC_OBJ_DSC']) ExcelList.push(ExcelData);
     		}
