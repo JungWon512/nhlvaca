@@ -45,12 +45,13 @@
 
         // 수수료적용기준이 마리별(2)일 경우, 적용구간 input disabled처리.
         // TODO(완료) 이 경우, 적용구간 필수값 validation 해제 필요. 
-        fn_Disabled("#jnlz_bsn_dsc", "#st_sog_wt", "#ed_sog_wt", "1");
+        // fn_Disabled("#jnlz_bsn_dsc", "#st_sog_wt", "#ed_sog_wt", "1");
 
         // 금액/비율이 금액(1)일 경우, 단수처리 select box disabled처리.
         // TODO(완료) 이 경우, 단수처리 필수값 validation 해제 필요.
         // TODO(구현필요) 세번째 인자로 넘겨줄 것이 없어서 undefined처리. -> 확인필요
-        fn_Disabled("#am_rto_dsc", "#sgno_prc_dsc", undefined, "2");
+        // fn_Disabled("#am_rto_dsc", "#sgno_prc_dsc", undefined, "2");
+        fn_DscValidation();
         
         // TODO(완료) 금액/비율이 비율(2)일 경우, 조합원 수수료 / 비조합원 수수료 최대 100까지만 입력되도록.
         fn_limitFee();
@@ -166,6 +167,51 @@
             }
         });
     };
+
+    /*------------------------------------------------------------------------------
+     * 1. 함 수 명    : 수수료 적용기준 및 금액/비율 value validation 함수
+     * 2. 입 력 변 수 : N/A
+     * 3. 출 력 변 수 : N/A
+     * 4. 설 명 : 
+     ------------------------------------------------------------------------------*/
+     function fn_DscValidation() {
+        // fn_Disabled("#jnlz_bsn_dsc", "#st_sog_wt", "#ed_sog_wt", "1");
+        // fn_Disabled("#am_rto_dsc", "#sgno_prc_dsc", undefined, "2");
+        // 수수료 적용 기준.
+        // 수수료 적용기준이 마리별 일 때 적용구간 disabled 처리, "required" 클래스 제거
+        // 수수료 적용기준이 구간별 일 때 required 클래스 추가
+        var firstEle = document.getElementById('st_sog_wt');
+        var secondEle = document.getElementById('ed_sog_wt');
+        $(document).on('change', '#jnlz_bsn_dsc', function() {
+            console.log('수수료적용기준 값 바뀜')
+            if($("#jnlz_bsn_dsc").val() === "2") {
+            $("#st_sog_wt").prop("disabled", true);
+            $("#ed_sog_wt").prop("disabled", true);
+            firstEle.classList.remove("required");
+            secondEle.classList.remove("required");
+        } else if ($("#jnlz_bsn_dsc").val() === "1") {
+            $("#st_sog_wt").prop("disabled", false);
+            $("#ed_sog_wt").prop("disabled", false);
+            firstEle.classList.add("required");
+            secondEle.classList.add("required");
+        } else;
+        })
+
+        // 금액/비율 
+        // 금액/비율이 금액 일 때 단수처리 disabled 처리, "required" 클래스 제거
+        // 금액/비율이 비율 일 때 required 클래스 추가
+        var ele = document.getElementById('sgno_prc_dsc');
+        $(document).on('change', '#am_rto_dsc', function() {
+            console.log('금액/비율 값 바뀜')
+            if($("#am_rto_dsc").val() === "1") {
+                $("#sgno_prc_dsc").prop("disabled", true);
+                ele.classList.remove("required");
+            } else if ($("#am_rto_dsc").val() === "2"){
+                $("#sgno_prc_dsc").prop("disabled", false);
+                ele.classList.add("required");
+            } else;
+        })
+     };
 
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 조회 함수
@@ -526,38 +572,35 @@
         $("#btn_Save, #btn_Delete").prop("disabled", false);
         $("#frm_fee").find("input, select").prop("disabled", false);
 
-
-        // TODO(구현필요) 아래 분기문 해당 데이터 change될 때 마다 적용되도록 수정 필요.
-
+        // TODO(완료) 아래 분기문 해당 데이터 change될 때 마다 적용되도록 수정 필요.
         // 수수료 적용기준이 마리별 일 때 적용구간 disabled 처리, "required" 클래스 제거
         // 수수료 적용기준이 구간별 일 때 required 클래스 추가
-        var firstEle = document.getElementById('st_sog_wt');
-        var secondEle = document.getElementById('ed_sog_wt');
+        var st = document.getElementById('st_sog_wt');
+        var ed = document.getElementById('ed_sog_wt');
         if(data.JNLZ_BSN_DSC === "2") {
             $("#st_sog_wt").prop("disabled", true);
             $("#ed_sog_wt").prop("disabled", true);
-            firstEle.classList.remove("required");
-            secondEle.classList.remove("required");
+            st.classList.remove("required");
+            ed.classList.remove("required");
         } else if (data.JNLZ_BSN_DSC === "1") {
             $("#st_sog_wt").prop("disabled", false);
             $("#ed_sog_wt").prop("disabled", false);
-            firstEle.classList.add("required");
-            secondEle.classList.add("required");
+            st.classList.add("required");
+            ed.classList.add("required");
         } else;
         
         
-        // 금액/비율이 금액 일 때 단수처리 disabled 처리, "required" 클래스 제거
-        // 금액/비율이 비율 일 때 required 클래스 추가
-        var ele = document.getElementById('sgno_prc_dsc');
+        // // 금액/비율이 금액 일 때 단수처리 disabled 처리, "required" 클래스 제거
+        // // 금액/비율이 비율 일 때 required 클래스 추가
+        var sgno = document.getElementById('sgno_prc_dsc');
         if(data.AM_RTO_DSC === "1") {
             $("#sgno_prc_dsc").prop("disabled", true);
-            ele.classList.remove("required");
+            sgno.classList.remove("required");
         } else if (data.AM_RTO_DSC === "2"){
             $("#sgno_prc_dsc").prop("disabled", false);
-            ele.classList.add("required");
+            sgno.classList.add("required");
         } else;
-
-
+        
     }
 </script>
 
