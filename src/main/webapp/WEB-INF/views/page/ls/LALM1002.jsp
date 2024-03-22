@@ -105,39 +105,47 @@
      * 4. 설 명 : 수수료 금액 비율 선택 시, 비율 최대 100%까지 허용.
      ------------------------------------------------------------------------------*/
     function fn_limitFee() {
+        // TODO(구현필요) 백스페이스 누르고 수정 안 되는 부분 수정 필요. 
         $(document).on('change', '#am_rto_dsc', function() {
+            // 기존 조합원/비조합원 수수료 값 초기화 
             $("#maco_fee_upr").val("");
             $("#nmaco_fee_upr").val("");
+
+            // 단수처리 선택으로.
+            fn_setCodeBox("sgno_prc_dsc", "SGNO_PRC_DSC", 1, true, "선택");
 
             // 이전의 이벤트 제거 하지 않으면, 값 수정이 안됨. 또는 이벤트가 엉킴?
             $("#maco_fee_upr").off("input");
             $("#nmaco_fee_upr").off("input");
 
-            // 비율(2) 선택 시,  
-            if($(this).val() === '2') {
+            
+        });
+
+        // 비율(2) 선택 시,  
+        // if($(this).val() === '2') {
                 // 조합원 수수료 값 100 이하인지 체크
                 $("#maco_fee_upr").on("input", function() {
-                    let macoValue = $(this).val();
-
-                    if (parseInt(macoValue) <= 100) {
-                    } else {
-                        $(this).val("100");
+                    if($("#am_rto_dsc").val() === "2") {
+                        let macoValue = parseInt($(this).val());
+                        if (isNaN(macoValue)) {
+                            $(this).val("");
+                        } else if(macoValue > 100) {
+                            $(this).val("100");
+                        }
                     }
                 });
                 // 비조합원 수수료 값 100 이하인지 체크
                 $("#nmaco_fee_upr").on("input", function() {
-                    let nmacoValue = $(this).val();
-
-                    if (parseInt(nmacoValue) <= 100) {
-                    } else {
-                        $(this).val("100");
+                    if($("#am_rto_dsc").val() === "2") {
+                        let nmacoValue = parseInt($(this).val());
+                        if (isNaN(nmacoValue)) {
+                            $(this).val("");
+                        } else if(nmacoValue > 100) {
+                            $(this).val("100");
+                        }
                     }
-                });
-            } else {
-                $("#maco_fee_upr").off("input");
-                $("#nmaco_fee_upr").off("input");
-            }   
-        });
+                }); 
+        
 
     }
 
@@ -414,6 +422,12 @@
         var apl_dt = new Date($("#apl_dt").val());
         var today = new Date();
 
+        console.log('선택된 날짜: ', apl_dt , ',' , '오늘날짜: ', today );
+
+                 // 날짜만 비교하기 위해 시간을 0 처리 후 비교.
+        apl_dt.setHours(0, 0, 0, 0);
+        today.setHours(0, 0, 0, 0);
+
         // 필수값 입력여부 체크
         if (!fn_RequiredValueValidation()) return;
         // 입력값 체크
@@ -421,7 +435,8 @@
         // 기존 데이터와 유효성 체크
         if (!fn_ResultValidation(fee_rg_sqno)) return;
         // TODO(완료) 오늘날짜 이후 데이터만 수정가능.
-        if(apl_dt > today) {
+        // TODO(구현필요) 오늘날짜는 가능하도록 수정필요.
+        if(apl_dt >= today) {
             MessagePopup('YESNO', '저장하시겠습니까?', (res) => {
                 if(res){
                     // 파라미터 객체에 NA_BZPLC, FEE_RG_SQNO가 NULL 값으로 들어감. 
@@ -459,9 +474,13 @@
          var fee_rg_sqno = $("#fee_rg_sqno").val();
          var apl_dt = new Date($("#apl_dt").val());
          var today = new Date();
+         // 날짜만 비교하기 위해 시간을 0 처리 후 비교.
+         apl_dt.setHours(0, 0, 0, 0);
+         today.setHours(0, 0, 0, 0);
          
          // TODO(완료) 적용일자가 오늘날짜 이후일 경우에만 삭제가능.
-         if(apl_dt > today) {
+         // TODO(완료) 오늘날짜는 가능하도록 수정필요.
+         if(apl_dt >= today) {
             MessagePopup('YESNO', "삭제하시겠습니까?", function(res) {
                 if(res) {
                     var params = {
