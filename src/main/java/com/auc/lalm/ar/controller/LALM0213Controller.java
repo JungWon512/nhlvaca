@@ -1,5 +1,6 @@
 package com.auc.lalm.ar.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -92,8 +93,10 @@ public class LALM0213Controller {
 		if (aucQcn == 0) {
 			throw new CusException(ErrorCode.CUSTOM_ERROR, "차수정보가 존재하지 않습니다. 확인하세요 !!");
 		}
-
-		List<Map<String, Object>> selTrmnAmnNoList = lalm0213Service.LALM0213_selTrmnAmnNo(map);
+		Map<String, Object> tmpMap = new HashMap<>();
+		tmpMap.putAll(map);
+		tmpMap.put("lvst_auc_ptc_mn_no", "");
+		List<Map<String, Object>> selTrmnAmnNoList = lalm0213Service.LALM0213_selTrmnAmnNo(tmpMap);
 
 		int selTrmnAmnNo = Integer.parseInt(selTrmnAmnNoList.get(0).get("CNT").toString());
 
@@ -130,6 +133,13 @@ public class LALM0213Controller {
 			throw new CusException(ErrorCode.CUSTOM_ERROR, "차수정보가 존재하지 않습니다. 확인하세요 !!");
 		}
 
+		List<Map<String, Object>> selTrmnAmnNoList = lalm0213Service.LALM0213_selTrmnAmnNo(map);
+
+		int selTrmnAmnNo = Integer.parseInt(selTrmnAmnNoList.get(0).get("CNT").toString());
+
+		if (selTrmnAmnNo > 0) {
+			throw new CusException(ErrorCode.CUSTOM_ERROR, "이미 등록된 중도매인 입니다. 확인하세요.");
+		}
 		Map<String, Object> inMap = lalm0213Service.LALM0213_updPgm(map);
 		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
 

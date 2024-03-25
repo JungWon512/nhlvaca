@@ -212,14 +212,15 @@
     </select>
     
     <select id="LALM0213_selTrmnAmnNo" resultType="hashMap">
-    <![CDATA[
          SELECT
             COUNT(*) AS CNT
            FROM  TB_LA_IS_MH_AUC_ENTR
           WHERE NA_BZPLC         = #{ss_na_bzplc}
             AND AUC_DT           = #{auc_date}
             AND TRMN_AMNNO       = #{trmn_amnno}
-    ]]>
+            <if test="lvst_auc_ptc_mn_no != null and lvst_auc_ptc_mn_no != ''">
+            	AND LVST_AUC_PTC_MN_NO   != #{lvst_auc_ptc_mn_no}
+            </if>
     </select>
     
     <select id="LALM0213_selAucPtcMnNo" resultType="hashMap">

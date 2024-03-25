@@ -693,6 +693,18 @@ var na_bzplc = App_na_bzplc;
             			 ReportPopup('LALM0216R3_1_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }else if(na_bzplc == '8808990656878' || na_bzplc == '8808990689180' || na_bzplc == '8808990785431') { //강릉, 안동봉화, 영덕울진
             			 ReportPopup('LALM0216R3_1_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            		 } else if(na_bzplc == '8808990656236'){ //합천 EPD : 8808990656236
+            			 grid4 = grid4.map((o,i)=>{
+         						var tempAddr = [];
+         						o.DONGUP.split(" ").forEach((o,i)=>{
+         						    if(o.endsWith('읍') || o.endsWith('면') || o.endsWith('동')){
+         						        tempAddr.push(o);
+         						    }
+         						});
+         						o.DONG = tempAddr.join(" ");
+            				 return o;
+            			 });
+            			 ReportPopup('LALM0216R3_E_0',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 } else {
             			 ReportPopup('LALM0216R3_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }
@@ -845,7 +857,7 @@ var na_bzplc = App_na_bzplc;
             	 
             	 } else if($("#prto_tpc_7").is(":checked")) { //가로4형식
             		 if(na_bzplc == '8808990658995'){ //청주축협 : 8808990658995
-            			 ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+            			 ReportPopup('LALM0216R3_5_3',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }else{
                 		 ReportPopup('LALM0216R3_14',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
@@ -978,9 +990,21 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990656878' || na_bzplc == '8808990689180' || na_bzplc == '8808990785431') {
             			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
-            		 } else{
+            		 } else if(na_bzplc == '8808990656236'){ //합천 EPD : 8808990656236
+						grid4 = grid4.map((o,i)=>{
+      						var tempAddr = [];
+      						o.DONGUP.split(" ").forEach((o,i)=>{
+      						    if(o.endsWith('읍') || o.endsWith('면') || o.endsWith('동')){
+      						        tempAddr.push(o);
+      						    }
+      						});
+      						o.DONG = tempAddr.join(" ");
+	         				 return o;
+         			 	});
+         			 	ReportPopup('LALM0216R3_E_0',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+         		 	}  else{
                 		 ReportPopup('LALM0216R3_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그            			 
-            		 }
+            		}
             	 
             	 } else if($("#prto_tpc_2").is(":checked")) {
             		// ★의령: 8808990656199 테스트: 8808990643625
@@ -1219,7 +1243,19 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990656878' || na_bzplc == '8808990689180' || na_bzplc == '8808990785431') {
             			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
-            		 } else {
+            		 } else if(na_bzplc == '8808990656236'){ //합천 EPD : 8808990656236
+					 	grid4 = grid4.map((o,i)=>{
+      						var tempAddr = [];
+      						o.DONGUP.split(" ").forEach((o,i)=>{
+      						    if(o.endsWith('읍') || o.endsWith('면') || o.endsWith('동')){
+      						        tempAddr.push(o);
+      						    }
+      						});
+      						o.DONG = tempAddr.join(" ");
+	         				return o;
+         			 	});
+         			 	ReportPopup('LALM0216R3_E_0',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+         		 	 }else {
              			 ReportPopup('LALM0216R3_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 }
@@ -1446,6 +1482,9 @@ var na_bzplc = App_na_bzplc;
             		 if(na_bzplc == '8808990795874'){
             			 ReportPopup('LALM0216R3_115_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
+            		 }else if(na_bzplc == '8808990658995'){ //청주
+	            		 ReportPopup('LALM0216R3_14_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+	            		 
             		 }else{
 	            		 ReportPopup('LALM0216R3_14',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
 	            		 
@@ -2243,10 +2282,10 @@ var na_bzplc = App_na_bzplc;
 		//일시 이력제월령 표기
 		//영암:8808990689760 | 익산:8808990227283 | 밀양 : 8808990656663 | 임실 : 8808990660783 | 영광 : 8808990811710 | 예천 : 8808990656557 
 		//동삼태 : 8808990652825 | 양평 : 8808990643625 | 사천 : 8808990656519 | 함평 : 8808990656601 | 장성 : 8808990817675 
-		//해남 : 8808990656106 | 보성 : 8808990656267 | 서산 : 8808990656694
+		//해남 : 8808990656106 | 보성 : 8808990656267 | 서산 : 8808990656694 | 진천 : 8808990656502
 		var arrMtcnNaBzplc = ['8808990689760','8808990227283' , '8808990656663' , '8808990660783' , '8808990811710' , '8808990656557'
 			, '8808990652825' , '8808990643625' , '8808990656519' , '8808990656601','8808990817675'
-			, '8808990656106' , '8808990656267' , '8808990656694' ];
+			, '8808990656106' , '8808990656267' , '8808990656694' , '8808990656502' ];
 		$('#'+frmId).getRowData().forEach((o,i)=>{
 			
 			if(na_bzplc == '8808990656267'){
