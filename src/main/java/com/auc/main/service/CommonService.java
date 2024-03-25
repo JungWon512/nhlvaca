@@ -31,4 +31,5 @@ public interface CommonService {
 	
 	/********************************************************************* 통합회원 관련 [e] *********************************************************************/
 	Map<String, Object> Common_selAiakInfo(String barcode) throws Exception;
+	Map<String, Object> Common_selAiakInfo(Map<String, Object> tempMap) throws Exception;
 }

@@ -112,5 +112,6 @@ public interface CommonMapper {
 	int Common_delAiakSibInfo(Map<String, Object> map) throws Exception;
 	int Common_updIndvSibMatime(Map<String, Object> map) throws Exception;
 	int Common_updIndvPostMatime(Map<String, Object> map) throws Exception;
+	int Common_insertIndvAiakInfoLog(Map<String, Object> map) throws Exception;
 	
 }

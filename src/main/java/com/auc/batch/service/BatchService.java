@@ -31,4 +31,6 @@ public interface BatchService {
 	Map<String, Object> batchDashBoardFor5200(Map<String, Object> map, Map<String,Object> bizMap) throws Exception;
 	Map<String, Object> batchDashBoardFor5300(Map<String, Object> map, Map<String,Object> bizMap) throws Exception;
 	Map<String, Object> batchDashBoardFor5400(Map<String, Object> map, Map<String,Object> bizMap) throws Exception;
+
+	Map<String, Object> batchBloodAiakSync(Map<String, Object> map) throws Exception;
 }

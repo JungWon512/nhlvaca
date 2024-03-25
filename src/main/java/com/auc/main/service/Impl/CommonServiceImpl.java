@@ -602,9 +602,34 @@ public class CommonServiceImpl implements CommonService{
 		reMap.put("updateNum", updateNum);
 		return reMap;
 	}
+
+	public Map<String, Object> Common_selAiakInfo(Map<String, Object> param) throws Exception{
+		Map<String,Object> reMap = new HashMap<>();
+		int updateNum = 0;
+		
+		String barcode = (String) param.getOrDefault("sraIndvAmnno","");
+		if(barcode != null && barcode.length() == 15) {
+			barcode = barcode.substring(3);
+		}	
+		reMap = mcaUtil.callApiAiakMap(barcode);
+		
+		if(reMap != null && !reMap.isEmpty()) {
+			reMap.put("NA_BZPLC", param.get("naBzplc"));
+			reMap.put("AUC_DT", param.get("aucDt"));
+			reMap.put("INDV_BLD_DSC", param.get("indvBldDsc"));
+			reMap.put("CHG_IP_ADDR", param.get("chgIpAddr"));
+			reMap.put("CHG_PGID", param.get("chgPgid"));
+			reMap.put("CHG_RMK_CNTN", param.get("chgRmkCntn"));
+			updateNum += this.Common_insAiakInfo(reMap);
+		};
+		reMap.put("updateNum", updateNum);
+		return reMap;
+		
+	}
 	
 	private int Common_insAiakInfo(Map<String, Object> map) throws Exception{
 		int insertNum = 0;
+		commonMapper.Common_insertIndvAiakInfoLog(map);
 		insertNum += commonMapper.Common_insAiakInfo(map);
 
 		List<Map<String, Object>> postData = (List<Map<String, Object>>) map.get("postInfo");
