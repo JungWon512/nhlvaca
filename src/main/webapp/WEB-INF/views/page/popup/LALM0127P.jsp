@@ -36,6 +36,7 @@
                             <th scope="row">농가명</th>
                             <td>
                                 <input type="text" id="ftsnm"/>
+                                <input type="hidden" id="auc_obj_dsc" />
                             </td>
                             <td></td>
                             <td></td>
@@ -75,6 +76,7 @@
             //폼 초기화
             fn_InitFrm('frm_Search');
             $("#ftsnm").val(pageInfo.param.ftsnm); 
+            $("#auc_obj_dsc").val(pageInfo.param.auc_obj_dsc??''); 
                         
             if( pageInfo.result != null){
                 fn_CreateGrid(pageInfo.result);

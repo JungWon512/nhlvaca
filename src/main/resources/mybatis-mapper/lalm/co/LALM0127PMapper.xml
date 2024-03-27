@@ -4,7 +4,6 @@
 <mapper namespace="com.auc.lalm.co.service.Impl.LALM0127PMapper">
 
     <select id="LALM0127P_selList" resultType="hashMap">
-    <![CDATA[
         SELECT
               na_bzplc
 	        , fhs_id_no
@@ -28,10 +27,16 @@
            AND DEL_YN     = '0'
            AND ANW_YN    != '0'
            AND FTSNM   LIKE '%'||#{ftsnm}||'%'
-        ORDER BY NA_BZPLC
-               , FHS_ID_NO
-    ]]>
-    </select>    
+		<choose>
+		<when test='"5".equals(auc_obj_dsc) or "6".equals(auc_obj_dsc)'>
+		   AND INSTR(FHS_ID_NO, 'G') <![CDATA[>]]> 0
+		</when>
+		<otherwise>
+		   AND INSTR(FHS_ID_NO, 'G') = 0
+		</otherwise>
+		</choose>
+        ORDER BY NA_BZPLC, FHS_ID_NO
+    </select>
 </mapper>
 
 

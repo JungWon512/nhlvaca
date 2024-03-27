@@ -285,11 +285,17 @@
             rowNoValue = data.length;
         }
 
-        const searchResultColNames = ["경매<br/>번호","경매<br/>대상","출하자<br/>코드","출하자","조합원<br/>여부","관내외<br>구분","접수일자","진행상태"
-                                   ,"낙찰자명","참가<br/>번호","개체번호","성별","구제역백신<br/>접종여부","구제역백신<br/>접종일","중량","예정가","낙찰단가","낙찰가","비고"
+        const searchResultColNames = [
+                                    "H사업장코드","H경매일자","H원표번호",
+                                    "경매<br/>번호","경매<br/>대상","출하자<br/>코드","출하자","조합원<br/>여부","관내외<br>구분","접수일자","진행상태",
+                                    "낙찰자명","참가<br/>번호","개체번호","성별","구제역백신<br/>접종여부","구제역백신<br/>접종일","중량","예정가","낙찰단가","낙찰가","비고"
                                   ];
 
         const searchResultColModel = [
+                                     {name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,  sortable:false, align:'center', hidden:true},
+        	                         {name:"AUC_DT",               index:"AUC_DT",               width:90,  sortable:false, align:'center', hidden:true},
+                                     {name:"OSLP_NO",              index:"OSLP_NO",              width:90,  sortable:false, align:'center', hidden:true},
+
                                      {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:50,  sortable:false, align:'center', sorttype: "number"},
                                      {name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
                                      {name:"FHS_ID_NO",            index:"FHS_ID_NO",            width:60,  sortable:false, align:'center'},

@@ -44,17 +44,4 @@ public interface LALM1004Service {
 	Map<String, Object> LALM1004_updPgm(Map<String, Object> map) throws Exception;
 
 	Map<String, Object> LALM1004_updAucChange(Map<String, Object> map) throws Exception;
-
-	/**
-	 * 출장우 이미지 저장
-	 * 
-	 * @param rMap
-	 * @return
-	 * @throws Exception
-	 */
-	Map<String, Object> LALM1004_insImgPgm(Map<String, Object> rMap) throws Exception;
-
-	List<Map<String, Object>> LALM1004_selImgList(Map<String, Object> map) throws Exception;
-
-	Map<String, Object> LALM1004_delImgList(Map<String, Object> map) throws Exception;
 }

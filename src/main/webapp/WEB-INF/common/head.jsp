@@ -132,12 +132,11 @@ $(document).ready(function() {
         if(!(event.which && (event.which > 47 && event.which < 58  //숫자
         		          || event.which > 95 && event.which < 106 //키패드숫자
         		          || event.which == 8 || event.which == 46 //backspace, del
-        		          || event.which == 13 // 엔터키
         		          || event.which == 37 || event.which == 38 || event.which == 39 || event.which == 40 //방향키 
         		          ))) {
             event.preventDefault();
         }
-    });        
+    });
     $(document).on("keyup", ".date", function(event) {
         var tmpInputBox  = $(this).val();
         var tmpInputLength = $(this).val().length;
@@ -218,6 +217,13 @@ $(document).ready(function() {
         }else{
         	$(this).val('');
         }
+
+        const self = $(this);
+        const form = $(this).closest("form");
+        const inputs = form.find("input, select").filter(":visible");
+        const next = inputs.eq(inputs.index(self) + 1);
+        console.log(self, form, inputs);
+        if (next.length) next.focus();
     });
     
     //그리드 포멧
@@ -560,7 +566,8 @@ function ReportPopup(p_reportName,p_titleObj, p_grd, p_type){
 // result   : N/A
 //**************************************
 function fn_InitFrm(p_FrmId){
-    var initFrm   = $("#" + p_FrmId).find("input,select,textarea,checkbox");              
+    // reset_exc 클래스를 가지고 있지 않은 input, select, textarea, checkbox를 초기화
+    var initFrm   = $("#" + p_FrmId).find("input,select,textarea,checkbox").not(".reset_exc");
     var initItem  = "";
     var itemNames = "";
     
@@ -937,8 +944,6 @@ function fn_createVetCodeBox(p_obj,p_codeView, p_flag) {
 	}
 }
 
-
-
 //***************************************
 //* function   : fn_setCodeBox
 //* paramater  : 
@@ -965,15 +970,17 @@ function fn_setCodeBox(p_obj, p_simp_tpc, p_simp_c_grp_sqno, p_codeView, p_flag)
         codeArr.push('<option value=' + code.SIMP_C + '>' + v_simp_nm + '</option>');
     });
 
-    // 코드 타입이 경매 대상인 경우 & 기타 경매를 사용하는 조합인 경우 & 코드 그룹이 1, 2, 9 인 경우 & 제외 대상 PGID가 아닌 경우
-    if (p_simp_tpc === "AUC_OBJ_DSC" && ETC_AUC_OBJ_DSC
-    && ['1', '2', '9'].includes(String(p_simp_c_grp_sqno))
-    && !EXC_PGID.includes(this.pageInfo.pgid)) {
+    // 코드 타입이 경매 대상인 경우 & 기타 경매를 사용하는 조합인 경우 & 제외 대상 PGID가 아닌 경우
+    if (p_simp_tpc === "AUC_OBJ_DSC" && ETC_AUC_OBJ_DSC && !EXC_PGID.includes(this.pageInfo.pgid)) {
         const etcCodeList = comboList.filter((item) => {
             return item.SIMP_TPC === "AUC_OBJ_DSC" && item.SIMP_C_GRP_SQNO === 8 && ETC_AUC_OBJ_DSC.includes(item.SIMP_C);
         });
 
-        if (etcCodeList.length > 0) {
+        // 코드 그룹이 1, 2, 9 아닌 경우
+        // 사용하는 기타 경매만 추가하기 위해 위에서 추가한 코드를 제거
+        if(!['1', '2', '9'].includes(String(p_simp_c_grp_sqno))) {
+            codeArr.splice(0);
+        } else {
             codeArr.push('<option value="" disabled>▶ 기타 경매 ------------------------------------------------------</option>')
         }
 
@@ -1019,6 +1026,7 @@ function fn_setCodeRadio(p_target, p_obj, p_simp_tpc, p_simp_c_grp_sqno) {
     </c:if>
 
     $("#" + p_target).empty();
+    const className = $("#" + p_target).data("class");
 
     const codeArr = [];
     const codeList = comboList.filter((item) => {
@@ -1029,16 +1037,21 @@ function fn_setCodeRadio(p_target, p_obj, p_simp_tpc, p_simp_c_grp_sqno) {
         const appendData = fn_createAppendData(p_obj, code);
         codeArr.push(appendData);
     });
-    // 코드 타입이 경매 대상인 경우 & 기타 경매를 사용하는 조합인 경우 & 코드 그룹이 1, 2, 9 인 경우 & 제외 대상 PGID가 아닌 경우
-    if (p_simp_tpc === "AUC_OBJ_DSC" && ETC_AUC_OBJ_DSC
-    && ['1', '2', '9'].includes(String(p_simp_c_grp_sqno))
-    && !EXC_PGID.includes(this.pageInfo.pgid)) {
+
+    // 코드 타입이 경매 대상인 경우 & 기타 경매를 사용하는 조합인 경우 & 제외 대상 PGID가 아닌 경우
+    if (p_simp_tpc === "AUC_OBJ_DSC" && ETC_AUC_OBJ_DSC && !EXC_PGID.includes(this.pageInfo.pgid)) {
         const etcCodeList = comboList.filter((item) => {
             return item.SIMP_TPC === "AUC_OBJ_DSC" && item.SIMP_C_GRP_SQNO === 8 && ETC_AUC_OBJ_DSC.includes(item.SIMP_C);
         });
 
+        // 코드 그룹이 1, 2, 9 아닌 경우
+        // 사용하는 기타 경매만 추가하기 위해 위에서 추가한 코드를 제거
+        if (!['1', '2', '9'].includes(String(p_simp_c_grp_sqno))) {
+            codeArr.splice(0);
+        }
+
         etcCodeList.forEach((code) => {
-            const appendData = fn_createAppendData(p_obj, code);
+            const appendData = fn_createAppendData(p_obj, code, className);
             codeArr.push(appendData);
         });
     }
@@ -1051,11 +1064,13 @@ function fn_setCodeRadio(p_target, p_obj, p_simp_tpc, p_simp_c_grp_sqno) {
 //* paramater  : 
 //* result     : N/A
 //***************************************
-function fn_createAppendData(p_obj, code) {
+function fn_createAppendData(p_obj, code, className = '') {
   return '<div class="cell">\n'
-    + '<input type="radio" id="' + p_obj + '_' + code.SIMP_C
-    + '" name="' + p_obj + '_radio" value="' + code.SIMP_C + '"'
-    + ' onclick="javascript:fn_setChgRadio(\''+p_obj+'\',\''+code.SIMP_C+'\');"/>\n'
+    + '<input type="radio"'
+    + '   id="' + p_obj + '_' + code.SIMP_C + '"'
+    + '   class="' + className + '"'
+    + '   name="' + p_obj + '_radio" value="' + code.SIMP_C + '"'
+    + '   onclick="javascript:fn_setChgRadio(\''+p_obj+'\',\''+code.SIMP_C+'\');"/>\n'
     + '<label for="' + p_obj + '_' + code.SIMP_C + '">' + code.SIMP_CNM + '</label>\n'
     + '</div>';
 }
@@ -1211,13 +1226,24 @@ function fn_isDate(p_date) {
 //* paramater  : 
 //* result     : true/false
 //***************************************
-function fn_isNull(p_data){
+function fn_isNull(p_data) {
 	if(String(p_data) == 'undefined' || String(p_data) == 'null' || String(p_data) == '' ){
 		return true;
 	}else {
 		return false;
 	}
 }
+
+/*
+function fn_isNull(p_data) {
+    const data = String(p_data).trim();
+	if(data == 'undefined' || data == 'null' || data == ''){
+		return true;
+	}else {
+		return false;
+	}
+}
+*/
 
 //***************************************
 //* function   : 농가검색 팝업
@@ -2074,6 +2100,30 @@ function fn_contrChBox(p_bool, p_param, p_param_text, p_param_val, p_param_textV
 	}
 }
 
+//**************************************
+//function  : fn_byteCheck(바이트수 반환) 
+//paramater : el(tag jquery object)
+// result   : number
+//**************************************
+function fn_byteCheck(el) {
+    var codeByte = 0;
+    var Encode = fn_xxsEncode(el.val());
+    for (var i = 0; i < Encode.length; i++) {
+        var oneChar = Encode.charAt(i);
+        var uniChar = escape(oneChar);
+        if(uniChar.length == 1) {
+            codeByte ++;
+        } else if(uniChar.indexOf("%u") != -1) {
+            codeByte += 2;
+        } else if(uniChar.indexOf("%") != -1) {
+            codeByte ++;
+        } else {
+            codeByte ++;
+        }
+    }
+    return codeByte;
+}
+
 function fn_xxsDecode(p_str){
     var result = "";
     if(p_str != null && typeof p_str == 'string' && p_str != ""){
@@ -2130,13 +2180,96 @@ function fn_RequiredValueValidation() {
 	}
 }
 
+/*------------------------------------------------------------------------------
+// function  : fn_setCodeNm(코드명 반환 함수) 
+// description : 코드명을 반환하는 함수
+// paramater : p_simp_tpc(코드유형), p_simp_c_grp_sqno(코드그룹일련번호), p_simp_c(코드)
+// result   : string
+------------------------------------------------------------------------------*/
 function fn_setCodeNm(p_simp_tpc, p_simp_c_grp_sqno, p_simp_c) {
 	<c:if test="${requestScope['javax.servlet.forward.request_uri'] != '/index'}">
 		const comboList = parent.comboList;
 	</c:if>
+	return comboList.filter((c) => {return c.SIMP_TPC === p_simp_tpc && c.SIMP_C_GRP_SQNO === p_simp_c_grp_sqno && c.SIMP_C === p_simp_c})[0]?.SIMP_CNM ?? '';
+}
 
-	return comboList.filter((c) => {return c.SIMP_TPC === p_simp_tpc && c.SIMP_C_GRP_SQNO === p_simp_c_grp_sqno && c.SIMP_C === p_simp_c})[0]?.SIMP_CNM;
+/*------------------------------------------------------------------------------
+// function  : fn_getSraIndvAmnnoFormat(개체번호 포맷 반환 함수) 
+// description : 개체번호 포맷 반환 함수
+//               한우(01)   15자리 : 410-002-123456789
+//                          12자리 : 002-123456789
+//                          4자리 : 개체번호 뒤에서 부터 2~5번째 자리 숫자
+//               염소(06), 말(05) 15자리 : 05|06-YYYYMMDD-XXXXXX
+// paramater : p_sra_indv_amnno(개체번호), p_length(포맷길이), p_sra_srs_dsc(개체유형), p_text(포맷텍스트)
+// result   : string
+------------------------------------------------------------------------------*/
+function fn_getSraIndvAmnnoFormat(p_sra_indv_amnno, p_length = 15, p_sra_srs_dsc = '01', p_text = '-') {
+    const num = p_sra_indv_amnno.replace(/[^0-9]/g,'');
+    const sra_indv_amnno = num.length === 15 ? num : num.length === 12 ? '410' + num : num.length === 9 ? '410002' + num : num;
+    if (p_sra_srs_dsc === '01') {
+        if (p_length === 15) {
+            return sra_indv_amnno.replace(/(\d{3})(\d{3})(\d{9})$/, '$1' + p_text + '$2' + p_text + '$3');
+        } else if (p_length === 12) {
+            return sra_indv_amnno.replace(/(\d{3})(\d{3})(\d{9})$/, '$2' + p_text + '$3');
+        } else if (p_length === 9) {
+            return sra_indv_amnno.slice(-9);
+        } else if (p_length === 4) {
+            return sra_indv_amnno.slice(-5, -1);
+        }
+    } else if (p_sra_srs_dsc === '05' || p_sra_srs_dsc === '06') {
+        return sra_indv_amnno.replace(/(\d{2})(\d{8})(\d{5})/, '$1' + p_text + '$2' + p_text + '$3');
+    }
+}
+
+/**
+ * @description : 낙찰금액 산출 함수
+ * @param {string} p_auc_obj_dsc   경매대상 (1: 송아지, 2: 비육우, 3: 번식우, 5: 염소, 6: 말)
+ * @param {string} p_sra_sbid_upr  낙찰단가
+ * @param {string} p_cow_sog_wt    중량
+ * @param {string} p_cut_am        절사단위 (1: 원, 10: 십원, 100: 백원, 1000: 천원, 10000: 만원)
+ * @param {string} p_sgno_prc_dsc  절사구분 (1: 절사, 2: 절상, 3: 사사오입)
+ * @returns {string}
+ */
+function fn_calculateSbidAm(p_auc_obj_dsc, p_sra_sbid_upr, p_cow_sog_wt = 0, p_cut_am = 1, p_sgno_prc_dsc = '1') {
+    // 기타 가축 단가 기준
+    const aucUprDsc = parent.envList[0][AUC_UPR_DSC[p_auc_obj_dsc]]||'2';
+    const aucAtdrUntAm = parent.envList[0][AUC_ATDR_UNT_AM[p_auc_obj_dsc]]||10000;
+
+    let v_sra_sbid_am = parseInt(fn_delComma(p_sra_sbid_upr)) * parseInt(aucAtdrUntAm);
+
+    // Kg별
+    if(aucUprDsc == '1') {
+        v_sra_sbid_am = parseInt(fn_delComma(p_sra_sbid_upr)) * parseInt(fn_delComma(p_cow_sog_wt)) * parseInt(aucAtdrUntAm);
+        // 절사
+        if(p_sgno_prc_dsc == '1') {
+            v_sra_sbid_am = Math.floor(parseInt(v_sra_sbid_am) / parseInt(p_cut_am)) * parseInt(p_cut_am);
+        // 절상
+        } else if(p_sgno_prc_dsc == '2') {
+            v_sra_sbid_am = Math.ceil(parseInt(v_sra_sbid_am) / parseInt(p_cut_am)) * parseInt(p_cut_am);
+        // 사사오입
+        } else {
+            v_sra_sbid_am = Math.round(parseInt(v_sra_sbid_am) / parseInt(p_cut_am)) * parseInt(p_cut_am);
+        }
+    }
+
+    return isNaN(parseInt(v_sra_sbid_am)) ? '0' : fn_toComma(v_sra_sbid_am);
+}
+
+/**
+* @description : [LALM0912] 사업장 정보 관리 메뉴에서 설정한 단가 기준을 반환 함수 - 송아지, 번식우는 두별로 단가를 책정하므로 항상 '2'를 반환
+* @param {string} p_auc_obj_dsc   경매대상 (1: 송아지, 2: 비육우, 3: 번식우, 5: 염소, 6: 말)
+* @returns {string} (1: KG, 2: 두)
+*/
+function fn_getAucUprDsc(p_auc_obj_dsc) {
+    return parent.envList[0][AUC_UPR_DSC[p_auc_obj_dsc]]||'2';
+}
+
+/**
+* @description : 응찰단위 반환 함수
+* @param {string} p_auc_obj_dsc   경매대상 (1: 송아지, 2: 비육우, 3: 번식우, 5: 염소, 6: 말)
+* @returns {number} (1: 원, 1000: 천원, 10000: 만원)
+*/
+function fn_getAucAtdrUntAm(p_auc_obj_dsc) {
+    return parent.envList[0][AUC_ATDR_UNT_AM[p_auc_obj_dsc]]||10000;
 }
 </script>
-
-
