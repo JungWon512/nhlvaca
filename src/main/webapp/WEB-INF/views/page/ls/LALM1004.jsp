@@ -22,6 +22,13 @@
 		<%@ include file="/WEB-INF/common/menuBtn.jsp" %>
 		<!-- content -->
 		<section class="content">
+			<div class="tab_box clearfix line">
+				<div class="fl_R" id="tab1_text"><!--  //버튼 모두 우측정렬 -->   
+					<input type="checkbox" id="fhs_cont_yn" name="fhs_cont_yn" value="1" checked />
+					<label for="fhs_cont_yn" style="font-size:5px; font: message-box;"><b>출하자 연속등록</b></label>
+					<label id="msg_Sbid3" style="font-size:5px;color: red;font: message-box;"></label>
+				</div>
+			</div>
 			<!-- //tab_box e -->
 			<form id="frm_MhSogCow">
 			<!-- ------------------------------ 출장 내역 정보 ------------------------------ -->
@@ -72,11 +79,12 @@
 										<th scope="row"><span>경매번호</span></th>
 										<td>
 											<input type="text" id="auc_prg_sq" style="width:100px" disabled />
+											<input type="hidden" id="hd_auc_prg_sq" style="width:100px" />
 											<input type="checkbox" id="auto_inc_yn" name="auto_inc_yn" class="no_chg" value="1" checked />
 											<label for="auto_inc_yn">자동증가</label>
 										</td>
 									</tr>
-									<tr>
+									<tr class="fhs_info">
 										<th scope="row"><span class="tb_dot">출하자</span></th>
 										<td colspan=3>
 											<input disabled="disabled" type="hidden" id="farm_amnno" style="width:100px" />
@@ -89,7 +97,7 @@
 												<option value="1">조합원</option>
 												<option value="0">비조합원</option>
 											</select>
-											<select id="jrdwo_dsc" style="width:100px"></select>
+											<select id="jrdwo_dsc" style="width:80px"></select>
 										</td>
 										<th scope="row"><span>주소</span></th>
 										<td colspan="2">
@@ -153,11 +161,6 @@
 									<td>
 										<input type="text" class="number" id="cow_sog_wt" maxlength="8" />
 									</td>
-									<th scope="row"><span>예정가</span></th>
-									<td>
-										<input type="text" class="number" id="lows_sbid_lmt_am_ex" maxlength="8" style="width: 40%;" />
-										<input type="text" disabled="disabled" class="number" id="lows_sbid_lmt_am" style="width: 55%;" />
-									</td>
 									<th scope="row"><span>50kg 이상</span></th>
 									<td>
 										<input type="text" class="number" id="sog_hdcn_01" maxlength="8" value="0" />
@@ -169,6 +172,11 @@
 									<th scope="row"><span>20kg 미만</span></th>
 									<td>
 										<input type="text" class="number" id="sog_hdcn_03" maxlength="8" value="0" />
+									</td>
+									<th scope="row"><span>예정가</span></th>
+									<td>
+										<input type="text" class="number" id="lows_sbid_lmt_am_ex" maxlength="8" style="width: 40%;" />
+										<input type="text" disabled="disabled" class="number" id="lows_sbid_lmt_am" style="width: 55%;" />
 									</td>
 								</tr>
 								<tr>
@@ -304,6 +312,7 @@
 									</td>
 									<td>
 										<input type="hidden" id="sra_indv_amnno" alt="개체번호" />
+										<input type="hidden" id="re_indv_no" alt="개체번호" />
 									</td>
 									<td>
 										<input type="hidden" id="td_rc_cst" alt="당일접수비용" />
@@ -318,7 +327,7 @@
 										<input type="hidden" id="chg_del_yn" alt="삭제여부" />
 									</td>
 									<td>
-										<input type="hidden" id="ppgcow_fee_dsc" alt="" />
+										<input type="hidden" id="ppgcow_fee_dsc" alt="5" />
 									</td>
 									<td>
 										<input type="hidden" id="sra_farm_acno" alt="출하자 계좌번호" />
@@ -399,7 +408,7 @@
 									<th scope="row">경매번호</th>
 									<td>
 										<div class="cellBox" >
-											<input type="text" name="usrnm" id="usrnm" value="" maxlength="10" />
+											<input type="text" name="sch_auc_prg_sq" id="sch_auc_prg_sq" value="" maxlength="10" />
 										</div>
 									</td>
 								</tr>
@@ -415,17 +424,16 @@
 				</ul>
 			</div>
 			<div class="listTable mb5">
-				<table id="grd_MhSogCow"></table>
+				<table id="grd_Etc"></table>
 			</div>
 
 			<div class="listTable rsp_v" id="grd_AucQcnGrid">
-				<table id="aucQcnGrid" style="width:100%;">
-				</table>
+				<table id="aucQcnGrid" style="width:100%;"></table>
 			</div>
 			
+			<%-- 수수료 리스트 --%>
 			<div class="listTable rsp_v" id="grd_MhFee">
-				<table id="mhFeeGrid" style="width:100%;">
-				</table>
+				<table id="mhFeeGrid" style="width:100%;"></table>
 			</div>
 		</section>
 	</div>

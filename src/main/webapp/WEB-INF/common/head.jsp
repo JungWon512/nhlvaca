@@ -572,7 +572,7 @@ function fn_InitFrm(p_FrmId){
     var itemNames = "";
     
     for(var i=0; i<initFrm.length; i++){
-        initItem = $(initFrm[i]).prop('tagName');                               
+        initItem = $(initFrm[i]).prop('tagName');
         if(initItem == "INPUT" || initItem == "TEXTAREA"){
             if($(initFrm[i]).attr("type") == "checkbox"){
             	if ($(initFrm[i]).hasClass("checked")) {
@@ -594,7 +594,7 @@ function fn_InitFrm(p_FrmId){
         }else if(initItem == "SELECT"){
             $(initFrm[i]).find("option:first").attr("selected", "selcted");
         }
-    }       
+    }
 }
 //**************************************
 //function  : fn_setClearFromFrm
@@ -1081,9 +1081,9 @@ function fn_createAppendData(p_obj, code, className = '') {
 //* result     : N/A
 //***************************************
 function fn_setChgRadio(p_target, p_simp_c) {
-    $("#" + p_target).val(p_simp_c);
+    $("#" + p_target).val(p_simp_c).trigger('input');
 	var v_target = p_target + '_' + p_simp_c;
-	$("#" + v_target).prop('checked',true);
+	$("#" + v_target).prop('checked', true);
 }
 
 //***************************************

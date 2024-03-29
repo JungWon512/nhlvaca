@@ -3,14 +3,16 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.auc.lalm.ls.service.Impl.LALM1003P3Mapper">
-	<insert id="LALM1003P3_insEtc" parameterType="hashMap">
+<mapper namespace="com.auc.lalm.ls.service.Impl.LALM1003P1Mapper">
+
+	<insert id="LALM1003P1_insEtc" parameterType="hashMap">
 		<selectKey keyProperty="sra_indv_amnno" resultType="string" order="BEFORE">
-			SELECT CASE WHEN #{auc_obj_dsc} = '5' THEN '06'
-						WHEN #{auc_obj_dsc} = '6' THEN '04'
-						ELSE '01'
-					END || TO_CHAR(SYSDATE, 'YYYYMMdd') || LPAD(#{oslp_no}, 5, '0') AS sra_indv_amnno
-			FROM DUAL
+
+		SELECT DECODE(#{auc_obj_dsc}, '5', '06', '6', '04', '99')||TO_CHAR(SYSDATE, 'YYYYMMDD')||LPAD(NVL(MAX(TO_NUMBER(SUBSTR(SRA_INDV_AMNNO, -5))) + 1, 1), 5, '0') AS sra_indv_amnno
+			  FROM TB_LA_IS_MM_INDV
+			 WHERE NA_BZPLC = #{ss_na_bzplc}
+			   AND SRA_SRS_DSC = DECODE(#{auc_obj_dsc}, '5', '06', '6', '04', '99')
+			   AND SRA_INDV_AMNNO LIKE DECODE(#{auc_obj_dsc}, '5', '06', '6', '04', '99')||TO_CHAR(SYSDATE, 'YYYYMMDD')||'%'
 		</selectKey>
 		INSERT  INTO TB_LA_IS_MH_SOG_COW (
 			NA_BZPLC                               		/* 경제통합사업장코드         */
@@ -147,7 +149,7 @@
 		)
 	</insert>
 	
-	<insert id="LALM1003P3_insIndv" parameterType="hashMap">
+	<insert id="LALM1003P1_insIndv" parameterType="hashMap">
         insert into tb_la_is_mm_indv
          (
             na_bzplc									/* 경제통합사업장코드 */

@@ -1,6 +1,5 @@
 package com.auc.lalm.ls.controller;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -30,14 +29,20 @@ import com.auc.main.service.CommonService;
 public class LALM1004Controller {
 
 	@Autowired
-	ConvertConfig convertConfig;
+	private ConvertConfig convertConfig;
 	@Autowired
-	CommonFunc commonFunc;
+	private CommonFunc commonFunc;
 	@Autowired
-	LALM1004Service lalm1004Service;
+	private LALM1004Service lalm1004Service;
 	@Autowired
-	CommonService commonService;
+	private CommonService commonService;
 
+	/**
+	 * 출장내역 정보 조회
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/LALM1004_selList", method = RequestMethod.POST)
 	public Map<String, Object> LALM1004_selList(ResolverMap rMap) throws Exception {
@@ -49,6 +54,12 @@ public class LALM1004Controller {
 		return reMap;
 	}
 
+	/**
+	 * 수수료 정보 조회
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/LALM1004_selFee", method = RequestMethod.POST)
 	public Map<String, Object> LALM1004_selFee(ResolverMap rMap) throws Exception {
@@ -60,6 +71,12 @@ public class LALM1004Controller {
 		return reMap;
 	}
 
+	/**
+	 * 경매내역 저장 전 상태 변경 여부 조회
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/LALM1004_selStsDsc", method = RequestMethod.POST)
 	public Map<String, Object> LALM1004_selStsDsc(ResolverMap rMap) throws Exception {
@@ -71,181 +88,12 @@ public class LALM1004Controller {
 		return reMap;
 	}
 
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_selGetPpgcowFeeDsc", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_selGetPpgcowFeeDsc(ResolverMap rMap) throws Exception {
-
-		Map<String, Object> map = convertConfig.conMap(rMap);
-		List<Map<String, Object>> reList = lalm1004Service.LALM1004_selGetPpgcowFeeDsc(map);
-		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-
-		return reMap;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_selPrgSq", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_selPrgSq(ResolverMap rMap) throws Exception {
-
-		Map<String, Object> map = convertConfig.conMap(rMap);
-		List<Map<String, Object>> reList = lalm1004Service.LALM1004_selPrgSq(map);
-		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-
-		return reMap;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_selMhCalf", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_selMhCalf(ResolverMap rMap) throws Exception {
-
-		Map<String, Object> map = convertConfig.conMap(rMap);
-		List<Map<String, Object>> reList = lalm1004Service.LALM1004_selMhCalf(map);
-		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-
-		return reMap;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_selOslpNo", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_selOslpNo(ResolverMap rMap) throws Exception {
-
-		Map<String, Object> map = convertConfig.conMap(rMap);
-
-		List<Map<String, Object>> selAucPrgSqList = lalm1004Service.LALM1004_selAucPrgSq(map);
-		int selAucPrgSq = Integer.parseInt(selAucPrgSqList.get(0).get("C_AUC_PRG_SQ").toString());
-		if (selAucPrgSq == 0) {
-			throw new CusException(ErrorCode.CUSTOM_ERROR, "경매번호가 없습니다.");
-		}
-		List<Map<String, Object>> reList = lalm1004Service.LALM1004_selOslpNo(map);
-		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-		return reMap;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_selTmpFhsNm", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_selTmpFhsNm(ResolverMap rMap) throws Exception {
-
-		Map<String, Object> map = convertConfig.conMap(rMap);
-		List<Map<String, Object>> reList = lalm1004Service.LALM1004_selMhCalf(map);
-		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-
-		return reMap;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_selMacoFee", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_selMacoFee(ResolverMap rMap) throws Exception {
-
-		Map<String, Object> map = convertConfig.conMap(rMap);
-		List<Map<String, Object>> reList = lalm1004Service.LALM1004_selMacoFee(map);
-		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-
-		return reMap;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_selIndvAmnnoPgm", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_selIndvAmnnoPgm(ResolverMap rMap) throws Exception {
-
-		Map<String, Object> map = convertConfig.conMap(rMap);
-		List<Map<String, Object>> reList = lalm1004Service.LALM1004_selIndvAmnnoPgm(map);
-		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-
-		return reMap;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_selTmpIndvAmnnoPgm", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_selTmpIndvAmnnoPgm(ResolverMap rMap) throws Exception {
-
-		Map<String, Object> map = convertConfig.conMap(rMap);
-		List<Map<String, Object>> reList = lalm1004Service.LALM1004_selTmpIndvAmnnoPgm(map);
-		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-
-		return reMap;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_selFhsIdNo", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_selFhsIdNo(ResolverMap rMap) throws Exception {
-
-		Map<String, Object> map = convertConfig.conMap(rMap);
-		List<Map<String, Object>> reList = lalm1004Service.LALM1004_selFhsIdNo(map);
-		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-
-		return reMap;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_selTmpAucPrgSq", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_selTmpAucPrgSq(ResolverMap rMap) throws Exception {
-
-		Map<String, Object> map = convertConfig.conMap(rMap);
-		List<Map<String, Object>> reList = lalm1004Service.LALM1004_selTmpAucPrgSq(map);
-		Map<String, Object> reMap = commonFunc.createResultSetListData(reList);
-
-		return reMap;
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_delPgm", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_delPgm(ResolverMap rMap) throws Exception {
-
-		Map<String, Object> map = convertConfig.conMap(rMap);
-
-		List<Map<String, Object>> selAucQcnList = commonService.Common_selAucQcn(map);
-		int selAucQcn = Integer.parseInt(selAucQcnList.get(0).get("DDL_YN").toString());
-		if (selAucQcn > 0) {
-			throw new CusException(ErrorCode.CUSTOM_ERROR, "경매마감 되었습니다.");
-		}
-		Map<String, Object> inMap = lalm1004Service.LALM1004_delPgm(map);
-		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
-		return reMap;
-
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/LALM1004_updAucChange", method = RequestMethod.POST)
-	public Map<String, Object> LALM1004_updAucChange(ResolverMap rMap) throws Exception {
-
-		String vAucDt = "";
-		String vAucChgDt = "";
-
-		Map<String, Object> map = convertConfig.conMapWithoutXxs(rMap);
-		Map<String, Object> frmMap = (Map<String, Object>) map.get("frm_mhsogcow");
-
-		List<Map<String, Object>> qcnList = commonService.Common_selAucQcn(frmMap);
-
-		if (qcnList.size() == 0) {
-			throw new CusException(ErrorCode.CUSTOM_ERROR, "경매차수를 먼저 등록하여야 합니다.");
-		}
-
-		int qcn = Integer.parseInt(qcnList.get(0).get("DDL_YN").toString());
-
-		if (qcn > 0) {
-			throw new CusException(ErrorCode.CUSTOM_ERROR, "경매마감 되었습니다.");
-		}
-
-		// 경매일자를 이월일자로 변경
-		vAucDt = frmMap.get("auc_dt").toString();
-		vAucChgDt = frmMap.get("auc_chg_dt").toString();
-		frmMap.put("auc_dt", vAucChgDt);
-
-		List<Map<String, Object>> indvAmnnoList = lalm1004Service.LALM1004_selIndvAmnno(frmMap);
-
-		// 경매일자 원복
-		frmMap.put("auc_dt", vAucDt);
-
-		if (indvAmnnoList.size() > 0) {
-			throw new CusException(ErrorCode.CUSTOM_ERROR, "동일한 경매일자에 동일한 귀표번호는 등록할수 없습니다.");
-		}
-
-		Map<String, Object> inMap = lalm1004Service.LALM1004_updAucChange(map);
-		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
-
-		return reMap;
-
-	}
-
+	/**
+	 * 경매내역 저장
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/LALM1004_insPgm", method = RequestMethod.POST)
 	public Map<String, Object> LALM1004_insPgm(ResolverMap rMap) throws Exception {
@@ -272,6 +120,12 @@ public class LALM1004Controller {
 
 	}
 
+	/**
+	 * 경매내역 수정
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/LALM1004_updPgm", method = RequestMethod.POST)
 	public Map<String, Object> LALM1004_updPgm(ResolverMap rMap) throws Exception {
@@ -279,8 +133,8 @@ public class LALM1004Controller {
 		Map<String, Object> map = convertConfig.conMapWithoutXxs(rMap);
 		Map<String, Object> frmMap = (Map<String, Object>) map.get("frm_mhsogcow");
 
-		String beforeAucPrgSq = frmMap.get("hd_auc_prg_sq").toString();
-		String afterAucPrgSq = frmMap.get("auc_prg_sq").toString();
+		String beforeAucPrgSq = frmMap.getOrDefault("hd_auc_prg_sq", "").toString();
+		String afterAucPrgSq = frmMap.getOrDefault("auc_prg_sq", "").toString();
 
 		if (!beforeAucPrgSq.equals(afterAucPrgSq)) {
 			List<Map<String, Object>> qcnList = lalm1004Service.LALM1004_selAucPrg(frmMap);
@@ -300,6 +154,29 @@ public class LALM1004Controller {
 		Map<String, Object> inMap = lalm1004Service.LALM1004_updPgm(map);
 		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
 
+		return reMap;
+
+	}
+
+	/**
+	 * 경매내역 삭제
+	 * @param rMap
+	 * @return
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/LALM1004_delPgm", method = RequestMethod.POST)
+	public Map<String, Object> LALM1004_delPgm(ResolverMap rMap) throws Exception {
+
+		Map<String, Object> map = convertConfig.conMap(rMap);
+
+		List<Map<String, Object>> selAucQcnList = commonService.Common_selAucQcn(map);
+		int selAucQcn = Integer.parseInt(selAucQcnList.get(0).get("DDL_YN").toString());
+		if (selAucQcn > 0) {
+			throw new CusException(ErrorCode.CUSTOM_ERROR, "경매마감 되었습니다.");
+		}
+		Map<String, Object> inMap = lalm1004Service.LALM1004_delPgm(map);
+		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
 		return reMap;
 
 	}

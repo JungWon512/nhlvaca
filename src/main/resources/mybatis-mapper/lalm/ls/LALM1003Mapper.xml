@@ -180,6 +180,9 @@
         <if test='fhs_id_no != null and fhs_id_no != ""'>        
            AND B.FHS_ID_NO            = #{fhs_id_no}
         </if>
+        <if test='ftsnm != null and ftsnm != ""'>        
+           AND B.FTSNM            LIKE '%'||#{ftsnm}||'%'
+        </if>
         <if test='sra_pdmnm != null and sra_pdmnm != ""'>
            AND A.SRA_PDMNM            = #{sra_pdmnm}
         </if>
@@ -267,14 +270,13 @@
            LEFT OUTER JOIN TB_LA_IS_MM_MWMN E
              ON A.NA_BZPLC            = E.NA_BZPLC
             AND A.TRMN_AMNNO          = E.TRMN_AMNNO              /* 거래인관리번호              */
-    
+
               , TB_LA_IS_MM_FHS  B
           WHERE A.NA_BZPLC            = #{ss_na_bzplc}
            AND A.AUC_DT               = #{auc_dt}
         <if test='auc_obj_dsc != "0"'>
            AND A.AUC_OBJ_DSC          = #{auc_obj_dsc}
         </if>    
-        
            AND A.LED_SQNO             = '1'
            AND A.DEL_YN               = '0' 
            AND B.NA_BZPLC             = A.NA_BZPLC
@@ -340,9 +342,6 @@
            AND AUC_OBJ_DSC     = #{auc_obj_dsc}
         </if> 
     </select>
-    
-    
-    
     
     <select id="LALM1003_selFeeImps" resultType="hashMap">
         SELECT SUM(SRA_TR_FEE) AS FEE_SUM

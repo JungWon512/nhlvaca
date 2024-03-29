@@ -157,7 +157,7 @@
 	        }
 	        var param = {list : rowData,auc_obj_dsc : $('#auc_obj_dsc').val() ,auc_dt : aucDt.replaceAll('-','') ,rc_dt: rcDt.replaceAll('-','')};
 	        
-			var result = sendAjax(param, '/LALM1003P3_selEtcVaild', 'POST');
+			var result = sendAjax(param, '/LALM1003P1_selEtcVaild', 'POST');
 	        if(result.status != RETURN_SUCCESS){
 				showErrorMessage(result);
 				return;
@@ -290,7 +290,7 @@
         }
         var param = {list : rowData,auc_obj_dsc : $('#auc_obj_dsc').val() ,auc_dt : aucDt.replaceAll('-','') ,rc_dt: rcDt.replaceAll('-','')};
         
-        var result = sendAjax(param, '/LALM1003P3_insEtc', 'POST');	       
+        var result = sendAjax(param, '/LALM1003P1_insEtc', 'POST');	       
          if(result.status != RETURN_SUCCESS){
         	 showErrorMessage(result);
         	 return;
