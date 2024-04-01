@@ -163,15 +163,15 @@
 									</td>
 									<th scope="row"><span>50kg 이상</span></th>
 									<td>
-										<input type="text" class="number" id="sog_hdcn_01" maxlength="8" value="0" />
+										<input type="text" class="number" id="re_product_1" maxlength="2" value="0" />
 									</td>
 									<th scope="row"><span>20kg 이상</span></th>
 									<td>
-										<input type="text" class="number" id="sog_hdcn_02" maxlength="8" value="0" />
+										<input type="text" class="number" id="re_product_2" maxlength="2" value="0" />
 									</td>
 									<th scope="row"><span>20kg 미만</span></th>
 									<td>
-										<input type="text" class="number" id="sog_hdcn_03" maxlength="8" value="0" />
+										<input type="text" class="number" id="re_product_3" maxlength="2" value="0" />
 									</td>
 									<th scope="row"><span>예정가</span></th>
 									<td>
@@ -182,10 +182,11 @@
 								<tr>
 									<th scope="row"><span>등록구분</span></th>
 									<td>
-										<select id="rg_dsc"></select>
+										<select id="rg_dsc">
+										</select>
 									</td>
 									<th scope="row"><span>예방접종일</span></th>
-									<td>
+									<td class="fhs_info">
 										<div class="cellBox">
 											<div class="cell">
 												<input type="text" class="date" id="vacn_dt" style="font-weight:bold;" />
@@ -427,12 +428,12 @@
 				<table id="grd_Etc"></table>
 			</div>
 
-			<div class="listTable rsp_v" id="grd_AucQcnGrid">
+			<div class="listTable rsp_v" id="grd_AucQcnGrid" style="display:none;">
 				<table id="aucQcnGrid" style="width:100%;"></table>
 			</div>
 			
 			<%-- 수수료 리스트 --%>
-			<div class="listTable rsp_v" id="grd_MhFee">
+			<div class="listTable rsp_v" id="grd_MhFee" style="display:none;">
 				<table id="mhFeeGrid" style="width:100%;"></table>
 			</div>
 		</section>

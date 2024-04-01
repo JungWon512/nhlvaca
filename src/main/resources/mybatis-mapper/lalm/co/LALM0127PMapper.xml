@@ -22,6 +22,7 @@
 	        , jrdwo_dsc
 	        , del_yn
 	        , SRA_FED_SPY_YN
+			, VACN_DT
           FROM TB_LA_IS_MM_FHS
          WHERE NA_BZPLC   = #{ss_na_bzplc}
            AND DEL_YN     = '0'

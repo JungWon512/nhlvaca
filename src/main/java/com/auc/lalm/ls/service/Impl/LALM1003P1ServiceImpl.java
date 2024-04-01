@@ -132,6 +132,7 @@ public class LALM1003P1ServiceImpl implements LALM1003P1Service {
 			} else {
 				temp.put("FHS_ID_NO", fhs.get("FHS_ID_NO"));
 				temp.put("FARM_AMNNO", fhs.get("FARM_AMNNO"));
+				temp.put("DONGUP", fhs.get("DONGUP"));
 			}
 
 			if (errCnt > 0) temp.put("CHK_VAILD_ERR", "1");

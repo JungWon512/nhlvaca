@@ -18,6 +18,15 @@ let mv_RunMode                = '1';
 let mv_cut_am                 = '1';
 let mv_sqno_prc_dsc           = '1';
 let setRowStatus              = 'insert';
+const GRID_ETC_RG_DSC = {'5': '1:일반;2:육용;3:약용','6': '1:H일반;2:H육용;3:H약용'};
+const GRID_ETC_INDV_SEX_C = {'5': '1:암;2:수;3:거세;7:새끼','6': '1:H암;2:H수;3:H거세;7:H새끼'};
+const ETC_RG_DSC              = [{value : "1", text : "일반", details : ""},
+								 {value : "2", text : "육용", details : ""},
+								 {value : "3", text : "약용", details : ""}];
+const ETC_INDV_SEX_C		  = [{value : "1", text : "암", details : ""},
+								 {value : "2", text : "수", details : ""},
+								 {value : "3", text : "거세", details : ""},
+								 {value : "7", text : "새끼", details : ""}];
 
 $(document).ready(function() {
 	if (pageInfos.param) mv_RunMode = '2';
@@ -35,9 +44,11 @@ $(document).ready(function() {
 	fn_setCodeRadio("sc_auc_obj_dsc", "sch_auc_obj_dsc", "AUC_OBJ_DSC", 8);	// 검색창 경매대상구분
 	
 	// 최초 콤보박스 세팅
-	fn_setCodeBox("indv_sex_c", "INDV_SEX_C", 1);							// 성별
 	fn_setCodeBox("sel_sts_dsc", "SEL_STS_DSC", 1);							// 진행상태
 	fn_setCodeBox("jrdwo_dsc", "JRDWO_DSC", 1);								// 관내/외
+	
+	fn_setCustomCodeBox("indv_sex_c", ETC_INDV_SEX_C);						// 성별
+	fn_setCustomCodeBox("rg_dsc", ETC_RG_DSC);								// 등록구분
 
 	// input, select 관련 이벤트 등록
 	fn_setEvent();
@@ -318,42 +329,6 @@ function fn_CheckRequiredVal() {
 		return false;
 	}
 
-	// 진행상태에 따라 필수 입력 값 체크
-	// 낙찰(22) 인 경우 중도매인, 낙찰단가, 낙찰금액, 예정가 체크
-	if($("#sel_sts_dsc").val() === '22') {
-		const aucObjDsc = $("#auc_obj_dsc").val();
-		// 기타 가축 단가 기준
-		const aucUprDsc = fn_getAucUprDsc(aucObjDsc);
-
-		if(($("#lows_sbid_lmt_am_ex").val()||'0') === '0') {
-			MessagePopup('OK','예정가가 없습니다. 예정가를 입력해주세요.');
-			return false;
-		}
-
-		if(fn_isNull($("#trmn_amnno").val()) || fn_isNull($("#sra_mwmnnm").val())) {
-			MessagePopup('OK','중도매인을 입력하세요.');
-			return false;
-		}
-
-		if(($("#sra_sbid_upr").val()||'0') === '0') {
-			MessagePopup('OK','낙찰단가를 입력하세요.');
-			return false;
-		}
-		// 경매 단가 기준이 KG인 경우 중량을 나중에 측정할 수 있어 낙찰 금액이 없을 수 있음
-		if(aucUprDsc !== '1') {
-			if(($("#sra_sbid_am").val()||'0') === '0') {
-				MessagePopup('OK','낙찰금액이 없습니다.');
-				return false;
-			}
-		}
-	}
-	else {
-		if(($("#sra_sbid_am").val()||'0') !== '0') {
-			MessagePopup('OK','낙찰이 아닌경우 낙찰금액을 입력할수 없습니다.');
-			$("#sra_sbid_upr").focus();
-			return false;
-		}
-	}
 	return true;
 }
 
@@ -378,20 +353,57 @@ function fn_CheckAuctionVal() {
 		$("#lows_sbid_lmt_am_ex").focus();
 		return false;
 	}
-	if(parseInt(fn_delComma($("#sra_sbid_upr").val())) < parseInt(fn_delComma($("#lows_sbid_lmt_am_ex").val()))) {
-		MessagePopup('OK','낙찰단가가 예정가 보다 작습니다.');
-		return false;
+
+	// 진행상태에 따라 필수 입력 값 체크
+	// 낙찰(22) 인 경우 중도매인, 낙찰단가, 낙찰금액, 예정가 체크
+	if($("#sel_sts_dsc").val() === '22') {
+		const aucObjDsc = $("#auc_obj_dsc").val();
+		// 기타 가축 단가 기준
+		const aucUprDsc = fn_getAucUprDsc(aucObjDsc);
+		const aucAtdrUntAm = fn_getAucAtdrUntAm(aucObjDsc)
+
+		if(($("#lows_sbid_lmt_am_ex").val()||'0') === '0') {
+			MessagePopup('OK','예정가가 없습니다. 예정가를 입력해주세요.');
+			return false;
+		}
+
+		if(fn_isNull($("#trmn_amnno").val()) || fn_isNull($("#sra_mwmnnm").val())) {
+			MessagePopup('OK','중도매인을 입력하세요.');
+			return false;
+		}
+
+		if(($("#sra_sbid_upr").val()||'0') === '0') {
+			MessagePopup('OK','낙찰단가를 입력하세요.');
+			return false;
+		}
+
+		if(parseInt(fn_delComma($("#sra_sbid_upr").val())) < parseInt(fn_delComma($("#lows_sbid_lmt_am_ex").val()))) {
+			MessagePopup('OK','낙찰단가가 예정가 보다 작습니다.');
+			return false;
+		}
+
+		// 경매 단가 기준이 KG인 경우 중량을 나중에 측정할 수 있어 낙찰 금액이 없을 수 있음
+		if(aucUprDsc !== '1') {
+			if(($("#sra_sbid_am").val()||'0') === '0') {
+				MessagePopup('OK','낙찰금액이 없습니다.');
+				return false;
+			}
+		}
+		
+		let v_sra_sbid_upr = parseInt(fn_delComma($("#sra_sbid_upr").val())) * parseInt(aucAtdrUntAm);
+		if(parseInt(v_sra_sbid_upr) > parseInt(resultAucQcn[0]["BASE_LMT_AM"])) {
+			MessagePopup('OK', '낙찰단가가 최고 응찰 한도금액을 초과 하였습니다.(최고응찰한도금액:' + resultAucQcn[0]["BASE_LMT_AM"]+'원', function() {
+				$("#sra_sbid_upr").focus();
+			});
+			return false;
+		}
 	}
-	
-	const aucObjDsc = $("#auc_obj_dsc").val();
-	const aucAtdrUntAm = fn_getAucAtdrUntAm(aucObjDsc)
-	let v_sra_sbid_upr = parseInt(fn_delComma($("#sra_sbid_upr").val())) * parseInt(aucAtdrUntAm);
-	
-	if(parseInt(v_sra_sbid_upr) > parseInt(resultAucQcn[0]["BASE_LMT_AM"])) {
-		MessagePopup('OK', '낙찰단가가 최고 응찰 한도금액을 초과 하였습니다.(최고응찰한도금액:' + resultAucQcn[0]["BASE_LMT_AM"]+'원', function() {
+	else {
+		if(($("#sra_sbid_am").val()||'0') !== '0') {
+			MessagePopup('OK','낙찰이 아닌경우 낙찰금액을 입력할수 없습니다.');
 			$("#sra_sbid_upr").focus();
-		});
-		return false;
+			return false;
+		}
 	}
 
 	return true;
@@ -641,9 +653,9 @@ function fn_InitSet() {
 	// 출하자에 관련된 항목은 reset_exc 클래스를 추가하여 예외처리
 	// > fn_InitFrm 함수 참조
 	if($("#fhs_cont_yn").is(":checked")) {
-		$("tr.fhs_info").find("input, select").addClass("reset_exc");
+		$("tr.fhs_info, td.fhs_info").find("input, select").addClass("reset_exc");
 	} else {
-		$("tr.fhs_info").find("input, select").removeClass("reset_exc");
+		$("tr.fhs_info, td.fhs_info").find("input, select").removeClass("reset_exc");
 	}
 
 	if(pageInfos.param) {
@@ -790,14 +802,22 @@ function fn_SetData(result) {
 		console.log(untAm);
 		$("#lows_sbid_lmt_am_ex").val(parseInt(result[0]["LOWS_SBID_LMT_AM"]) / parseInt(untAm));
 	}
-	// TODO :: 50KG 이상, 20KG 이상, 20KG 미만 두수 추가하기
+	// 50KG 이상, 20KG 이상, 20KG 미만 두수 추가하기 : 2024-04-01 완료
+	$("#re_product_1").val(result[0]["RE_PRODUCT_1"]||'0');
+	$("#re_product_2").val(result[0]["RE_PRODUCT_2"]||'0');
+	$("#re_product_3").val(result[0]["RE_PRODUCT_3"]||'0');
 
 	$("#rg_dsc").val(result[0]["RG_DSC"]);			// 등록구분
 	if(fn_isDate(result[0]["VACN_DT"])) {			// 예방접종일
 		$("#vacn_dt").val(fn_toDate(result[0]["VACN_DT"]));	
+	} else {
+		$("#vacn_dt").val("");
 	}
+
 	if(fn_isDate(result[0]["BRCL_ISP_DT"])) {		// 브루셀라 검사일
 		$("#brcl_isp_dt").val(fn_toDate(result[0]["BRCL_ISP_DT"]));
+	} else {
+		$("#brcl_isp_dt").val("");
 	}
 	fn_contrChBox((result[0]["BRCL_ISP_CTFW_SMT_YN"] === '1'), "brcl_isp_ctfw_smt_yn", "");	// 브루셀라 검사증 확인
 	fn_contrChBox((result[0]["MT12_OVR_YN"] === '1'), "mt12_ovr_yn", "");					// 12개월 이상
@@ -1126,44 +1146,58 @@ function fn_CreateAucQcnGrid(data){
 
 // 경매 내역 grid 생성
 function fn_CreateGrid(data){
+	const RG_DSC = GRID_ETC_RG_DSC[$("#sch_auc_obj_dsc").val()];
+	const INDV_SEX_C = GRID_ETC_INDV_SEX_C[$("#sch_auc_obj_dsc").val()];
 	const searchResultColNames = [
-									"H사업장코드","H경매일자","H원표번호",
-									"경매<br/>번호","경매<br/>대상","출하자<br/>코드","출하자","조합원<br/>여부","관내외<br>구분","접수일자","진행상태",
-									"낙찰자명","참가<br/>번호","개체번호","성별","구제역백신<br/>접종여부","구제역백신<br/>접종일","중량","예정가","낙찰단가","낙찰가","비고"
-								];
+		"H사업장코드", "H원표번호",
+		"경매일자", "경매<br/>번호", "경매<br/>대상", "출하자<br/>코드", "출하자",
+		"조합원<br/>여부", "관내외<br>구분", "접수일자",  "H개체번호", "성별",
+		"등록구분", "구제역백신<br/>접종여부", "구제역백신<br/>접종일", "중량", "50KG 이상", 
+		"20KG 이상", "20KG 미만", "H임시필드", "예정가", "진행상태", 
+		"낙찰자명", "참가<br/>번호", "낙찰단가", "낙찰가", "비고"
+	  ];
 
 	const searchResultColModel = [
-									{name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,  sortable:false, align:'center', hidden:true},
-									{name:"AUC_DT",               index:"AUC_DT",               width:90,  sortable:false, align:'center', hidden:true},
-									{name:"OSLP_NO",              index:"OSLP_NO",              width:90,  sortable:false, align:'center', hidden:true},
+		 {name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,  sortable:false, align:'center', hidden:true},
+		 {name:"OSLP_NO",              index:"OSLP_NO",              width:90,  sortable:false, align:'center', hidden:true},
+		 
+		 {name:"AUC_DT",               index:"AUC_DT",               width:90,  sortable:false, align:'center', formatter:'gridDateFormat'},
+		 {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:50,  sortable:false, align:'center', sorttype: "number"},
+		 {name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
+		 {name:"FHS_ID_NO",            index:"FHS_ID_NO",            width:60,  sortable:false, align:'center'},
+		 {name:"FTSNM",                index:"FTSNM",                width:75,  sortable:false, align:'center'},
+		 
+		 {name:"MACO_YN",              index:"MACO_YN",              width:65,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_MACO_YN_DATA}},
+		 {name:"JRDWO_DSC",            index:"JRDWO_DSC",            width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("JRDWO_DSC", 1)}},
+		 {name:"RC_DT",                index:"RC_DT",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
+		 {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, sortable:false, align:'center', hidden: true},
+		 {name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:INDV_SEX_C}},
 
-									{name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:50,  sortable:false, align:'center', sorttype: "number"},
-									{name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
-									{name:"FHS_ID_NO",            index:"FHS_ID_NO",            width:60,  sortable:false, align:'center'},
-									{name:"FTSNM",                index:"FTSNM",                width:75,  sortable:false, align:'center'},
-									{name:"MACO_YN",              index:"MACO_YN",              width:65,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_MACO_YN_DATA}},
-									{name:"JRDWO_DSC",            index:"JRDWO_DSC",            width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("JRDWO_DSC", 1)}},
-									{name:"RC_DT",                index:"RC_DT",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
-									{name:"SEL_STS_DSC",          index:"SEL_STS_DSC",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SEL_STS_DSC", 1)}},
-									{name:"SRA_MWMNNM",           index:"SRA_MWMNNM",           width:80,  sortable:false, align:'center'},
-									{name:"LVST_AUC_PTC_MN_NO",   index:"LVST_AUC_PTC_MN_NO",   width:40,  sortable:false, align:'center', sorttype: "number"},
-									{name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, sortable:false, align:'center'},
-									{name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
-									{name:"VACN_YN",              index:"FMD_V_YN",             width:70,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"VACN_DT",              index:"FMD_V_DT",             width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
-									{name:"COW_SOG_WT",           index:"COW_SOG_WT",           width:70,  sortable:false, align:'right', formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-									{name:"LOWS_SBID_LMT_AM",     index:"LOWS_SBID_LMT_AM",     width:70,  sortable:false, align:'right', sorttype: "number" , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-									{name:"SRA_SBID_UPR",         index:"SRA_SBID_UPR",         width:70,  sortable:false, align:'right', sorttype: "number" , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-									{name:"SRA_SBID_AM",          index:"SRA_SBID_AM",          width:70,  sortable:false, align:'right' , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-									{name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable:false, align:'left'},
-								];
-		
+		 {name:"RG_DSC",               index:"RG_DSC",               width:70,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:RG_DSC}},
+		 {name:"VACN_YN",              index:"FMD_V_YN",             width:70,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+		 {name:"VACN_DT",              index:"FMD_V_DT",             width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
+		 {name:"COW_SOG_WT",           index:"COW_SOG_WT",           width:70,  sortable:false, align:'right', formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+		 {name:"RE_PRODUCT_1",         index:"RE_PRODUCT_1",         width:70,  sortable:false, align:'right', sorttype: "number" ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+		 
+		 {name:"RE_PRODUCT_2",         index:"RE_PRODUCT_2",         width:70,  sortable:false, align:'right', sorttype: "number" ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+		 {name:"RE_PRODUCT_3",         index:"RE_PRODUCT_3",         width:70,  sortable:false, align:'right', sorttype: "number" ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+		 {name:"RE_PRODUCT_4",         index:"RE_PRODUCT_4",         width:70,  sortable:false, align:'right', sorttype: "number" ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}, hidden: true},
+		 {name:"LOWS_SBID_LMT_AM",     index:"LOWS_SBID_LMT_AM",     width:70,  sortable:false, align:'right', sorttype: "number" , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+		 {name:"SEL_STS_DSC",          index:"SEL_STS_DSC",          width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SEL_STS_DSC", 1)}},
+		 
+		 {name:"SRA_MWMNNM",           index:"SRA_MWMNNM",           width:80,  sortable:false, align:'center'},
+		 {name:"LVST_AUC_PTC_MN_NO",   index:"LVST_AUC_PTC_MN_NO",   width:40,  sortable:false, align:'center', sorttype: "number"},
+		 {name:"SRA_SBID_UPR",         index:"SRA_SBID_UPR",         width:70,  sortable:false, align:'right', sorttype: "number" , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+		 {name:"SRA_SBID_AM",          index:"SRA_SBID_AM",          width:70,  sortable:false, align:'right' , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+		 {name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable:false, align:'left'},
+		];
+
 	$("#grd_Etc").jqGrid("GridUnload");
 
 	$("#grd_Etc").jqGrid({
 		datatype:    "local",
 		data:        data,
-		height:      500,
+		height:      300,
 		rowNum:      (data||[]).length,
 		resizeing:   true,
 		autowidth:   false,
@@ -1210,6 +1244,7 @@ function fn_CallFtsnmPopup(p_param, callback) {
 			$("#farm_amnno").val(result.FARM_AMNNO);
 			$("#ftsnm").val(fn_xxsDecode(result.FTSNM));
 			$("#ohse_telno").val(result.CUS_MPNO??result.OHSE_TELNO);
+			$("#vacn_dt").val(fn_toDate(result.VACN_DT));
 			
 			$("#zip").val(result.ZIP);
 			$("#dongup").val(fn_xxsDecode(result.DONGUP));
@@ -1227,6 +1262,7 @@ function fn_CallFtsnmPopup(p_param, callback) {
 			$("#farm_amnno").val("");
 			$("#ftsnm").val("");
 			$("#ohse_telno").val("");
+			$("#vacn_dt").val("");
 			$("#zip").val("");
 			$("#dongup").val("");
 			$("#dongbw").val("");

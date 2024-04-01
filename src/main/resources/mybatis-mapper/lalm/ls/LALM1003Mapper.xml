@@ -143,6 +143,10 @@
             , CASE WHEN A.VACN_DT IS NULL THEN '0'
                    ELSE '1'
               END AS VACN_YN
+            , RE_PRODUCT_1
+            , RE_PRODUCT_2
+            , RE_PRODUCT_3
+            , RE_PRODUCT_4
 	       FROM TB_LA_IS_MH_SOG_COW A
 	       LEFT OUTER JOIN TB_LA_IS_MM_VHC C
 	         ON C.NA_BZPLC            = A.NA_BZPLC

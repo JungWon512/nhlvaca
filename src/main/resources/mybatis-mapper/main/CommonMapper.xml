@@ -184,7 +184,10 @@
                                  AND APL_DT       <![CDATA[<=]]> #{auc_dt}          /* 적용일자               */
                                  AND DEL_YN        = '0')               /* 적용일자               */
           AND A.DEL_YN      = '0'                                       /* 삭제여부               */
-    
+		  AND '1' = ( CASE WHEN A.AUC_OBJ_DSC IN ( '1', '2', '3' ) OR NVL(A.JNLZ_BSN_DSC, '2') = '2' THEN '1'
+							WHEN NVL(#{cow_sog_wt}, 0) <![CDATA[>=]]> A.ST_SOG_WT AND NVL(#{cow_sog_wt}, 0) <![CDATA[<]]> A.ED_SOG_WT THEN '1'
+							ELSE '0'
+						END)															/* 중량 적용 구간 */
     </select>
     
     <!-- 임신우 구분조회 -->

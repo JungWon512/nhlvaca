@@ -260,9 +260,9 @@
 			if(fn_isNull(o.FTSNM) || fn_isNull($.trim(o.FHS_ID_NO)) || fn_isNull(o.AUC_PRG_SQ) || fn_isNull(o.AUC_OBJ_DSC) ){    			 
 				MessagePopup('OK','필수입력값을 확인해주세요.');
 				return true;
-    		 }else if(o.RMK_CNTN.length > 30){    			 
+    		 }else if(o.RMK_CNTN.length > 30){
 				MessagePopup('OK','비고의 값을 확인해주세요.<br/>[경매번호 : '+o.AUC_PRG_SQ+' 최대길이:30자]');
-				return true;    			 
+				return true;
     		 }
     		 return rowData.some((cur,j)=>{ 
     		 	if(cur.AUC_PRG_SQ == o.AUC_PRG_SQ && i != j){
@@ -290,7 +290,7 @@
         }
         var param = {list : rowData,auc_obj_dsc : $('#auc_obj_dsc').val() ,auc_dt : aucDt.replaceAll('-','') ,rc_dt: rcDt.replaceAll('-','')};
         
-        var result = sendAjax(param, '/LALM1003P1_insEtc', 'POST');	       
+        var result = sendAjax(param, '/LALM1003P1_insEtc', 'POST');
          if(result.status != RETURN_SUCCESS){
         	 showErrorMessage(result);
         	 return;
@@ -310,8 +310,7 @@
     ////////////////////////////////////////////////////////////////////////////////
 
     //그리드 생성
-    function fn_CreateGrid(data){              
-        
+    function fn_CreateGrid(data) {
         var rowNoValue = 0;     
         if(data != null){
             rowNoValue = data.length;
@@ -319,9 +318,10 @@
         	data = [];
         }
         
-        const searchResultColNames = ["", "* 경매번호","* 경매대상","* 농가식별번호","* 농가명","접수일자"
-                                   ,"성별","구제역백신<br/>접종일","중량","예정가","비고"
-								   , "Err Yn", "경매번호 ErrYn", "농가식별번호 ErrYn", "농장관리번호"
+        const searchResultColNames = ["", "* 경매번호", "* 경매대상", "* 농가식별번호", "* 농가명", "H동이상주소",
+									 "접수일자", "성별", "구제역백신<br/>접종일", "중량", "50KG 이상",
+									 "20KG 이상", "20KG 미만", "예정가", "비고",
+									 "Err Yn", "경매번호 ErrYn", "농가식별번호 ErrYn", "농장관리번호"
                                   ];
 
         const searchResultColModel = [
@@ -330,12 +330,19 @@
                                      {name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:80,  sortable: false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
                                      {name:"FHS_ID_NO",            index:"FHS_ID_NO",            width:80,  sortable: false, align:'center'},
                                      {name:"FTSNM",                index:"FTSNM",                width:75,  sortable: false, align:'center'},
+									 {name:"DONGUP",               index:"DONGUP",               width:80,  sortable: false, align:'center'},
+
                                      {name:"RC_DT",                index:"RC_DT",                width:70,  sortable: false, align:'center', formatter:'gridDateFormat'},
                                      {name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable: false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
                                      {name:"VACN_DT",              index:"FMD_V_DT",             width:70,  sortable: false, align:'center', formatter:'gridDateFormat'},
                                      {name:"COW_SOG_WT",           index:"COW_SOG_WT",           width:70,  sortable: false, align:'right', formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+									 {name:"RE_PRODUCT_1",         index:"RE_PRODUCT_1",         width:70,  sortable:false, align:'right', sorttype: "number" ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+
+                                     {name:"RE_PRODUCT_2",         index:"RE_PRODUCT_2",         width:70,  sortable:false, align:'right', sorttype: "number" ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"RE_PRODUCT_3",         index:"RE_PRODUCT_3",         width:70,  sortable:false, align:'right', sorttype: "number" ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"LOWS_SBID_LMT_AM",     index:"LOWS_SBID_LMT_AM",     width:70,  sortable: false, align:'right', sorttype: "number" , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable: false, align:'left'},
+
 									 {name:"CHK_VAILD_ERR",	       index:"CHK_VAILD_ERR",      	 width:90,  sortable: false, align:'left', hidden : true},
 									 {name:"CHK_ERR_AUC_PRG_SQ",   index:"CHK_ERR_AUC_PRG_SQ",   width:90,  sortable: false, align:'left', hidden : true},
 									 {name:"CHK_ERR_FHS_ID_NO",	   index:"CHK_ERR_FHS_ID_NO",    width:90,  sortable: false, align:'left', hidden : true},
@@ -361,24 +368,12 @@
             afterRestoreCell  : function(rowid, value, iRow, iCol){
             	var colModel = $("#grd_MmInsSogCow").jqGrid("getGridParam", "colModel");            	
             	cellname = colModel[iCol].name;
-            	// if(cellname =='TRPCS_PY_YN'){
-            	// 	var trpcs_py_yn = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'TRPCS_PY_YN');
-            	// 	if(trpcs_py_yn =='1'){
-                // 	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_TRPCS');
-            	// 	}
-            	// }
             	if(cellname =='FTSNM'){
      	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
             		//fn_popFstNm(rowid);
             	}
             },
             afterSaveCell : function(rowid, cellname, value, iRow, iCol){
-            	// if(cellname =='TRPCS_PY_YN'){
-            	// 	var trpcs_py_yn = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'TRPCS_PY_YN');
-            	// 	if(trpcs_py_yn =='1'){
-                // 	    $('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'SRA_TRPCS');
-            	// 	}
-            	// }
             	if(cellname =='FTSNM'){
      	        	//$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'FHS_ID_NO'  );
             		//fn_popFstNm(rowid);
@@ -392,19 +387,6 @@
                     $("#grd_MmInsSogCow").jqGrid("saveCell", rowid, iCol);
                 }).on('keydown',function(e){
                 	var chkVaildErr = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'CHK_VAILD_ERR');
-                	// if(chkVaildErr != '1'){
-					// 	e.preventDefault();
-                	// }
-                	// if(cellname =='SRA_TRPCS'){
-                    //     //e.preventDefault();
-                	// 	var trpcs_py_yn = $('#grd_MmInsSogCow').jqGrid('getCell',rowid,'TRPCS_PY_YN');
-                	// 	if(trpcs_py_yn =='1'){
-                	// 		$(this).val('');
-                	// 	}
-                	// }
-					if(cellname =='AUC_PRG_SQ') {
-
-					}
                 }).on('focusout',function(e){
                     $("#grd_MmInsSogCow").jqGrid("saveCell", rowid, iCol);
                 }).on("input", function(){
@@ -440,27 +422,32 @@
     }
     
     function handleExcelDataAll(sheet){
-    	/** TODO :
+    	/** 
 			1.경매차수 생성 체크
 			2.접수일자, 경매일자비교
 			3.경매대상 동일한지 체크
 		**/
-        var Obj = XLSX.utils.sheet_to_json(sheet,{header:1,raw:true});
+        const Obj = XLSX.utils.sheet_to_json(sheet,{header:1,raw:true});
         
-        var ExcelList = new Array();
+        const ExcelList = new Array();
+		const atdrUntAm = fn_getAucAtdrUntAm($("#auc_obj_dsc").val());
     	Obj.forEach(function(item,idx){
     		if(idx != 0 && item.length > 0){
-    			var ExcelData = new Object();
+    			const ExcelData = new Object();
+				const lowsSbidLmtAm = parseInt(String(item[10]||'0').replace(/[^0-9]/g,'')) * parseInt(atdrUntAm);
 
-				ExcelData['AUC_OBJ_DSC'          ] = item[0 ]  ?? ''; // 경매대상구분코드
-				ExcelData['AUC_PRG_SQ'           ] = item[1 ]  ?? ''; // 경매번호
-				ExcelData['FTSNM'          		 ] = item[2 ]  ?? ''; // 농가명(출하자명)
-				ExcelData['RC_DT'          		 ] = item[3 ]  ?? ''; // 접수일자
-				ExcelData['INDV_SEX_C'           ] = item[4 ] ?? '';  // 성별
-				ExcelData['VACN_DT'              ] = item[5 ] ?? '';  // 구제역백신접종일
-				ExcelData['COW_SOG_WT'           ] = item[6 ] ?? '';  // 중량
-				ExcelData['LOWS_SBID_LMT_AM'     ] = item[7 ] ?? ''; // 예정가
-				ExcelData['RMK_CNTN'             ] = item[8 ] ?? ''; // 비고
+				ExcelData['AUC_OBJ_DSC'          ] = item[0 ] ?? ''; // 경매대상구분코드
+				ExcelData['AUC_PRG_SQ'           ] = item[1 ] ?? ''; // 경매번호
+				ExcelData['FTSNM'          		 ] = item[2 ] ?? ''; // 농가명(출하자명)
+				ExcelData['RC_DT'          		 ] = item[3 ] ?? ''; // 접수일자
+				ExcelData['INDV_SEX_C'           ] = item[4 ] ?? ''; // 성별
+				ExcelData['VACN_DT'              ] = item[5 ] ?? ''; // 구제역백신접종일
+				ExcelData['COW_SOG_WT'           ] = item[6 ] ?? ''; // 중량
+				ExcelData['RE_PRODUCT_1'         ] = item[7 ] ?? ''; // 50KG 이상
+				ExcelData['RE_PRODUCT_2'         ] = item[8 ] ?? ''; // 20KG 이상
+				ExcelData['RE_PRODUCT_3'         ] = item[9 ] ?? ''; // 20KG 미만
+				ExcelData['LOWS_SBID_LMT_AM'     ] = lowsSbidLmtAm; // 예정가
+				ExcelData['RMK_CNTN'             ] = item[11] ?? ''; // 비고
 
     			if($('#auc_obj_dsc').val() == ExcelData['AUC_OBJ_DSC']) ExcelList.push(ExcelData);
     		}

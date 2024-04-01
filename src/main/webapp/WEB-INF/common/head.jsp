@@ -2190,7 +2190,7 @@ function fn_setCodeNm(p_simp_tpc, p_simp_c_grp_sqno, p_simp_c) {
 	<c:if test="${requestScope['javax.servlet.forward.request_uri'] != '/index'}">
 		const comboList = parent.comboList;
 	</c:if>
-	return comboList.filter((c) => {return c.SIMP_TPC === p_simp_tpc && c.SIMP_C_GRP_SQNO === p_simp_c_grp_sqno && c.SIMP_C === p_simp_c})[0]?.SIMP_CNM ?? '';
+	return comboList.filter((c) => {return c.SIMP_TPC == p_simp_tpc && c.SIMP_C_GRP_SQNO == p_simp_c_grp_sqno && c.SIMP_C == p_simp_c})[0]?.SIMP_CNM ?? '';
 }
 
 /*------------------------------------------------------------------------------

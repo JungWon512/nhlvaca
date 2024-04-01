@@ -235,6 +235,7 @@
 	<select id="LALM1004_selFtsnm" resultType="hashMap">
 		SELECT FHS_ID_NO								  /* 농가식별번호               */
 			  , FARM_AMNNO                      		  /* 농장식별코드               */
+			  , DONGUP									  /* 동이상주소                 */
 		  FROM  TB_LA_IS_MM_FHS
 		 WHERE  NA_BZPLC		= #{ss_na_bzplc}             /* 경제통합사업장코드         */
 		   AND  FTSNM			= #{ftsnm}
@@ -633,6 +634,7 @@
 		UPDATE TB_LA_IS_MM_FHS
 		   SET  MACO_YN       =  #{io_sogmn_maco_yn}
 			 ,  JRDWO_DSC     =  #{jrdwo_dsc}
+			 ,  VACN_DT       =  #{vacn_dt}
 			 ,  LSCHG_DTM     =  SYSDATE
 			 ,  LS_CMENO      =  #{ss_userid}
 		 WHERE  NA_BZPLC      =  #{ss_na_bzplc}
