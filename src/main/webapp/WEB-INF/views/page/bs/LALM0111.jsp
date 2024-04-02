@@ -186,7 +186,7 @@ var isFrmOrgData = null;
 					else{
 						//한우종합
 						/* 축경 전자경매 농가채번 issue: 농가번호가 T이후로 숫자만 입력이 되어야하는데 TYJ,T영축,영축으로 등록되는 데이터로인하여 문제*/
-						if($("#anw_yn").val() == '9'){
+						if($("#anw_yn").val() == '9' && !$("#etc_auc_obj_dsc_yn").is(":checked")){
 							//3800 전송
 							//개체이력 농가 조회
 							var srchData           = new Object(); 
@@ -250,19 +250,20 @@ var isFrmOrgData = null;
 						 * 2022.08.02 농가인터페이스 4500 채번인터페이스 실행후 신규 농가번호발급받아 진행
 						*/
 						//개체이력 농가 조회
-						var srchData           = new Object(); 
-						srchData["ctgrm_cd"]   = "3800";
-						srchData["fhs_id_no"]  = fhs_result.sraFhsIdNo;
-						srchData["farm_amnno"] = fhs_result.farmAmnno;
-						srchData["ftsnm"]      = fhs_result.ftsnm;
-						
-						
-						fhs_results = sendAjax(srchData, "/LALM0111_updFhsAnw", "POST");
-						if(fhs_results.status != RETURN_SUCCESS){
-							//showErrorMessage(fhs_results,'NOTFOUND');
-						}
-						else{
-							fhs_result = setDecrypt(fhs_results);
+						if (!$("#etc_auc_obj_dsc_yn").is(":checked")) {
+							var srchData           = new Object(); 
+							srchData["ctgrm_cd"]   = "3800";
+							srchData["fhs_id_no"]  = fhs_result.sraFhsIdNo;
+							srchData["farm_amnno"] = fhs_result.farmAmnno;
+							srchData["ftsnm"]      = fhs_result.ftsnm;
+							
+							fhs_results = sendAjax(srchData, "/LALM0111_updFhsAnw", "POST");
+							if(fhs_results.status != RETURN_SUCCESS){
+								//showErrorMessage(fhs_results,'NOTFOUND');
+							}
+							else{
+								fhs_result = setDecrypt(fhs_results);
+							}
 						}
 						MessagePopup("OK", "정상적으로 처리되었습니다.", function(res){
 							fn_Search();
@@ -442,10 +443,10 @@ var isFrmOrgData = null;
 
 	//체크박스 html 강제변경 (기타가축 여부)
 	function fn_ChkEtc(){
-		if (!$("#etc_auc_obj_dsc_yn").is(":checked")) {
-			$("#etc_auc_obj_dsc_yn_nm").html(" 부");
-		} else {
+		if ($("#etc_auc_obj_dsc_yn").is(":checked")) {
 			$("#etc_auc_obj_dsc_yn_nm").html(" 여");
+		} else {
+			$("#etc_auc_obj_dsc_yn_nm").html(" 부");
 		}
 
 		if($("#sra_fhs_id_no").val()) $("#etc_auc_obj_dsc_yn").prop("disabled", true);
@@ -783,8 +784,10 @@ var isFrmOrgData = null;
                                 </td>
                                 <th scope="row" class="etc">기타가축여부</th>
                                 <td class="etc">
-	                                <div><input type="checkbox" id="etc_auc_obj_dsc_yn" name="etc_auc_obj_dsc_yn" onclick="fn_ChkEtc();" />
-									<label id="etc_auc_obj_dsc_yn_nm" for="etc_auc_obj_dsc_yn"> 부</label></div>
+	                                <div>
+										<input type="checkbox" id="etc_auc_obj_dsc_yn" name="etc_auc_obj_dsc_yn" onclick="fn_ChkEtc();" />
+										<label id="etc_auc_obj_dsc_yn_nm" for="etc_auc_obj_dsc_yn"> 부</label>
+									</div>
                                 </td>
                                 <th scope="row" class="etc">예방접종일</th>
                                 <td class="etc">
