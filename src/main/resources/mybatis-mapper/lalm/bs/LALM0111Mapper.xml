@@ -46,6 +46,7 @@
             , a.hdwk_rg_yn                                   -- 수작업여부
             , a.anw_yn                                       -- 한우종합여부
             , a.SRA_FED_SPY_YN                               -- 사료사용여부
+            , a.VACN_DT
 	        , CASE WHEN #{ss_security} = '1' THEN NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO)
 	               ELSE
 	               	CASE WHEN LENGTH(NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO)) > 0 THEN SUBSTRING(NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO),1,LENGTH(NVL(A.SRA_FARM_ACNO,A.NEW_SRA_FARM_ACNO)) -4) || '****'
@@ -75,9 +76,19 @@
           	)
           AND nvl(b.delacc_yn, '0') = '0'
           AND nvl(b.dormacc_yn, '0') = '0'
-          <if test='"1".equals(broker)'> 
-          	AND SUBSTR(a.fhs_id_no,1,1) IN ('T','N','S')
-          </if>
+        <if test='"1".equals(broker)'> 
+          AND SUBSTR(a.fhs_id_no,1,1) IN ('T','N','S')
+        </if>
+        <if test='!"".equals(sh_auc_obj_dsc)'>
+        <choose>
+          <when test='"5".equals(sh_auc_obj_dsc)'>
+            AND a.FHS_ID_NO LIKE 'G%'
+          </when>
+          <when test='"0".equals(sh_auc_obj_dsc)'>
+            AND a.FHS_ID_NO NOT LIKE 'G%'
+          </when>
+        </choose>
+        </if>
         ORDER BY a.lschg_dtm DESC
     </select>
     
@@ -95,33 +106,34 @@
                 </otherwise>
             </choose>
           </selectKey>
-        insert into tb_la_is_mm_fhs(
-              na_bzplc
-            , fhs_id_no
-            , farm_amnno
-            , farm_id_no
-            , na_trpl_c
-            , ftsnm
-            , zip
-            , dongup
-            , dongbw
-            , ohse_telno
-            , cus_mpno
-            , maco_yn
-            , rmk_cntn
-            , jrdwo_dsc
-            , del_yn
-            , anw_yn
-            , hdwk_rg_yn
-            , sra_farm_acno
-            , new_sra_farm_acno
-            , fsrg_dtm
-            , fsrgmn_eno
-            , lschg_dtm
-            , ls_cmeno
+        INSERT INTO TB_LA_IS_MM_FHS(
+              NA_BZPLC
+            , FHS_ID_NO
+            , FARM_AMNNO
+            , FARM_ID_NO
+            , NA_TRPL_C
+            , FTSNM
+            , ZIP
+            , DONGUP
+            , DONGBW
+            , OHSE_TELNO
+            , CUS_MPNO
+            , MACO_YN
+            , RMK_CNTN
+            , JRDWO_DSC
+            , DEL_YN
+            , ANW_YN
+            , HDWK_RG_YN
+            , SRA_FARM_ACNO
+            , NEW_SRA_FARM_ACNO
+            , FSRG_DTM
+            , FSRGMN_ENO
+            , LSCHG_DTM
+            , LS_CMENO
             , SRA_FED_SPY_YN
-            , birth
-            , mb_intg_no
+            , BIRTH
+            , MB_INTG_NO
+            , VACN_DT
         )
         values (
               #{ss_na_bzplc}
@@ -150,6 +162,7 @@
             , trim(#{sra_fed_spy_yn})
             , trim(#{birth})
             , #{mb_intg_no}
+            , #{vacn_dt}
         )
     </insert>
     
@@ -173,6 +186,7 @@
             , birth             = #{birth}
             , del_yn            = #{del_yn}
             , mb_intg_no        = #{mb_intg_no}
+            , vacn_dt           = #{vacn_dt}
         where na_bzplc          = #{ss_na_bzplc}
           and trim(fhs_id_no)   = trim(#{sra_fhs_id_no})
           and trim(farm_amnno)  = trim(#{farm_amnno})
@@ -279,6 +293,7 @@
             , case when SUBSTR(fhs_id_no, 1, 1) = 'G' then '1'
                    else '0'
               end               as etc_auc_obj_dsc_yn
+            , VACN_DT
          FROM tb_la_is_mm_fhs
         WHERE fhs_id_no  = #{sra_fhs_id_no}
           AND farm_amnno = #{farm_amnno}
