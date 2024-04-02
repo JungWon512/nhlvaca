@@ -222,7 +222,6 @@ $(document).ready(function() {
         const form = $(this).closest("form");
         const inputs = form.find("input, select").filter(":visible");
         const next = inputs.eq(inputs.index(self) + 1);
-        console.log(self, form, inputs);
         if (next.length) next.focus();
     });
     

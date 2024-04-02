@@ -397,7 +397,7 @@
 									<th scope="row">출하주</th>
 									<td>
 										<div class="cellBox v_addr">
-											<div class="cell" style="width: 60px;">
+											<div class="cell" style="width: 100px;">
 												<input type="text" id="sch_fhs_id_no" maxlength="10" readonly="readonly" />
 											</div>
 											<div class="cell pl2" style="width: 28px;">

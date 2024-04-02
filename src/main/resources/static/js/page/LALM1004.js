@@ -89,13 +89,16 @@ function fn_setEvent() {
 						$("#sra_mwmnnm").val(result.SRA_MWMNNM);
 						$("#lvst_auc_ptc_mn_no").val(result.LVST_AUC_PTC_MN_NO);
 						$("#io_mwmn_maco_yn").val(result.IO_MWMN_MACO_YN);
+						$("#sra_sbid_upr").focus();
 					}
 				});
 			}
 		} else {
-			$("#trmn_amnno").val("");
-			$("#lvst_auc_ptc_mn_no").val("");
-			$("#io_mwmn_maco_yn").val("");
+			if (e.keyCode != 9) {
+				$("#trmn_amnno").val("");
+				$("#lvst_auc_ptc_mn_no").val("");
+				$("#io_mwmn_maco_yn").val("");
+			}
 		}
 	});
 	
@@ -120,6 +123,7 @@ function fn_setEvent() {
 				$("#sra_mwmnnm").val(result.SRA_MWMNNM);
 				$("#lvst_auc_ptc_mn_no").val(result.LVST_AUC_PTC_MN_NO);
 				$("#io_mwmn_maco_yn").val(result.IO_MWMN_MACO_YN);
+				$("#sra_sbid_upr").focus();
 			} else {
 				$("#trmn_amnno").val("");
 				$("#sra_mwmnnm").val("");
@@ -162,6 +166,41 @@ function fn_setEvent() {
 			$("#sra_farm_acno").val("");
 		}
 	});
+
+	/******************************
+	 * 검색영역 출하주 검색 팝업 호출 이벤트(엔터)
+	 ******************************/
+	$("#sch_ftsnm").keydown(function(e) {
+		if(e.keyCode == 13) {
+			if(fn_isNull($("#ftsnm").val())){
+				MessagePopup('OK','출하주 명을 입력하세요.');
+				return;
+			}
+			fn_CallSchFtsnmPopup(true, fn_Search());
+		} else {
+			if (e.keyCode != 9 && e.keyCode != 115) {
+				$("#sch_fhs_id_no").val('');
+				fn_CreateGrid();
+			}
+		}
+	});
+
+	/******************************
+	 * 검색영역 출하주 검색 팝업 호출 이벤트(엔터)
+	 ******************************/
+	$("#sch_auc_prg_sq").keydown(function(e) {
+		if(e.keyCode == 13) {
+			if(fn_isNull($("#sch_auc_prg_sq").val())){
+				MessagePopup('OK','경매번호를 입력하세요.');
+				return;
+			}
+			fn_Search();
+		} else {
+			if (e.keyCode != 9 && e.keyCode != 115) {
+				fn_CreateGrid();
+			}
+		}
+	});
 	
 	/******************************
 	 * 출하주 검색 팝업 호출 이벤트(돋보기)
@@ -170,6 +209,15 @@ function fn_setEvent() {
 		e.preventDefault();
 		this.blur();
 		fn_CallFtsnmPopup(false);
+	});
+
+	/******************************
+	 * 검색영역 출하주 검색 팝업 호출 이벤트(돋보기)
+	 ******************************/
+	$("#pb_searchFhs").on('click', function(e){
+		e.preventDefault();
+		this.blur();
+		fn_CallSchFtsnmPopup(false, fn_Search());
 	});
 	
 	/******************************
@@ -727,10 +775,10 @@ function fn_InitSet() {
 
 		$("#lows_sbid_lmt_am_ex").val(parseInt(fn_delComma($("#lows_sbid_lmt_am").val())) / parseInt(untAm));
 
+		const resultAucQcn = fn_SelAucQcn();
 		// kg별
-		if (aucUprDsc === '1'){
+		if (aucUprDsc === '1') {
 			// 경매차수 조회
-			const resultAucQcn = fn_SelAucQcn();
 			if(!resultAucQcn.length) {
 				MessagePopup('OK',"경매차수가 등록되지 않았습니다.");
 				$("#btn_Save").attr("disabled", true);
@@ -790,7 +838,6 @@ function fn_SetData(result) {
 	} else {
 		$("#lows_sbid_lmt_am").val(fn_toComma(result[0]["LOWS_SBID_LMT_AM"]));
 		const untAm = String(fn_getAucAtdrUntAm(result[0]["AUC_OBJ_DSC"]));
-		console.log(untAm);
 		$("#lows_sbid_lmt_am_ex").val(parseInt(result[0]["LOWS_SBID_LMT_AM"]) / parseInt(untAm));
 	}
 	// 50KG 이상, 20KG 이상, 20KG 미만 두수 추가하기 : 2024-04-01 완료
@@ -1319,6 +1366,29 @@ function fn_CallFtsnmPopup(p_param, callback) {
 			$("#sog_na_trpl_c").val("");
 			$("#io_sogmn_maco_yn").val("");
 			$("#sra_farm_acno").val("");
+		}
+	});
+}
+
+/**
+ * 출하주 검색 팝업 호출
+ * @param {boolean} p_param 
+ * @param {function} callback 
+ */
+function fn_CallSchFtsnmPopup(p_param, callback) {
+	const checkBoolean = p_param;
+	const data = new Object();
+	data['ftsnm'] = $("#sch_ftsnm").val();
+	data['auc_obj_dsc'] = $("#sch_auc_obj_dsc").val();
+	
+	fn_CallFtsnm0127Popup(data, checkBoolean, function(result) {
+		if(result){
+			$("#sch_fhs_id_no").val(result.FHS_ID_NO);
+			$("#sch_ftsnm").val(fn_xxsDecode(result.FTSNM));
+			if (typeof callback === 'function') callback(result);
+		} else {
+			$("#sch_fhs_id_no").val("");
+			$("#sch_ftsnm").val("");
 		}
 	});
 }
