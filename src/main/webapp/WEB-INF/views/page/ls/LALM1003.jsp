@@ -276,20 +276,15 @@
     }
     
     //그리드 생성
-    // TODO :: 경매대상구분에 따라 컬럼리스트를 다르게 생성해야함
     function fn_CreateGrid(data){
-        let rowNoValue = 0;
-        if(data != null){
-            rowNoValue = data.length;
-        }
-
+        const RG_DSC = GRID_ETC_RG_DSC[$("#auc_obj_dsc").val()];
         const searchResultColNames = [
                                     "H사업장코드", "H경매일자", "H원표번호",
                                     "경매<br/>번호", "경매<br/>대상", "출하자<br/>코드", "출하자", "조합원<br/>여부",
                                     "관내외<br>구분", "접수일자", "진행상태", "낙찰자명", "참가<br/>번호",
-                                    "H개체번호", "성별", "구제역백신<br/>접종여부", "구제역백신<br/>접종일", "중량",
-                                    "50KG 이상", "20KG 이상", "20KG 미만", "H임시필드", "예정가",
-                                    "낙찰단가", "낙찰가", "비고"
+                                    "H개체번호", "성별", "등록구분", "구제역백신<br/>접종여부", "구제역백신<br/>접종일",
+                                    "중량", "50KG 이상", "20KG 이상", "20KG 미만", "H임시필드",
+                                    "예정가","낙찰단가", "낙찰가", "비고"
                                   ];
 
         const searchResultColModel = [
@@ -309,18 +304,19 @@
                                      {name:"SRA_MWMNNM",           index:"SRA_MWMNNM",           width:80,  sortable:false, align:'center'},
                                      {name:"LVST_AUC_PTC_MN_NO",   index:"LVST_AUC_PTC_MN_NO",   width:40,  sortable:false, align:'center', sorttype: "number"},
 
-                                     {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, sortable:false, align:'center'},
+                                     {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, sortable:false, align:'center',hidden:true},
                                      {name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
-                                     {name:"VACN_YN",              index:"FMD_V_YN",             width:70,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-                                     {name:"VACN_DT",              index:"FMD_V_DT",             width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
-                                     {name:"COW_SOG_WT",           index:"COW_SOG_WT",           width:70,  sortable:false, align:'right', formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                     {name:"RG_DSC",               index:"RG_DSC",               width:70,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:RG_DSC}},
+                                     {name:"VACN_YN",              index:"FMD_V_YN",             width:70,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA},hidden:true},
+                                     {name:"VACN_DT",              index:"VACN_DT",             width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
 
+                                     {name:"COW_SOG_WT",           index:"COW_SOG_WT",           width:70,  sortable:false, align:'right', formatter:'number', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"RE_PRODUCT_1",         index:"RE_PRODUCT_1",         width:70,  sortable:false, align:'right', sorttype: "number" ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"RE_PRODUCT_2",         index:"RE_PRODUCT_2",         width:70,  sortable:false, align:'right', sorttype: "number" ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"RE_PRODUCT_3",         index:"RE_PRODUCT_3",         width:70,  sortable:false, align:'right', sorttype: "number" ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"RE_PRODUCT_4",         index:"RE_PRODUCT_4",         width:70,  sortable:false, align:'right', sorttype: "number" ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}, hidden: true},
-                                     {name:"LOWS_SBID_LMT_AM",     index:"LOWS_SBID_LMT_AM",     width:70,  sortable:false, align:'right', sorttype: "number" , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                     
+                                     {name:"LOWS_SBID_LMT_AM",     index:"LOWS_SBID_LMT_AM",     width:70,  sortable:false, align:'right', sorttype: "number" , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"SRA_SBID_UPR",         index:"SRA_SBID_UPR",         width:70,  sortable:false, align:'right', sorttype: "number" , formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"SRA_SBID_AM",          index:"SRA_SBID_AM",          width:70,  sortable:false, align:'right' , sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable:false, align:'left'},
@@ -331,8 +327,8 @@
         $("#grd_Etc").jqGrid({
             datatype:    "local",
             data:        data,
-            height:      500,
-            rowNum:      rowNoValue,
+            height:      450,
+            rowNum:      (data||[]).length,
             resizeing:   true,
             autowidth:   false,
             shrinkToFit: false, 
@@ -352,6 +348,62 @@
             colNames: searchResultColNames,
             colModel: searchResultColModel
         });
+
+        // 전체 리스트
+        const gridList  = $('#grd_Etc').getRowData();
+        // 중량 등록 리스트
+        const wtList    = gridList.filter(item => (!fn_isNull(item.COW_SOG_WT) && item.COW_SOG_WT != '0')); // 중량등록두수
+        // 예정가 등록 리스트
+        const lmtAmList = gridList.filter(item => (!fn_isNull(item.LOWS_SBID_LMT_AM) && item.LOWS_SBID_LMT_AM != '0'));
+
+        // 전체 리스트 성별 그룹핑
+        const grp = gridList.reduce((acc, cur) => {
+            const key = cur.INDV_SEX_C;
+            if (!acc[key]) acc[key] = 0;
+            acc[key] += 1;
+            return acc;
+        }, {});
+        // 중량 등록 리스트 성별 그룹핑
+        const wtGrp = wtList.reduce((acc, cur) => {
+            const key = cur.INDV_SEX_C;
+            if (!acc[key]) acc[key] = 0;
+            acc[key] += 1;
+            return acc;
+        }, {});
+        // 예정가 등록 리스트 성별 그룹핑
+        const lmtAmGrp = lmtAmList.reduce((acc, cur) => {
+            const key = cur.INDV_SEX_C;
+            if (!acc[key]) acc[key] = 0;
+            acc[key] += 1;
+            return acc;
+        }, {});
+
+        const grpHtml      = `  암 : \${grp['1']||'0'} 두<br/>
+                                수 : \${grp['2']||'0'} 두<br/>
+                              거세 : \${grp['3']||'0'} 두<br/>
+                              새끼 : \${grp['7']||'0'} 두`;
+        const wtGrpHtml    = `  암 : \${wtGrp['1']||'0'} 두<br/>
+                                수 : \${wtGrp['2']||'0'} 두<br/>
+                              거세 : \${wtGrp['3']||'0'} 두<br/>
+                              새끼 : \${wtGrp['7']||'0'} 두`;
+        const lmtAmGrpHtml = `  암 : \${lmtAmGrp['1']||'0'} 두<br/>
+                                수 : \${lmtAmGrp['2']||'0'} 두<br/>
+                              거세 : \${lmtAmGrp['3']||'0'} 두<br/>
+                              새끼 : \${lmtAmGrp['7']||'0'} 두`;
+        var arr1 = [
+	        [
+             //입력 컬럼 , 입력값, COLSPAN, 타입{String/Integer/Number}
+             ["AUC_PRG_SQ",`등록 두수 : \${gridList.length} 두`, 3, "String"],
+             ["FTSNM", grpHtml, 2, "String"],
+
+             ["RC_DT", `예정가 등록 두수 : \${lmtAmList.length} 두`, 3, "String"],
+             ["LVST_AUC_PTC_MN_NO", lmtAmGrpHtml, 3, "String"],
+
+             ["VACN_DT", `중량 등록 두수 : \${wtList.length} 두`, 3, "String"],
+             ["RE_PRODUCT_2", wtGrpHtml, 2, "String"],
+            ]
+        ];
+        fn_setGridFooter('grd_Etc', arr1);
     }
 </script>
 

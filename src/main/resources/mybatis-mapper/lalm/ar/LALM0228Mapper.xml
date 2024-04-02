@@ -16,23 +16,11 @@
 				, A.AUC_DT
 				, SUBSTR(A.AUC_DT, 0,4) || '년 ' || SUBSTR(A.AUC_DT, 5,2) || '월 ' || SUBSTR(A.AUC_DT, 7,2) || '일' AS AUC_DT_STR
 				, A.AUC_OBJ_DSC
-				, CASE WHEN A.AUC_OBJ_DSC = '1' THEN '송아지'
-                          WHEN A.AUC_OBJ_DSC = '2' THEN '비육우'
-                          WHEN A.AUC_OBJ_DSC = '3' THEN '번식우'
-                          ELSE '일괄'
-                          END AS AUC_OBJ_DSC_NM
+				, I.SIMP_CNM AS AUC_OBJ_DSC_NM
 				, A.AUC_PRG_SQ
 				, D.FTSNM
 				, B.INDV_SEX_C
-				, CASE WHEN B.INDV_SEX_C = '0'  THEN '없음'   
-	                          WHEN B.INDV_SEX_C = '1'  THEN '암' 
-	                          WHEN B.INDV_SEX_C = '2'  THEN '수' 
-	                          WHEN B.INDV_SEX_C = '3'  THEN '거세' 
-	                          WHEN B.INDV_SEX_C = '4'  THEN '미경산' 
-	                          WHEN B.INDV_SEX_C = '5'  THEN '비거세' 
-	                          WHEN B.INDV_SEX_C = '6'  THEN '프리마틴'
-	                          ELSE '공통' 
-	                          END AS INDV_SEX_C_NM
+				, H.SIMP_CNM AS INDV_SEX_C_NM
 				, NVL(A.COW_SOG_WT,0) COW_SOG_WT
 				, NVL(A.LOWS_SBID_LMT_AM,0) LOWS_SBID_LMT_AM
 				, NVL(A.SRA_SBID_AM,0) SRA_SBID_AM
@@ -50,22 +38,52 @@
 				, G.BRC AS ADJ_BRC
 		FROM
 			TB_LA_IS_MH_SOG_COW A
-			INNER JOIN TB_LA_IS_MM_INDV B ON A.NA_BZPLC = B.NA_BZPLC
-														AND A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO
-														AND A.SRA_SRS_DSC = B.SRA_SRS_DSC
-			LEFT JOIN TB_LA_IS_MM_MWMN C ON A.NA_BZPLC = C.NA_BZPLC
-														AND A.TRMN_AMNNO = C.TRMN_AMNNO
-			LEFT JOIN TB_LA_IS_MM_FHS D ON A.NA_BZPLC = D.NA_BZPLC 
-														AND A.FHS_ID_NO = D.FHS_ID_NO 
-														AND A.FARM_AMNNO = D.FARM_AMNNO
+			INNER JOIN TB_LA_IS_MM_INDV B
+			ON (
+				A.NA_BZPLC = B.NA_BZPLC
+				AND A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO
+				AND A.SRA_SRS_DSC = B.SRA_SRS_DSC
+			)
+			LEFT JOIN TB_LA_IS_MM_MWMN C
+			ON (
+				A.NA_BZPLC = C.NA_BZPLC
+				AND A.TRMN_AMNNO = C.TRMN_AMNNO
+			)
+			LEFT JOIN TB_LA_IS_MM_FHS D
+			ON (
+				A.NA_BZPLC = D.NA_BZPLC 
+				AND A.FHS_ID_NO = D.FHS_ID_NO 
+				AND A.FARM_AMNNO = D.FARM_AMNNO
+			)
 			INNER JOIN TB_LA_IS_BM_BZLOC E ON A.NA_BZPLC = E.NA_BZPLC
 			INNER JOIN TB_LA_IS_MM_WMC G ON A.NA_BZPLC = G.NA_BZPLC
-			LEFT JOIN TB_LA_IS_MM_SMS F ON A.NA_BZPLC = F.NA_BZPLC
-														AND F.AUC_OBJ_DSC = #{auc_obj_dsc}
-														AND F.TRMN_AMNNO = A.AUC_DT || LPAD(A.OSLP_NO, 4, '0') || NVL(#{sms_key},0)
-														AND F.DPAMN_DSC = #{obj_gbn} 
-														AND F.SEL_STS_DSC = #{msg_gbn}
-														AND TMS_TYPE = '02'
+			LEFT JOIN TB_LA_IS_MM_SMS F
+			ON (
+				A.NA_BZPLC = F.NA_BZPLC
+				AND F.AUC_OBJ_DSC = #{auc_obj_dsc}
+				AND F.TRMN_AMNNO = A.AUC_DT || LPAD(A.OSLP_NO, 4, '0') || NVL(#{sms_key},0)
+				AND F.DPAMN_DSC = #{obj_gbn} 
+				AND F.SEL_STS_DSC = #{msg_gbn}
+				AND TMS_TYPE = '02'
+			)
+			LEFT OUTER JOIN (
+				SELECT SIMP_C, SIMP_CNM
+				FROM TB_LA_IS_MH_COMN_APL
+				WHERE SIMP_TPC = 'INDV_SEX_C'
+				AND SIMP_C_GRP_SQNO = '1'
+			) H
+			ON (
+			H.SIMP_C = B.INDV_SEX_C
+			)
+			LEFT OUTER JOIN (
+				SELECT SIMP_C, SIMP_CNM
+				FROM TB_LA_IS_MH_COMN_APL
+				WHERE SIMP_TPC = 'AUC_OBJ_DSC'
+				AND SIMP_C_GRP_SQNO = '7'
+			) I
+			ON (
+				I.SIMP_C = A.AUC_OBJ_DSC
+			)
 			WHERE A.NA_BZPLC = #{ss_na_bzplc}
 				AND A.AUC_OBJ_DSC =  DECODE(#{auc_obj_dsc},'0',A.AUC_OBJ_DSC,#{auc_obj_dsc})
 				AND A.AUC_DT = #{auc_dt}
@@ -96,17 +114,23 @@
 			, #{auc_dt} || LPAD(C.TRMN_AMNNO, 4, '0') || NVL(#{sms_key},0) SMS_SEND_KEY
 			, G.BRC AS ADJ_BRC
 		FROM TB_LA_IS_MM_MWMN C 
-		INNER JOIN TB_LA_IS_MH_AUC_QCN D ON C.NA_BZPLC = D.NA_BZPLC
-									 AND D.AUC_DT =#{auc_dt}
-									 AND DECODE(D.AUC_OBJ_DSC,'0',#{auc_obj_dsc},D.AUC_OBJ_DSC) = #{auc_obj_dsc}
+		INNER JOIN TB_LA_IS_MH_AUC_QCN D
+		  ON (
+				C.NA_BZPLC = D.NA_BZPLC
+				AND D.AUC_DT =#{auc_dt}
+				AND DECODE(D.AUC_OBJ_DSC,'0',#{auc_obj_dsc},D.AUC_OBJ_DSC) = #{auc_obj_dsc}
+		  )
 		INNER JOIN TB_LA_IS_BM_BZLOC E ON C.NA_BZPLC = E.NA_BZPLC
 		INNER JOIN TB_LA_IS_MM_WMC G ON C.NA_BZPLC = G.NA_BZPLC
-		LEFT JOIN TB_LA_IS_MM_SMS F ON C.NA_BZPLC = F.NA_BZPLC
-									AND F.AUC_OBJ_DSC = #{auc_obj_dsc}
-									AND F.TRMN_AMNNO = #{auc_dt} || LPAD(C.TRMN_AMNNO, 4, '0') || NVL(#{sms_key},0)
-									AND F.DPAMN_DSC = '1'
-									AND F.SEL_STS_DSC = '01'
-									AND F.TMS_TYPE = '02'
+		LEFT JOIN TB_LA_IS_MM_SMS F 
+		  ON (
+				C.NA_BZPLC = F.NA_BZPLC
+				AND F.AUC_OBJ_DSC = #{auc_obj_dsc}
+				AND F.TRMN_AMNNO = #{auc_dt} || LPAD(C.TRMN_AMNNO, 4, '0') || NVL(#{sms_key},0)
+				AND F.DPAMN_DSC = '1'
+				AND F.SEL_STS_DSC = '01'
+				AND F.TMS_TYPE = '02'
+		  )
 		WHERE C.NA_BZPLC = #{ss_na_bzplc}
 			AND C.DEL_YN = '0'
 			AND LENGTH(REPLACE(NVL(C.CUS_MPNO,''), '-', '')) <![CDATA[>=]]> 10	
@@ -272,17 +296,15 @@
 	
 	<select id="LALM0228_selCntList" parameterType="hashMap" resultType="hashMap">			
 			SELECT T.*
-				,DECODE( 
-				CASE WHEN T.AUC_OBJ_DSC = '1' THEN ROUND(NVL(J.CALF_AUC_ATDR_UNT_AM, 10000))
-						WHEN T.AUC_OBJ_DSC = '2' THEN ROUND(NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1))
-						WHEN T.AUC_OBJ_DSC = '3' THEN ROUND(NVL(J.PPGCOW_AUC_ATDR_UNT_AM, 10000))
-						ELSE 10000
-				END,10000,'만원','원') AS UNIT
-				, CASE WHEN T.AUC_OBJ_DSC = '1' THEN '송아지'
-						WHEN T.AUC_OBJ_DSC = '2' THEN '비육우'
-						WHEN T.AUC_OBJ_DSC = '3' THEN '번식우'
-						ELSE '일괄'
-				END AS AUC_OBJ_DSC_NAME
+				, DECODE( 
+					CASE WHEN T.AUC_OBJ_DSC = '1' THEN ROUND(NVL(J.CALF_AUC_ATDR_UNT_AM, 10000))
+						 WHEN T.AUC_OBJ_DSC = '2' THEN ROUND(NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1))
+						 WHEN T.AUC_OBJ_DSC = '3' THEN ROUND(NVL(J.PPGCOW_AUC_ATDR_UNT_AM, 10000))
+						 WHEN T.AUC_OBJ_DSC = '5' THEN ROUND(NVL(J.GT_AUC_ATDR_UNT_AM, 10000))
+						 WHEN T.AUC_OBJ_DSC = '6' THEN ROUND(NVL(J.HS_AUC_ATDR_UNT_AM, 10000))
+						 ELSE 10000
+					END,10000, '만원', 1000, '천원', '원') AS UNIT
+				, C.SIMP_CNM AS AUC_OBJ_DSC_NAME
 			FROM (	
 				SELECT A.NA_BZPLC
 					,A.AUC_DT
@@ -317,6 +339,15 @@
 				</choose>
 			) T
 			LEFT OUTER JOIN TB_LA_IS_MM_ENV_EST J ON ( T.NA_BZPLC = J.NA_BZPLC )
+			LEFT OUTER JOIN (
+				SELECT SIMP_C, SIMP_CNM
+				FROM TB_LA_IS_MH_COMN_APL
+				WHERE SIMP_TPC = 'AUC_OBJ_DSC'
+				AND SIMP_C_GRP_SQNO = '7'
+			) C
+			ON (
+				C.SIMP_C = T.AUC_OBJ_DSC
+			)
 			ORDER BY T.NA_BZPLC,T.AUC_DT,T.AUC_OBJ_DSC
 	</select>
 	

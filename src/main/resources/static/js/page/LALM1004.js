@@ -18,15 +18,6 @@ let mv_RunMode                = '1';
 let mv_cut_am                 = '1';
 let mv_sqno_prc_dsc           = '1';
 let setRowStatus              = 'insert';
-const GRID_ETC_RG_DSC = {'5': '1:일반;2:육용;3:약용','6': '1:H일반;2:H육용;3:H약용'};
-const GRID_ETC_INDV_SEX_C = {'5': '1:암;2:수;3:거세;7:새끼','6': '1:H암;2:H수;3:H거세;7:H새끼'};
-const ETC_RG_DSC              = [{value : "1", text : "일반", details : ""},
-								 {value : "2", text : "육용", details : ""},
-								 {value : "3", text : "약용", details : ""}];
-const ETC_INDV_SEX_C		  = [{value : "1", text : "암", details : ""},
-								 {value : "2", text : "수", details : ""},
-								 {value : "3", text : "거세", details : ""},
-								 {value : "7", text : "새끼", details : ""}];
 
 $(document).ready(function() {
 	if (pageInfos.param) mv_RunMode = '2';
@@ -1171,7 +1162,7 @@ function fn_CreateGrid(data){
 		 {name:"JRDWO_DSC",            index:"JRDWO_DSC",            width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("JRDWO_DSC", 1)}},
 		 {name:"RC_DT",                index:"RC_DT",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
 		 {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, sortable:false, align:'center', hidden: true},
-		 {name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:INDV_SEX_C}},
+		 {name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:INDV_SEX_C}},
 
 		 {name:"RG_DSC",               index:"RG_DSC",               width:70,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:RG_DSC}},
 		 {name:"VACN_YN",              index:"FMD_V_YN",             width:70,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
@@ -1219,6 +1210,62 @@ function fn_CreateGrid(data){
 		colNames: searchResultColNames,
 		colModel: searchResultColModel
 	});
+
+	// 전체 리스트
+	const gridList  = $('#grd_Etc').getRowData();
+	// 중량 등록 리스트
+	const wtList    = gridList.filter(item => (!fn_isNull(item.COW_SOG_WT) && item.COW_SOG_WT != '0')); // 중량등록두수
+	// 예정가 등록 리스트
+	const lmtAmList = gridList.filter(item => (!fn_isNull(item.LOWS_SBID_LMT_AM) && item.LOWS_SBID_LMT_AM != '0'));
+
+	// 전체 리스트 성별 그룹핑
+	const grp = gridList.reduce((acc, cur) => {
+		const key = cur.INDV_SEX_C;
+		if (!acc[key]) acc[key] = 0;
+		acc[key] += 1;
+		return acc;
+	}, {});
+	// 중량 등록 리스트 성별 그룹핑
+	const wtGrp = wtList.reduce((acc, cur) => {
+		const key = cur.INDV_SEX_C;
+		if (!acc[key]) acc[key] = 0;
+		acc[key] += 1;
+		return acc;
+	}, {});
+	// 예정가 등록 리스트 성별 그룹핑
+	const lmtAmGrp = lmtAmList.reduce((acc, cur) => {
+		const key = cur.INDV_SEX_C;
+		if (!acc[key]) acc[key] = 0;
+		acc[key] += 1;
+		return acc;
+	}, {});
+
+	const grpHtml      = `  암 : ${grp['1']||'0'} 두<br/>
+							수 : ${grp['2']||'0'} 두<br/>
+						  거세 : ${grp['3']||'0'} 두<br/>
+						  새끼 : ${grp['7']||'0'} 두`;
+	const wtGrpHtml    = `  암 : ${wtGrp['1']||'0'} 두<br/>
+							수 : ${wtGrp['2']||'0'} 두<br/>
+						  거세 : ${wtGrp['3']||'0'} 두<br/>
+						  새끼 : ${wtGrp['7']||'0'} 두`;
+	const lmtAmGrpHtml = `  암 : ${lmtAmGrp['1']||'0'} 두<br/>
+							수 : ${lmtAmGrp['2']||'0'} 두<br/>
+						  거세 : ${lmtAmGrp['3']||'0'} 두<br/>
+						  새끼 : ${lmtAmGrp['7']||'0'} 두`;
+	var arr1 = [
+		[
+		 //입력 컬럼 , 입력값, COLSPAN, 타입{String/Integer/Number}
+		 ["AUC_DT", `등록 두수 : ${gridList.length} 두`, 2, "String"],
+		 ["AUC_OBJ_DSC", grpHtml, 2, "String"],
+
+		 ["MACO_YN", `예정가 등록 두수 : ${lmtAmList.length} 두`, 3, "String"],
+		 ["INDV_SEX_C", lmtAmGrpHtml, 2, "String"],
+
+		 ["VACN_DT", `중량 등록 두수 : ${wtList.length} 두`, 3, "String"],
+		 ["RE_PRODUCT_2", wtGrpHtml, 2, "String"],
+		]
+	];
+	if ((data||[]).length) fn_setGridFooter('grd_Etc', arr1);
 }
 ////////////////////////////////////////////////////////////////////////////////
 //  그리드 함수 종료

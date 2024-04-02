@@ -1,8 +1,8 @@
-	<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-	<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-	<!DOCTYPE html>
-	<html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<!DOCTYPE html>
+<html>
 	<head>
 		<!-- 암호화 -->
 		<%@ include file="/WEB-INF/common/serviceCall.jsp" %>
@@ -16,7 +16,10 @@
 	<script type="text/javascript">
 		var pageInfos = setDecryptData('${pageInfo}');
 	</script>
-	<script src="/js/page/LALM1004.js"></script>
+	<script defer src="/js/page/LALM1004.js"></script>
+	<style type="text/css">
+		.sec_table {margin-bottom: 15px;}
+	</style>
 	<body>
 	<div class="contents">
 		<%@ include file="/WEB-INF/common/menuBtn.jsp" %>
@@ -360,6 +363,7 @@
 					</table>
 				</div>
 			</form>
+			<div class="tab_box clearfix line" style="min-height:1px !important;"></div>
 			<div class="sec_table">
 				<div class="grayTable rsp_v">
 					<form id="frm_Search" name="frm_Search" autocomplete="off">
@@ -439,4 +443,4 @@
 		</section>
 	</div>
 	</body>
-	</html>
+</html>

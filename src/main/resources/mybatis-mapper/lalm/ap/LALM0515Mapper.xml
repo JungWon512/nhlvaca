@@ -27,14 +27,6 @@
 	         , CASE WHEN #{ss_security} = '1' THEN D.DONGUP ||' '|| D.DONGBW
 	                ELSE D.DONGUP ||' '||  TRIM(LPAD(' ', LENGTH(D.DONGBW) +1, '*')) END AS DONGUP                   /* 주소                      */
 	         , SUBSTR(A.SRA_INDV_AMNNO, 1, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(A.SRA_INDV_AMNNO, 7, 9)    AS SRA_INDV_AMNNO           /* 축산개체관리번호               */
-			 , CASE WHEN C.INDV_SEX_C = '0' THEN '없음'
-				    WHEN C.INDV_SEX_C = '1' THEN '암'
-				    WHEN C.INDV_SEX_C = '2' THEN '수'
-				    WHEN C.INDV_SEX_C = '3' THEN '거세'
-				    WHEN C.INDV_SEX_C = '4' THEN '미경산'
-				    WHEN C.INDV_SEX_C = '5' THEN '비거세'
-				    WHEN C.INDV_SEX_C = '6' THEN '프리마틴'
-				    WHEN C.INDV_SEX_C = '9' THEN '공통' ELSE '없음' END 	  AS INDV_SEX_C               /* 개체성별코드                 */        
 	         , SUBSTR(C.BIRTH, 1, 4) || '-' || SUBSTR(C.BIRTH, 5, 2) || '-' || SUBSTR(C.BIRTH, 7, 2)  AS BIRTH 
 	         , SUBSTR(C.MCOW_SRA_INDV_AMNNO, 1, 3) || '-' ||  SUBSTR(C.MCOW_SRA_INDV_AMNNO, 4, 3) || '-' ||  SUBSTR(C.MCOW_SRA_INDV_AMNNO, 7, 9) AS MCOW_SRA_INDV_AMNNO      /* 어미소축산개체관리번호            */
 	         , nvl(A.LOWS_SBID_LMT_AM, 0)                                   AS LOWS_SBID_LMT_AM         /* 최저낙찰한도금액               */
@@ -114,6 +106,7 @@
            END SRA_MWMNNM
          , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, C.BIRTH)) +1 <= 4 AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434') THEN 4 
            ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, C.BIRTH)) +1 END AS MTCN
+		 , H.SIMP_CNM AS INDV_SEX_C
 	    FROM TB_LA_IS_MH_SOG_COW  A
 	       , (SELECT NA_BZPLC
 	               , AUC_OBJ_DSC
@@ -148,8 +141,9 @@
 	       , TB_LA_IS_MM_INDV     C
 	       , TB_LA_IS_MM_FHS      D
 	       , TB_LA_IS_MM_VHC      E
-	       , TB_LA_IS_MM_FHS     G
-	       , TB_LA_IS_MM_MWMN F
+	       , TB_LA_IS_MM_FHS      G
+	       , TB_LA_IS_MM_MWMN     F
+		   , TB_LA_IS_MH_COMN_APL H
 	    WHERE A.NA_BZPLC          = #{ss_na_bzplc}                                                                   /* 경제통합사업장코드            */
 		  AND (
 				(#{cb_auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
@@ -183,10 +177,11 @@
 	      AND (D.FTSNM            = #{ftsnm}
 	       OR #{ftsnm}          IS NULL)
 	      AND (D.jrdwo_dsc       = #{v_jrdwo_dsc}
-	       OR #{v_jrdwo_dsc}          IS NULL)    
+	       OR #{v_jrdwo_dsc}          IS NULL)
+		  AND H.SIMP_TPC = 'INDV_SEX_C'
+    	  AND H.SIMP_C_GRP_SQNO = '1'
+          AND H.SIMP_C = C.INDV_SEX_C
 	    ORDER BY A.AUC_DT, A.AUC_OBJ_DSC, D.FHS_ID_NO, A.AUC_PRG_SQ
-	                    
-	
     ]]>
     </select>
         

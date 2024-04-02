@@ -357,13 +357,13 @@ function fn_setGridFooter(p_obj, p_arr){
 	        var startIndex = $footerRow.find(">td[aria-describedby=" + $obj.id +"_" + arrItem[0] + "]").index();
 	        if(arrItem[3] == "String"){
 	            $footerRow.find(">td[aria-describedby=" + $obj.id +"_" + arrItem[0] + "]").css({"text-align":"center"});
-	            $footerRow.find(">td[aria-describedby=" + $obj.id +"_" + arrItem[0] + "]").text(arrItem[1]);
+	            $footerRow.find(">td[aria-describedby=" + $obj.id +"_" + arrItem[0] + "]").html(arrItem[1]);
 	        }else if(arrItem[3] == "Integer"){
 	            $footerRow.find(">td[aria-describedby=" + $obj.id +"_" + arrItem[0] + "]").css({"text-align":"right"});
-	            $footerRow.find(">td[aria-describedby=" + $obj.id +"_" + arrItem[0] + "]").text($.fmatter.util.NumberFormat(arrItem[1], $.jgrid.formatter.integer));
+	            $footerRow.find(">td[aria-describedby=" + $obj.id +"_" + arrItem[0] + "]").html($.fmatter.util.NumberFormat(arrItem[1], $.jgrid.formatter.integer));
 	        }else if(arrItem[3] == "Number"){
 	            $footerRow.find(">td[aria-describedby=" + $obj.id +"_" + arrItem[0] + "]").css({"text-align":"right"});
-	            $footerRow.find(">td[aria-describedby=" + $obj.id +"_" + arrItem[0] + "]").text($.fmatter.util.NumberFormat(arrItem[1], $.jgrid.formatter.Number));
+	            $footerRow.find(">td[aria-describedby=" + $obj.id +"_" + arrItem[0] + "]").html($.fmatter.util.NumberFormat(arrItem[1], $.jgrid.formatter.Number));
 	        }
 	        if(parseInt(arrItem[2]) > 1){
 	        	$footerRow.find("td:eq("+startIndex+")").attr("colspan",arrItem[2]);
