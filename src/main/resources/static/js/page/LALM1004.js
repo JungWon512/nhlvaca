@@ -172,7 +172,7 @@ function fn_setEvent() {
 	 ******************************/
 	$("#sch_ftsnm").keydown(function(e) {
 		if(e.keyCode == 13) {
-			if(fn_isNull($("#ftsnm").val())){
+			if(fn_isNull($("#sch_ftsnm").val())){
 				MessagePopup('OK','출하주 명을 입력하세요.');
 				return;
 			}
