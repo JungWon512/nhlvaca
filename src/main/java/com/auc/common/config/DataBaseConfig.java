@@ -8,9 +8,11 @@ import javax.sql.DataSource;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
@@ -23,8 +25,9 @@ import com.auc.common.interceptor.MybatisInterceptor;
 @EnableTransactionManagement
 public class DataBaseConfig {
 	
-	 @Bean
-	 public DataSource dataSource() {
+	@Bean(name = "dataSource")
+	@Profile("local")
+	 public DataSource dataSourceLocal() {
 	  return DataSourceBuilder.create()
 	     .driverClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy")
 	     .url("jdbc:log4jdbc:tibero:thin:@115.41.222.25:8629:tibero")
@@ -33,20 +36,19 @@ public class DataBaseConfig {
 	     .build();
 	}
 	
-//	@Bean
-//	public DataSource dataSource() throws NamingException {
-//		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
-//		lookup.setResourceRef(true);
-//		DataSource ds = lookup.getDataSource("jdbc/nhlva");
-//		
-//		return ds;
-//	}
-	// @Bean
-	// SqlSessionFactory sqlSess 
+	@Bean(name = "dataSource")
+	@Profile({"develop","production"})
+	public DataSource dataSource() throws NamingException {
+		JndiDataSourceLookup lookup = new JndiDataSourceLookup();
+		lookup.setResourceRef(true);
+		DataSource ds = lookup.getDataSource("jdbc/nhlva");
+		
+		return ds;
+	}
 	
  	@Bean
- 	public PlatformTransactionManager txManager() throws Exception {
- 		return new DataSourceTransactionManager(dataSource());
+ 	public PlatformTransactionManager txManager(@Qualifier("dataSource") DataSource dataSource) throws Exception {
+ 		return new DataSourceTransactionManager(dataSource);
  	}
 	
 }
