@@ -599,6 +599,53 @@
         }
 		// 친자확인
         fn_CallLsPtntInfSrch(p_sra_indv_amnno,rowid);
+
+		
+		//종축개량 데이터 연동		
+		fn_CallAiakInfoSync(p_sra_indv_amnno,rowid);		
+		fn_CallAiakInfoSync(mcow_sra_indv_amnno,rowid,true);
+    }
+
+    function fn_CallAiakInfoSync(p_sra_indv_amnno,rowid,boolMcow) {
+        var arrNaBzplc = ['8808990660127','8808990656274','8808990657240','8808990656410','8808990657639','8808990656885','8808990657196'];
+		
+		if(p_sra_indv_amnno.replace("-", "").length != 15) return;
+    	 
+    	//개체이력정보
+    	var srchData = new Object();
+    	var results = null;
+    	var result = null;
+    	
+        srchData["SRA_INDV_AMNNO"]   = p_sra_indv_amnno;
+        srchData["AUC_DT"]   = $('#auc_dt').val();
+        
+        results = sendAjax(srchData, "/LALM0899_selAiakRestApi", "POST");
+        
+        if(results.status == RETURN_SUCCESS) {        	
+            result = setDecrypt(results);
+            if(arrNaBzplc.includes(na_bzplc)){
+				if(boolMcow){
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_11', fn_isNum(result.EPD_VAL_1)?Number(result.EPD_VAL_1).toFixed(3):"");					
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_12', fn_isNum(result.EPD_VAL_2)?Number(result.EPD_VAL_2).toFixed(3):"");
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_13', fn_isNum(result.EPD_VAL_3)?Number(result.EPD_VAL_3).toFixed(3):"");					
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_14', fn_isNum(result.EPD_VAL_4)?Number(result.EPD_VAL_4).toFixed(3):"");
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_11_1', result.EPD_GRD_1);					
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_12_1', result.EPD_GRD_2);					
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_13_1', result.EPD_GRD_3);					
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_14_1', result.EPD_GRD_4);		
+				}else{					
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_1', fn_isNum(result.EPD_VAL_1)?Number(result.EPD_VAL_1).toFixed(3):"");					
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_2', fn_isNum(result.EPD_VAL_2)?Number(result.EPD_VAL_2).toFixed(3):"");
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_3', fn_isNum(result.EPD_VAL_3)?Number(result.EPD_VAL_3).toFixed(3):"");					
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_4', fn_isNum(result.EPD_VAL_4)?Number(result.EPD_VAL_4).toFixed(3):"");
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_1_1', result.EPD_GRD_1);					
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_2_1', result.EPD_GRD_2);					
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_3_1', result.EPD_GRD_3);					
+					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_4_1', result.EPD_GRD_4);					
+				}			
+			}
+        }
+        return result;
     }
 	
   	//**************************************
@@ -1185,7 +1232,7 @@
     			ExcelData['PRNY_YN'              ] = item[26]??'0'; // 임신여부                     
     			ExcelData['NCSS_JUG_YN'          ] = item[27]??'0'; // 괴사감정여부                 
     			ExcelData['NCSS_YN'              ] = item[28]??'0'; // 괴사여부                     
-    			ExcelData['RMK_CNTN'             ] = item[29]??''; // 비고                         
+    			ExcelData['RMK_CNTN'             ] = (item[29]??'').replaceAll('\r\n',' '); // 비고                         
     			ExcelData['FHS_ID_NO'            ] = item[30]??''; // 농가식별번호                 
     			ExcelData['FARM_AMNNO'           ] = item[31]??''; // 농가관리번호                 
     			ExcelData['DNA_YN_CHK'           ] = item[32]??'0'; // 친자검사여부                 

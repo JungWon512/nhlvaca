@@ -4284,6 +4284,7 @@
     	var result = null;
     	
         srchData["SRA_INDV_AMNNO"]   = p_sra_indv_amnno;
+        srchData["AUC_DT"]   = $('#auc_dt').val();
         
         results = sendAjax(srchData, "/LALM0899_selAiakRestApi", "POST");
         

@@ -1340,6 +1340,8 @@ var mCnt = 0;
 				ReportPopup('LALM0412R0_9_0',p_param, p_grid, 'V'); //기본양식에서 임신개월없음
 			} else if(na_bzplc =='8808990656427'){ //문경 : 8808990656427 (응찰자 유의사항문구 추가)
 				ReportPopup('LALM0412R0_9_5',p_param, p_grid, 'V');//원본			
+			}else if(na_bzplc =='8808990656946'){ //함안 : 8808990656946
+				ReportPopup('LALM0412R0_9_7',p_param, p_grid, 'V');//원본			
 			} else{ //중도매인정산서 1형식 공통약식(딸송정보없X)
 				ReportPopup('LALM0412R0_0',p_param, p_grid, 'V');//원본
 			}

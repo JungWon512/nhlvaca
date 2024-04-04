@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -565,13 +567,19 @@ public class LALM0899Controller {
 
 	@ResponseBody
 	@RequestMapping(value="/LALM0899_selAiakRestApi", method=RequestMethod.POST)
-    public Map<String, Object> LALM0899_selAiakRestApi(ResolverMap rMap) throws Exception {//IOException, SAXException, ParserConfigurationException
+    public Map<String, Object> LALM0899_selAiakRestApi(ResolverMap rMap,HttpServletRequest req) throws Exception {//IOException, SAXException, ParserConfigurationException
 		
 		Map<String, Object> map          = convertConfig.conMap(rMap);
 		Map<String, Object> nodeMap      = new HashMap<String, Object>();
 		
 		String barcode = (String) map.get("sra_indv_amnno");
-		nodeMap = commonService.Common_selAiakInfo(barcode);
+		Map<String,Object> tempMap = new HashMap<>();
+		tempMap.putAll(map);
+		tempMap.put("indv_bld_dsc", "0");
+		tempMap.put("chg_pg_id", "nhlvaca[0]");
+		tempMap.put("chg_rmk_cntn", map.get("chg_rmk_cntn"));
+		tempMap.put("chg_ip_addr", mcaUtil.getClientIp(req));
+		nodeMap = commonService.Common_selAiakInfo(tempMap);
 		
 		Map<String, Object> reMap = commonFunc.createResultSetMapData(nodeMap); 	
         return reMap;

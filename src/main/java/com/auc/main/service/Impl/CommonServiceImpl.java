@@ -607,19 +607,19 @@ public class CommonServiceImpl implements CommonService{
 		Map<String,Object> reMap = new HashMap<>();
 		int updateNum = 0;
 		
-		String barcode = (String) param.getOrDefault("sraIndvAmnno","");
+		String barcode = (String) param.getOrDefault("sra_indv_amnno","");
 		if(barcode != null && barcode.length() == 15) {
 			barcode = barcode.substring(3);
 		}	
 		reMap = mcaUtil.callApiAiakMap(barcode);
 		
 		if(reMap != null && !reMap.isEmpty()) {
-			reMap.put("NA_BZPLC", param.get("naBzplc"));
-			reMap.put("AUC_DT", param.get("aucDt"));
-			reMap.put("INDV_BLD_DSC", param.get("indvBldDsc"));
-			reMap.put("CHG_IP_ADDR", param.get("chgIpAddr"));
-			reMap.put("CHG_PGID", param.get("chgPgid"));
-			reMap.put("CHG_RMK_CNTN", param.get("chgRmkCntn"));
+			reMap.put("NA_BZPLC", param.get("ss_na_bzplc"));
+			reMap.put("AUC_DT", param.get("auc_dt"));
+			reMap.put("INDV_BLD_DSC", param.get("indv_bld_dsc"));
+			reMap.put("CHG_IP_ADDR", param.get("chg_ip_addr"));
+			reMap.put("CHG_PGID", param.get("chg_pg_id"));
+			reMap.put("CHG_RMK_CNTN", param.get("chg_rmk_cntn"));
 			updateNum += this.Common_insAiakInfo(reMap);
 		};
 		reMap.put("updateNum", updateNum);
