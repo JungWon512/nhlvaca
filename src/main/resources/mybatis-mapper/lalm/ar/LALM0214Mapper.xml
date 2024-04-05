@@ -26,9 +26,11 @@
 	          , A.SRA_SBID_AM                                      /* 축산낙찰금액                          */
 	          , A.SEL_STS_DSC                                      /* 판매상태구분코드                      */
 	          , A.BRCL_ISP_CTFW_SMT_YN                             /* 브루셀라검사증명서제출여부            */
-	          , A.BRCL_ISP_DT                                      /* 브루셀라검사일자                      */
+	          , A.BRCL_ISP_DT 									   /* 브루셀라검사일자                      */
+	          , DECODE(A.BRCL_ISP_RZT_C,'0','-','1','음성','양성') BRCL_ISP_RZT_C_NM 
 	          , A.LWPR_CHG_NT                                      /* 최저가변경횟수                        */
 	          , A.VACN_DT                                          /* 예방접종일자                          */
+	          , A.VACN_ORDER
 	          , A.LVST_MKT_TRPL_AMNNO                              /* 가축시장거래처관리번호                */
 	          , A.MT12_OVR_YN                                      /* 12개월이상여부                        */
 	          , A.MT12_OVR_FEE                                     /* 12개월이상수수료                      */
@@ -140,6 +142,10 @@
 	          , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <![CDATA[<= 4]]> AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434')
                      THEN 4 
                 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 END AS MTCN      /* 월령 의령=8808990656199  원주=8808990656434 */
+			  , H.BIRTH CALF_BIRTH
+	          , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, H.BIRTH)) +1 <![CDATA[<= 4]]> AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434')
+                     THEN 4 
+                ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, H.BIRTH)) +1 END AS CALF_MTCN      
 	       FROM TB_LA_IS_MH_SOG_COW A
 	       LEFT OUTER JOIN TB_LA_IS_MM_VHC C
 	         ON C.NA_BZPLC            = A.NA_BZPLC

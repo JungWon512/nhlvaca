@@ -751,7 +751,7 @@ var na_bzplc = App_na_bzplc;
             			 ReportPopup('LALM0216R3_65',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 // ★함안: 8808990656946 의령 : 8808990656199 테스트: 8808990643625
-            		 } else if(na_bzplc == '8808990656946' || na_bzplc == '8808990656199') {
+            		 } else if(na_bzplc == '8808990656199') {
             			 ReportPopup('LALM0216R3_85',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 
             		 // ★포항: 8808990679549
@@ -1345,7 +1345,7 @@ var na_bzplc = App_na_bzplc;
              			 ReportPopup('LALM0216R3_75',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★함안: 8808990656946 의령 8808990656199 테스트: 8808990643625
-             		 } else if(na_bzplc == '8808990656946' || na_bzplc == '8808990656199' ) {
+             		 } else if(na_bzplc == '8808990656199' ) {
              			 ReportPopup('LALM0216R3_84',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★남원: 8808990227207
