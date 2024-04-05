@@ -1263,10 +1263,12 @@ var mCnt = 0;
 	// result   : N/A
 	//**************************************	
 	function fn_BtnAdj_fm_print(p_param, p_grid) {
+		if($("#auc_obj_dsc").val() == '5'){
+			ReportPopup('LALM0412G0',p_param, p_grid, 'V');
+			return;
+		}
 		// 1형식
 		if (($("#prto_tpc_1").is(":checked"))) {
-
-			
 			// 영주:8808990687094
 			if (na_bzplc == '8808990687094') {   
 				p_param.title = "일반가축경매(" + $('#auc_obj_dsc option:checked').text().replace(/[^가-힣]/g,'') +")개별정산서 제"+$('#auc_dt').val() +"차";

@@ -218,11 +218,11 @@ $(document).ready(function() {
         	$(this).val('');
         }
 
-        const self = $(this);
-        const form = $(this).closest("form");
-        const inputs = form.find("input, select").filter(":visible");
-        const next = inputs.eq(inputs.index(self) + 1);
-        if (next.length) next.focus();
+        //const self = $(this);
+        //const form = $(this).closest("form");
+        //const inputs = form.find("input, select").filter(":visible");
+        //const next = inputs.eq(inputs.index(self) + 1);
+        //if (next.length) next.focus();
     });
     
     //그리드 포멧
