@@ -431,6 +431,7 @@
         $("#grd_MhSogCow_1").jqGrid("clearGridData", true);
         $("#grd_MhSogCow_2").jqGrid("clearGridData", true);
         $("#grd_MhSogCow3").jqGrid("clearGridData", true);
+        $("#grd_MhSogCowH").jqGrid("clearGridData", true);
         $("#grd_MhCalf").jqGrid("clearGridData", true);
 
         //폼 초기화
@@ -474,6 +475,7 @@
         }
         $("#grd_MhSogCow").jqGrid("clearGridData", true);
         $("#grd_MhSogCow3").jqGrid("clearGridData", true);
+        $("#grd_MhSogCowH").jqGrid("clearGridData", true);
         $("#grd_MhCalf").jqGrid("clearGridData", true);
         
         var results = sendAjaxFrm("frm_Search", "/LALM0214_selList", "POST");        
@@ -495,19 +497,68 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
     function fn_Excel(){
-    	var tempObj = [];
-    	$('#gbox_grd_MhSogCow_1 tr.footrow:visible td:visible').each((i,o)=>{
-    		tempObj.push({label:$(o).text(),name:$(o).attr('aria-describedby')?.replace('grd_MhSogCow_1_',''),width:$(o).outerWidth(),align:$(o).css('text-align'),formatter:'',colspan:$(o).attr('colspan')??'1'});
-		});
-    	$('#gbox_grd_MhSogCow_2 tr.footrow:visible td:visible').each((i,o)=>{
-    		tempObj.push({label:$(o).text(),name:$(o).attr('aria-describedby')?.replace('grd_MhSogCow_1_',''),width:$(o).outerWidth(),align:$(o).css('text-align'),formatter:'',colspan:$(o).attr('colspan')??'1'});
-		});
     
-    
-    	if (App_na_bzplc == '8808990657622') {  // 홍성: 8808990657622
+
+        $("#grd_MhSogCowH").jqGrid("clearGridData", true);
+        if(App_na_bzplc=='8808990656632'){
+            var gridData = $('#grd_MhSogCow').getRowData();
+        	if(!gridData || gridData.length <= 0) return;
+            var rowNoValue = 0;
+            if(gridData != null){
+                rowNoValue = gridData.length;
+            }                    
+            $("#grd_MhSogCowH").jqGrid({
+                datatype:    "local",
+                data:        gridData,
+                height:      340,
+                rowNum:      rowNoValue,
+                resizeing:   true,
+                autowidth:   false,
+                shrinkToFit: false, 
+                rownumbers:true,
+                rownumWidth:30,
+                footerrow: true,
+                userDataOnFooter: true,
+                colNames: ["H사업장코드","H경매일자","H원표번호","경매번호","경매대상","귀표번호","생년월일","월령","성별","계대","등록구분","KPN번호","어미귀표번호","산차","주소","성명","인공수정일자","임신 개월수","수정KPN","(송)귀표번호","(송)생년월일","(송)성별","(송)월령","비고"],
+                colModel: [
+         	       {name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,  height:30,  sortable:false, align:'center', hidden:true},
+        	       {name:"AUC_DT",               index:"AUC_DT",               width:90,  sortable:false, align:'center', hidden:true},
+                   {name:"OSLP_NO",              index:"OSLP_NO",              width:90,  sortable:false, align:'center', hidden:true},
+                   {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:50,  sortable:false, align:'center', sorttype: "number"},
+                   {name:"AUC_OBJ_DSC",          index:"AUC_OBJ_DSC",          width:50,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
+                   {name:"SRA_INDV_AMNNO",       index:"SRA_INDV_AMNNO",       width:110, sortable:false, align:'center', formatter:'gridIndvFormat'},
+                   {name:"BIRTH",                index:"BIRTH",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
+                   {name:"MTCN",                 index:"MTCN",                 width:40,  sortable:false, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                   {name:"INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
+                   {name:"SRA_INDV_PASG_QCN",    index:"SRA_INDV_PASG_QCN",    width:40,  sortable:false, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                   {name:"RG_DSC",               index:"RG_DSC",               width:60,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}},
+                   {name:"KPN_NO",               index:"KPN_NO",               width:60,  sortable:false, align:'center'},
+                   {name:"MCOW_SRA_INDV_AMNNO",  index:"MCOW_SRA_INDV_AMNNO",  width:110, sortable:false, align:'center', formatter:'gridIndvFormat'},
+                   {name:"MATIME",               index:"MATIME",               width:40,  sortable:false, align:'right', sorttype: "number"},
+                   {name:"DONGUP",               index:"DONGUP",               width:150, sortable:false, align:'left'},
+                   {name:"FTSNM",                index:"FTSNM",                width:75,  sortable:false, align:'center'},
+                   {name:"AFISM_MOD_DT",         index:"AFISM_MOD_DT",         width:80,  sortable:false, align:'center', formatter:'gridDateFormat'},
+                   {name:"PRNY_MTCN",            index:"PRNY_MTCN",            width:40,  sortable:false, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                   {name:"MOD_KPN_NO",           index:"MOD_KPN_NO",           width:50,  sortable:false, align:'center'},
+                   {name:"INDV_AMNNO",           index:"INDV_AMNNO",           width:120, sortable:false, align:'center', formatter:'gridIndvFormat'},
+                   {name:"CALF_BIRTH",           index:"BIRTH",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
+                   {name:"CALF_INDV_SEX_C",      index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
+                   {name:"CALF_MTCN",            index:"MTCN",                 width:40,  sortable:false, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},                   
+                   {name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable:false, align:'left'}                                     
+        		]
+            });
+            fn_ExcelDownlad('grd_MhSogCowH', '출장우내역조회');        	
+        }else if (App_na_bzplc == '8808990657622') {  // 홍성: 8808990657622
     		fn_ExcelDownlad('grd_MhSogCow3', '출장우내역조회');
     	}else{
-            fn_ExcelDownlad('grd_MhSogCow', '출장우내역조회',tempObj);
+        	var tempObj = [];
+        	$('#gbox_grd_MhSogCow_1 tr.footrow:visible td:visible').each((i,o)=>{
+        		tempObj.push({label:$(o).text(),name:$(o).attr('aria-describedby')?.replace('grd_MhSogCow_1_',''),width:$(o).outerWidth(),align:$(o).css('text-align'),formatter:'',colspan:$(o).attr('colspan')??'1'});
+    		});
+        	$('#gbox_grd_MhSogCow_2 tr.footrow:visible td:visible').each((i,o)=>{
+        		tempObj.push({label:$(o).text(),name:$(o).attr('aria-describedby')?.replace('grd_MhSogCow_1_',''),width:$(o).outerWidth(),align:$(o).css('text-align'),formatter:'',colspan:$(o).attr('colspan')??'1'});
+    		});
+           fn_ExcelDownlad('grd_MhSogCow', '출장우내역조회',tempObj);
     	}
     } 
     
@@ -1166,6 +1217,10 @@
             </div>
             <div class="listTable" style="display:none;" >
                 <table id="grd_MhSogCow3">
+                </table>
+            </div>
+            <div class="listTable" style="display:none;" >
+                <table id="grd_MhSogCowH">
                 </table>
             </div>
             <div class="tab_box clearfix">

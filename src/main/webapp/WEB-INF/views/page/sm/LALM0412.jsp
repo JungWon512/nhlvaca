@@ -1383,6 +1383,8 @@ var mCnt = 0;
  				ReportPopup('LALM0412R0_0_3_J',p_param, p_grid, 'V');
    			}else if (na_bzplc == '8808990656588'){ //세종 : 8808990656588
    				ReportPopup('LALM0412R0_0_1_T',p_param, p_grid, 'V');
+   			}else if (na_bzplc == '8808990643625'){ //양평 : 8808990643625
+   				ReportPopup('LALM0412R0_0_1_',p_param, p_grid, 'V');
    			}else{
    				ReportPopup('LALM0412R0_0_1',p_param, p_grid, 'V');
    			}

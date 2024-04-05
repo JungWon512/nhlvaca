@@ -1344,7 +1344,7 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990656670') {
              			 ReportPopup('LALM0216R3_75',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
-             		 // 의령 8808990656199 테스트: 8808990643625
+             		 // ★함안: 8808990656946 의령 8808990656199 테스트: 8808990643625
              		 } else if(na_bzplc == '8808990656199' ) {
              			 ReportPopup('LALM0216R3_84',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 

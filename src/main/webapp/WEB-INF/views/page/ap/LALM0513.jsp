@@ -822,7 +822,12 @@
     		TitleData.wdong = parent.wmcList[0].DONGUP + " "+parent.wmcList[0].DONGBW;
     		TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
     		
+    		if(na_bzplc =='8808990643625'){
+        		ReportPopup('LALM0513R1_1',TitleData, 'grd_MhSogCow2,grd_MhSogCow2_1', 'V');    			
+    		}else{
     		ReportPopup('LALM0513R1',TitleData, 'grd_MhSogCow2,grd_MhSogCow2_1', 'V'); 
+    	}
+
     	}
 
     	if($("#pb_tab3").hasClass("on")){
