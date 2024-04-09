@@ -16,7 +16,7 @@
 <script type="text/javascript">
 var pageInfo = setDecryptData('${pageInfo}');
 var na_bzplc = App_na_bzplc;
-var LALM0412_isFrmOrgData = null;
+var LALM1007_isFrmOrgData = null;
 var fCnt = 0;
 var mCnt = 0;
 
@@ -277,7 +277,7 @@ var mCnt = 0;
         fn_InitFrm('frm_Farm');
 
         $("#auc_dt").datepicker().datepicker("setDate", fn_getToday());
-        LALM0412_isFrmOrgData = null;
+        LALM1007_isFrmOrgData = null;
         
         if(pageInfo.param != null) {
         	$("#auc_dt").val(pageInfo.param.auc_dt);
@@ -310,7 +310,7 @@ var mCnt = 0;
         
         fn_InitFrm('srchFrm_detail');
         
-        LALM0412_isFrmOrgData = null;
+        LALM1007_isFrmOrgData = null;
         
         fn_setChgRadio("de_sra_rv_tpc", '1');
         fn_setRadioChecked("de_sra_rv_tpc");
@@ -325,7 +325,7 @@ var mCnt = 0;
 	    
 	    //출하자 주민번호
 	    var results_5 = null; 
-	    results_5 = sendAjaxFrm("frm_Search", "/LALM0412_selListTbl_Mmmwmn", "POST");
+	    results_5 = sendAjaxFrm("frm_Search", "/LALM1007_selListTbl_Mmmwmn", "POST");
 	  
         if(results_5.status != RETURN_SUCCESS){
             showErrorMessage(results_5);
@@ -342,7 +342,7 @@ var mCnt = 0;
         	
         //차수
         var results_6 = null; 
-   	    results_6 = sendAjaxFrm("frm_Search", "/Lalm0412_selList_MhAucQcn", "POST");
+   	    results_6 = sendAjaxFrm("frm_Search", "/Lalm1007_selList_MhAucQcn", "POST");
 
    	    if(results_6.status != RETURN_SUCCESS){
             showErrorMessage(results_6);
@@ -355,7 +355,7 @@ var mCnt = 0;
         	$("#qcn").val(result_6[0].QCN)	
         
  	    //정산금액
-         var results = sendAjaxFrm("frm_Search", "/LALM0412_selListFrm_MdMwmnAdj", "POST");    
+         var results = sendAjaxFrm("frm_Search", "/LALM1007_selListFrm_MdMwmnAdj", "POST");    
         	
          if(results.status != RETURN_SUCCESS){
              showErrorMessage(results);
@@ -393,7 +393,7 @@ var mCnt = 0;
          
  	    //낙찰내역
  	    results = null;
- 		results = sendAjaxFrm("frm_Search", "/LALM0412_selListGrd_MhSogCow", "POST");
+ 		results = sendAjaxFrm("frm_Search", "/LALM1007_selListGrd_MhSogCow", "POST");
  		
  	    if(results.status != RETURN_SUCCESS){
  	        showErrorMessage(results,"NOTFOUND");
@@ -405,7 +405,7 @@ var mCnt = 0;
  	   
  	    //입금등록
  	    results = null;
- 	    results = sendAjaxFrm("frm_Search", "/LALM0412_selListGrd_MdMwmnAdj", "POST");    
+ 	    results = sendAjaxFrm("frm_Search", "/LALM1007_selListGrd_MdMwmnAdj", "POST");    
  	    
  	    if(results.status == RETURN_SUCCESS){
  	    	result_2 = setDecrypt(results);
@@ -414,7 +414,7 @@ var mCnt = 0;
  	    	    
  	    //경매참가내역
  	    results = null;
- 	    results = sendAjaxFrm("frm_Search", "/LALM0412_selAucEntr", "POST");    
+ 	    results = sendAjaxFrm("frm_Search", "/LALM1007_selAucEntr", "POST");    
  	    
  	    if(results.status == RETURN_SUCCESS){
  	        result_4 = setDecrypt(results);
@@ -461,10 +461,10 @@ var mCnt = 0;
 	                               ,"송아지우출하중량","송아지KPN번호"
 	                               ,"자조금","수수료2","수수료3","수수료4", "수수료5", "정산자명", "정산자번호", "출하주번호",
 	                               
-	                               "출하주","경매대상","경매번호","귀표번호","성별","등록구분","중량","낙찰가","수수료"
-	                               ,"송아지귀표번호","송아지성별","임신개월수","송아지생년월일","출하주생년","어미소축산개체관리번호","어미구분코드","번식우수수료구분코드"
-	                              ,"H월령"
+	                               "출하주","경매대상","경매번호","성별","등록구분","중량","낙찰가","수수료"
 	                               
+								   ,"어미소축산개체관리번호","어미구분코드"
+								   
 	                              ];        
 	    var searchResultColModel = [
 	    	
@@ -549,22 +549,25 @@ var mCnt = 0;
 	                                 {name:"FTSNM",                 index:"FTSNM",                 width:40, align:'center'},
 	                                 {name:"AUC_OBJ_DSC",           index:"AUC_OBJ_DSC",           width:40, align:'center', edittype:"select", formatter : "select",editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
 	                                 {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",            width:40, align:'center', sorttype: "number", formatter:'integer'},
-	                                 {name:"COW_SRA_INDV_AMNNO",    index:"COW_SRA_INDV_AMNNO",    width:60, align:'center', formatter:'gridIndvFormat'},
+	                                //  {name:"COW_SRA_INDV_AMNNO",    index:"COW_SRA_INDV_AMNNO",    width:60, align:'center', formatter:'gridIndvFormat'},
 	                                 {name:"INDV_SEX_C",            index:"INDV_SEX_C",            width:40, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
 
 	                                 {name:"RG_DSC",                index:"RG_DSC",                width:40, align:'center', align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}, hidden:true},
 	                                 {name:"COW_SOG_WT",            index:"COW_SOG_WT",            width:40, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
 	                                 {name:"SRA_SBID_AM",           index:"SRA_SBID_AM",           width:40, align:'right', sorttype: "number", formatter:'integer', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
 	                                 {name:"SRA_TR_FEE",            index:"SRA_TR_FEE",            width:40, align:'center', sorttype: "number", formatter:'integer', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
-	                                 {name:"CALF_SRA_INDV_AMNNO",   index:"CALF_SRA_INDV_AMNNO",   width:40, align:'center'},
-	                                 {name:"CALF_INDV_SEX_C",       index:"CALF_INDV_SEX_C",       width:40, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
-	                                 {name:"PRNY_MTCN",             index:"PRNY_MTCN",             width:40, align:'center'},
-	                                 {name:"CALF_BIRTH",            index:"CALF_BIRTH",            width:40, align:'center', formatter:'gridDateFormat'},
-	                                 {name:"RMK_CNTN_BIRTH",        index:"RMK_CNTN_BIRTH",        width:40, align:'center', formatter:'gridDateFormat'},
+
+	                                //  {name:"CALF_SRA_INDV_AMNNO",   index:"CALF_SRA_INDV_AMNNO",   width:40, align:'center'},
+	                                //  {name:"CALF_INDV_SEX_C",       index:"CALF_INDV_SEX_C",       width:40, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
+	                                //  {name:"PRNY_MTCN",             index:"PRNY_MTCN",             width:40, align:'center'},
+	                                //  {name:"CALF_BIRTH",            index:"CALF_BIRTH",            width:40, align:'center', formatter:'gridDateFormat'},
+	                                //  {name:"RMK_CNTN_BIRTH",        index:"RMK_CNTN_BIRTH",        width:40, align:'center', formatter:'gridDateFormat'},
+
 	                                 {name:"MCOW_SRA_INDV_AMNNO",   index:"MCOW_SRA_INDV_AMNNO",   width:60, align:'center', formatter:'gridIndvFormat', hidden:true},
 	                                 {name:"MCOW_DSC",              index:"MCOW_DSC",              width:40, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_INDV_BRDSRA_RG_DSC", 1)}, hidden:true},
-	                                 {name:"PPGCOW_FEE_DSC",        index:"PPGCOW_FEE_DSC",        width:30, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("PPGCOW_FEE_DSC", 1)}},
-	                                 {name:"MTCN",             		index:"MTCN",             	   width:40, align:'center'},
+
+	                                //  {name:"PPGCOW_FEE_DSC",        index:"PPGCOW_FEE_DSC",        width:30, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("PPGCOW_FEE_DSC", 1)}},
+	                                //  {name:"MTCN",             		index:"MTCN",             	   width:40, align:'center'},
 	                                ];
 	        
 	    $("#grd_MhSogCow").jqGrid("GridUnload");
@@ -820,7 +823,7 @@ var mCnt = 0;
 	        colModel: searchResultColModel,
 	        onSelectRow: function(rowid, status, e){
                 var sel_data = $("#grd_MdMwmnAdj").getRowData(rowid);
-                if(LALM0412_isFrmOrgData != null && fn_IsChangeFrm()){
+                if(LALM1007_isFrmOrgData != null && fn_IsChangeFrm()){
                     MessagePopup('YESNO',"변경중이 내용이 있습니다. 선택하시겠습니까?",function(res){                          
                         if(res){
                         	fn_SetFrm_Rv(sel_data);             
@@ -840,13 +843,13 @@ var mCnt = 0;
 	
 	//폼 오리진 데이터 생성
     function fn_orgFormValue(){
-    	LALM0412_isFrmOrgData = $("#srchFrm_detail").serialize();
+    	LALM1007_isFrmOrgData = $("#srchFrm_detail").serialize();
     }
     
     //폼 변경 체크
     function fn_IsChangeFrm(){
         var isFrmData = $("#srchFrm_detail").serialize();
-        if(LALM0412_isFrmOrgData != isFrmData){
+        if(LALM1007_isFrmOrgData != isFrmData){
             return true;
         }
         return false;
@@ -876,7 +879,7 @@ var mCnt = 0;
 	function fn_BtnGive(){
 		MessagePopup('YESNO',"응찰기를 지급하시겠습니까?",function(res){
 	        if(res){
-	            var results = sendAjaxFrm('frm_Search', "/LALM0412_updEntrGive", "POST");  
+	            var results = sendAjaxFrm('frm_Search', "/LALM1007_updEntrGive", "POST");  
 	            if(results.status != RETURN_SUCCESS){
 	                showErrorMessage(results);
 	                return;
@@ -895,7 +898,7 @@ var mCnt = 0;
 	function fn_BtnTake(){
 		MessagePopup('YESNO',"응찰기를 반납하시겠습니까?",function(res){
 	        if(res){
-	            var results = sendAjaxFrm('frm_Search', "/LALM0412_updEntrTake", "POST");  
+	            var results = sendAjaxFrm('frm_Search', "/LALM1007_updEntrTake", "POST");  
 	            if(results.status != RETURN_SUCCESS){
 	                showErrorMessage(results);
 	                return;
@@ -945,10 +948,10 @@ var mCnt = 0;
                	var insUrl = "";
                	//수정
                	if($("#de_chg_yn").val() == '1'){
-               		insUrl = "/LALM0412_updRv";
+               		insUrl = "/LALM1007_updRv";
                	//신규	
                	}else{
-               		insUrl = "/LALM0412_insRv";
+               		insUrl = "/LALM1007_insRv";
                	}
                    var results = sendAjaxFrm('srchFrm_detail', insUrl, "POST");
                    
@@ -975,7 +978,7 @@ var mCnt = 0;
 		}
 		MessagePopup('YESNO',"삭제하시겠습니까?",function(res){
             if(res){                    
-                var results = sendAjaxFrm('srchFrm_detail', "/LALM0412_delRv", "POST");
+                var results = sendAjaxFrm('srchFrm_detail', "/LALM1007_delRv", "POST");
                 
                 if(results.status != RETURN_SUCCESS){
                     showErrorMessage(results);
@@ -1017,7 +1020,7 @@ var mCnt = 0;
                 return;
 			}
 			
-			var results = sendAjaxFrm('frm_Search', "/LALM0412_selRmkcntn", "POST");
+			var results = sendAjaxFrm('frm_Search', "/LALM1007_selRmkcntn", "POST");
 			var result_cntn;
             if(results.status != RETURN_SUCCESS){
                 showErrorMessage(results);
@@ -1041,7 +1044,7 @@ var mCnt = 0;
 	            	data["sra_rv_tpc"]      = $("#de_sra_rv_tpc").val();
 	            	data["auc_entr_grn_am"] = $("#de_sra_rv_am").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
 	            	
-	                var results = sendAjax(data, "/LALM0412_insAdj", "POST");
+	                var results = sendAjax(data, "/LALM1007_insAdj", "POST");
 	                if(results.status != RETURN_SUCCESS){
 	                    showErrorMessage(results);
 	                    return;
@@ -1147,9 +1150,9 @@ var mCnt = 0;
         
       	//정산금액 조회
         if(p_param == "f") {
-			results = sendAjaxFrm("frm_Search", "/LALM0412_selListFrm_MdMwmnAdj_f", "POST");			
+			results = sendAjaxFrm("frm_Search", "/LALM1007_selListFrm_MdMwmnAdj_f", "POST");			
 		} else if(p_param == "m") {
-			results = sendAjaxFrm("frm_Search", "/LALM0412_selListFrm_MdMwmnAdj_m", "POST");			
+			results = sendAjaxFrm("frm_Search", "/LALM1007_selListFrm_MdMwmnAdj_m", "POST");			
 		} else {
 			MessagePopup('OK','암수 구분이 입력되지 않았습니다.');
 			return;
@@ -1238,10 +1241,10 @@ var mCnt = 0;
     		}
     		// 낙찰내역 조회
     		if(p_param == "f") {
-    			results_1 = sendAjaxFrm("frm_Search", "/LALM0412_selListGrd_MhSogCowF", "POST");
+    			results_1 = sendAjaxFrm("frm_Search", "/LALM1007_selListGrd_MhSogCowF", "POST");
     			
     		} else if(p_param == "m") {
-    			results_1 = sendAjaxFrm("frm_Search", "/LALM0412_selListGrd_MhSogCowM", "POST");
+    			results_1 = sendAjaxFrm("frm_Search", "/LALM1007_selListGrd_MhSogCowM", "POST");
     			
     		} else {
     			MessagePopup('OK','암수 구분이 입력되지 않았습니다.');
@@ -1270,11 +1273,11 @@ var mCnt = 0;
 			// 영주:8808990687094
 			if (na_bzplc == '8808990687094') {   
 				p_param.title = "일반가축경매(" + $('#auc_obj_dsc option:checked').text().replace(/[^가-힣]/g,'') +")개별정산서 제"+$('#auc_dt').val() +"차";
-				ReportPopup('LALM0412R0_8',p_param, p_grid, 'V');	
+				ReportPopup('LALM1007R0_8',p_param, p_grid, 'V');	
 			}else if(na_bzplc == '8808990659008') { //경주
-   				ReportPopup('LALM0412R0_0_4_2',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_0_4_2',p_param, p_grid, 'V');
    			} else if(na_bzplc == '8808990656649') { //의성
-				ReportPopup('LALM0412R0_0_4',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM1007R0_0_4',p_param, p_grid, 'T');//원본
 			/*** 중도매인정산서 1형식 공통약식(딸송정보없X)
 			* 전주김제완주 보은옥천 옥천지점:8808990671086 , 파주연천:8808990659787
 			* 고창부안:8808990657189, 횡성: 8808990656885, 강진완도 :  8808990657103, 양평 :  8808990643625 
@@ -1296,93 +1299,93 @@ var mCnt = 0;
 				|| na_bzplc == '8808990657196' || na_bzplc == '8808990657622' || na_bzplc == '8808990656526' || na_bzplc == '8808990660127' || na_bzplc == '8808990659268' || na_bzplc == '8808990658896'
 				|| ((na_bzplc == '8808990689760' || na_bzplc == '8808990659701' || na_bzplc =='8808990785431' || na_bzplc == '8808990656267') && $("#auc_obj_dsc").val() != '3' )
 			){
-				ReportPopup('LALM0412R0_9',p_param, p_grid, 'T');//원본
-				//ReportPopup('LALM0412R0_1_3',p_param, p_grid, 'V');
+				ReportPopup('LALM1007R0_9',p_param, p_grid, 'T');//원본
+				//ReportPopup('LALM1007R0_1_3',p_param, p_grid, 'V');
 			}else if(na_bzplc == '8808990656519' && $("#auc_obj_dsc").val() != '3') { //사천
-   				ReportPopup('LALM0412R0_10',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_10',p_param, p_grid, 'V');
    			}else if(na_bzplc =='8808990661315') { //화순 : 8808990661315
-   				ReportPopup('LALM0412R0_9_J_2',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_9_J_2',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656557') { //예천
-   				ReportPopup('LALM0412R0_0_5_2',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_0_5_2',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990806426') { //속초양양 : 8808990806426
-   				ReportPopup('LALM0412R0_9_1',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_9_1',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656540' && $("#auc_obj_dsc").val() == '1' ) { //담양 : 8808990656540
-   				ReportPopup('LALM0412R0_9_2',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_9_2',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656540' && $("#auc_obj_dsc").val() == '2' ) { //담양 : 8808990656540
-   				ReportPopup('LALM0412R0_9_2_1',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_9_2_1',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656540') { //담양
-   				ReportPopup('LALM0412R0_9_2_2',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_9_2_2',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990689180') { //안동
-   				ReportPopup('LALM0412R0_0_5_7',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_0_5_7',p_param, p_grid, 'V');
    			} else if(na_bzplc == '8808990660783'){ //임실
-				ReportPopup('LALM0412R0_T_0',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM1007R0_T_0',p_param, p_grid, 'T');//원본
 			} else if(na_bzplc == '8808990659565'){ //김천
-				ReportPopup('LALM0412R0_9_3',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM1007R0_9_3',p_param, p_grid, 'T');//원본
 			} else if(na_bzplc == '8808990679549'){ //포항 : 8808990679549
-				ReportPopup('LALM0412R0_9_J_0',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM1007R0_9_J_0',p_param, p_grid, 'T');//원본
 			} else if(na_bzplc =='8808990656571'){ //청도 : 8808990656571
-				ReportPopup('LALM0412R0_9_J_1',p_param, p_grid, 'T');
+				ReportPopup('LALM1007R0_9_J_1',p_param, p_grid, 'T');
 			} else if(na_bzplc =='8808990656670'){	//괴산증평 : 8808990656670
-				ReportPopup('LALM0412R0_9_4',p_param, p_grid, 'T');
+				ReportPopup('LALM1007R0_9_4',p_param, p_grid, 'T');
 			} else if($("#auc_obj_dsc").val() == '1' && na_bzplc =='8808990817675'){	//송아지 장성 : 8808990817675
-				ReportPopup('LALM0412R0_9_J_3',p_param, p_grid, 'T');
+				ReportPopup('LALM1007R0_9_J_3',p_param, p_grid, 'T');
 			} else if($("#auc_obj_dsc").val() == '2' && na_bzplc =='8808990817675'){	//큰소 장성 :8808990817675
-				ReportPopup('LALM0412R0_9_J_5',p_param, p_grid, 'T');
+				ReportPopup('LALM1007R0_9_J_5',p_param, p_grid, 'T');
 			} else if(na_bzplc =='8808990817675'){	//큰소 장성 :8808990817675
-				ReportPopup('LALM0412R0_9_J_4',p_param, p_grid, 'T');
+				ReportPopup('LALM1007R0_9_J_4',p_param, p_grid, 'T');
 			} else if(na_bzplc =='8808990656267'){	//보성 번식우 이외 :8808990656267
-				ReportPopup('LALM0412R0_9_J_7',p_param, p_grid, 'T');
+				ReportPopup('LALM1007R0_9_J_7',p_param, p_grid, 'T');
 			} else if(na_bzplc =='8808990762654'){ //당진 : 8808990762654
-				ReportPopup('LALM0412R0_9_J_6',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM1007R0_9_J_6',p_param, p_grid, 'T');//원본
 			} else if(na_bzplc =='8808990656427'){ //문경 : 8808990656427 (응찰자 유의사항문구 추가)
-				ReportPopup('LALM0412R0_9_5',p_param, p_grid, 'T');//원본				
+				ReportPopup('LALM1007R0_9_5',p_param, p_grid, 'T');//원본				
 			}else{
-				ReportPopup('LALM0412R0_0',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM1007R0_0',p_param, p_grid, 'T');//원본
 			}
 		// 2형식
 		} else {
    			//거창:8808990659701
    			if (na_bzplc ==  '8808990659701') {
-   				ReportPopup('LALM0412R0_5_1',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_5_1',p_param, p_grid, 'V');
    			// 무진장:8808990657202
    			} else if (na_bzplc == '8808990657202') {
-   				ReportPopup('LALM0412R0_5_5',p_param, p_grid, 'V');    	
+   				ReportPopup('LALM1007R0_5_5',p_param, p_grid, 'V');    	
 			}else if(na_bzplc == '8808990227207') { //남원
-   				ReportPopup('LALM0412R0_5_6',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_5_6',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656557') { //예천
-   				ReportPopup('LALM0412R0_0_5',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_0_5',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656687') { //영천 : 8808990656687
-   				ReportPopup('LALM0412R0_0_1_1',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_0_1_1',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656434') { //원주
-   				ReportPopup('LALM0412R0_0_6',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_0_6',p_param, p_grid, 'V');
    			//고령성주  ,나주, 구미칠곡, 김천, 충주, 의령
    			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615' || na_bzplc == '8808990659565' || na_bzplc == '8808990679549' || na_bzplc =='8808990656465' || na_bzplc =='8808990656199') {
-   				ReportPopup('LALM0412R0_0_7',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_0_7',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656427') { //문경
-   				ReportPopup('LALM0412R0_0_7_1',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_0_7_1',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990661315') { //화순 : 8808990661315
-   				//ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'V');
-   				ReportPopup('LALM0412R0_1_8_1',p_param, p_grid, 'V');
+   				//ReportPopup('LALM1007R0_1_8',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_1_8_1',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990656540') { //담양
-   				ReportPopup('LALM0412R0_9_2_2',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_9_2_2',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990689180') { //안동
-   				ReportPopup('LALM0412R0_0_5_7',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_0_5_7',p_param, p_grid, 'V');
    			}else if(na_bzplc == '8808990660783') { //임실
-   				ReportPopup('LALM0412R0_T_1',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_T_1',p_param, p_grid, 'V');
    			}else if (na_bzplc == '8808990806426') { //속초양양
-				ReportPopup('LALM0412R0_J_0',p_param, p_grid, 'T');//원본
+				ReportPopup('LALM1007R0_J_0',p_param, p_grid, 'T');//원본
 			} else if((na_bzplc == '8808990656236' || na_bzplc == '8808990656519') && $("#auc_obj_dsc").val()=='3'){
- 				ReportPopup('LALM0412R0_0_3',p_param, p_grid, 'V');
+ 				ReportPopup('LALM1007R0_0_3',p_param, p_grid, 'V');
    			} else if((na_bzplc == '8808990671086') && $("#auc_obj_dsc").val()=='3'){ //보은옥천영동축협 옥천지점
- 				ReportPopup('LALM0412R0_0_3_J',p_param, p_grid, 'V');
+ 				ReportPopup('LALM1007R0_0_3_J',p_param, p_grid, 'V');
    			}else if (na_bzplc == '8808990656588'){ //세종 : 8808990656588
-   				ReportPopup('LALM0412R0_0_1_T',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_0_1_T',p_param, p_grid, 'V');
    			}else{
-   				ReportPopup('LALM0412R0_0_1',p_param, p_grid, 'V');
+   				ReportPopup('LALM1007R0_0_1',p_param, p_grid, 'V');
    			}
 			
    			//} else if(na_bzplc == '8808990661315' || na_bzplc == '8808990656960' || na_bzplc == '8808990656953') { //화순,정읍,순창
-			//	ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'T');//원본	
+			//	ReportPopup('LALM1007R0_1_8',p_param, p_grid, 'T');//원본	
 		}
 		fn_chgAucEntrDdl();
 	}
@@ -1439,12 +1442,12 @@ var mCnt = 0;
 		 	}
 	   		 
 			if (na_bzplc == '8808990687094') {  // 영주:              8808990687094
-				ReportPopup('LALM0412R1_4',TitleData, 'grd_MhSogCow', 'T');
+				ReportPopup('LALM1007R1_4',TitleData, 'grd_MhSogCow', 'T');
 			}else if(na_bzplc == '8808990656557') { //예천
-   				ReportPopup('LALM0412R1_0',TitleData, 'grd_MhSogCow', 'T');
+   				ReportPopup('LALM1007R1_0',TitleData, 'grd_MhSogCow', 'T');
    			}else{
-				ReportPopup('LALM0412R1_9',TitleData, 'grd_MhSogCow', 'T');
-				//ReportPopup('LALM0412R1_1',TitleData, 'grd_MhSogCow', 'T');
+				ReportPopup('LALM1007R1_9',TitleData, 'grd_MhSogCow', 'T');
+				//ReportPopup('LALM1007R1_1',TitleData, 'grd_MhSogCow', 'T');
 			}
 			//fn_chgAucEntrDdl();
 			
@@ -1482,9 +1485,9 @@ var mCnt = 0;
 			
 			//춘천철원 : 8808990656229
 			if(na_bzplc == '8808990656229'){
-				ReportPopup('LALM0412R2_1',TitleData, 'grd_MhSogCow', 'T');
+				ReportPopup('LALM1007R2_1',TitleData, 'grd_MhSogCow', 'T');
 			}else{
-				ReportPopup('LALM0412R2',TitleData, 'grd_MhSogCow', 'T');
+				ReportPopup('LALM1007R2',TitleData, 'grd_MhSogCow', 'T');
 			}
 		}
 		
@@ -1517,7 +1520,7 @@ var mCnt = 0;
  			TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
  			TitleData.sra_mwmnnm = $("#sra_mwmnnm").val(); //축산중도매인명
 			//$("#qcn").val(result_6[0].QCN)
-	        ReportPopup('LALM0412R3',TitleData, 'grd_MhSogCow', 'T');
+	        ReportPopup('LALM1007R3',TitleData, 'grd_MhSogCow', 'T');
 		}
 		
 		function fn_getKNumber(number){
@@ -1557,7 +1560,7 @@ var mCnt = 0;
 			srchData["trmn_amnno"] 	= $('#trmn_amnno').val();
 			
 			
-			result = sendAjax(srchData, "/LALM0412_updAucEntrDdl", "POST");
+			result = sendAjax(srchData, "/LALM1007_updAucEntrDdl", "POST");
 			
 			if(result.status == RETURN_SUCCESS){
              	var decMap = setDecrypt(result);
@@ -1625,7 +1628,7 @@ var mCnt = 0;
                                          </div>
                                    </div>
                                 </td>
-                                <th scope="row">정산서양식</th>
+                                <!-- <th scope="row">정산서양식</th>
                                 <td>
                                     <div class="cellBox" id="rd_prto_tpc">
                                         <div class="cell">
@@ -1638,7 +1641,7 @@ var mCnt = 0;
                                         </div>
                                     </div>
                                     <input type="hidden" id="prto_tpc"/>
-                                </td>
+                                </td> -->
                             </tr>
                         </tbody>
                     </table>
@@ -1750,8 +1753,8 @@ var mCnt = 0;
                     <button class="tb_btn" id="pb_Adj_f">정산서(암)</button>
                     <button class="tb_btn" id="pb_Adj_m">정산서(수)</button>
                     <button class="tb_btn" id="pb_DbtCnf">채무확인서</button>
-                    <button class="tb_btn" id="pb_AtfCvn">양수/양도</button>
-                    <button class="tb_btn" id="pb_FeeRctw">수수료영수증</button>
+                    <!-- <button class="tb_btn" id="pb_AtfCvn">양수/양도</button>
+                    <button class="tb_btn" id="pb_FeeRctw">수수료영수증</button> -->
                </div>
             </div>
             <div class="listTable rsp_v">
