@@ -254,9 +254,9 @@
         var result;
         
         if(!$("#ch_rmk_cntn").is(":checked") && $("#ch_modl_no").is(":checked")) {
-        	results = sendAjaxFrm("frm_Search", "/LALM0311_selModlList", "POST");
+        	results = sendAjaxFrm("frm_Search", "/LALM1005_selModlList", "POST");
         } else {
-        	results = sendAjaxFrm("frm_Search", "/LALM0311_selList", "POST");
+        	results = sendAjaxFrm("frm_Search", "/LALM1005_selList", "POST");
         }
         
         if(results.status != RETURN_SUCCESS){
@@ -297,15 +297,15 @@
              srchData["hs_auc_atdr_unt_am"] = parent.envList[0]["HS_AUC_ATDR_UNT_AM"];
                      
              if($("#ch_rmk_cntn").is(":checked")) {
-                 result = sendAjax(srchData, "/LALM0311_updRmkPgm", "POST");
+                 result = sendAjax(srchData, "/LALM1005_updRmkPgm", "POST");
                  
              } else if($("#ch_modl_no").is(":checked")) {
-            	 result = sendAjax(srchData, "/LALM0311_updModlPgm", "POST");            	 
+            	 result = sendAjax(srchData, "/LALM1005_updModlPgm", "POST");            	 
              }else if($("#ch_cow_wt").is(":checked") || $("#ch_lows_sbid_am").is(":checked")) {
             	 srchData["chk_save_type"] = $(".chk_save_type:checked").val(); 
-            	 result = sendAjax(srchData, "/LALM0311_updPgmOnlySave", "POST");            	 
+            	 result = sendAjax(srchData, "/LALM1005_updPgmOnlySave", "POST");            	 
              } else {
-                 result = sendAjax(srchData, "/LALM0311_updPgm", "POST");
+                 result = sendAjax(srchData, "/LALM1005_updPgm", "POST");
              }
              
              if(result.status == RETURN_SUCCESS){
