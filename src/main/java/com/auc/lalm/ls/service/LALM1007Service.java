@@ -6,7 +6,7 @@ import java.util.Map;
 public interface LALM1007Service {
 	
 
-	List<Map<String, Object>> Lalm1007_selList_MhAucQcn(Map<String, Object> map) throws Exception;
+	List<Map<String, Object>> LALM1007_selList_MhAucQcn(Map<String, Object> map) throws Exception;
 
 	List<Map<String, Object>> LALM1007_selListTbl_Mmmwmn(Map<String, Object> map) throws Exception;
 	

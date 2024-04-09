@@ -342,7 +342,7 @@ var mCnt = 0;
         	
         //차수
         var results_6 = null; 
-   	    results_6 = sendAjaxFrm("frm_Search", "/Lalm1007_selList_MhAucQcn", "POST");
+   	    results_6 = sendAjaxFrm("frm_Search", "/LALM1007_selList_MhAucQcn", "POST");
 
    	    if(results_6.status != RETURN_SUCCESS){
             showErrorMessage(results_6);

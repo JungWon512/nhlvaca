@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface LALM1007Mapper {
 
-	List<Map<String, Object>> Lalm1007_selList_MhAucQcn(Map<String, Object> map) throws Exception;
+	List<Map<String, Object>> LALM1007_selList_MhAucQcn(Map<String, Object> map) throws Exception;
 
 	List<Map<String, Object>> LALM1007_selListTbl_Mmmwmn(Map<String, Object> map) throws Exception;
 

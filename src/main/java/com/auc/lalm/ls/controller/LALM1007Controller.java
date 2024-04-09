@@ -31,10 +31,10 @@ public class LALM1007Controller {
 	
 	
 	@ResponseBody
-	@RequestMapping(value="/Lalm1007_selList_MhAucQcn", method=RequestMethod.POST)
-	public Map<String, Object> Lalm1007_selList_MhAucQcn(ResolverMap rMap) throws Exception{	
+	@RequestMapping(value="/LALM1007_selList_MhAucQcn", method=RequestMethod.POST)
+	public Map<String, Object> LALM1007_selList_MhAucQcn(ResolverMap rMap) throws Exception{	
 		Map<String, Object> map          = convertConfig.conMap(rMap);
-		List<Map<String, Object>> reList = lalm1007Service.Lalm1007_selList_MhAucQcn(map);				
+		List<Map<String, Object>> reList = lalm1007Service.LALM1007_selList_MhAucQcn(map);				
 		Map<String, Object> reMap        = commonFunc.createResultSetListData(reList);		
 		return reMap;
 	}

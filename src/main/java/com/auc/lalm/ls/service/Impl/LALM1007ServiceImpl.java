@@ -17,10 +17,10 @@ public class LALM1007ServiceImpl implements LALM1007Service{
 	LALM1007Mapper lalm1007Mapper;
 
 	@Override
-	public List<Map<String, Object>> Lalm1007_selList_MhAucQcn(Map<String, Object> map) throws Exception {
+	public List<Map<String, Object>> LALM1007_selList_MhAucQcn(Map<String, Object> map) throws Exception {
 		List<Map<String, Object>> list = null;
 		
-		list = lalm1007Mapper.Lalm1007_selList_MhAucQcn(map);
+		list = lalm1007Mapper.LALM1007_selList_MhAucQcn(map);
 	
 		return list;
 	}
