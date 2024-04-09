@@ -20,11 +20,11 @@
 /*------------------------------------------------------------------------------
  * 1. 단위업무명   : 가축시장
  * 2. 파  일  명   : LALM1006
- * 3. 파일명(한글) : 경매참가번호 관리(염소)
+ * 3. 파일명(한글) : 경매참가번호 관리
  *----------------------------------------------------------------------------*
  *  작성일자      작성자     내용
  *----------------------------------------------------------------------------*
- * 2024.04.09    전용민   최초작성
+ * 2024.04.09   전용민   최초작성
  ------------------------------------------------------------------------------*/
     ////////////////////////////////////////////////////////////////////////////////
     //  공통버튼 클릭함수 시작
@@ -243,7 +243,7 @@
      ------------------------------------------------------------------------------*/
     function fn_Search(){    	 
     	
-    	var results = sendAjaxFrm("frm_Search", "/LALM0213_selList", "POST");        
+    	var results = sendAjaxFrm("frm_Search", "/LALM1006_selList", "POST");        
         var result;
         
         if(results.status != RETURN_SUCCESS){
@@ -272,7 +272,7 @@
     	mv_RunMode = 2;
     	$("#mhBadTrmnGrid").jqGrid("clearGridData", true);
     	
-    	var results = sendAjaxFrm("frm_Search", "/LALM0213_selBadTrmn", "POST");        
+    	var results = sendAjaxFrm("frm_Search", "/LALM1006_selBadTrmn", "POST");        
         var result;
         
         if(results.status != RETURN_SUCCESS){
@@ -294,7 +294,7 @@
         param["trmn_amnno"] = result.TRMN_AMNNO;
         param["mb_intg_no"] = result.MB_INTG_NO;
     	
-    	var results = sendAjax(param, "/LALM0213_selBadCheck", "POST");        
+    	var results = sendAjax(param, "/LALM1006_selBadCheck", "POST");        
         var result;
         
         if(results.status != RETURN_SUCCESS){
@@ -358,7 +358,7 @@
 			if(res){
 				if(setRowStatus == "I") {
 					
-					var result = sendAjaxFrm("frm_MhAucEntr", "/LALM0213_insPgm", "POST");
+					var result = sendAjaxFrm("frm_MhAucEntr", "/LALM1006_insPgm", "POST");
 					if(result.status == RETURN_SUCCESS){
 		            	
 		            	MessagePopup("OK", "저장되었습니다.",function(res){
@@ -375,7 +375,7 @@
 		            }
 		            
 				} else if(setRowStatus == "U") {
-					var result = sendAjaxFrm("frm_MhAucEntr", "/LALM0213_updPgm", "POST");
+					var result = sendAjaxFrm("frm_MhAucEntr", "/LALM1006_updPgm", "POST");
 		            if(result.status == RETURN_SUCCESS){
 		            	MessagePopup("OK", "저장되었습니다.",function(res){
 		            		fn_Search();
@@ -444,7 +444,7 @@
     	
         MessagePopup('YESNO',"삭제하시겠습니까?",function(res){
 			if(res){									
-				var result = sendAjaxFrm('frm_MhAucEntr', "/LALM0213_delPgm", "POST");            
+				var result = sendAjaxFrm('frm_MhAucEntr', "/LALM1006_delPgm", "POST");            
 	            if(result.status == RETURN_SUCCESS) {
 	            	MessagePopup("OK", "삭제되었습니다.");
 	            	fn_Search();
@@ -484,7 +484,7 @@
     	TitleData.unit="";
     	TitleData.srch_condition=  '[경매대상 : ' + $('#cb_auc_obj_dsc option:selected').text()  + ' / 경매일자 : '+$('#auc_dt').val()+ ' / 참가번호 : ' + $('#lvst_auc_ptc_mn_no').val() + ']';
     	
-    	ReportPopup('LALM0213R',TitleData, 'mainGrid', 'V');
+    	ReportPopup('LALM1006R',TitleData, 'mainGrid', 'V');
     		
     	}
       
@@ -557,7 +557,7 @@
        		 
                 frmObj = $('#mainGrid').jqGrid('getRowData', rowid);
 	        		 
-	           	var results = sendAjax(frmObj, "/LALM0213_selSraList", "POST");
+	           	var results = sendAjax(frmObj, "/LALM1006_selSraList", "POST");
 	           	var result = null;
 	               
 	            if(results.status == RETURN_SUCCESS) {
@@ -671,7 +671,7 @@
         srchData["USRNM"]     = $("#sra_mwmnnm").val();
         srchData["PW"]        = $("#attc_no").val();
                 
-        var results = sendAjax(srchData, "/LALM0213_selSmSSend", "POST");
+        var results = sendAjax(srchData, "/LALM1006_selSmSSend", "POST");
         var result;
         if(results.status != RETURN_SUCCESS){
             showErrorMessage(results);
