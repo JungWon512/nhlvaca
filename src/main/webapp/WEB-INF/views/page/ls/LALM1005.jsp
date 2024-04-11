@@ -76,7 +76,7 @@
      $(document).ready(function(){
         //그리드 초기화
         fn_CreateGrid();
-        fn_setCodeBox("cb_auc_obj_dsc", "AUC_OBJ_DSC", 2);
+        fn_setCodeBox("cb_auc_obj_dsc", "AUC_OBJ_DSC", 5);
         if(isMobile){
             $('#ch_rmk_cntn_title').hide();
             $('#ch_rmk_cntn').hide();
@@ -238,8 +238,6 @@
         if(isMobile){
         	$(".mobile_search").show();
         }
-        	
-                
     }
     
     /*------------------------------------------------------------------------------
@@ -342,15 +340,11 @@
             $("#ch_rmk_cntn").val(($("#ch_rmk_cntn").is(":checked") ? "1" :"0"));
             //$("#ch_cow_wt").val(($("#ch_cow_wt").is(":checked") ? "1" :"0"));
             //$("#ch_lows_sbid_am").val(($("#ch_lows_sbid_am").is(":checked") ? "1" :"0"));
-            /*                                    1          2        3         4         5       6         7         8           9                10        11     12         13 */
-            var searchResultColNames = ["", "경매번호", "거치대번호", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량", "예정가"];        
+            /*                                    1        2         3          4            5                  6               7         8       9         */
+            var searchResultColNames = ["", "경매번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량", "예정가"];        
             var searchResultColModel = [                         
                                          {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},
                                          {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", sorttype: "number"},
-                                         {name:"MODL_NO",               index:"MODL_NO",                width:50,  align:'center'},
-                                         {name:"AUC_OBJ_DSC",           index:"AUC_OBJ_DSC",            width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},                                     
-                                         {name:"SRA_INDV_AMNNO1",       index:"SRA_INDV_AMNNO1",        width:80,  align:'center'},
-                                         {name:"SRA_INDV_AMNNO",        index:"SRA_INDV_AMNNO",         width:150, align:'center'},                                     
                                          {name:"FTSNM",                 index:"FTSNM",                  width:80,  align:'center'},
                                          {name:"AUC_DT",                index:"AUC_DT",                 width:10,  align:'center', hidden:true},
                                          {name:"OSLP_NO",               index:"OSLP_NO",                width:10,  align:'center', hidden:true},
@@ -364,15 +358,11 @@
         
         } else if($("#ch_modl_no").is(":checked")) {
                 $("#ch_modl_no").val("1");
-                /*                                    1            2        3         4         5       6         7         8           9                10      11     12         13 */
-                var searchResultColNames = ["", "경매번호", "거치대번호(*)", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고", "중량", "예정가"];        
+                /*                                    1        2        3           4            5                  6              7      8        9        */
+                var searchResultColNames = ["", "경매번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고", "중량", "예정가"];        
                 var searchResultColModel = [                         
                                              {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},
                                              {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", sorttype: "number"},
-                                             {name:"MODL_NO",               index:"MODL_NO",                width:50,  align:'center', editable:true},
-                                             {name:"AUC_OBJ_DSC",           index:"AUC_OBJ_DSC",            width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},                                     
-                                             {name:"SRA_INDV_AMNNO1",       index:"SRA_INDV_AMNNO1",        width:80,  align:'center'},
-                                             {name:"SRA_INDV_AMNNO",        index:"SRA_INDV_AMNNO",         width:150, align:'center'},                                     
                                              {name:"FTSNM",                 index:"FTSNM",                  width:80,  align:'center'},
                                              {name:"AUC_DT",                index:"AUC_DT",                 width:10,  align:'center', hidden:true},
                                              {name:"OSLP_NO",               index:"OSLP_NO",                width:10,  align:'center', hidden:true},
@@ -387,15 +377,11 @@
         } else {
             $("#ch_rmk_cntn").val("0");
             $("#ch_modl_no").val("0");
-            /*                                    1          2        3         4         5       6         7         8           9                10        11        12            13 */
-            var searchResultColNames = ["", "경매번호", "거치대번호", "경매대상", "대표코드", "귀표번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량(*)", "예정가(*)"];        
+            /*                                    1        2        3           4            5                  6               7         8           9      */
+            var searchResultColNames = ["", "경매번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량(*)", "예정가(*)"];        
             var searchResultColModel = [                         
                                          {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},                       
                                          {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", sorttype: "number"},
-                                         {name:"MODL_NO",               index:"MODL_NO",                width:50,  align:'center'},
-                                         {name:"AUC_OBJ_DSC",           index:"AUC_OBJ_DSC",            width:100, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 2)}},                                     
-                                         {name:"SRA_INDV_AMNNO1",       index:"SRA_INDV_AMNNO1",        width:80,  align:'center'},
-                                         {name:"SRA_INDV_AMNNO",        index:"SRA_INDV_AMNNO",         width:150, align:'center'},                                     
                                          {name:"FTSNM",                 index:"FTSNM",                  width:80,  align:'center'},
                                          {name:"AUC_DT",                index:"AUC_DT",                 width:10,  align:'center', hidden:true},
                                          {name:"OSLP_NO",               index:"OSLP_NO",                width:10,  align:'center', hidden:true},
