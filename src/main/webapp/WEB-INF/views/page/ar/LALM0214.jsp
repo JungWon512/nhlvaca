@@ -507,6 +507,7 @@
             if(gridData != null){
                 rowNoValue = gridData.length;
             }                    
+            $("#grd_MhSogCowH").jqGrid("GridUnload");
             $("#grd_MhSogCowH").jqGrid({
                 datatype:    "local",
                 data:        gridData,
@@ -521,7 +522,7 @@
                 userDataOnFooter: true,
                 colNames: ["H사업장코드","H경매일자","H원표번호","경매번호","경매대상","귀표번호","생년월일","월령","성별","계대","등록구분","KPN번호","어미귀표번호","산차","주소","성명","인공수정일자","임신 개월수","수정KPN","(송)귀표번호","(송)생년월일","(송)성별","(송)월령","비고"],
                 colModel: [
-         	       {name:"NA_BZPLC",             index:"NA_BZPLC",             width:90, height:30,  sortable:false, align:'center', hidden:true},
+         	       {name:"NA_BZPLC",             index:"NA_BZPLC",             width:90,  height:30,  sortable:false, align:'center', hidden:true},
         	       {name:"AUC_DT",               index:"AUC_DT",               width:90,  sortable:false, align:'center', hidden:true},
                    {name:"OSLP_NO",              index:"OSLP_NO",              width:90,  sortable:false, align:'center', hidden:true},
                    {name:"AUC_PRG_SQ",           index:"AUC_PRG_SQ",           width:50,  sortable:false, align:'center', sorttype: "number"},
@@ -541,10 +542,9 @@
                    {name:"PRNY_MTCN",            index:"PRNY_MTCN",            width:40,  sortable:false, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                    {name:"MOD_KPN_NO",           index:"MOD_KPN_NO",           width:50,  sortable:false, align:'center'},
                    {name:"INDV_AMNNO",           index:"INDV_AMNNO",           width:120, sortable:false, align:'center', formatter:'gridIndvFormat'},
-                   {name:"CALF_BIRTH",                index:"BIRTH",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
-                   {name:"CALF_INDV_SEX_C",           index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
-                   {name:"CALF_MTCN",                 index:"MTCN",                 width:40,  sortable:false, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
-                   
+                   {name:"CALF_BIRTH",           index:"BIRTH",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
+                   {name:"CALF_INDV_SEX_C",      index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
+                   {name:"CALF_MTCN",            index:"MTCN",                 width:40,  sortable:false, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},                   
                    {name:"RMK_CNTN",             index:"RMK_CNTN",             width:150, sortable:false, align:'left'}                                     
         		]
             });
@@ -618,7 +618,7 @@
                                    ,"낙찰가","브루셀라<br>검사일자","브루셀라<br>검사결과","브루셀라검사<br>증명서제출","예방접종<br>일자","예방접종<br>차수","괴사감정여부","괴사여부","임신감정여부","임신여부","임신구분","인공수정일자"
                                    ,"수정KPN","임신개월","인공수정<br>증명서제출여부","우결핵검사일","전송","주소","휴대폰번호","비고","친자검사결과","친자검사여부"
                                    ,"사료미사용여부","추가운송비","사료대금","당일접수비","브랜드명","수의사구분","고능력여부","난소적출여부","등록일시","등록자"
-                                   ,"계좌번호","출자금","딸린송아지<br>귀표번호","구분"
+                                   ,"계좌번호","출자금","딸린송아지<br>귀표번호","구분","H딸송생일","H딸송성별","H딸송월령"
                                   
                                   ];        
         var searchResultColModel = [
@@ -697,6 +697,10 @@
                                      {name:"SRA_PYIVA",            index:"SRA_PYIVA",            width:70,  sortable:false, align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                      {name:"INDV_AMNNO",           index:"INDV_AMNNO",           width:120, sortable:false, align:'center', formatter:'gridIndvFormat'},
                                      {name:"CASE_COW",             index:"CASE_COW",             width:90,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SRA_SOG_COW_DSC", 1)}},
+                                     {name:"CALF_BIRTH",           index:"BIRTH",                width:70,  sortable:false, align:'center', formatter:'gridDateFormat'},
+                					 {name:"CALF_INDV_SEX_C",      index:"INDV_SEX_C",           width:40,  sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
+					                 {name:"CALF_MTCN",            index:"MTCN",                 width:40,  sortable:false, align:'right', sorttype: "number", formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},                   
+                                     
                                      
                                      
                                     ];
@@ -831,7 +835,7 @@
         }
         
         //고정 타이틀 빼고 전부 숨김처리
-        $("#grd_MhSogCow_1").jqGrid("hideCol",["TRPCS_PY_YN","BIRTH","MTCN","SRA_INDV_PASG_QCN","SRA_INDV_BRDSRA_RG_NO","RG_DSC","RMHN_YN","KPN_NO","MCOW_SRA_INDV_AMNNO","MCOW_DSC","MATIME","COW_SOG_WT","VHC_DRV_CAFFNM","BRKR_NAME","LOWS_SBID_LMT_AM","SRA_SBID_UPR","SRA_SBID_AM","BRCL_ISP_DT","BRCL_ISP_RZT_C_NM","BRCL_ISP_CTFW_SMT_YN","VACN_DT","VACN_ORDER","NCSS_JUG_YN","NCSS_YN","PRNY_JUG_YN","PRNY_YN","PPGCOW_FEE_DSC","AFISM_MOD_DT","MOD_KPN_NO","PRNY_MTCN","AFISM_MOD_CTFW_SMT_YN","BOVINE_DT","TMS_YN","DONGUP","CUS_MPNO","RMK_CNTN","DNA_YN","DNA_YN_CHK","SRA_FED_SPY_YN","SRA_TRPCS","SRA_FED_SPY_AM","TD_RC_CST","BRANDNM","PDA_ID","EPD_YN","SPAY_YN","FSRG_DTM","USRNM","SRA_FARM_ACNO","SRA_PYIVA","INDV_AMNNO","CASE_COW"]);
+        $("#grd_MhSogCow_1").jqGrid("hideCol",["TRPCS_PY_YN","BIRTH","MTCN","SRA_INDV_PASG_QCN","SRA_INDV_BRDSRA_RG_NO","RG_DSC","RMHN_YN","KPN_NO","MCOW_SRA_INDV_AMNNO","MCOW_DSC","MATIME","COW_SOG_WT","VHC_DRV_CAFFNM","BRKR_NAME","LOWS_SBID_LMT_AM","SRA_SBID_UPR","SRA_SBID_AM","BRCL_ISP_DT","BRCL_ISP_RZT_C_NM","BRCL_ISP_CTFW_SMT_YN","VACN_DT","VACN_ORDER","NCSS_JUG_YN","NCSS_YN","PRNY_JUG_YN","PRNY_YN","PPGCOW_FEE_DSC","AFISM_MOD_DT","MOD_KPN_NO","PRNY_MTCN","AFISM_MOD_CTFW_SMT_YN","BOVINE_DT","TMS_YN","DONGUP","CUS_MPNO","RMK_CNTN","DNA_YN","DNA_YN_CHK","SRA_FED_SPY_YN","SRA_TRPCS","SRA_FED_SPY_AM","TD_RC_CST","BRANDNM","PDA_ID","EPD_YN","SPAY_YN","FSRG_DTM","USRNM","SRA_FARM_ACNO","SRA_PYIVA","INDV_AMNNO","CASE_COW","CALF_BIRTH","CALF_INDV_SEX_C","CALF_MTCN"]);
         
         ///////////////////////////////////////////////////////////////////////
         //스크롤 grd
@@ -917,7 +921,7 @@
         }
         
         //고정 전부 숨김처리
-        $("#grd_MhSogCow_2").jqGrid("hideCol",["AUC_PRG_SQ","AUC_OBJ_DSC","FHS_ID_NO","FTSNM","FHS_BIRTH","MACO_YN","JRDWO_DSC","SRA_PDMNM","RC_DT","SEL_STS_DSC","SRA_MWMNNM","LVST_AUC_PTC_MN_NO","SRA_INDV_AMNNO","INDV_SEX_C"]);
+        $("#grd_MhSogCow_2").jqGrid("hideCol",["AUC_PRG_SQ","AUC_OBJ_DSC","FHS_ID_NO","FTSNM","FHS_BIRTH","MACO_YN","JRDWO_DSC","SRA_PDMNM","RC_DT","SEL_STS_DSC","SRA_MWMNNM","LVST_AUC_PTC_MN_NO","SRA_INDV_AMNNO","INDV_SEX_C","CALF_BIRTH","CALF_INDV_SEX_C","CALF_MTCN"]);
         
         
         

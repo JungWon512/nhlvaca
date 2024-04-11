@@ -252,23 +252,6 @@
     		fn_IoSogmnMacoYnModify();
     	});
     	
-    	
-    	$('#pb_syncVacn').on('click',(e)=>{
-            e.preventDefault();            
-			fn_CallBrclIspSrch();
-		});
-		
-    	$('#pb_syncEpd').on('click',(e)=>{
-            e.preventDefault();            
-			fn_CallAiakInfoSync();
-		});
-		
-    	$('#pb_syncMEpd').on('click',(e)=>{
-            e.preventDefault();
-            if(!fn_isNull($("#mcow_sra_indv_amnno").val())){
-				fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());				
-			}
-		});
     	/******************************
          * 중도매인 검색 팝업 호출 이벤트(엔터)
          ******************************/
@@ -467,7 +450,7 @@
             	 }
               } else {
             	  if(na_bzplc != '8808990656601') {
-            		  $("#sra_srs_dsc").val("01");
+            		  $("#sra_srs_dsc").val("");
             		  $("#fhs_id_no").val("");
             		  $("#farm_amnno").val("");
             		  $("#ftsnm").val("");
@@ -4284,6 +4267,7 @@
     	var result = null;
     	
         srchData["SRA_INDV_AMNNO"]   = p_sra_indv_amnno;
+        srchData["AUC_DT"]   = $('#auc_dt').val();
         
         results = sendAjax(srchData, "/LALM0899_selAiakRestApi", "POST");
         

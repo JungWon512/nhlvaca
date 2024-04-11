@@ -825,9 +825,9 @@
     		if(na_bzplc =='8808990643625'){
         		ReportPopup('LALM0513R1_1',TitleData, 'grd_MhSogCow2,grd_MhSogCow2_1', 'V');    			
     		}else{
-        		ReportPopup('LALM0513R1',TitleData, 'grd_MhSogCow2,grd_MhSogCow2_1', 'V');    			
-    		}
- 
+    			ReportPopup('LALM0513R1',TitleData, 'grd_MhSogCow2,grd_MhSogCow2_1', 'V'); 
+	    	}
+
     	}
 
     	if($("#pb_tab3").hasClass("on")){

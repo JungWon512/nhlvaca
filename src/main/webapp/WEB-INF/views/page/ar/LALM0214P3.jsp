@@ -600,7 +600,7 @@
 		// 친자확인
         fn_CallLsPtntInfSrch(p_sra_indv_amnno,rowid);
     }
-	
+
   	//**************************************
  	//function  : fn_CallIndvInfSrch(개체정보검색 전 셋팅) 
  	//paramater : N/A
@@ -1185,7 +1185,7 @@
     			ExcelData['PRNY_YN'              ] = item[26]??'0'; // 임신여부                     
     			ExcelData['NCSS_JUG_YN'          ] = item[27]??'0'; // 괴사감정여부                 
     			ExcelData['NCSS_YN'              ] = item[28]??'0'; // 괴사여부                     
-    			ExcelData['RMK_CNTN'             ] = item[29]??''; // 비고                         
+    			ExcelData['RMK_CNTN'             ] = (item[29]??'').replaceAll('\r\n',' '); // 비고                         
     			ExcelData['FHS_ID_NO'            ] = item[30]??''; // 농가식별번호                 
     			ExcelData['FARM_AMNNO'           ] = item[31]??''; // 농가관리번호                 
     			ExcelData['DNA_YN_CHK'           ] = item[32]??'0'; // 친자검사여부                 

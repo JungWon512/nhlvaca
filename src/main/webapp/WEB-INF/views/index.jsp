@@ -921,11 +921,7 @@ function fn_sendIFrameDataReport(id, data){
     iform.id   = "iframeParam";
     iform.name = "iframeParam";
     iform.target = "report_" + id;
-<% if(InetAddress.getLocalHost().getHostAddress().indexOf("10.220.235.") > -1) { %>
     iform.action = "http://localhost:8270/aireport65/aiServer.jsp";
-<% }else { %>
-    iform.action = "/AIREPORT/AISERVER";
-<% }%>
     
     var inputData = document.createElement("input");
     inputData.setAttribute("type", "hidden");

@@ -2,10 +2,8 @@ package com.auc.lalm.ar.service.Impl;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,7 +24,6 @@ import com.auc.lalm.co.service.Impl.LALM0222PMapper;
 import com.auc.main.service.CommonService;
 import com.auc.main.service.LogService;
 import com.auc.mca.McaUtil;
-import com.google.common.base.CaseFormat;
 
 @Service("LALM0214P3Service")
 public class LALM0214P3ServiceImpl implements LALM0214P3Service{

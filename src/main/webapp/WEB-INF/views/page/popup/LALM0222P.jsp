@@ -328,17 +328,6 @@
         fn_setCodeBox("sra_indv_stsc", "SRA_INDV_STSC", 1);
         fn_setCodeBox("sra_indv_mcow_brdsra_rg_dsc", "SRA_INDV_BRDSRA_RG_DSC", 1);
         
-
-        $("#btn_Close").unbind('click').click(function(event){
-            event.preventDefault();
-        	this.blur();
-
-            var len = $('#grd_BhCross').getRowData().length;
-            pageInfo.returnValue = {}; 
-            parent.$("#pop_result_" + pageInfo.popup_info.PGID ).val(true).trigger('change');
-            parent.PopupClose("#popupPage_LALM0222P");
-            return false;                  
-        });  
         /******************************
          * 개체이월일자 변경이벤트
          ******************************/
@@ -472,7 +461,6 @@
     	 selresult.LIST_CATTLE_MOVE = $('#grd_CattleMove').getRowData();	//이동정보
     	 selresult.LIST_BH_PTUR = $('#grd_BhPtur').getRowData();			//분만정보
     	 selresult.LIST_BH_CROSS = $('#grd_BhCross').getRowData();			//교배정보
-    	 
          var results = sendAjax(selresult, "/LALM0222P_updReturnValue", "POST");
          var returnVal;
          

@@ -174,8 +174,6 @@ public class JwtRequestFilter extends OncePerRequestFilter{
 				log.info("JwtToken SQL Error",ex);
 				request.setAttribute("exception", ErrorCode.INVALID_TOKEN.getCode());
 			}
-        } else {
-//        	log.warn("JWT Token does not begin with Bearer String");
         }
 
         // Once we get the token validate it.
