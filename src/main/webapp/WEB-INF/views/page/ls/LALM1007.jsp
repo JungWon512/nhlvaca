@@ -36,7 +36,7 @@ var mCnt = 0;
 	    /******************************
 	     * 초기값 설정
 	     ******************************/             
-	    fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 2, true);
+	    fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 5, true);
 	    fn_setCodeBox("sra_rv_tpc",  "SRA_RV_TPC", 1, true);
 	    fn_setCodeRadio();
 	

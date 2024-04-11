@@ -44,8 +44,8 @@
     
 	$(document).ready(function(){
 		
-		fn_setCodeBox("cb_auc_obj_dsc", "AUC_OBJ_DSC", 2);
-	    fn_setCodeRadio("auc_obj_dsc","hd_auc_obj_dsc","AUC_OBJ_DSC", 2);
+		fn_setCodeBox("cb_auc_obj_dsc", "AUC_OBJ_DSC", 5);
+	    fn_setCodeRadio("auc_obj_dsc","hd_auc_obj_dsc","AUC_OBJ_DSC", 5);
 	    
 	    fn_Init();
 	    
@@ -225,7 +225,7 @@
 		if(na_bzplc == "8808990656588" || na_bzplc == "8808990659008") {
 			 $("#cb_auc_obj_dsc").val("0"); 
 		} else {
-			 $("#cb_auc_obj_dsc").val("1");
+			 $("#cb_auc_obj_dsc").val("5");
 		}
 		 
 		fn_DisableFrm('frm_MhAucEntr', true);
@@ -1054,14 +1054,14 @@
                                     </div>
                                     <input type="hidden" id="hd_auc_obj_dsc" name="hd_auc_obj_dsc">
                                 </td>
-                                <th scope="row"><span>추가경매대상</span></th>
+                                <!-- <th scope="row"><span>추가경매대상</span></th>
                                 <td>
                                     <input type="checkbox" id="cb_auc_obj_dsc1" name="cb_auc_obj_dsc1" class="auc_obj_dsc" value="1"> 송아지
                                     <input type="checkbox" id="cb_auc_obj_dsc2" name="cb_auc_obj_dsc2" class="auc_obj_dsc" value="2"> 비육우
                                     <input type="checkbox" id="cb_auc_obj_dsc3" name="cb_auc_obj_dsc3" class="auc_obj_dsc" value="3"> 번식우                   
-                                </td>
+                                </td> -->
                                 <th scope="row"><span>경매차수</span></th>
-                                <td>
+                                <td colspan="3">
                                     <input type="text" disabled="disabled" id="ddl_qcn">
                                 </td>                                
                             </tr>
