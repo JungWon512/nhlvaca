@@ -127,7 +127,7 @@
          ******************************/
         $("#ch_rmk_cntn").change(function() {
         	if($("#ch_rmk_cntn").is(":checked")) {
-        		$("#ch_modl_no").prop("checked", false);
+        		// $("#ch_modl_no").prop("checked", false);
         		$("#ch_cow_wt").prop("checked", false);
         		$("#ch_lows_sbid_am").prop("checked", false);
     			$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
@@ -142,7 +142,7 @@
         $("#ch_lows_sbid_am").change(function() {        
         	if($("#ch_lows_sbid_am").is(":checked")) {
         		$("#ch_rmk_cntn").prop("checked", false);
-        		$("#ch_modl_no").prop("checked", false);
+        		// $("#ch_modl_no").prop("checked", false);
         		$("#ch_cow_wt").prop("checked", false);
     			$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
         	}else{
@@ -156,7 +156,7 @@
         $("#ch_cow_wt").change(function() {
         	if($("#ch_cow_wt").is(":checked")) {
         		$("#ch_rmk_cntn").prop("checked", false);
-        		$("#ch_modl_no").prop("checked", false);
+        		// $("#ch_modl_no").prop("checked", false);
         		$("#ch_lows_sbid_am").prop("checked", false);
     			$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
         	}else{
@@ -167,17 +167,17 @@
         /******************************
          * 거치대번호 checkbox 이벤트
          ******************************/
-        $("#ch_modl_no").change(function() {
-        	if($("#ch_modl_no").is(":checked")) {
-        		$("#ch_rmk_cntn").prop("checked", false);
-        		$("#ch_cow_wt").prop("checked", false);
-        		$("#ch_lows_sbid_am").prop("checked", false);
-    			$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
-        	}
-        	else{
-        		$("#btn_allLowsSbidLmtAmMinus").attr("disabled", false);        		
-        	}
-    	});
+        // $("#ch_modl_no").change(function() {
+        // 	if($("#ch_modl_no").is(":checked")) {
+        // 		$("#ch_rmk_cntn").prop("checked", false);
+        // 		$("#ch_cow_wt").prop("checked", false);
+        // 		$("#ch_lows_sbid_am").prop("checked", false);
+    	// 		$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
+        // 	}
+        // 	else{
+        // 		$("#btn_allLowsSbidLmtAmMinus").attr("disabled", false);        		
+        // 	}
+    	// });
         
         $('#btn_allLowsSbidLmtAmMinus').click((e)=>{
             e.preventDefault();
@@ -229,7 +229,7 @@
         if(na_bzplc == "8808990656588" || na_bzplc == "8808990659008") {
             $("#cb_auc_obj_dsc").val("0");        
         } else {
-            $("#cb_auc_obj_dsc").val("1");
+            $("#cb_auc_obj_dsc").val("5");
         }
         
         $("#calf_auc_atdr_unt_am").val(parent.envList[0]["CALF_AUC_ATDR_UNT_AM"]);
@@ -296,9 +296,8 @@
                      
              if($("#ch_rmk_cntn").is(":checked")) {
                  result = sendAjax(srchData, "/LALM1005_updRmkPgm", "POST");
-                 
-             } else if($("#ch_modl_no").is(":checked")) {
-            	 result = sendAjax(srchData, "/LALM1005_updModlPgm", "POST");            	 
+            //  } else if($("#ch_modl_no").is(":checked")) {
+            // 	 result = sendAjax(srchData, "/LALM1005_updModlPgm", "POST");            	 
              }else if($("#ch_cow_wt").is(":checked") || $("#ch_lows_sbid_am").is(":checked")) {
             	 srchData["chk_save_type"] = $(".chk_save_type:checked").val(); 
             	 result = sendAjax(srchData, "/LALM1005_updPgmOnlySave", "POST");            	 
@@ -356,27 +355,27 @@
                                          
                                         ];        
         
-        } else if($("#ch_modl_no").is(":checked")) {
-                $("#ch_modl_no").val("1");
-                /*                                    1        2        3           4            5                  6              7      8        9        */
-                var searchResultColNames = ["", "경매번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고", "중량", "예정가"];        
-                var searchResultColModel = [                         
-                                             {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},
-                                             {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", sorttype: "number"},
-                                             {name:"FTSNM",                 index:"FTSNM",                  width:80,  align:'center'},
-                                             {name:"AUC_DT",                index:"AUC_DT",                 width:10,  align:'center', hidden:true},
-                                             {name:"OSLP_NO",               index:"OSLP_NO",                width:10,  align:'center', hidden:true},
-                                             {name:"LED_SQNO",              index:"LED_SQNO",               width:10,  align:'center', hidden:true},
-                                             {name:"FIR_LOWS_SBID_LMT_AM",  index:"FIR_LOWS_SBID_LMT_AM",   width:10,  align:'center', hidden:true},
-                                             {name:"RMK_CNTN",              index:"RMK_CNTN",               width:200, align:'left'},
-                                             {name:"COW_SOG_WT",            index:"COW_SOG_WT",             width:70,  align:'right'},
-                                             {name:"LOWS_SBID_LMT_AM",      index:"LOWS_SBID_LMT_AM",       width:90,  align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+        // } else if($("#ch_modl_no").is(":checked")) {
+        //         $("#ch_modl_no").val("1");
+        //         /*                                    1        2        3           4            5                  6              7      8        9        */
+        //         var searchResultColNames = ["", "경매번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고", "중량", "예정가"];        
+        //         var searchResultColModel = [                         
+        //                                      {name:"_STATUS_",              index:"_STATUS_",               width:10,  align:'center'},
+        //                                      {name:"AUC_PRG_SQ",            index:"AUC_PRG_SQ",             width:50,  align:'center',formatter: "integer", sorttype: "number"},
+        //                                      {name:"FTSNM",                 index:"FTSNM",                  width:80,  align:'center'},
+        //                                      {name:"AUC_DT",                index:"AUC_DT",                 width:10,  align:'center', hidden:true},
+        //                                      {name:"OSLP_NO",               index:"OSLP_NO",                width:10,  align:'center', hidden:true},
+        //                                      {name:"LED_SQNO",              index:"LED_SQNO",               width:10,  align:'center', hidden:true},
+        //                                      {name:"FIR_LOWS_SBID_LMT_AM",  index:"FIR_LOWS_SBID_LMT_AM",   width:10,  align:'center', hidden:true},
+        //                                      {name:"RMK_CNTN",              index:"RMK_CNTN",               width:200, align:'left'},
+        //                                      {name:"COW_SOG_WT",            index:"COW_SOG_WT",             width:70,  align:'right'},
+        //                                      {name:"LOWS_SBID_LMT_AM",      index:"LOWS_SBID_LMT_AM",       width:90,  align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
                                              
-                                            ];        
+        //                                     ];        
             
         } else {
             $("#ch_rmk_cntn").val("0");
-            $("#ch_modl_no").val("0");
+            // $("#ch_modl_no").val("0");
             /*                                    1        2        3           4            5                  6               7         8           9      */
             var searchResultColNames = ["", "경매번호", "출하주", "경매일자", "원표번호", "원장일련번호", "최초최저낙찰한도금액", "비고(*)", "중량(*)", "예정가(*)"];        
             var searchResultColModel = [                         
@@ -552,8 +551,8 @@
                                     <input type="checkbox" class="chk_save_type" id="ch_cow_wt" name="ch_cow_wt" value="W">
                                     <label for="ch_lows_sbid_am"><span id="ch_lows_sbid_am_title">&nbsp;&nbsp;&nbsp;예정가만저장</span></label>
                                     <input type="checkbox" class="chk_save_type" id="ch_lows_sbid_am" name="ch_lows_sbid_am" value="L">
-                                    <label for="ch_modl_no"><span id="ch_rmk_cntn_title">&nbsp;&nbsp;&nbsp;거치대변경</span></label>
-                                    <input type="checkbox" class="chk_save_type" id="ch_modl_no" name="ch_modl_no" value="0">
+                                    <!-- <label for="ch_modl_no"><span id="ch_rmk_cntn_title">&nbsp;&nbsp;&nbsp;거치대변경</span></label>
+                                    <input type="checkbox" class="chk_save_type" id="ch_modl_no" name="ch_modl_no" value="0"> -->
                                     
                                     <input type="hidden" id="calf_auc_atdr_unt_am">
                                     <input type="hidden" id="nbfct_auc_atdr_unt_am">
