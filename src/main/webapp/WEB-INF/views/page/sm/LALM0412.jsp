@@ -1262,11 +1262,7 @@ var mCnt = 0;
 	//paramater : N/A
 	// result   : N/A
 	//**************************************	
-	function fn_BtnAdj_fm_print(p_param, p_grid) {
-		if($("#auc_obj_dsc").val() == '5'){
-			ReportPopup('LALM0412G0',p_param, p_grid, 'V');
-			return;
-		}
+	function fn_BtnAdj_fm_print(p_param, p_grid) {		
 		// 1형식
 		if (($("#prto_tpc_1").is(":checked"))) {
 			// 영주:8808990687094
