@@ -198,7 +198,7 @@
             
             var stAucNo = new Number($('#st_auc_no').val());
             var edAucNo = new Number($('#ed_auc_no').val());
-            var minusAm = new Number($('#minus_am').val());
+            var minusAm = new Number($('#minus_am').val().replace(",", ""));
             data.forEach((o,i)=>{
         		var lowAm = new Number(o.LOWS_SBID_LMT_AM);
             	if(stAucNo <= new Number(o.AUC_PRG_SQ) && edAucNo >= new Number(o.AUC_PRG_SQ) && lowAm > 0){

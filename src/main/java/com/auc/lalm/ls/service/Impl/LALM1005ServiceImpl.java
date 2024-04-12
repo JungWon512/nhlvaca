@@ -44,12 +44,14 @@ public class LALM1005ServiceImpl implements LALM1005Service{
 		List<Map<String, Object>> tmpList = (List<Map<String, Object>>)tmpChangeData;
 		Map<String, Object> reMap         = new HashMap<String, Object>();
 		Map<String, Object> tmpObject     = null;
-		
+		String auc_obj_dsc     = map.get("auc_obj_dsc").toString();
+
 		int updateNum = 0;
 		
 		for(int i = 0; i < tmpList.size(); i ++) {
 			tmpObject = null;
 			tmpObject = (Map<String, Object>)tmpList.get(i);
+			tmpObject.put("auc_obj_dsc", auc_obj_dsc);
 
 			updateNum += lalm1005Mapper.LALM1005_updRmkPgm(tmpObject);		
 			reMap.put("updateNum", updateNum);
@@ -118,6 +120,7 @@ public class LALM1005ServiceImpl implements LALM1005Service{
 		String nbfct_auc_atdr_unt_am      = map.get("nbfct_auc_atdr_unt_am").toString();
 		String ppgcow_auc_atdr_unt_am     = map.get("ppgcow_auc_atdr_unt_am").toString();
 		String chk_save_type     = map.getOrDefault("chk_save_type","").toString();
+		String auc_obj_dsc     = map.get("auc_obj_dsc").toString();
 		
 		List<Map<String, Object>> tmpList = (List<Map<String, Object>>)tmpChangeData;
 		Map<String, Object> reMap         = new HashMap<String, Object>();
@@ -134,6 +137,7 @@ public class LALM1005ServiceImpl implements LALM1005Service{
 			tmpObject.put("calf_auc_atdr_unt_am", calf_auc_atdr_unt_am);
 			tmpObject.put("nbfct_auc_atdr_unt_am", nbfct_auc_atdr_unt_am);
 			tmpObject.put("ppgcow_auc_atdr_unt_am", ppgcow_auc_atdr_unt_am);
+			tmpObject.put("auc_obj_dsc", auc_obj_dsc);
 
 			insLogNum += lalm1005Mapper.LALM1005_insLogPgm(tmpObject);
 			updateNum += lalm1005Mapper.LALM1005_updPgmOnlySave(tmpObject);		
