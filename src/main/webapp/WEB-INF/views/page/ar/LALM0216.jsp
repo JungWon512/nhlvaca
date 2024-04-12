@@ -1078,6 +1078,8 @@ var na_bzplc = App_na_bzplc;
             			 
             		 } else if(na_bzplc == '8808990656694'){ //서산태안
              			 ReportPopup('LALM0216R3_6_J_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             		 } else if(na_bzplc == '8808990659268'){ //논산계룡
+             			 ReportPopup('LALM0216R3_6_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 } else {
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 }
@@ -1395,10 +1397,9 @@ var na_bzplc = App_na_bzplc;
 					 }else if(na_bzplc == '8808990656694'){ //서산태안
 						 ReportPopup('LALM0216R3_6_J_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
 						 
-					 } else {
-	            		 grid4 = grid4.map((o,i)=>{
-							return o;
-						 }); 
+					 } else if(na_bzplc == '8808990659268'){ //논산계룡
+             			 ReportPopup('LALM0216R3_6_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             		 } else {
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 }

@@ -369,9 +369,9 @@
                             </a>
                         </li>
                         <li>
-                            <a href="javascript:;" pgid="LALM0318">
+                            <a href="javascript:;" pgid="LALM0312">
                                 <img src="/images/common/lalm0321.png" alt="">
-                                <p>산정가 처리</p>
+                                <p>산정가 조회</p>
                             </a>
                         </li>
                         <li>
