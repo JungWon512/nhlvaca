@@ -1598,8 +1598,8 @@ var mCnt = 0;
                             <col width="*">
                             <col width="90">
                             <col width="*">
-                            <col width="90">
-                            <col width="*">
+                            <!-- <col width="90">
+                            <col width="*"> -->
                         </colgroup>
                         <tbody>
                             <tr>

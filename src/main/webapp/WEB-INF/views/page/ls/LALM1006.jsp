@@ -981,8 +981,8 @@
                             <col width="180">
                             <col width="80">
                             <col width="*">                            
-                            <col width="150">
-                            <col width="*">
+                            <!-- <col width="150">
+                            <col width="*"> -->
                         </colgroup>
                         <tbody>
                             <tr>

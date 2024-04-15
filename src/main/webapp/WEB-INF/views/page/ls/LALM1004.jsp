@@ -390,7 +390,7 @@
 									<td>
 										<div class="cellBox">
 											<div class="cell">
-												<input type="text" class="date" id="sch_auc_dt" maxlength="10" style="width:48.3%;" />
+												<input type="text" class="date" id="sch_auc_dt" maxlength="10" style="width:100%;" />
 											</div>
 										</div>
 									</td>
