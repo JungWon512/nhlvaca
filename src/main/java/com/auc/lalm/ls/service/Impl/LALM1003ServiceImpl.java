@@ -19,7 +19,7 @@ public class LALM1003ServiceImpl implements LALM1003Service {
 	@Autowired
 	LogService logService;
 	@Autowired
-	LALM1003Mapper lsam0202Mapper;
+	LALM1003Mapper lalm1003Mapper;
 	@Autowired
 	CommonService commonService;
 
@@ -27,7 +27,7 @@ public class LALM1003ServiceImpl implements LALM1003Service {
 	public List<Map<String, Object>> LALM1003_selList(Map<String, Object> map) throws Exception {
 
 		List<Map<String, Object>> list = null;
-		list = lsam0202Mapper.LALM1003_selList(map);
+		list = lalm1003Mapper.LALM1003_selList(map);
 		return list;
 	}
 
@@ -35,7 +35,7 @@ public class LALM1003ServiceImpl implements LALM1003Service {
 	public List<Map<String, Object>> LALM1003_selAucQcn(Map<String, Object> map) throws Exception {
 
 		List<Map<String, Object>> list = null;
-		list = lsam0202Mapper.LALM1003_selAucQcn(map);
+		list = lalm1003Mapper.LALM1003_selAucQcn(map);
 		return list;
 	}
 
@@ -43,25 +43,25 @@ public class LALM1003ServiceImpl implements LALM1003Service {
 	public List<Map<String, Object>> LALM1003_selCalfList(Map<String, Object> map) throws Exception {
 
 		List<Map<String, Object>> list = null;
-		list = lsam0202Mapper.LALM1003_selCalfList(map);
+		list = lalm1003Mapper.LALM1003_selCalfList(map);
 		return list;
 	}
 
 	@Override
 	public int LALM1003_selAucTmsCnt(Map<String, Object> map) throws Exception {
 
-		int iCnt = lsam0202Mapper.LALM1003_selAucTmsCnt(map);
+		int iCnt = lalm1003Mapper.LALM1003_selAucTmsCnt(map);
 		return iCnt;
 	}
 
 	@Override
 	public Map<String, Object> LALM1003_insFeeReset(Map<String, Object> map) throws Exception {
 		int insertNum = 0;
-		// 출장우 내역조회
-		List<Map<String, Object>> grd_MhSogCow = lsam0202Mapper.LALM1003_selList2(map);
+		// 출장내역 조회
+		List<Map<String, Object>> grd_MhSogCow = lalm1003Mapper.LALM1003_selList2(map);
 
 		if (grd_MhSogCow.size() < 1) {
-			throw new CusException(ErrorCode.CUSTOM_ERROR, "출장우가 없습니다.<br>상단의 검색조건을 확인해 주세요.");
+			throw new CusException(ErrorCode.CUSTOM_ERROR, "출장내역이 없습니다.<br>상단의 검색조건을 확인해 주세요.");
 		}
 
 		insertNum = commonService.Common_insFeeImps(grd_MhSogCow);
@@ -74,7 +74,7 @@ public class LALM1003ServiceImpl implements LALM1003Service {
 	@Override
 	public Map<String, Object> LALM1003_selFeeImps(Map<String, Object> map) throws Exception {
 
-		Map<String, Object> reMap = lsam0202Mapper.LALM1003_selFeeImps(map);
+		Map<String, Object> reMap = lalm1003Mapper.LALM1003_selFeeImps(map);
 		return reMap;
 	}
 
@@ -87,9 +87,9 @@ public class LALM1003ServiceImpl implements LALM1003Service {
 		// 프로그램 DB 저장
 		insertNum = logService.insSogCowLog(map);
 		reMap.put("insertNum", insertNum);
-		deleteNum = deleteNum + lsam0202Mapper.LALM1003_delSogCog(map);
-		deleteNum = deleteNum + lsam0202Mapper.LALM1003_delFeeImps(map);
-		deleteNum = deleteNum + lsam0202Mapper.LALM1003_delCalf(map);
+		deleteNum = deleteNum + lalm1003Mapper.LALM1003_delSogCog(map);
+		deleteNum = deleteNum + lalm1003Mapper.LALM1003_delFeeImps(map);
+		deleteNum = deleteNum + lalm1003Mapper.LALM1003_delCalf(map);
 		reMap.put("deleteNum", deleteNum);
 		return reMap;
 	}
@@ -99,7 +99,7 @@ public class LALM1003ServiceImpl implements LALM1003Service {
 
 		Map<String, Object> reMap = new HashMap<String, Object>();
 		int deleteNum = 0;
-		deleteNum = deleteNum + lsam0202Mapper.LALM1003_delCntnDel(map);
+		deleteNum = deleteNum + lalm1003Mapper.LALM1003_delCntnDel(map);
 		reMap.put("deleteNum", deleteNum);
 		return reMap;
 	}
@@ -108,7 +108,7 @@ public class LALM1003ServiceImpl implements LALM1003Service {
 	public List<Map<String, Object>> LALM1003P1_selList(Map<String, Object> map) throws Exception {
 
 		List<Map<String, Object>> list = null;
-		list = lsam0202Mapper.LALM1003P1_selList(map);
+		list = lalm1003Mapper.LALM1003P1_selList(map);
 		return list;
 
 	}
@@ -117,7 +117,7 @@ public class LALM1003ServiceImpl implements LALM1003Service {
 	public List<Map<String, Object>> LALM1003P4_selList(Map<String, Object> map) throws Exception {
 
 		List<Map<String, Object>> list = null;
-		list = lsam0202Mapper.LALM1003P4_selList(map);
+		list = lalm1003Mapper.LALM1003P4_selList(map);
 		return list;
 
 	}
@@ -134,7 +134,7 @@ public class LALM1003ServiceImpl implements LALM1003Service {
 			tmpObject = null;
 			tmpObject = (Map<String, Object>) inList.get(i);
 
-			updateNum += lsam0202Mapper.LALM1003P2_updCow(tmpObject);
+			updateNum += lalm1003Mapper.LALM1003P2_updCow(tmpObject);
 			reMap.put("updateNum", updateNum);
 		}
 
@@ -153,7 +153,7 @@ public class LALM1003ServiceImpl implements LALM1003Service {
 			tmpObject = null;
 			tmpObject = (Map<String, Object>) inList.get(i);
 
-			updateNum += lsam0202Mapper.LALM1003P4_updCowBun(tmpObject);
+			updateNum += lalm1003Mapper.LALM1003P4_updCowBun(tmpObject);
 			reMap.put("updateNum", updateNum);
 		}
 

@@ -16,7 +16,6 @@ import com.auc.common.exception.CusException;
 import com.auc.common.exception.ErrorCode;
 import com.auc.common.util.StringUtils;
 import com.auc.common.vo.ResolverMap;
-import com.auc.lalm.co.service.Impl.LALM0222PServiceImpl;
 import com.auc.main.service.CommonService;
 import com.auc.main.service.LogService;
 import com.auc.main.service.MainService;
@@ -112,7 +111,8 @@ public class CommonServiceImpl implements CommonService{
 				double v_upr = 0;
 				
 				if("010".equals(MhFee.get("na_fee_c")) || "011".equals(MhFee.get("na_fee_c"))) {
-					if(MhSogCow.get("ppgcow_fee_dsc").equals(MhFee.get("ppgcow_fee_dsc"))) {
+					// if(MhSogCow.get("ppgcow_fee_dsc").equals(MhFee.get("ppgcow_fee_dsc"))) {
+					if(MhFee.get("ppgcow_fee_dsc").equals(MhSogCow.get("ppgcow_fee_dsc"))) {
 						if("1".equals(MhFee.get("am_rto_dsc"))) {//금액
 							
 							if("1".equals(MhFee.get("fee_apl_obj_c"))) {//출하자
