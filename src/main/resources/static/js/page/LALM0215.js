@@ -170,7 +170,11 @@
  					    }
    		            }
    		        } else {
-   		        	fn_contrChBox(false, "prny_jug_yn", "");
+					if(App_na_bzplc == '8808990656663'){
+   		        		fn_contrChBox(true, "prny_jug_yn", "");						
+					}else{
+   		        		fn_contrChBox(false, "prny_jug_yn", "");						
+					}
 	            	//경주축협일때 임신구분 자동체크
 	            	if (App_na_bzplc == '8808990659008'){
    		        		fn_contrChBox(false, "prny_yn", "");						   

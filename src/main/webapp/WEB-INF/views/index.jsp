@@ -46,9 +46,8 @@ $(document).ready(function() {
     $('#nav_menu_userInfo').on('click',function(e){
     	if(App_grp_c == '001'){
     		var comboList = ${naList};
-            
+    	    comboList.sort((a,b)=>{return (a.NA_BZPLNM > b.NA_BZPLNM)?1:-1;});
     	    var chg_na_bzplc = '<select id="chg_na_bzplc_select" onchange="$(\'#nav_menu_userInfo\').attr(\'na_bzplc\',this.value);">';
-
     	    $.each(comboList, function(i){
     	        var v_simp_nm = ('['+comboList[i].NA_BZPLC + '] ' + comboList[i].NA_BZPLNM);
     	        chg_na_bzplc = chg_na_bzplc + '<option value="' + comboList[i].NA_BZPLC + (comboList[i].NA_BZPLC == App_na_bzplc? '" selected':'"') + '>' + v_simp_nm + '</option>';
@@ -118,7 +117,7 @@ $(document).ready(function() {
                 fn_adminPop('LALM9999');                     
             });
     	}
-    })
+    });
 
     //기준정보 가져오기
     var baseInfoData = sendAjaxFrm("", "/selectBaseInfo", "POST");
