@@ -314,61 +314,68 @@
 
             if(sqno) {
                 result = result.filter((el) => parseInt(el.FEE_RG_SQNO) !== parseInt(sqno) );
-                // console.log('수정 시, result:', result)
             } else {
                 result = result.filter((el) => el.APL_DT === $("#apl_dt").val().replace(/-/g, ''));
             }
 
-            // 2. 추가하려는 적용기준이 무엇이던간에 이미 데이터에 마리별이 있으면 무조건 추가 안됨. 
-            if((result.some((el) => el.JNLZ_BSN_DSC !== "2")) === false && result.length > 0) {
-                MessagePopup('OK', "같은 적용일자 기준 마리별 수수료 데이터가 존재합니다.", () => {
-                    $("#jnlz_bsn_dsc").focus();
-                }) 
-                return false;
-            // 3. 적용기준이 같으면 true, 아니면 fale (추가하려는 적용기준이 마리별인데 이미있는 데이터에 구간별이 있으면 안됨)
-            } else if ((result.some((el) => el.JNLZ_BSN_DSC === $("#jnlz_bsn_dsc").val())) === false && result.length > 0) {
-                MessagePopup('OK', "같은 적용일자 기준 동일한 적용기준으로 입력해주세요.", () => {
-                    $("#jnlz_bsn_dsc").focus();
-                }) 
-                return false;
-            // 4. 적용기준이 "1"일 경우, 적용구간이 result내의 적용구간과 겹치면 안됨. st_sog_wt(하한) / ed_sog_wt(상한)
-            // TODO(완료) 적용구간이 같더라도 수수료 종류가 다르면 OK    
-            } else if ($("#jnlz_bsn_dsc").val() === "1" && result.length > 0) {
-                var stVal = $("#st_sog_wt").val();
-                var edVal = $("#ed_sog_wt").val();
-                
-                var isOverlap = result.some((el) => {
-                    if(el.JNLZ_BSN_DSC === "1") {
-                        var resultStVal = parseInt(el.ST_SOG_WT);
-                        var resultEdVal = parseInt(el.ED_SOG_WT);
-                        var isOverLapNaFeeC = $("#na_fee_c").val() === el.NA_FEE_C; // 수수료 종류 겹침 여부
+            let ins_fee_apl_obj_c = $("#fee_apl_obj_c").val();
 
-                        // 구간이 겹치면 true. 겹치는 구간이 없으면 false
-                        // 사실상 기존 상한 값과 추가하려는 하한값만 비교하면 됨.(resultEdVal <= stVal )
-                        // 구간 겹치고 && 수수료종류 다르면 겹치지 않는 것으로 판단.
-                        if(  (stVal < resultEdVal &&  !isOverLapNaFeeC) || (edVal === resultStVal &&  !isOverLapNaFeeC) ) {
-                            return false;
-                        // 구간 겹치고 && 수수료종류도 같으면 겹치는 것으로 판단.
-                        } else if(
-                            (stVal < resultEdVal && edVal > resultStVal && isOverLapNaFeeC) ||
-                            (edVal === resultStVal && isOverLapNaFeeC) ||
-                            (stVal === resultEdVal && isOverLapNaFeeC)
-                        ) {
-                            return true;
+            // 추가 하려는 적용 대상이 아예 존재하지 않을 경우 무조건 추가
+            if (!result.every((el) => el.FEE_APL_OBJ_C !== ins_fee_apl_obj_c )) {
+                // 2. 추가하려는 적용기준이 무엇이던간에 이미 데이터에 마리별이 있으면 무조건 추가 안됨. 
+                // => 적용대상은 달라도 됨.
+                if((result.some((el) => el.JNLZ_BSN_DSC !== "2" && el.FEE_APL_OBJ_C )) === false  && result.length > 0) {
+                    MessagePopup('OK', "같은 적용일자 기준 마리별 수수료 데이터가 존재합니다.", () => {
+                        $("#jnlz_bsn_dsc").focus();
+                    }) 
+                    return false;
+                // 3. 적용기준이 같으면 true, 아니면 fale (추가하려는 적용기준이 마리별인데 이미있는 데이터에 구간별이 있으면 안됨)
+                } else if ((result.some((el) => el.JNLZ_BSN_DSC === $("#jnlz_bsn_dsc").val())) === false && result.length > 0) {
+                    MessagePopup('OK', "같은 적용일자 기준 동일한 적용기준으로 입력해주세요.", () => {
+                        $("#jnlz_bsn_dsc").focus();
+                    }) 
+                    return false;
+                // 4. 적용기준이 "1"일 경우, 적용구간이 result내의 적용구간과 겹치면 안됨. st_sog_wt(하한) / ed_sog_wt(상한)
+                // TODO(완료) 적용구간이 같더라도 수수료 종류가 다르면 OK    
+                } else if ($("#jnlz_bsn_dsc").val() === "1" && result.length > 0) {
+                    var stVal = $("#st_sog_wt").val();
+                    var edVal = $("#ed_sog_wt").val();
+                    
+                    var isOverlap = result.some((el) => {
+                        if(el.JNLZ_BSN_DSC === "1") {
+                            var resultStVal = parseInt(el.ST_SOG_WT);
+                            var resultEdVal = parseInt(el.ED_SOG_WT);
+                            var isOverLapNaFeeC = $("#na_fee_c").val() === el.NA_FEE_C; // 수수료 종류 겹침 여부
+
+                            // 구간이 겹치면 true. 겹치는 구간이 없으면 false
+                            // 사실상 기존 상한 값과 추가하려는 하한값만 비교하면 됨.(resultEdVal <= stVal )
+                            // 구간 겹치고 && 수수료종류 다르면 겹치지 않는 것으로 판단.
+                            if(  (stVal < resultEdVal &&  !isOverLapNaFeeC) || (edVal === resultStVal &&  !isOverLapNaFeeC) ) {
+                                return false;
+                            // 구간 겹치고 && 수수료종류도 같으면 겹치는 것으로 판단.
+                            } else if(
+                                (stVal < resultEdVal && edVal > resultStVal && isOverLapNaFeeC) ||
+                                (edVal === resultStVal && isOverLapNaFeeC) ||
+                                (stVal === resultEdVal && isOverLapNaFeeC)
+                            ) {
+                                return true;
+                            }
                         }
-                    }
-                    return false;
-                })
+                        return false;
+                    })
 
-                // 겹치는지 check
-                if(isOverlap === true) {
-                    MessagePopup('OK', "적용구간이 겹치는 데이터가 이미 존재합니다.", () => {
-                    $("#st_sog_wt").focus();
-                    $("#ed_sog_wt").focus();
-                });
-                    return false;
-                }
-            } 
+                    // 겹치는지 check
+                    if(isOverlap === true) {
+                        MessagePopup('OK', "적용구간이 겹치는 데이터가 이미 존재합니다.", () => {
+                        $("#st_sog_wt").focus();
+                        $("#ed_sog_wt").focus();
+                    });
+                        return false;
+                    }
+                } 
+            } else { 
+            return true;
+            }
             return true;
         } else if(results.status != RETURN_SUCCESS && results.dataCnt !== 0) {
             showErrorMessage(results);
