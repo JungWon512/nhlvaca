@@ -803,4 +803,34 @@
 		) A
 		WHERE ROWNUM <![CDATA[ <= ]]> 4  
 	</select>
+   
+    <select id="MainNotice_selPopupList" resultType="hashMap">
+    	/* MainMapper.MainNotice_selPopupList */
+		SELECT 
+			NA_BZPLC
+			, BLBD_DSC
+			, BBRD_SQNO
+			, RL_SQNO
+			, BBRD_TINM
+			, BBRD_CNTN
+			, BBRD_INQ_CN
+			, APDFL_ID
+			, PUP_UYN
+			, FIX_YN
+			, BBRD_DEL_YN
+			, ST_DT
+			, ED_DT
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+		FROM TB_LA_IS_MM_BLBD
+		WHERE BLBD_DSC ='2'
+		AND NA_BZPLC ='0000000000000'
+		AND PUP_UYN ='1'
+		AND NVL(BBRD_DEL_YN,'0') = '0' 
+		AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[ >= ]]> ST_DT
+		AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[ <= ]]> ED_DT
+		ORDER BY LSCHG_DTM DESC
+    </select>      
 </mapper>

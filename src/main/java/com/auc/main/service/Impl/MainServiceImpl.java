@@ -136,5 +136,11 @@ public class MainServiceImpl implements MainService{
 		List<Map<String, Object>> list = mainMapper.selectNaUserList(map);
 		return list;		
 	}
+	
+	@Override
+	public List<Map<String, Object>> MainNotice_selPopupList(Map<String, Object> map) throws Exception{
+		return mainMapper.MainNotice_selPopupList(map);
+		
+	}
 
 }

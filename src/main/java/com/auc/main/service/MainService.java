@@ -35,6 +35,8 @@ public interface MainService {
 	List<Map<String, Object>> selectNaUserList(Map<String, Object> map) throws Exception;
 
 	List<Map<String, Object>> MainSecApply_selList(Map<String, Object> map) throws Exception;
+
+	List<Map<String, Object>> MainNotice_selPopupList(Map<String, Object> map) throws Exception;
 	
 	
 

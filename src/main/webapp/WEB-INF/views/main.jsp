@@ -146,6 +146,7 @@
 			data["flag_secaply"] = "Y";
 			fn_OpenMenu('LALM0117',data);
         });
+		fn_MainNoticePopupSearch();
 	}); 
 	
 
@@ -172,7 +173,27 @@
         return true;
                 
     }
-    
+    function fn_MainNoticePopupSearch(){
+        var srchData = new Object();
+        srchData["na_bzplc"] = '0000000000000';
+        var results = sendAjax(srchData, "/MainNotice_selPopupList", "POST");        
+        var result;
+        var noticeItem = [];
+
+        if(results.status == RETURN_SUCCESS){
+            result = setDecrypt(results);
+
+            var v_bbrd_sqno = $(this).attr('bbrd_sqno');  
+            
+            var pgid = 'LALM0901P1';
+            var menu_id = $("#menu_info").attr("menu_id");
+            var data = new Object();
+            data['blbd_dsc'] =  '2';
+            data['bbrd_sqno'] =  result[0].BBRD_SQNO;
+            data['rl_sqno'] =  '0';
+            parent.layerPopupPage(pgid, menu_id, data, null, 1000, 600);
+        }
+    }
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 조회 함수
      * 2. 입 력 변 수 : N/A
@@ -371,7 +392,7 @@
                         <li>
                             <a href="javascript:;" pgid="LALM0312">
                                 <img src="/images/common/lalm0321.png" alt="">
-                                <p>산정가 조회</p>
+                                <p>산정가 입력</p>
                             </a>
                         </li>
                         <li>

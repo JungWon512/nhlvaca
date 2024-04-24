@@ -325,4 +325,17 @@ public class MainController {
 		reMap.put("naList", naList);
 		return reMap;
 	}	
+	
+	@ResponseBody
+	@RequestMapping(value="/MainNotice_selPopupList", method=RequestMethod.POST)
+	public Map<String, Object> MainNotice_selPopupList(ResolverMap rMap) throws Exception{				
+		
+		Map<String, Object> map = convertConfig.conMap(rMap);
+		
+		//xml 조회
+		List<Map<String, Object>> reList = mainService.MainNotice_selPopupList(map);				
+		Map<String, Object> reMap = commonFunc.createResultSetListData(reList); 	
+		
+		return reMap;
+	}	
 }
