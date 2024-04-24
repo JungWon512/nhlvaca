@@ -14,8 +14,18 @@
 </head>
 
 <style type="text/css">
-    .integer {
+    /* .integer {
         text-align: right;
+    } */
+    .div-input {
+        position: relative;
+
+        .span-input {
+            position: absolute;
+            font-size: 12px;
+            top: 7px;
+            right: 6px;
+        }
     }
 </style>
 
@@ -776,11 +786,17 @@
 								<td colspan="2">
 									<div class="cellBox">
 	                                    <div class="cell">
-											<input type="text" id="st_sog_wt" class="integer required" alt="수수료 적용 하한" maxlength="5" />
+                                            <div class="div-input">
+                                                <input type="text" id="st_sog_wt" class="integer required" alt="수수료 적용 하한" maxlength="5" />
+                                                <span class="span-input">kg</span>
+                                            </div>
 										</div>
 	                                    <div class="cell ta_c"> ~ </div>
 	                                    <div class="cell">
-											<input type="text" id="ed_sog_wt" class="integer required" alt="수수료 적용 상한" maxlength="5" />
+                                            <div class="div-input">
+                                                <input type="text" id="ed_sog_wt" class="integer required" alt="수수료 적용 상한" maxlength="5" />
+                                                <span class="span-input">kg</span>
+                                            </div>
 										</div>
                                     </div>
 								</td>
@@ -797,14 +813,20 @@
 								<td>
 									<div class="cellBox">
 	                                    <div class="cell">
-											<input type="text" id="maco_fee_upr" class="integer required" alt="조합원수수료" maxlength="15" />
+                                            <div class="div-input">
+                                                <input type="text" id="maco_fee_upr" class="integer required" alt="조합원수수료" maxlength="15" />
+                                                <span class="span-input">₩</span>
+                                            </div>
 										</div>
 									</div>
 								</td>
 								<td>
 									<div class="cellBox">
 	                                    <div class="cell">
-											<input type="text" id="nmaco_fee_upr" class="integer required" alt="비조합원수수료" maxlength="15" />
+                                            <div class="div-input">
+                                                <input type="text" id="nmaco_fee_upr" class="integer required" alt="비조합원수수료" maxlength="15" />
+                                                <span class="span-input">₩</span>
+                                            </div>
 										</div>
 									</div>
                                     <input type="hidden" id="fee_rg_sqno">
