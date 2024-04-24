@@ -797,6 +797,8 @@ var na_bzplc = App_na_bzplc;
 						ReportPopup('LALM0216R3_18_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 } else if(na_bzplc == '8808990658995'){
             			 ReportPopup('LALM0216R3_5_3',TitleData, grid4, 'V'); 
+            		 } else if(na_bzplc == '8808990670737'){ //김해축협
+            			 ReportPopup('LALM0216R3_6_8',TitleData, grid4, 'V'); 
             		 }else {
 						ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }
@@ -1116,7 +1118,9 @@ var na_bzplc = App_na_bzplc;
              		// 진주축협 : 8808990657240
              		 }else if(na_bzplc == '8808990657240'){
              			ReportPopup('LALM0216R3_77_1',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그 
-             		 } else {
+             		 } else if(na_bzplc == '8808990657615'){
+              			 ReportPopup('LALM0216R3_8_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
+              		 } else {
               			 ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
               		 }
             		 
@@ -1286,8 +1290,8 @@ var na_bzplc = App_na_bzplc;
              			 
              		 // ★김해: 8808990670737
              		 } else if(na_bzplc == '8808990670737') {
-             			 ReportPopup('LALM0216R3_44',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-             			 
+             			//ReportPopup('LALM0216R3_44',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_6_8',TitleData, grid4, 'V');             			 
              		 // ★동해삼척태백: 8808990652825
              		 } else if(na_bzplc == '8808990652825') {
             			 ReportPopup('LALM0216R3_52',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1444,7 +1448,9 @@ var na_bzplc = App_na_bzplc;
              		// 보성축협 : 8808990656267
              		 } else if(na_bzplc == '8808990656267'){
               			ReportPopup('LALM0216R3_8_5',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그 
-             		 }else  {
+             		 } else if(na_bzplc == '8808990657615'){
+              			 ReportPopup('LALM0216R3_8_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
+              		 }else  {
              			ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 }
 

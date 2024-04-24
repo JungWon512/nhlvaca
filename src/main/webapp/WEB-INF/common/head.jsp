@@ -1721,10 +1721,11 @@ function fn_ExcelDownlad(gid, p_title, p_footer){
 	   var scrolltemp    = $('#' + gid).jqGrid('getGridParam', 'scroll');
 	   var pgbuttonstemp = $('#' + gid).jqGrid('getGridParam', 'pgbuttons');
 	   $('#' + gid).jqGrid('setGridParam', {
-	       rowNum   : 1000000000
+	       rowNum   : gridData.length +1
 	     , scroll   : 1
 	     , pgbuttons: false
 	   });
+	   $('#' + gid).trigger('reloadGrid');
 	   var gridDatatemp = $('#' + gid).getRowData();
 	        
 	   $('#' + gid).jqGrid('setGridParam', {
