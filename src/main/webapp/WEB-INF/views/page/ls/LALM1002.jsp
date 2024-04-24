@@ -14,18 +14,8 @@
 </head>
 
 <style type="text/css">
-    /* .integer {
+    .integer {
         text-align: right;
-    } */
-    .div-input {
-        position: relative;
-
-        .span-input {
-            position: absolute;
-            font-size: 12px;
-            top: 7px;
-            right: 6px;
-        }
     }
 </style>
 
@@ -201,7 +191,6 @@
         var firstEle = document.getElementById('st_sog_wt');
         var secondEle = document.getElementById('ed_sog_wt');
         $(document).on('change', '#jnlz_bsn_dsc', function() {
-            console.log('수수료적용기준 값 바뀜')
             if($("#jnlz_bsn_dsc").val() === "2") {
             $("#st_sog_wt").prop("disabled", true);
             $("#ed_sog_wt").prop("disabled", true);
@@ -220,14 +209,20 @@
         // 금액/비율이 비율 일 때 required 클래스 추가
         var ele = document.getElementById('sgno_prc_dsc');
         $(document).on('change', '#am_rto_dsc', function() {
-            console.log('금액/비율 값 바뀜')
             if($("#am_rto_dsc").val() === "1") {
                 $("#sgno_prc_dsc").prop("disabled", true);
                 ele.classList.remove("required");
+                $("#th_maco_fee_upr").html("조합원수수료(원)");
+                $("#th_nmaco_fee_upr").html("비조합원수수료(원)");
             } else if ($("#am_rto_dsc").val() === "2"){
                 $("#sgno_prc_dsc").prop("disabled", false);
                 ele.classList.add("required");
-            } else;
+                $("#th_maco_fee_upr").html("조합원수수료(%)");
+                $("#th_nmaco_fee_upr").html("비조합원수수료(%)");
+            } else {
+                $("#th_maco_fee_upr").html("조합원수수료");
+                $("#th_nmaco_fee_upr").html("비조합원수수료");
+            }
         })
      };
 
@@ -439,9 +434,7 @@
         var apl_dt = new Date($("#apl_dt").val());
         var today = new Date();
 
-        console.log('선택된 날짜: ', apl_dt , ',' , '오늘날짜: ', today );
-
-                 // 날짜만 비교하기 위해 시간을 0 처리 후 비교.
+        // 날짜만 비교하기 위해 시간을 0 처리 후 비교.
         apl_dt.setHours(0, 0, 0, 0);
         today.setHours(0, 0, 0, 0);
 
@@ -768,11 +761,11 @@
                             </tr>
 							<tr>
                                 <th scope="row">수수료적용기준</th><!-- 마리 별/KG구간 별 -->
-                                <th scope="row" colspan="2">적용구간(이상 ~ 미만)</th>
+                                <th scope="row" colspan="2">적용구간(KG)(이상 ~ 미만)</th>
                                 <th scope="row">금액/비율</th>
                                 <th scope="row">단수처리</th><!-- 절사, 절상, 사사오입 -->
-                                <th scope="row">조합원수수료</th>
-                                <th scope="row">비조합원수수료</th>
+                                <th id="th_maco_fee_upr" scope="row">조합원수수료</th>
+                                <th id="th_nmaco_fee_upr" scope="row">비조합원수수료</th>
                             </tr>
 							<tr>
 								<td>
@@ -786,17 +779,11 @@
 								<td colspan="2">
 									<div class="cellBox">
 	                                    <div class="cell">
-                                            <div class="div-input">
-                                                <input type="text" id="st_sog_wt" class="integer required" alt="수수료 적용 하한" maxlength="5" />
-                                                <span class="span-input">kg</span>
-                                            </div>
+                                            <input type="text" id="st_sog_wt" class="integer required" alt="수수료 적용 하한" maxlength="5" />
 										</div>
 	                                    <div class="cell ta_c"> ~ </div>
 	                                    <div class="cell">
-                                            <div class="div-input">
-                                                <input type="text" id="ed_sog_wt" class="integer required" alt="수수료 적용 상한" maxlength="5" />
-                                                <span class="span-input">kg</span>
-                                            </div>
+                                            <input type="text" id="ed_sog_wt" class="integer required" alt="수수료 적용 상한" maxlength="5" />
 										</div>
                                     </div>
 								</td>
@@ -813,20 +800,14 @@
 								<td>
 									<div class="cellBox">
 	                                    <div class="cell">
-                                            <div class="div-input">
-                                                <input type="text" id="maco_fee_upr" class="integer required" alt="조합원수수료" maxlength="15" />
-                                                <span class="span-input">₩</span>
-                                            </div>
+                                            <input type="text" id="maco_fee_upr" class="integer required" alt="조합원수수료" maxlength="15" />
 										</div>
 									</div>
 								</td>
 								<td>
 									<div class="cellBox">
 	                                    <div class="cell">
-                                            <div class="div-input">
-                                                <input type="text" id="nmaco_fee_upr" class="integer required" alt="비조합원수수료" maxlength="15" />
-                                                <span class="span-input">₩</span>
-                                            </div>
+                                            <input type="text" id="nmaco_fee_upr" class="integer required" alt="비조합원수수료" maxlength="15" />
 										</div>
 									</div>
                                     <input type="hidden" id="fee_rg_sqno">
