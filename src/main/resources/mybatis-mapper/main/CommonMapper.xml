@@ -756,6 +756,9 @@
 				, LSCHG_DTM
 				, LSCHGMN_ENO
 				, LSCHG_IP
+				, NA_BZPLC
+				, AUC_DT
+				, INDV_BLD_DSC
 			)VALUES(
 				TRIM(#{SRA_INDV_AMNNO} )
 				, CASE WHEN TRIM(#{MCOW_SRA_INDV_AMNNO} ) IS NOT NULL THEN '410'||TRIM(#{MCOW_SRA_INDV_AMNNO} ) ELSE NULL END
@@ -781,6 +784,9 @@
 				, SYSDATE
 				, #{ss_userid}
 				, #{CHG_IP_ADDR}
+				, #{NA_BZPLC}
+				, #{AUC_DT}
+				, #{INDV_BLD_DSC}
 			)
 	</update>
 	
@@ -960,6 +966,9 @@
 			, CHG_IP_ADDR
 			, CHG_PGID
 			, CHG_RMK_CNTN
+			, NA_BZPLC
+			, AUC_DT
+			, INDV_BLD_DSC
 		)
 		SELECT
 			SRA_INDV_AMNNO
@@ -990,6 +999,9 @@
 			, #{CHG_IP_ADDR} CHG_IP_ADDR
 			, #{CHG_PGID} CHG_PGID
 			, #{CHG_RMK_CNTN} CHG_RMK_CNTN
+			, NA_BZPLC
+			, AUC_DT
+			, INDV_BLD_DSC
 		FROM TB_LA_IS_MM_INDV_BLD 
 		WHERE SRA_INDV_AMNNO = TRIM(#{SRA_INDV_AMNNO})
 		AND NA_BZPLC = TRIM(#{NA_BZPLC})

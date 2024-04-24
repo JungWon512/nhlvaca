@@ -26,7 +26,6 @@ import com.auc.lalm.co.service.Impl.LALM0222PMapper;
 import com.auc.main.service.CommonService;
 import com.auc.main.service.LogService;
 import com.auc.mca.McaUtil;
-import com.google.common.base.CaseFormat;
 
 @Service("LALM0214P3Service")
 public class LALM0214P3ServiceImpl implements LALM0214P3Service{
@@ -596,6 +595,8 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 						String barcode = (String) result.get("MCOW_SRA_INDV_AMNNO");
 						//Map<String,Object> mEpdMap = commonService.Common_selAiakInfo(barcode);
 						tempMap.put("sra_indv_amnno", result.get("MCOW_SRA_INDV_AMNNO"));
+						tempMap.put("indv_bld_dsc", "M");
+						tempMap.put("chg_pg_id", "nhlvaca[M]");
 						Map<String,Object> mEpdMap = commonService.Common_selAiakInfo(tempMap);
 						int updNum = (int) mEpdMap.get("updateNum");
 						if(!mEpdMap.isEmpty() && updNum > 0) {
