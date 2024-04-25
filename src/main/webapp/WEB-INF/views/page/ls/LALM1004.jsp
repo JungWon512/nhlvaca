@@ -363,6 +363,11 @@
 					</table>
 				</div>
 			</form>
+            <div class="tab_box clearfix">
+                <ul class="tab_list">
+                    <li><p class="dot_allow">조회조건</p></li>
+                </ul>
+            </div>
 			<div class="tab_box clearfix line" style="min-height:1px !important;"></div>
 			<div class="sec_table">
 				<div class="grayTable rsp_v">

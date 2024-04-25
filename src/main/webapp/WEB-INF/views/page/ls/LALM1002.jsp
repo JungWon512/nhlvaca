@@ -20,6 +20,8 @@
 </style>
 
 <script type="text/javascript">
+    let setRowStatus              = 'insert';
+
     ////////////////////////////////////////////////////////////////////////////////
     //  공통버튼 클릭함수 시작
     ////////////////////////////////////////////////////////////////////////////////
@@ -96,6 +98,8 @@
         $("#sc_auc_obj_dsc").val($("#sc_auc_obj_dsc option:first").val());
         $("#sc_apl_dt").datepicker().datepicker("setDate", fn_getToday());
         $("#sc_auc_obj_dsc").focus();
+
+        setRowStatus = "insert";
     }
 
     /*------------------------------------------------------------------------------
@@ -271,11 +275,15 @@
      ------------------------------------------------------------------------------*/
 	function fn_FrmInit() {
         // 입력초기화시 추가 버튼만 활성화
-        $("#btn_Insert").prop("disabled", false);
-        $("#btn_Save, #btn_Delete").prop("disabled", true);
+        // $("#btn_Insert").prop("disabled", false);
+        // $("#btn_Save, #btn_Delete").prop("disabled", true);
+        $("#btn_Save").prop("disabled", false);
+        $("#btn_Delete").prop("disabled", true);
 
 		$("#frm_fee").find("input, select").prop("disabled", false);
 		fn_InitFrm('frm_fee');
+
+        setRowStatus = 'insert';
 	}
 
     /*------------------------------------------------------------------------------
@@ -429,6 +437,8 @@
      * 3. 출 력 변 수 : N/A
      ------------------------------------------------------------------------------*/
 	function fn_Save() {
+        if (setRowStatus === 'insert') return fn_Insert();
+
         // hidden으로 숨겨놓은 일련번호 데이터 가져오기
         var fee_rg_sqno = $("#fee_rg_sqno").val();
         var apl_dt = new Date($("#apl_dt").val());
@@ -630,6 +640,7 @@
             sgno.classList.add("required");
         } else;
         
+        setRowStatus = 'update';
     }
 </script>
 
