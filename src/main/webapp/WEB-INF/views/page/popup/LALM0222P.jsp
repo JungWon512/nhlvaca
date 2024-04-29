@@ -455,12 +455,7 @@
 			 $('#sra_indv_amnno').focus();
 			 return;			 
 		 }
-	   	 
-	   	 if(selresult.KRBF_IPRV_RG_NO){
-	   		 if(byteCheck(selresult.KRBF_IPRV_RG_NO) > 20){
-	   			selresult.KRBF_IPRV_RG_NO = byteSplit(selresult.KRBF_IPRV_RG_NO,'20');
-	   		 }
-	   	 }
+	   	 	   	 
     	 selresult.LIST_SIB_INDV = $('#grd_SibIndv').getRowData();			//형매정보
     	 selresult.LIST_POST_INDV = $('#grd_PostIndv').getRowData();		//후대정보
     	 selresult.LIST_CATTLE_MOVE = $('#grd_CattleMove').getRowData();	//이동정보
@@ -486,7 +481,7 @@
              parentInput.val(true).trigger('change');
          }
     	 
-    }
+    }  
     ////////////////////////////////////////////////////////////////////////////////
     //  공통버튼 클릭함수 종료
     ////////////////////////////////////////////////////////////////////////////////
@@ -606,22 +601,22 @@
  	//paramater : N/A
  	// result   : N/A
  	//**************************************
-	function fn_SelBhCross() {
-		var srchData = new Object();
-		var resultsBhCross = null;
-		var resultBhCross = null;
-		
-	    srchData["ctgrm_cd"]  = "2400";
-	    srchData["mcow_sra_indv_eart_no"] = $("#sra_indv_amnno").val();
-	    resultsBhCross = sendAjax(srchData, "/LALM0899_selIfSend", "POST");        
-	    if(resultsBhCross.status != RETURN_SUCCESS){
-	        showErrorMessage(resultsBhCross,'NOTFOUND');
-	        return;
-	    }else{      
-	    	resultBhCross = setDecrypt(resultsBhCross);
-	        fn_CreateBhCrossGrid(resultBhCross);
-	    }
-	}
+    function fn_SelBhCross() {
+    	var srchData = new Object();
+    	var resultsBhCross = null;
+    	var resultBhCross = null;
+    	
+        srchData["ctgrm_cd"]  = "2400";
+        srchData["mcow_sra_indv_eart_no"] = $("#sra_indv_amnno").val();
+        resultsBhCross = sendAjax(srchData, "/LALM0899_selIfSend", "POST");        
+        if(resultsBhCross.status != RETURN_SUCCESS){
+            showErrorMessage(resultsBhCross,'NOTFOUND');
+            return;
+        }else{      
+        	resultBhCross = setDecrypt(resultsBhCross);
+            fn_CreateBhCrossGrid(resultBhCross);
+        }
+    }
     
 	////////////////////////////////////////////////////////////////////////////////
     //  사용자 함수 종료
@@ -955,75 +950,6 @@
 		
 		
 	}
-
-	
-	//**************************************
-	// function  : byteCheck(바이트수 반환) 
-	// paramater : el(tag jquery object)
-	// result   : number
-	//**************************************
-	function byteCheck(str) {
-		var codeByte = 0;
-		var encode = fn_xxsEncode(str);
-		for (var i = 0; i < encode.length; i++) {
-			var oneChar = encode.charAt(i);
-			var uniChar = escape(oneChar);
-			if(uniChar.length == 1) {
-				codeByte ++;
-			} else if(uniChar.indexOf("%u") != -1) {
-				codeByte += 2;
-			} else if(uniChar.indexOf("%") != -1) {
-				codeByte ++;
-			} else {
-				codeByte ++;
-			}
-		}
-		return codeByte;
-	}
-	
-	//**************************************
-	// function  : fn_xxsEncode(특수문자 치환) 
-	// paramater : p_str
-	// result   : result
-	//**************************************
-	function fn_xxsEncode(p_str){
-		var result = "";
-		if(p_str != null && typeof p_str == 'string' && p_str != ""){
-			result = p_str;
-			result = result.replace("&", "&amp;");
-			result = result.replace("#", "&#35;");
-			result = result.replace("<", "&lt;");
-			result = result.replace(">", "&gt;");
-			result = result.replace("(", "&#40;");
-			result = result.replace(")", "&#41;");
-			result = result.replace("\"", "&quot;");
-			result = result.replace("'", "&#x27;");
-			return result;
-		}
-		else{
-			return p_str;
-		}
-	}
-	function byteSplit(str,len) {
-		var codeByte = 0;
-		var strArr = [];
-		var encode = fn_xxsEncode(str);
-		for (var i = 0; i < encode.length; i++) {
-			var oneChar = encode.charAt(i);
-			var uniChar = escape(oneChar);
-			if(uniChar.length == 1) {
-				codeByte++;
-			} else if(uniChar.indexOf("%u") != -1) {
-				codeByte+=2;
-			} else if(uniChar.indexOf("%") != -1) {
-				codeByte++;
-			} else {
-				codeByte++;
-			}
-            if(codeByte>len) return strArr.join("");
-            strArr.push(oneChar);
-		}
-		return strArr.join("");
-	}
+    
 </script>
 </html>
