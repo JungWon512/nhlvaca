@@ -387,7 +387,7 @@
                     }
                 } 
             } else { 
-            return true;
+                return true;
             }
             return true;
         } else if(results.status != RETURN_SUCCESS && results.dataCnt !== 0) {
