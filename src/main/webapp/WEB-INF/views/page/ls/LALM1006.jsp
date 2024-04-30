@@ -1094,7 +1094,7 @@
                                     <input type="radio" id="rd_tr_dfn_yn_n"  name="rd_tr_dfn_yn" value="1"> 확정
                                     <input type="hidden" id="hd_tr_dfn_yn" name="hd_tr_dfn_yn">
                             	</td>
-                            	<th scope="row"><span>참가보증금</span></th>
+                            	<th scope="row"><span>참가보증금(원)</span></th>
                             	<td>
                             		<input type="text" class="number" id="auc_entr_grn_am" maxlength="8">
                             	</td>
