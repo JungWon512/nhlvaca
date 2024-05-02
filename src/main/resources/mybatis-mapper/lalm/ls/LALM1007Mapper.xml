@@ -730,7 +730,7 @@
 			AND B.INDV_SEX_C IN (1, 4, 6)
 		</when>
 		<otherwise>
-			AND B.INDV_SEX_C NOT IN (1, 4, 6)
+			AND B.INDV_SEX_C = 2
 		</otherwise>
 	</choose>
 	
