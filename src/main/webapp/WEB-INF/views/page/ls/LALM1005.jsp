@@ -140,13 +140,11 @@
          * 예정가저장 checkbox 이벤트
          ******************************/
         $("#ch_lows_sbid_am").change(function() {        
-        	if($("#ch_lows_sbid_am").is(":checked")) {
+        	$("#btn_allLowsSbidLmtAmMinus").attr("disabled", false);
+            if($("#ch_lows_sbid_am").is(":checked")) {
         		$("#ch_rmk_cntn").prop("checked", false);
         		// $("#ch_modl_no").prop("checked", false);
         		$("#ch_cow_wt").prop("checked", false);
-    			$("#btn_allLowsSbidLmtAmMinus").attr("disabled", true);
-        	}else{
-        		$("#btn_allLowsSbidLmtAmMinus").attr("disabled", false);        		
         	}
     	});
         
