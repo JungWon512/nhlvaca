@@ -233,20 +233,20 @@ var mCnt = 0;
     	/******************************
  	    * 낙찰 양수/양도
  	    ******************************/
- 	   	 $("#pb_AtfCvn").bind('click',function(e){
-       		e.preventDefault();
-       		this.blur();
-       		fn_BtnAtfCvn();
-   		}); 
+ 	   	//  $("#pb_AtfCvn").bind('click',function(e){
+       	// 	e.preventDefault();
+       	// 	this.blur();
+       	// 	fn_BtnAtfCvn();
+   		// }); 
    
   	 	/******************************
   	    * 수수료영수증
   	    ******************************/
-  	     $("#pb_FeeRctw").bind('click',function(e){
-  	    	 e.preventDefault();
-       		this.blur();
-       		fn_BtnFeeRctw();
-    	}); 
+  	    //  $("#pb_FeeRctw").bind('click',function(e){
+  	    // 	 e.preventDefault();
+       	// 	this.blur();
+       	// 	fn_BtnFeeRctw();
+    	// }); 
     
    	 	fn_Init();
 	     
@@ -598,7 +598,7 @@ var mCnt = 0;
 		$.each(gridDatatemp, function(i){
 			if(gridDatatemp[i].INDV_SEX_C == "1" || gridDatatemp[i].INDV_SEX_C == "4" || gridDatatemp[i].INDV_SEX_C == "6") {
 				fCnt++;
-			} else {
+			} else if (gridDatatemp[i].INDV_SEX_C == "2") {
 				mCnt++;
 			}
         });
@@ -1065,65 +1065,63 @@ var mCnt = 0;
 		}
 	}
 	
-	
-	
 	function fn_BtnAdj(){
 			
-		   acno = parent.wmcList.ACNO;
-		   var TitleData = new Object();
-	       TitleData.title = "응찰자 개별정산서 제 "+ $("#qcn").val() +" 차 "+ fn_deleteNumber($( "#auc_obj_dsc option:selected").text()) + " (" +fn_toDate(fn_dateToData($('#auc_dt').val()), "KR") + ")" ;
-	       TitleData.sub_title = "(기준일자 : "+$('#auc_dt').val()+ ")";
-	       TitleData.unit = "";
-	       TitleData.tot_pym_am = $("#tot_pym_am").val();
-	       TitleData.tot_npym_am = $("#tot_npym_am").val();
-	       TitleData.sra_sel_fee = $("#sra_sel_fee").val();
-	       TitleData.sra_sbid_am = $("#sra_sbid_am").val();
-	       TitleData.sra_rv_am = $("#sra_rv_am").val();
-	       TitleData.tot_etc_rv_am = $("#tot_etc_rv_am").val();
-	       TitleData.tot_csh_rv_am = $("#tot_csh_rv_am").val();
-	       TitleData.tot_ck_rv_am = $("#tot_ck_rv_am").val();
-	       TitleData.tot_bb_rv_am = $("#tot_bb_rv_am").val();
-	       TitleData.sra_020 = $("#sra_020").val();
-	       TitleData.sra_030 = $("#sra_030").val();
-	       TitleData.sra_040 = $("#sra_040").val();
-	       TitleData.sra_050 = $("#sra_050").val();
-	       TitleData.sra_060 = $("#sra_060").val();
-	       TitleData.sra_070 = $("#sra_070").val();
-	       TitleData.sra_080 = $("#sra_080").val();
-	       TitleData.sra_100 = $("#sra_100").val();
-	       TitleData.sra_110 = $("#sra_110").val();
-	       TitleData.sra_120 = $("#sra_120").val();
-	       TitleData.etc_cst = $("#etc_cst").val();
-	       TitleData.sra_fee = $("#sra_fee").val();
-	       TitleData.sra_shnm = $("#sra_shnm").val();
-	       TitleData.dong     = fn_xxsDecode($("#mdongup").val()+" "+$("#mdongbw").val()); 
+		acno = parent.wmcList.ACNO;
+		var TitleData = new Object();
+		TitleData.title = "응찰자 개별정산서 제 "+ $("#qcn").val() +" 차 "+ fn_deleteNumber($( "#auc_obj_dsc option:selected").text()) + " (" +fn_toDate(fn_dateToData($('#auc_dt').val()), "KR") + ")" ;
+		TitleData.sub_title = "(기준일자 : "+$('#auc_dt').val()+ ")";
+		TitleData.unit = "";
+		TitleData.tot_pym_am = $("#tot_pym_am").val();
+		TitleData.tot_npym_am = $("#tot_npym_am").val();
+		TitleData.sra_sel_fee = $("#sra_sel_fee").val();
+		TitleData.sra_sbid_am = $("#sra_sbid_am").val();
+		TitleData.sra_rv_am = $("#sra_rv_am").val();
+		TitleData.tot_etc_rv_am = $("#tot_etc_rv_am").val();
+		TitleData.tot_csh_rv_am = $("#tot_csh_rv_am").val();
+		TitleData.tot_ck_rv_am = $("#tot_ck_rv_am").val();
+		TitleData.tot_bb_rv_am = $("#tot_bb_rv_am").val();
+		TitleData.sra_020 = $("#sra_020").val();
+		TitleData.sra_030 = $("#sra_030").val();
+		TitleData.sra_040 = $("#sra_040").val();
+		TitleData.sra_050 = $("#sra_050").val();
+		TitleData.sra_060 = $("#sra_060").val();
+		TitleData.sra_070 = $("#sra_070").val();
+		TitleData.sra_080 = $("#sra_080").val();
+		TitleData.sra_100 = $("#sra_100").val();
+		TitleData.sra_110 = $("#sra_110").val();
+		TitleData.sra_120 = $("#sra_120").val();
+		TitleData.etc_cst = $("#etc_cst").val();
+		TitleData.sra_fee = $("#sra_fee").val();
+		TitleData.sra_shnm = $("#sra_shnm").val();
+		TitleData.dong     = fn_xxsDecode($("#mdongup").val()+" "+$("#mdongbw").val()); 
 
-	       TitleData.sra_mwmnnm = $("#tot_sra_mwmnnm").val();
-	     
-	       TitleData.acno = parent.wmcList[0].ACNO;
-	       TitleData.clntnm = parent.wmcList[0].NA_BZPLNM;
-	       if(na_bzplc == '8808990683973'){
-		       TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM;	    	   
-	       }else{
-		       TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 ";	    	   
-	       }
-	       TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
-	       TitleData.rmk_cntn = parent.wmcList[0].RMK_CNTN;
-	       TitleData.tel_no = parent.wmcList[0].TELNO;
-	       
-	       TitleData.srch_condition =  '[경매일자 : ' + $('#auc_dt').val() + ']'
-	                                +  '/ [경매대상 : ' + $( "#auc_obj_dsc option:selected").text()  + ']';
-	       TitleData.tmp_text = '';
-	       //양평축협일시 그리드 하단에 문구 추가
-	       if(na_bzplc == '8808990643625'){
-		       TitleData.tmp_text = '금번 접종한 주사는 대사촉진제 및 구충제입니다.';	    	   
-	       }else if(na_bzplc == '8808990656106'){
-		       TitleData.tmp_text = '계산서 발행은 익월 10일 전까지 반드시 확인해주시기 바랍니다.';	    	   
-	       }
-	       
-	       fn_BtnAdj_fm_print(TitleData, "grd_MhSogCow");
-	
+		TitleData.sra_mwmnnm = $("#tot_sra_mwmnnm").val();
+		
+		TitleData.acno = parent.wmcList[0].ACNO;
+		TitleData.clntnm = parent.wmcList[0].NA_BZPLNM;
+		if(na_bzplc == '8808990683973'){
+			TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM;	    	   
+		}else{
+			TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 ";	    	   
 		}
+		TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
+		TitleData.rmk_cntn = parent.wmcList[0].RMK_CNTN;
+		TitleData.tel_no = parent.wmcList[0].TELNO;
+		
+		TitleData.srch_condition =  '[경매일자 : ' + $('#auc_dt').val() + ']'
+								+  '/ [경매대상 : ' + $( "#auc_obj_dsc option:selected").text()  + ']';
+		TitleData.tmp_text = '';
+		//양평축협일시 그리드 하단에 문구 추가
+		if(na_bzplc == '8808990643625'){
+			TitleData.tmp_text = '금번 접종한 주사는 대사촉진제 및 구충제입니다.';	    	   
+		}else if(na_bzplc == '8808990656106'){
+			TitleData.tmp_text = '계산서 발행은 익월 10일 전까지 반드시 확인해주시기 바랍니다.';	    	   
+		}
+		
+		fn_BtnAdj_fm_print(TitleData, "grd_MhSogCow");
+
+	}
 	
 	//**************************************
 	//function  : fn_BtnAdj_f(정산서(암수 구분) 출력) 
@@ -1268,306 +1266,185 @@ var mCnt = 0;
 	// result   : N/A
 	//**************************************	
 	function fn_BtnAdj_fm_print(p_param, p_grid) {
-		// 1형식
-		if (($("#prto_tpc_1").is(":checked"))) {
-
-			
-			// 영주:8808990687094
-			if (na_bzplc == '8808990687094') {   
-				p_param.title = "일반가축경매(" + $('#auc_obj_dsc option:checked').text().replace(/[^가-힣]/g,'') +")개별정산서 제"+$('#auc_dt').val() +"차";
-				ReportPopup('LALM0412R0_8',p_param, p_grid, 'V');	
-			}else if(na_bzplc == '8808990659008') { //경주
-   				ReportPopup('LALM0412R0_0_4_2',p_param, p_grid, 'V');
-   			} else if(na_bzplc == '8808990656649') { //의성
-				ReportPopup('LALM0412R0_0_4',p_param, p_grid, 'T');//원본
-			/*** 중도매인정산서 1형식 공통약식(딸송정보없X)
-			* 전주김제완주 보은옥천 옥천지점:8808990671086 , 파주연천:8808990659787
-			* 고창부안:8808990657189, 횡성: 8808990656885, 강진완도 :  8808990657103, 양평 :  8808990643625 
-			* 장흥 :  8808990656533, 영광 :  8808990811710, 동해삼척태백축협 :  8808990652825, 고령성주 : 8808990659695, 강릉 : 8808990656878
-			* 영천 : 8808990656687 , 나주 : 8808990659275 , 서산 : 8808990656694 , 진천 : 8808990656502
-			* 홍천 : 8808990674605 , 충주 : 8808990656465 , 함평 : 8808990656601, 청양 : 8808990657646, 남해 : 8808990656700
-			* 제주 : 8808990656618 , 수원 : 8808990656496 , 고성 : 8808990812007, 세종공주 : 8808990656588 , 옥천 : 8808990671086 , 평택 : 8808990795874
-			* 청주 : 8808990658995  , 해남 : 8808990656106, 고흥 : 8808990779546, 음성 : 8808990683973, 보령 : 8808990684321, 인천강화옹진 : 8808990812021
-			* 예산 : 8808990657196 , 홍성 : 8808990657622, 제천단양 : 8808990656526, 부여 : 8808990660127 , 논산계룡 : 8808990659268, 순천광양 : 8808990658896
-			* 번식우 제외: 영암:8808990659701, 거창:8808990659701 , 영덕울진 : 8808990785431 , 보성 : 8808990656267 
-			*/
-			} else if(na_bzplc == '8808990656441' || na_bzplc == '8808990766485' || na_bzplc == '8808990671086' || na_bzplc == '8808990659787'  
-				|| na_bzplc == '8808990657189' || na_bzplc == '8808990656885' || na_bzplc == '8808990657103'|| na_bzplc == '8808990643625'
-				|| na_bzplc == '8808990656533' || na_bzplc == '8808990811710' || na_bzplc =='8808990652825'  || na_bzplc =='8808990659695' || na_bzplc =='8808990656878'
-				|| na_bzplc =='8808990656687' || na_bzplc =='8808990659275' || na_bzplc =='8808990656694' || na_bzplc =='8808990656502'
-				|| na_bzplc =='8808990674605' || na_bzplc =='8808990656465' || na_bzplc =='8808990656601' || na_bzplc =='8808990657646' || na_bzplc == '8808990656700'
-				|| na_bzplc =='8808990656618' || na_bzplc =='8808990656496' || na_bzplc =='8808990812007' || na_bzplc == '8808990656588' || na_bzplc == '8808990671086' || na_bzplc == '8808990795874'
-				|| na_bzplc == '8808990658995' || na_bzplc == '8808990656106' || na_bzplc == '8808990779546' || na_bzplc == '8808990683973'  || na_bzplc == '8808990684321' || na_bzplc == '8808990812021'
-				|| na_bzplc == '8808990657196' || na_bzplc == '8808990657622' || na_bzplc == '8808990656526' || na_bzplc == '8808990660127' || na_bzplc == '8808990659268' || na_bzplc == '8808990658896'
-				|| ((na_bzplc == '8808990689760' || na_bzplc == '8808990659701' || na_bzplc =='8808990785431' || na_bzplc == '8808990656267') && $("#auc_obj_dsc").val() != '3' )
-			){
-				ReportPopup('LALM0412R0_9',p_param, p_grid, 'T');//원본
-				//ReportPopup('LALM0412R0_1_3',p_param, p_grid, 'V');
-			}else if(na_bzplc == '8808990656519' && $("#auc_obj_dsc").val() != '3') { //사천
-   				ReportPopup('LALM0412R0_10',p_param, p_grid, 'V');
-   			}else if(na_bzplc =='8808990661315') { //화순 : 8808990661315
-   				ReportPopup('LALM0412R0_9_J_2',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656557') { //예천
-   				ReportPopup('LALM0412R0_0_5_2',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990806426') { //속초양양 : 8808990806426
-   				ReportPopup('LALM0412R0_9_1',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656540' && $("#auc_obj_dsc").val() == '1' ) { //담양 : 8808990656540
-   				ReportPopup('LALM0412R0_9_2',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656540' && $("#auc_obj_dsc").val() == '2' ) { //담양 : 8808990656540
-   				ReportPopup('LALM0412R0_9_2_1',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656540') { //담양
-   				ReportPopup('LALM0412R0_9_2_2',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990689180') { //안동
-   				ReportPopup('LALM0412R0_0_5_7',p_param, p_grid, 'V');
-   			} else if(na_bzplc == '8808990660783'){ //임실
-				ReportPopup('LALM0412R0_T_0',p_param, p_grid, 'T');//원본
-			} else if(na_bzplc == '8808990659565'){ //김천
-				ReportPopup('LALM0412R0_9_3',p_param, p_grid, 'T');//원본
-			} else if(na_bzplc == '8808990679549'){ //포항 : 8808990679549
-				ReportPopup('LALM0412R0_9_J_0',p_param, p_grid, 'T');//원본
-			} else if(na_bzplc =='8808990656571'){ //청도 : 8808990656571
-				ReportPopup('LALM0412R0_9_J_1',p_param, p_grid, 'T');
-			} else if(na_bzplc =='8808990656670'){	//괴산증평 : 8808990656670
-				ReportPopup('LALM0412R0_9_4',p_param, p_grid, 'T');
-			} else if($("#auc_obj_dsc").val() == '1' && na_bzplc =='8808990817675'){	//송아지 장성 : 8808990817675
-				ReportPopup('LALM0412R0_9_J_3',p_param, p_grid, 'T');
-			} else if($("#auc_obj_dsc").val() == '2' && na_bzplc =='8808990817675'){	//큰소 장성 :8808990817675
-				ReportPopup('LALM0412R0_9_J_5',p_param, p_grid, 'T');
-			} else if(na_bzplc =='8808990817675'){	//큰소 장성 :8808990817675
-				ReportPopup('LALM0412R0_9_J_4',p_param, p_grid, 'T');
-			} else if(na_bzplc =='8808990656267'){	//보성 번식우 이외 :8808990656267
-				ReportPopup('LALM0412R0_9_J_7',p_param, p_grid, 'T');
-			} else if(na_bzplc =='8808990762654'){ //당진 : 8808990762654
-				ReportPopup('LALM0412R0_9_J_6',p_param, p_grid, 'T');//원본
-			} else if(na_bzplc =='8808990656427'){ //문경 : 8808990656427 (응찰자 유의사항문구 추가)
-				ReportPopup('LALM0412R0_9_5',p_param, p_grid, 'T');//원본				
-			}else{
-				ReportPopup('LALM0412R0_0',p_param, p_grid, 'T');//원본
-			}
-		// 2형식
-		} else {
-   			//거창:8808990659701
-   			if (na_bzplc ==  '8808990659701') {
-   				ReportPopup('LALM0412R0_5_1',p_param, p_grid, 'V');
-   			// 무진장:8808990657202
-   			} else if (na_bzplc == '8808990657202') {
-   				ReportPopup('LALM0412R0_5_5',p_param, p_grid, 'V');    	
-			}else if(na_bzplc == '8808990227207') { //남원
-   				ReportPopup('LALM0412R0_5_6',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656557') { //예천
-   				ReportPopup('LALM0412R0_0_5',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656687') { //영천 : 8808990656687
-   				ReportPopup('LALM0412R0_0_1_1',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656434') { //원주
-   				ReportPopup('LALM0412R0_0_6',p_param, p_grid, 'V');
-   			//고령성주  ,나주, 구미칠곡, 김천, 충주, 의령
-   			}else if(na_bzplc == '8808990659695' || na_bzplc == '8808990659275' || na_bzplc == '8808990657615' || na_bzplc == '8808990659565' || na_bzplc == '8808990679549' || na_bzplc =='8808990656465' || na_bzplc =='8808990656199') {
-   				ReportPopup('LALM0412R0_0_7',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656427') { //문경
-   				ReportPopup('LALM0412R0_0_7_1',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990661315') { //화순 : 8808990661315
-   				//ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'V');
-   				ReportPopup('LALM0412R0_1_8_1',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990656540') { //담양
-   				ReportPopup('LALM0412R0_9_2_2',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990689180') { //안동
-   				ReportPopup('LALM0412R0_0_5_7',p_param, p_grid, 'V');
-   			}else if(na_bzplc == '8808990660783') { //임실
-   				ReportPopup('LALM0412R0_T_1',p_param, p_grid, 'V');
-   			}else if (na_bzplc == '8808990806426') { //속초양양
-				ReportPopup('LALM0412R0_J_0',p_param, p_grid, 'T');//원본
-			} else if((na_bzplc == '8808990656236' || na_bzplc == '8808990656519') && $("#auc_obj_dsc").val()=='3'){
- 				ReportPopup('LALM0412R0_0_3',p_param, p_grid, 'V');
-   			} else if((na_bzplc == '8808990671086') && $("#auc_obj_dsc").val()=='3'){ //보은옥천영동축협 옥천지점
- 				ReportPopup('LALM0412R0_0_3_J',p_param, p_grid, 'V');
-   			}else if (na_bzplc == '8808990656588'){ //세종 : 8808990656588
-   				ReportPopup('LALM0412R0_0_1_T',p_param, p_grid, 'V');
-   			}else{
-   				ReportPopup('LALM0412R0_0_1',p_param, p_grid, 'V');
-   			}
-			
-   			//} else if(na_bzplc == '8808990661315' || na_bzplc == '8808990656960' || na_bzplc == '8808990656953') { //화순,정읍,순창
-			//	ReportPopup('LALM0412R0_1_8',p_param, p_grid, 'T');//원본	
-		}
+		p_param.lvst_auc_ptc_mn_no = $("#lvst_auc_ptc_mn_no").val();
+		ReportPopup('LALM0412G0',p_param, p_grid, 'T');
 		fn_chgAucEntrDdl();
 	}
 	
+	function fn_BtnDbtCnf(){
+		acno = parent.wmcList.ACNO;
+		var TitleData = new Object();
+		TitleData.title = "채  무  확  인  서";
+		TitleData.sub_title = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") +" 낙찰자 입금내역";
+		TitleData.unit = "";
+		TitleData.frlno = $("#frlno").val()+"- *******";
+		TitleData.tot_pym_am = $("#tot_pym_am").val();
+		TitleData.tot_npym_am = $("#tot_npym_am").val();
+		TitleData.sra_sel_fee = $("#sra_sel_fee").val();
+		TitleData.sra_sbid_am = $("#sra_sbid_am").val();
+		TitleData.sra_rv_am = $("#sra_rv_am").val();
+		TitleData.sra_auc_sbid_hdcn = $("#sra_auc_sbid_hdcn").val();
+		TitleData.etc_cst = $("#etc_cst").val();
+		TitleData.acno = parent.wmcList[0].ACNO;
+		TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장";
+		TitleData.clntnm = parent.wmcList[0].NA_BZPLNM + " 가축시장"||"조합장";
+		TitleData.bzno = parent.wmcList[0].BZNO;
+		TitleData.text1 = ""; 
+		TitleData.Text2 = $("#tot_npym_am").val()+"원정 (￦)";
+		TitleData.Text3 = $("#sra_auc_sbid_hdcn").val()+"두";
+		TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
+		TitleData.auc_dt = fn_toDate(fn_dateToData($('#auc_dt').val()), "KR");
+		TitleData.dong = fn_xxsDecode($("#mdongup").val()+" "+$("#mdongbw").val()); //매수인주소
+		TitleData.sra_mwmnnm = $("#sra_mwmnnm").val(); //축산중도매인명
+		var kNumber = fn_getKNumber(TitleData.tot_npym_am?.replaceAll(',',''));
+		TitleData.tot_npym_am_k = kNumber;
+		var aucObjDscNm = fn_deleteNumber($( "#auc_obj_dsc option:selected").text());
+		if(na_bzplc != '8808990656694' && aucObjDscNm =='일괄') aucObjDscNm = '송아지, 큰소';
+		
+		if(na_bzplc == '8808990687094') {  // 영주: 8808990687094
+			TitleData.text1 = $("#sra_mwmnnm").val()+" 님은\n"+fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 우 매입대금 중 아래 금액에 대하여 채무를 확인하고 \n경매일 익일 오전 12시까지 완납 할것을 확인합니다.";
+		}else if (na_bzplc ==  '8808990656663') {  // 밀양: 8808990656663
+			TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일(은행마감 시간)내에 납입 할 것을 확인 합니다.\n 단 부득이한 경우 사전에 조합으로 요청시 1일에 한해 연장할수 있으며 \n3일 초과시 즉시 법적 절차가 진행됨을 유의 하시기 바랍니다.";
+		}else if (na_bzplc ==  '8808990656502') {  // 진천: 8808990656502
+			TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여 구입한 \n"+ aucObjDscNm + " 매입대금 중 전부(일부)금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 익영업일(은행시간 마감)내에 납입 하겠으며, 미입금시 \n민,형사상 조치를 하여도 전혀 이의를 제기하지 않을 것을 확약합니다.";
+		}else if (na_bzplc ==  '8808990656557') {  // 예천: 8808990656557
+			TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여 구입한 \n"+aucObjDscNm + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일(은행마감 시간)내에 납입 할 것을 확인 합니다.";
+		}else if (na_bzplc ==  '8808990657615') {  // 구미: 8808990657615
+			TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여 구입한 \n"+aucObjDscNm + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 익영업일(오후 12시)내에 납입 할 것을 확인 합니다.";
+		}else if(na_bzplc ==  '8808990657240') {  // 진주 : 8808990657240
+			TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 "+ aucObjDscNm + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일(은행마감 시간)내에 납입 할 것을 확인 합니다.\n낙찰 후 양도에 있어 발생 되는 대금 미납의 책임은\n응찰자(양도자)에게 있음을 확인합니다.";
+		}else if(na_bzplc ==  '8808990806426') {  //속초양양 : 8808990806426
+			TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 "+ aucObjDscNm + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일 오후3시까지 납입 할 것을 확인 합니다.";
+		}else{
+			TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 "+ aucObjDscNm + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일(은행마감 시간)내에 납입 할 것을 확인 합니다.";
+		}
+			
+		if (na_bzplc == '8808990687094') {  // 영주:              8808990687094
+			ReportPopup('LALM0412R1_4',TitleData, 'grd_MhSogCow', 'T');
+		}else if(na_bzplc == '8808990656557') { //예천
+			ReportPopup('LALM0412R1_0',TitleData, 'grd_MhSogCow', 'T');
+		}else{
+			ReportPopup('LALM0412R1_9',TitleData, 'grd_MhSogCow', 'T');
+			//ReportPopup('LALM0412R1_1',TitleData, 'grd_MhSogCow', 'T');
+		}
+		//fn_chgAucEntrDdl();
+		
+	}
+
+	// function fn_BtnAtfCvn(){
+		
+	// 	Wdongup = parent.wmcList.DONGUP;
+	// 	Wdongbw = parent.wmcList.DONGBW;
+	// 	acno = parent.wmcList.ACNO;
+	// 	var TitleData = new Object();
+	// 	TitleData.title = "가축시장용 양도·양수신고서(보관용)";
+	// 	//춘천철원 : 8808990656229
+	// 	if(na_bzplc == '8808990656229'){
+	// 		TitleData.title1 = "가축시장용 양도·양수신고서";
+	// 	}else{
+	// 		TitleData.title1 = "가축시장용 양도·양수신고서(교부용)";
+	// 	}
+	// 	TitleData.sub_title = "가축매매수수료 영수증 겸용";
+	// 	TitleData.unit = "";
+	// 	TitleData.frlno = $("#frlno").val() + " - *******";
+	// 	TitleData.ohse_telno = $("#ohse_telno").val();
+	// 	TitleData.cus_mpno = $("#cus_mpno").val();
+	// 	TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM;
+	// 	TitleData.bzno = parent.wmcList[0].BZNO;
+	// 	TitleData.telno = parent.wmcList[0].TELNO;
+	// 	TitleData.adr = $("#mdongup").val()+" "+$("#mdongbw").val(); //매수인주소
+	// 	TitleData.sra_mwmnnm = $("#sra_mwmnnm").val(); //축산중도매인명
+	// 	TitleData.text3 = parent.wmcList[0].NA_BZPLNM +" 조합장";
+	// 	TitleData.text1 = $("#sra_sel_fee").val();
+	// 	TitleData.dong = fn_xxsDecode(parent.wmcList[0].DONGUP + parent.wmcList[0].DONGBW); //사업장주소 
+		
+	// 	TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
+	// 	TitleData.auc_dt = fn_toDate(fn_dateToData($('#auc_dt').val()), "KR");
+	// 	TitleData.acno = parent.wmcList[0].ACNO;
+		
+	// 	//춘천철원 : 8808990656229
+	// 	if(na_bzplc == '8808990656229'){
+	// 		ReportPopup('LALM0412R2_1',TitleData, 'grd_MhSogCow', 'T');
+	// 	}else{
+	// 		ReportPopup('LALM0412R2',TitleData, 'grd_MhSogCow', 'T');
+	// 	}
+	// }
 	
-		function fn_BtnDbtCnf(){
+	// function fn_BtnFeeRctw(){
+	// 		var temp1 = $("#sra_sel_fee").val().replace(",", "");
+	// 		var temp2 = $("#etc_cst").val().replace(",", "");
+	// 		var temp3 = parseInt(temp1) + parseInt(temp2); 
 		
-			
-			acno = parent.wmcList.ACNO;
-			var TitleData = new Object();
-		    TitleData.title = "채  무  확  인  서";
-		    TitleData.sub_title = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") +" 낙찰자 입금내역";
-		    TitleData.unit = "";
-	        TitleData.frlno = $("#frlno").val()+"- *******";
-	        TitleData.tot_pym_am = $("#tot_pym_am").val();
-	        TitleData.tot_npym_am = $("#tot_npym_am").val();
-	   	    TitleData.sra_sel_fee = $("#sra_sel_fee").val();
-	   	    TitleData.sra_sbid_am = $("#sra_sbid_am").val();
-	   	    TitleData.sra_rv_am = $("#sra_rv_am").val();
-	   	    TitleData.sra_auc_sbid_hdcn = $("#sra_auc_sbid_hdcn").val();
-	   	    TitleData.etc_cst = $("#etc_cst").val();
-	        TitleData.acno = parent.wmcList[0].ACNO;
-	   	    TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장";
-	   	    TitleData.clntnm = parent.wmcList[0].NA_BZPLNM + " 가축시장"||"조합장";
-	   	    TitleData.bzno = parent.wmcList[0].BZNO;
-	   		TitleData.text1 = ""; 
-	     	TitleData.Text2 = $("#tot_npym_am").val()+"원정 (￦)";
-	   		TitleData.Text3 = $("#sra_auc_sbid_hdcn").val()+"두";
-	   		TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
-	   		TitleData.auc_dt = fn_toDate(fn_dateToData($('#auc_dt').val()), "KR");
-	   		TitleData.dong = fn_xxsDecode($("#mdongup").val()+" "+$("#mdongbw").val()); //매수인주소
-	   		TitleData.sra_mwmnnm = $("#sra_mwmnnm").val(); //축산중도매인명
-	   		var kNumber = fn_getKNumber(TitleData.tot_npym_am?.replaceAll(',',''));
-   			TitleData.tot_npym_am_k = kNumber;
-   			var aucObjDscNm = fn_deleteNumber($( "#auc_obj_dsc option:selected").text());
-   			if(na_bzplc != '8808990656694' && aucObjDscNm =='일괄') aucObjDscNm = '송아지, 큰소';
-   			
-	   		if(na_bzplc == '8808990687094') {  // 영주: 8808990687094
-				TitleData.text1 = $("#sra_mwmnnm").val()+" 님은\n"+fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 우 매입대금 중 아래 금액에 대하여 채무를 확인하고 \n경매일 익일 오전 12시까지 완납 할것을 확인합니다.";
-			}else if (na_bzplc ==  '8808990656663') {  // 밀양: 8808990656663
-				TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일(은행마감 시간)내에 납입 할 것을 확인 합니다.\n 단 부득이한 경우 사전에 조합으로 요청시 1일에 한해 연장할수 있으며 \n3일 초과시 즉시 법적 절차가 진행됨을 유의 하시기 바랍니다.";
-			}else if (na_bzplc ==  '8808990656502') {  // 진천: 8808990656502
-				TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여 구입한 \n"+ aucObjDscNm + " 매입대금 중 전부(일부)금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 익영업일(은행시간 마감)내에 납입 하겠으며, 미입금시 \n민,형사상 조치를 하여도 전혀 이의를 제기하지 않을 것을 확약합니다.";
-		 	}else if (na_bzplc ==  '8808990656557') {  // 예천: 8808990656557
-				TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여 구입한 \n"+aucObjDscNm + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일(은행마감 시간)내에 납입 할 것을 확인 합니다.";
-		 	}else if (na_bzplc ==  '8808990657615') {  // 구미: 8808990657615
-				TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여 구입한 \n"+aucObjDscNm + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 익영업일(오후 12시)내에 납입 할 것을 확인 합니다.";
-		 	}else if(na_bzplc ==  '8808990657240') {  // 진주 : 8808990657240
-				TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 "+ aucObjDscNm + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일(은행마감 시간)내에 납입 할 것을 확인 합니다.\n낙찰 후 양도에 있어 발생 되는 대금 미납의 책임은\n응찰자(양도자)에게 있음을 확인합니다.";
-		 	}else if(na_bzplc ==  '8808990806426') {  //속초양양 : 8808990806426
-				TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 "+ aucObjDscNm + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일 오후3시까지 납입 할 것을 확인 합니다.";
-		 	}else{
-				TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 "+ aucObjDscNm + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일(은행마감 시간)내에 납입 할 것을 확인 합니다.";
-		 	}
-	   		 
-			if (na_bzplc == '8808990687094') {  // 영주:              8808990687094
-				ReportPopup('LALM0412R1_4',TitleData, 'grd_MhSogCow', 'T');
-			}else if(na_bzplc == '8808990656557') { //예천
-   				ReportPopup('LALM0412R1_0',TitleData, 'grd_MhSogCow', 'T');
-   			}else{
-				ReportPopup('LALM0412R1_9',TitleData, 'grd_MhSogCow', 'T');
-				//ReportPopup('LALM0412R1_1',TitleData, 'grd_MhSogCow', 'T');
-			}
-			//fn_chgAucEntrDdl();
-			
-		}
-		function fn_BtnAtfCvn(){
-			
-			Wdongup = parent.wmcList.DONGUP;
-			Wdongbw = parent.wmcList.DONGBW;
-			acno = parent.wmcList.ACNO;
-			var TitleData = new Object();
-		    TitleData.title = "가축시장용 양도·양수신고서(보관용)";
-		  	//춘천철원 : 8808990656229
-		    if(na_bzplc == '8808990656229'){
-			    TitleData.title1 = "가축시장용 양도·양수신고서";
-		    }else{
-			    TitleData.title1 = "가축시장용 양도·양수신고서(교부용)";
-		    }
-		    TitleData.sub_title = "가축매매수수료 영수증 겸용";
-		    TitleData.unit = "";
-	        TitleData.frlno = $("#frlno").val() + " - *******";
-	        TitleData.ohse_telno = $("#ohse_telno").val();
-	        TitleData.cus_mpno = $("#cus_mpno").val();
-	        TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM;
-	        TitleData.bzno = parent.wmcList[0].BZNO;
-	        TitleData.telno = parent.wmcList[0].TELNO;
-	        TitleData.adr = $("#mdongup").val()+" "+$("#mdongbw").val(); //매수인주소
-	        TitleData.sra_mwmnnm = $("#sra_mwmnnm").val(); //축산중도매인명
-	        TitleData.text3 = parent.wmcList[0].NA_BZPLNM +" 조합장";
-	        TitleData.text1 = $("#sra_sel_fee").val();
-			TitleData.dong = fn_xxsDecode(parent.wmcList[0].DONGUP + parent.wmcList[0].DONGBW); //사업장주소 
-			
-			TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
-			TitleData.auc_dt = fn_toDate(fn_dateToData($('#auc_dt').val()), "KR");
-			TitleData.acno = parent.wmcList[0].ACNO;
-			
-			//춘천철원 : 8808990656229
-			if(na_bzplc == '8808990656229'){
-				ReportPopup('LALM0412R2_1',TitleData, 'grd_MhSogCow', 'T');
-			}else{
-				ReportPopup('LALM0412R2',TitleData, 'grd_MhSogCow', 'T');
-			}
-		}
+	// 	Wdongup = parent.wmcList.DONGUP;
+	// 	Wdongbw = parent.wmcList.DONGBW;
 		
-		function fn_BtnFeeRctw(){
-			  var temp1 = $("#sra_sel_fee").val().replace(",", "");
-		      var temp2 = $("#etc_cst").val().replace(",", "");
-		      var temp3 = parseInt(temp1) + parseInt(temp2); 
-			
-			Wdongup = parent.wmcList.DONGUP;
-			Wdongbw = parent.wmcList.DONGBW;
-			
-			var TitleData = new Object();
-		    TitleData.title = "가축매매 수수료 영수증 제 " + $("#qcn").val() + " 차";
-		    TitleData.sub_title = "";
-		    TitleData.unit = "";
-	        TitleData.frlno = $("#frlno").val()+" - *******";
-	        TitleData.ohse_telno = $("#ohse_telno").val();
-	        TitleData.cus_mpno = $("#cus_mpno").val();
-	       // TitleData.qcn = $("#qcn").val();
-	        TitleData.bzno = parent.wmcList[0].BZNO;
-	        TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 "+ parent.wmcList[0].REPMNM;
-	        TitleData.auc_dt = fn_toDate(fn_dateToData($('#auc_dt').val()), "KR");
-	        TitleData.txt = temp3;
-	        TitleData.sra_sel_fee = $("#sra_sel_fee").val();
-	        TitleData.sra_etc_cst = $("#etc_cst").val();
-	        TitleData.dong = fn_xxsDecode($("#mdongup").val()+" "+$("#mdongbw").val()); //매수인주소
-	        TitleData.Wdong = parent.wmcList[0].DONGUP + parent.wmcList[0].DONGBW; //사업장주소
- 	        TitleData.Wdongup = parent.wmcList[0].DONGUP; //사업장주소 
-			TitleData.Wdongbw = parent.wmcList[0].DONGBW; //사업장주소 
- 			TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
- 			TitleData.sra_mwmnnm = $("#sra_mwmnnm").val(); //축산중도매인명
-			//$("#qcn").val(result_6[0].QCN)
-	        ReportPopup('LALM0412R3',TitleData, 'grd_MhSogCow', 'T');
-		}
-		
-		function fn_getKNumber(number){
-			var kNumber = ['','일','이','삼','사','오','육','칠','팔','구'];
-			var tenThousandUnit = ['','만','억','조'];
-			var tenUnit = ['','십','백','천'];
-			let index=0,unit=10000;
-			let division = Math.pow(unit,index);
-			let answer = '';
+	// 	var TitleData = new Object();
+	// 	TitleData.title = "가축매매 수수료 영수증 제 " + $("#qcn").val() + " 차";
+	// 	TitleData.sub_title = "";
+	// 	TitleData.unit = "";
+	// 	TitleData.frlno = $("#frlno").val()+" - *******";
+	// 	TitleData.ohse_telno = $("#ohse_telno").val();
+	// 	TitleData.cus_mpno = $("#cus_mpno").val();
+	// 	// TitleData.qcn = $("#qcn").val();
+	// 	TitleData.bzno = parent.wmcList[0].BZNO;
+	// 	TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 "+ parent.wmcList[0].REPMNM;
+	// 	TitleData.auc_dt = fn_toDate(fn_dateToData($('#auc_dt').val()), "KR");
+	// 	TitleData.txt = temp3;
+	// 	TitleData.sra_sel_fee = $("#sra_sel_fee").val();
+	// 	TitleData.sra_etc_cst = $("#etc_cst").val();
+	// 	TitleData.dong = fn_xxsDecode($("#mdongup").val()+" "+$("#mdongbw").val()); //매수인주소
+	// 	TitleData.Wdong = parent.wmcList[0].DONGUP + parent.wmcList[0].DONGBW; //사업장주소
+	// 	TitleData.Wdongup = parent.wmcList[0].DONGUP; //사업장주소 
+	// 	TitleData.Wdongbw = parent.wmcList[0].DONGBW; //사업장주소 
+	// 	TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
+	// 	TitleData.sra_mwmnnm = $("#sra_mwmnnm").val(); //축산중도매인명
+	// 	//$("#qcn").val(result_6[0].QCN)
+	// 	ReportPopup('LALM0412R3',TitleData, 'grd_MhSogCow', 'T');
+	// }
 	
-			while(Math.floor(number/division) > 0 ){
-				var mod = Math.floor(number % (division * unit) / division);
-				if(mod){
-					const modToArr = mod.toString().split('');
-					const modLen = modToArr.length - 1;
-					const toKorean = modToArr.reduce((a, v , i) =>{
-						if(v*1 != '0'){
-							a+= kNumber[v*1]+tenUnit[modLen -i];							
-						}
-						return a;
-					},'');
-					answer = toKorean+tenThousandUnit[index] +answer; 
-				}
-				division = Math.pow(unit,++index);
+	function fn_getKNumber(number){
+		var kNumber = ['','일','이','삼','사','오','육','칠','팔','구'];
+		var tenThousandUnit = ['','만','억','조'];
+		var tenUnit = ['','십','백','천'];
+		let index=0,unit=10000;
+		let division = Math.pow(unit,index);
+		let answer = '';
+
+		while(Math.floor(number/division) > 0 ){
+			var mod = Math.floor(number % (division * unit) / division);
+			if(mod){
+				const modToArr = mod.toString().split('');
+				const modLen = modToArr.length - 1;
+				const toKorean = modToArr.reduce((a, v , i) =>{
+					if(v*1 != '0'){
+						a+= kNumber[v*1]+tenUnit[modLen -i];							
+					}
+					return a;
+				},'');
+				answer = toKorean+tenThousandUnit[index] +answer; 
 			}
-			return answer;
+			division = Math.pow(unit,++index);
 		}
+		return answer;
+	}
+	
+	//정산서,채무확인서 출력시 경매 참가번호 거래 확정으로 수정
+	function fn_chgAucEntrDdl(){
+		if($('#grd_MhSogCow').getGridParam("reccount") == 0) return; 
 		
-		//정산서,채무확인서 출력시 경매 참가번호 거래 확정으로 수정
-		function fn_chgAucEntrDdl(){
-			if($('#grd_MhSogCow').getGridParam("reccount") == 0) return; 
-			
-			var srchData = {};
-			srchData["auc_dt"] 	= $('#auc_dt').val().replace(/[^0-9]/g,'');
-			srchData["auc_obj_dsc"] 	= $('#auc_obj_dsc').val();
-			srchData["lvst_auc_ptc_mn_no"] 	= $('#lvst_auc_ptc_mn_no').val();
-			srchData["trmn_amnno"] 	= $('#trmn_amnno').val();
-			
-			
-			result = sendAjax(srchData, "/LALM1007_updAucEntrDdl", "POST");
-			
-			if(result.status == RETURN_SUCCESS){
-             	var decMap = setDecrypt(result);
-            }			
-		}
+		var srchData = {};
+		srchData["auc_dt"] 	= $('#auc_dt').val().replace(/[^0-9]/g,'');
+		srchData["auc_obj_dsc"] 	= $('#auc_obj_dsc').val();
+		srchData["lvst_auc_ptc_mn_no"] 	= $('#lvst_auc_ptc_mn_no').val();
+		srchData["trmn_amnno"] 	= $('#trmn_amnno').val();
+		
+		
+		result = sendAjax(srchData, "/LALM1007_updAucEntrDdl", "POST");
+		
+		if(result.status == RETURN_SUCCESS){
+			var decMap = setDecrypt(result);
+		}			
+	}
 </script>
 <body>
 <div class="contents">
