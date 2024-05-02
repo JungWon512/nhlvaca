@@ -1,8 +1,11 @@
 package com.auc.lalm.ls.service.Impl;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,9 @@ public class LALM1006ServiceImpl implements LALM1006Service{
 
 	@Autowired
 	LALM1006Mapper lalm1006Mapper;	
+
+	@Autowired
+	LALM1007Mapper lalm1007Mapper;
 
 	@Override
 	public List<Map<String, Object>> LALM1006_selList(Map<String, Object> map) throws Exception {
@@ -134,16 +140,97 @@ public class LALM1006ServiceImpl implements LALM1006Service{
 		insertNum = lalm1006Mapper.LALM1006_insAllPgm(map);
 		reMap.put("insertNum", insertNum);
 		
-		return reMap;
+		// 경매참가번호 정보 등록 후 보증금 입금 여부 등록(염소일 경우에만)
+		if(map.get("hd_auc_obj_dsc").equals("5")) {
+
+			LocalDate today = LocalDate.now();
+		
+			Map<String, Object> rvMap = new HashMap<String, Object>();
+
+			int v_rv_sqno = lalm1007Mapper.LALM1007_v_rv_sqno(map);
+
+			rvMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
+			rvMap.put("de_auc_obj_dsc", map.get("hd_auc_obj_dsc"));
+			rvMap.put("de_auc_dt", map.get("auc_date"));
+			rvMap.put("de_trmn_amnno", map.get("trmn_amnno"));
+			rvMap.put("rv_sqno", v_rv_sqno);
+			rvMap.put("de_rv_dt", today.format(DateTimeFormatter.ofPattern("YYYYMMdd")));
+			rvMap.put("de_sra_rv_tpc", "1");
+			rvMap.put("de_sra_rv_am", map.get("auc_entr_grn_am").equals("") ? 0 : map.get("auc_entr_grn_am"));
+			rvMap.put("de_rmk_cntn", "보증금입금 처리");
+			rvMap.put("ss_userid", map.get("ss_userid"));
+
+
+			lalm1007Mapper.LALM1007_insRv(rvMap);
+
+			return reMap;
+		} else {
+			return reMap;
+		}
+
 	}
 	
 	@Override
 	public Map<String, Object> LALM1006_updPgm(Map<String, Object> map) throws Exception {
 		Map<String, Object> reMap = new HashMap<String, Object>();
 		int updateNum = 0;
+
+		Set<String> keyset = map.keySet();
+		for (String key : keyset){
+			System.out.println(key + map.get(key));
+		}
+
 		updateNum = lalm1006Mapper.LALM1006_updPgm(map);
 		reMap.put("updateNum", updateNum);
-		return reMap;
+
+		// 경매참가번호 정보 수정 후 보증금 입금 여부 등록(염소일 경우에만)
+		if(map.get("hd_auc_obj_dsc").equals("5")) {
+		
+			Map<String, Object> rvMap = new HashMap<String, Object>();
+
+			rvMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
+			rvMap.put("auc_obj_dsc", map.get("hd_auc_obj_dsc"));
+			rvMap.put("auc_dt", map.get("auc_date"));
+			rvMap.put("trmn_amnno", map.get("trmn_amnno"));
+
+			Map<String, Object> rmkMap = lalm1007Mapper.LALM1007_rvInfo(rvMap);
+
+			Set<String> mapKey = rmkMap.keySet();
+
+			// for(String key : mapKey) {
+
+			// 	System.out.println(key + ": " + rmkMap.get(key));
+			// }
+
+			if(rmkMap.size() > 0) {
+				Map<String, Object> updMap = new HashMap<String, Object>();
+
+				LocalDate today = LocalDate.now();
+
+				System.out.println(rmkMap.get("rv_sqno"));
+
+				today.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+
+				updMap.put("de_rv_dt", today.format(DateTimeFormatter.ofPattern("YYYYMMdd")));
+				updMap.put("de_sra_rv_tpc", "1");
+				updMap.put("de_sra_rv_am", map.get("auc_entr_grn_am").equals("") ? 0 : map.get("auc_entr_grn_am"));
+				updMap.put("de_rmk_cntn", "보증금입금 처리");
+				updMap.put("ss_userid", map.get("ss_userid"));
+
+				updMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
+				updMap.put("de_trmn_amnno", map.get("trmn_amnno"));
+				updMap.put("de_auc_obj_dsc", map.get("hd_auc_obj_dsc"));
+				updMap.put("de_auc_dt", map.get("auc_date"));
+				updMap.put("de_rv_sqno", rmkMap.get("RV_SQNO"));
+
+				lalm1007Mapper.LALM1007_updRv(updMap);
+
+			}
+
+			return reMap;
+		} else {
+			return reMap;
+		}
 	}
 	
 	@Override

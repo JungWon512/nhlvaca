@@ -144,6 +144,19 @@
             
             fn_CallMwmnPopup1(false);
         });
+
+		$("#test_btn").on('click', function(e){
+			e.preventDefault();
+
+			var pgid = 'CLIPBOARD';
+			var menu_id = $("#menu_info").attr("menu_id");
+
+			var result;
+
+			parent.layerPopupPage(pgid, menu_id, null, null, 800, 600,function(result){
+				callback(result);
+			});
+		})
      	
      	/******************************
          * 참가번호 팝업 이벤트
@@ -1000,6 +1013,7 @@
                                 	<input disabled="disabled" type="text" style="width:100px" id="lvst_auc_ptc_mn_no1">                                
                                 	<input type="text" style="ime-mode:active;width:100px" id="sra_mwmnnm1">
                                 	<button id="pb_sra_mwmnnm1" class="tb_btn white srch"><i class="fa fa-search"></i></button>
+									<!-- <button id="test_btn">팝업호출</button> -->
                                 </td>
 <!--                                 <th scope="row"><span class="tb_dot">불량등록이력표시여부</span></th> -->
 <!--                                 <td>                                     -->

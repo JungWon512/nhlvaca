@@ -38,6 +38,8 @@ public interface LALM1007Mapper {
 
 	int LALM1007_delRv(Map<String, Object> map) throws Exception;
 
+	Map<String, Object> LALM1007_rvInfo(Map<String, Object> map) throws Exception;
+
 	Map<String, Object> LALM1007_chkRmkcntn(Map<String, Object> map) throws Exception;
 
 	int LALM1007_v_rv_sqno(Map<String, Object> map) throws Exception;

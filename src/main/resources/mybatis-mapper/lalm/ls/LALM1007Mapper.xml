@@ -878,6 +878,25 @@
 	        and auc_dt                 = #{de_auc_dt}
 	        and rv_sqno                = #{de_rv_sqno}
     </delete>
+
+	<select id="LALM1007_rvInfo" resultType="HashMap">
+	     select 
+		 		trmn_amnno,
+				auc_dt,
+				auc_obj_dsc,
+				rv_sqno,
+				rv_dt,
+				sra_rv_tpc,
+				sra_rv_am,
+		 		rmk_cntn
+           from tb_la_is_mh_mwmn_adj
+          where na_bzplc       = #{ss_na_bzplc}
+            and trmn_amnno     = #{trmn_amnno}
+            and auc_obj_dsc    = #{auc_obj_dsc}
+            and auc_dt         = #{auc_dt}
+            and rmk_cntn       = '보증금입금 처리'
+			and ROWNUM = '1'
+    </select>
     
     <select id="LALM1007_chkRmkcntn" resultType="HashMap">
 	     select count(rmk_cntn) AS rmk_cntn_cnt
