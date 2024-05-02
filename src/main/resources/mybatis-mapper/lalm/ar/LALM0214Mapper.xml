@@ -27,7 +27,7 @@
 	          , A.SEL_STS_DSC                                      /* 판매상태구분코드                      */
 	          , A.BRCL_ISP_CTFW_SMT_YN                             /* 브루셀라검사증명서제출여부            */
 	          , A.BRCL_ISP_DT 									   /* 브루셀라검사일자                      */
-	          , DECODE(A.BRCL_ISP_RZT_C,'0','-','1','음성','양성') BRCL_ISP_RZT_C_NM 
+	          , DECODE(A.BRCL_ISP_RZT_C,'1','음성','2','양성','-') BRCL_ISP_RZT_C_NM 
 	          , A.LWPR_CHG_NT                                      /* 최저가변경횟수                        */
 	          , A.VACN_DT                                          /* 예방접종일자                          */
 	          , A.VACN_ORDER

@@ -852,7 +852,9 @@ var na_bzplc = App_na_bzplc;
             		 if(na_bzplc == '8808990656106') {
             			 ReportPopup('LALM0216R3_86',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
-            		 } else {
+            		 }else if(na_bzplc == '8808990657615') {
+						ReportPopup('LALM0216R3_7_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그                			 
+					 } else {
             			 ReportPopup('LALM0216R3_13',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
