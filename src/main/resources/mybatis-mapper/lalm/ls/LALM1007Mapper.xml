@@ -51,6 +51,7 @@
 			, ls_cmeno                   /* 최종변경자개인번호         */
             , CASE WHEN #{ss_security} = '1' THEN dongbw
                ELSE LPAD('', LENGTH(dongbw), '*') END as dongbw      /* 축산도매인명 동이하주소*/        
+			, rmk_cntn					 /* 비고 */
 		from TB_LA_IS_MM_MWMN
 		where na_bzplc   = #{ss_na_bzplc}
 		  and trmn_amnno = #{trmn_amnno}

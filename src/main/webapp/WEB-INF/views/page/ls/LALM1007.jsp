@@ -339,7 +339,7 @@ var mCnt = 0;
            $("#mdongup").val(result_5[0].DONGUP);
            $("#mdongbw").val(result_5[0].DONGBW);
            $("#sra_mwmnnm").val(result_5[0].SRA_MWMNNM);
-        	
+		   $("#rmk_cntn").val(result_5[0].RMK_CNTN);
         //차수
         var results_6 = null; 
    	    results_6 = sendAjaxFrm("frm_Search", "/LALM1007_selList_MhAucQcn", "POST");
@@ -1106,7 +1106,8 @@ var mCnt = 0;
 			TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 ";	    	   
 		}
 		TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
-		TitleData.rmk_cntn = parent.wmcList[0].RMK_CNTN;
+		// TitleData.rmk_cntn = parent.wmcList[0].RMK_CNTN;
+		TitleData.rmk_cntn = $("#rmk_cntn").val();
 		TitleData.tel_no = parent.wmcList[0].TELNO;
 		
 		TitleData.srch_condition =  '[경매일자 : ' + $('#auc_dt').val() + ']'
@@ -1222,13 +1223,14 @@ var mCnt = 0;
 
     		TitleData.acno = parent.wmcList[0].ACNO;
     		TitleData.clntnm = parent.wmcList[0].NA_BZPLNM 
-	       if(na_bzplc == '8808990683973'){
-		       TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM;	    	   
-	       }else{
-		       TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 ";	    	   
-	       }
+			if(na_bzplc == '8808990683973'){
+				TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM;	    	   
+			}else{
+				TitleData.na_bzplnm = parent.wmcList[0].NA_BZPLNM + " 조합장 ";	    	   
+			}
     		TitleData.sealImg = parent.wmcList[0].SEAL_IMG_CNTN;
-    		TitleData.rmk_cntn = parent.wmcList[0].RMK_CNTN;
+    		// TitleData.rmk_cntn = parent.wmcList[0].RMK_CNTN;
+    		TitleData.rmk_cntn = $("#rmk_cntn").val();
     		TitleData.tel_no = parent.wmcList[0].TELNO;
     		
        
@@ -1491,7 +1493,7 @@ var mCnt = 0;
                                     </div>
                                 </td>
                                 <th scope="row">참가번호</th>
-                                <td>
+                                <td colspan="2">
                                    <div class="cellBox v_addr">
                                        <div class="cell" style="width:80px;">
                                            <input type="text" id="trmn_amnno" disabled/>
@@ -1507,6 +1509,8 @@ var mCnt = 0;
                                          </div>
                                    </div>
                                 </td>
+								<th scope="row" style="visibility:hidden;">중도매인비고</th>
+                                <td style="visibility:hidden;"><input id="rmk_cntn" /></td>
                                 <!-- <th scope="row">정산서양식</th>
                                 <td>
                                     <div class="cellBox" id="rd_prto_tpc">
