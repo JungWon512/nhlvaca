@@ -791,6 +791,8 @@ function fn_InitSet() {
 
 		setRowStatus = "update";
 	}
+
+	$("#ppgcow_fee_dsc").val("5");
 }
 
 //**************************************
@@ -831,7 +833,6 @@ function fn_SetData(result) {
 	$("#re_indv_no").val(result[0]["SRA_INDV_AMNNO"]);
 	$("#indv_sex_c").val(result[0]["INDV_SEX_C"]);		// 성별
 	$("#cow_sog_wt").val(result[0]["COW_SOG_WT"]||'0');	// 중량
-	$("#ppgcow_fee_dsc").val("5");
 	if(fn_isNull(result[0]["LOWS_SBID_LMT_AM"])) {		// 예정가
 		$("#lows_sbid_lmt_am").val("0");
 		$("#lows_sbid_lmt_am_ex").val("0");
