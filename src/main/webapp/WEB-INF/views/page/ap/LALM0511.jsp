@@ -115,6 +115,7 @@
         $("#calf_auc_atdr_unt_am").val(parent.envList[0]["CALF_AUC_ATDR_UNT_AM"]);
         $("#nbfct_auc_atdr_unt_am").val(parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"]);
         $("#ppgcow_auc_atdr_unt_am").val(parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"]);
+        $("#gt_auc_atdr_unt_am").val(parent.envList[0]["GT_AUC_ATDR_UNT_AM"]);
         
         mv_RunMode = 1;
         
@@ -250,6 +251,7 @@
                     <input type="hidden" id="calf_auc_atdr_unt_am">
                     <input type="hidden" id="nbfct_auc_atdr_unt_am">
                     <input type="hidden" id="ppgcow_auc_atdr_unt_am">
+                    <input type="hidden" id="gt_auc_atdr_unt_am">
                     <table>
                         <colgroup>
                             <col width="100">

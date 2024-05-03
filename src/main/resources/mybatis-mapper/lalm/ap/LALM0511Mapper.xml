@@ -22,6 +22,7 @@
             , CASE WHEN A.AUC_OBJ_DSC = '1' THEN C.ATDR_AM * #{calf_auc_atdr_unt_am}    
                    WHEN A.AUC_OBJ_DSC = '2' THEN C.ATDR_AM * #{nbfct_auc_atdr_unt_am}
                    WHEN A.AUC_OBJ_DSC = '3' THEN C.ATDR_AM * #{ppgcow_auc_atdr_unt_am}
+                   WHEN A.AUC_OBJ_DSC = '5' THEN C.ATDR_AM * #{gt_auc_atdr_unt_am}
               END AS ATDR_AM             /* 응찰금액                            */
 	        , TO_CHAR(C.ATDR_DTM, 'YYYY-MM-DD HH24:MI:SS.FF3') AS ATDR_DTM
 	    FROM TB_LA_IS_MH_SOG_COW  A
