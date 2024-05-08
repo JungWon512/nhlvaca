@@ -105,7 +105,8 @@
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 		var searchResultColNames = [ "경매<br>대상", "경매<br>번호", "출하자", "귀표번호",
-				"생년월일", "성별", "KPN", "계<br>대", "산<br>차", "중량", "응찰하한가", "낙찰가",
+				// "생년월일", "성별", "KPN", "계<br>대", "산<br>차", "중량", "응찰하한가", "낙찰가",
+				"생년월일", "성별", "중량", "응찰하한가", "낙찰가",
 				"진행상태","원표번호", "경매일자" ];
 		var searchResultColModel = [
 			{name : "AUC_OBJ_DSC",		index : "AUC_OBJ_DSC",		width : 65,	align : 'center',edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}	},
@@ -114,9 +115,9 @@
 			{name : "SRA_INDV_AMNNO",	index : "SRA_INDV_AMNNO",	width : 120,align : 'center'},
 			{name : "BIRTH",	    	index : "BIRTH",			width : 70,	align : 'center'},
 			{name : "INDV_SEX_C",		index : "INDV_SEX_C",		width : 70,	align : 'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}}, 
-			{name : "KPN_NO",			index : "KPN_NO",			width : 60,	align : 'center'},
-			{name : "SRA_INDV_PASG_QCN",index : "SRA_INDV_PASG_QCN",width : 40,	align : 'center'},
-			{name : "MATIME",			index : "MATIME",			width : 40,	align : 'center'}, 
+			// {name : "KPN_NO",			index : "KPN_NO",			width : 60,	align : 'center'},
+			// {name : "SRA_INDV_PASG_QCN",index : "SRA_INDV_PASG_QCN",width : 40,	align : 'center'},
+			// {name : "MATIME",			index : "MATIME",			width : 40,	align : 'center'}, 
 			{name : "COW_SOG_WT",		index : "COW_SOG_WT",		width : 35,	align : 'center'},
 			{name : "LOWS_SBID_LMT_AM",	index : "LOWS_SBID_LMT_AM",	width : 85,	align : 'right', formatter : 'integer',formatoptions : {thousandsSeparator : ',',decimalPlaces : 0}},
 			{name : "SRA_SBID_AM",		index : "SRA_SBID_AM",		width : 85,	align : 'right', formatter : 'integer',formatoptions : {	thousandsSeparator : ',',decimalPlaces : 0}},
@@ -169,7 +170,8 @@
 			rowNoValue = data.length;
 		}
 		var searchResultColNames = [ "경매<br>대상", "경매<br>번호", "출하자", "귀표번호",
-			"성별", "KPN", "중량", "응찰하한가", "낙찰가", "낙찰자", "진행상태"
+			// "성별", "KPN", "중량", "응찰하한가", "낙찰가", "낙찰자", "진행상태"
+			"성별", "중량", "응찰하한가", "낙찰가", "낙찰자", "진행상태"
 			,"원표번호", "경매일자", "변경일시", "변경사유" ];
 		var searchResultColModel = [
 			{name : "AUC_OBJ_DSC",		index : "AUC_OBJ_DSC",		width : 65,	align : 'center',edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}	},
@@ -177,7 +179,7 @@
 			{name : "FTSNM",			index : "FTSNM",			width : 60,	align : 'center'},
 			{name : "SRA_INDV_AMNNO",	index : "SRA_INDV_AMNNO",	width : 120,align : 'center'},
 			{name : "INDV_SEX_C",		index : "INDV_SEX_C",		width : 70,	align : 'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}}, 
-			{name : "KPN_NO",			index : "KPN_NO",			width : 60,	align : 'center'},
+			// {name : "KPN_NO",			index : "KPN_NO",			width : 60,	align : 'center'},
 			{name : "COW_SOG_WT",		index : "COW_SOG_WT",		width : 35,	align : 'center'},
 			{name : "LOWS_SBID_LMT_AM",	index : "LOWS_SBID_LMT_AM",	width : 85,	align : 'right',formatter : 'integer',formatoptions : {thousandsSeparator : ',',decimalPlaces : 0}},
 			{name : "SRA_SBID_AM",		index : "SRA_SBID_AM",		width : 85,	align : 'right',formatter : 'integer',formatoptions : {	thousandsSeparator : ',',decimalPlaces : 0}},
