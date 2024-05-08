@@ -1301,10 +1301,11 @@ var mCnt = 0;
 		var kNumber = fn_getKNumber(TitleData.tot_npym_am?.replaceAll(',',''));
 		TitleData.tot_npym_am_k = kNumber;
 		var aucObjDscNm = fn_deleteNumber($( "#auc_obj_dsc option:selected").text());
-		if(na_bzplc != '8808990656694' && aucObjDscNm =='일괄') aucObjDscNm = '송아지, 큰소';
+
+		//if(na_bzplc != '8808990656694' && aucObjDscNm =='일괄') aucObjDscNm = '송아지, 큰소';
 		
 		if(na_bzplc == '8808990687094') {  // 영주: 8808990687094
-			TitleData.text1 = $("#sra_mwmnnm").val()+" 님은\n"+fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 우 매입대금 중 아래 금액에 대하여 채무를 확인하고 \n경매일 익일 오전 12시까지 완납 할것을 확인합니다.";
+			TitleData.text1 = $("#sra_mwmnnm").val()+" 님은\n"+fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 "+ aucObjDscNm + " 매입대금 중 아래 금액에 대하여 채무를 확인하고 \n경매일 익일 오전 12시까지 완납 할것을 확인합니다.";
 		}else if (na_bzplc ==  '8808990656663') {  // 밀양: 8808990656663
 			TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일(은행마감 시간)내에 납입 할 것을 확인 합니다.\n 단 부득이한 경우 사전에 조합으로 요청시 1일에 한해 연장할수 있으며 \n3일 초과시 즉시 법적 절차가 진행됨을 유의 하시기 바랍니다.";
 		}else if (na_bzplc ==  '8808990656502') {  // 진천: 8808990656502
@@ -1320,13 +1321,13 @@ var mCnt = 0;
 		}else{
 			TitleData.text1 = fn_toDate(fn_dateToData($("#auc_dt").val()), "KR") + " " + parent.wmcList[0].NA_BZPLNM + " 경매시장에 응찰하여\n구입한 "+ aucObjDscNm + " 매입대금 중 일부 금액이 부족하여 그 금액을 아래와 같이 \n채무 확인하고 당일(은행마감 시간)내에 납입 할 것을 확인 합니다.";
 		}
-			
+
 		if (na_bzplc == '8808990687094') {  // 영주:              8808990687094
-			ReportPopup('LALM0412R1_4',TitleData, 'grd_MhSogCow', 'T');
+			ReportPopup('LALM0412R1_10',TitleData, 'grd_MhSogCow', 'T');
 		}else if(na_bzplc == '8808990656557') { //예천
-			ReportPopup('LALM0412R1_0',TitleData, 'grd_MhSogCow', 'T');
+			ReportPopup('LALM0412R1_10',TitleData, 'grd_MhSogCow', 'T');
 		}else{
-			ReportPopup('LALM0412R1_9',TitleData, 'grd_MhSogCow', 'T');
+			ReportPopup('LALM0412R1_10',TitleData, 'grd_MhSogCow', 'T');
 			//ReportPopup('LALM0412R1_1',TitleData, 'grd_MhSogCow', 'T');
 		}
 		//fn_chgAucEntrDdl();
@@ -1651,7 +1652,7 @@ var mCnt = 0;
                             <li><p class="dot_allow">입금등록</p></li>
                         </ul>
 		                 <div class="fl_R"><!--  //버튼 모두 우측정렬 -->
-		                     <label id="msg_Sbid" style="font-size:15px;color: blue;font: message-box;">※ 구입하신 소는 5일이내에 축협으로 이동신고바랍니다.</label>   
+		                     <label id="msg_Sbid" style="font-size:15px;color: blue;font: message-box;">※ 구입하신 염소는 5일이내에 축협으로 이동신고바랍니다.</label>   
 		                     <button class="tb_btn" id="pb_RvGrmy">보증금입금</button>
 		                </div>
                     </div>                        

@@ -104,7 +104,7 @@
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-		var searchResultColNames = [ "경매<br>대상", "경매<br>번호", "출하자", "귀표번호",
+		var searchResultColNames = [ "경매<br>대상", "경매<br>번호", "출하자",
 				// "생년월일", "성별", "KPN", "계<br>대", "산<br>차", "중량", "응찰하한가", "낙찰가",
 				"생년월일", "성별", "중량", "응찰하한가", "낙찰가",
 				"진행상태","원표번호", "경매일자" ];
@@ -112,7 +112,7 @@
 			{name : "AUC_OBJ_DSC",		index : "AUC_OBJ_DSC",		width : 65,	align : 'center',edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}	},
 			{name : "AUC_PRG_SQ",	    index : "AUC_PRG_SQ",		width : 55,	align : 'center'}, 
 			{name : "FTSNM",			index : "FTSNM",			width : 60,	align : 'center'},
-			{name : "SRA_INDV_AMNNO",	index : "SRA_INDV_AMNNO",	width : 120,align : 'center'},
+			//{name : "SRA_INDV_AMNNO",	index : "SRA_INDV_AMNNO",	width : 120,align : 'center'},
 			{name : "BIRTH",	    	index : "BIRTH",			width : 70,	align : 'center'},
 			{name : "INDV_SEX_C",		index : "INDV_SEX_C",		width : 70,	align : 'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}}, 
 			// {name : "KPN_NO",			index : "KPN_NO",			width : 60,	align : 'center'},
@@ -169,7 +169,7 @@
 		if (data != null) {
 			rowNoValue = data.length;
 		}
-		var searchResultColNames = [ "경매<br>대상", "경매<br>번호", "출하자", "귀표번호",
+		var searchResultColNames = [ "경매<br>대상", "경매<br>번호", "출하자",
 			// "성별", "KPN", "중량", "응찰하한가", "낙찰가", "낙찰자", "진행상태"
 			"성별", "중량", "응찰하한가", "낙찰가", "낙찰자", "진행상태"
 			,"원표번호", "경매일자", "변경일시", "변경사유" ];
@@ -177,7 +177,7 @@
 			{name : "AUC_OBJ_DSC",		index : "AUC_OBJ_DSC",		width : 65,	align : 'center',edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}	},
 			{name : "AUC_PRG_SQ",	    index : "AUC_PRG_SQ",		width : 55,	align : 'center'}, 
 			{name : "FTSNM",			index : "FTSNM",			width : 60,	align : 'center'},
-			{name : "SRA_INDV_AMNNO",	index : "SRA_INDV_AMNNO",	width : 120,align : 'center'},
+			//{name : "SRA_INDV_AMNNO",	index : "SRA_INDV_AMNNO",	width : 120,align : 'center'},
 			{name : "INDV_SEX_C",		index : "INDV_SEX_C",		width : 70,	align : 'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}}, 
 			// {name : "KPN_NO",			index : "KPN_NO",			width : 60,	align : 'center'},
 			{name : "COW_SOG_WT",		index : "COW_SOG_WT",		width : 35,	align : 'center'},
