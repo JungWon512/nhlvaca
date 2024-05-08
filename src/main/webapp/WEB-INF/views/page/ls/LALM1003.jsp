@@ -30,7 +30,7 @@
         /******************************
          * 초기값 설정
          ******************************/ 
-        fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 8, true); 
+        fn_setCodeBox("auc_obj_dsc", "AUC_OBJ_DSC", 8, true);
 
         /******************************
          * 경매대상 변경
