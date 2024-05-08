@@ -79,7 +79,7 @@
                     }
                 });
             } else if((parseInt($("#sbt_am").val()) > 0 && $("#sbt_pmr").attr('disabled')) || (parseInt($("#sbt_pmr").val()) > 0 && $("#sbt_am").attr('disabled'))) {
-            	MessagePopup('YESNO',"저장 하시겠습니까?",function(res){
+            	MessagePopup('YESNO',"예정가를 변경하시겠습니까?",function(res){
                     if(res){
                         var result        = null;
                                              
@@ -295,7 +295,7 @@
         var searchResultColNames = ["","H사업장코드","H경매일자","H원표번호","H판매상태구분","H거래인","H참여자번호","H혈통금액","H출하수수료수기적용여부","H출하수수료수기등록","H판매수수료수기적용여부","H판매수수료수기등록"
 						            ,"H12개월이상여부","H12개월이상수수료","H번식우수수료구분코드","H사료미사용여부","H친자검사여부","H친자검사결과","H출하자조합원여부","H중도매인조합원여부"
 						            ,"H임신감정여부","H임신여부","H괴사감정여부","H괴사여부","H운송비지급여부","H제각여부","H축산생산자명"
-						        	,"경매번호", "경매대상구분", "출하주", "접수일", "수송자", "성별", "최소 예정가", "예정가", "예정가<br>변경횟수", "중량", "경매참가번호", "", "낙찰단가", "낙찰금액","진행상태","변경사유", "응찰하안가ex", "마감차수", "구분", "낮출금액", ""];        
+						        	,"경매번호", "경매대상구분", "출하주", "접수일", "성별", "최소 예정가", "예정가", "예정가<br>변경횟수", "중량", "경매참가번호", "", "낙찰단가", "낙찰금액","진행상태","변경사유", "응찰하안가ex", "마감차수", "구분", "낮출금액", ""];        
         var searchResultColModel = [
             						{name:"_STATUS_",               index:"_STATUS_"              , width:15,  align:'center'},
             						
@@ -330,7 +330,7 @@
 						            {name:"AUC_OBJ_DSC"           , index:"AUC_OBJ_DSC"           , width:80,  align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}},
 						            {name:"FTSNM"                 , index:"FTSNM"                 , width:100, align:'center'},
 						            {name:"RC_DT"                 , index:"RC_DT"                 , width:100, align:'center', formatter:'gridDateFormat'},
-						            {name:"VHC_DRV_CAFFNM"        , index:"VHC_DRV_CAFFNM"        , width:100, align:'center'},
+						            // {name:"VHC_DRV_CAFFNM"        , index:"VHC_DRV_CAFFNM"        , width:100, align:'center'},
 						            //{name:"SRA_INDV_AMNNO"        , index:"SRA_INDV_AMNNO"        , width:150, align:'center'},						            
 						            {name:"INDV_SEX_C"			  , index:"INDV_SEX_C"			  , width:40 , sortable:false, align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("INDV_SEX_C", 1)}},
 						            {name:"FIR_LOWS_SBID_LMT_AM"  , index:"FIR_LOWS_SBID_LMT_AM"  , width:100, align:'right', formatter:'currency', formatoptions:{thousandsSeparator:',', decimalPlaces: 0}},
@@ -747,7 +747,7 @@
                         <tbody>
                             <tr>
                                 <th scope="row">
-                                    <input type="radio" id="am_rto_dsc_1" name="am_rto_dsc_radio" value="1" onclick="javascript:fn_setChgRadio('am_rto_dsc','1');fn_setChgRadioAmRtoDsc('1');"/> 금액
+                                    <input type="radio" id="am_rto_dsc_1" name="am_rto_dsc_radio" value="1" onclick="javascript:fn_setChgRadio('am_rto_dsc','1');fn_setChgRadioAmRtoDsc('1');"/> 금액(원)
                                 </th>
                                 <td>
                                     <input type="text" id="sbt_am" class="number" maxlength="8">
