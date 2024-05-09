@@ -139,7 +139,7 @@
                LOWS_SBID_LMT_AM  = CASE WHEN #{am_rto_dsc} = '1' THEN #{fir_lows_sbid_lmt_am}
                                    ELSE                               FIR_LOWS_SBID_LMT_AM 
                                    END
-             , LWPR_CHG_NT       = LWPR_CHG_NT + 1
+             , LWPR_CHG_NT       = CASE WHEN LWPR_CHG_NT IS NULL THEN 1 ELSE LWPR_CHG_NT + 1 END
              , LSCHG_DTM         = SYSDATE
              , LS_CMENO          = #{ss_userid}
          WHERE NA_BZPLC          = #{ss_na_bzplc}
@@ -156,7 +156,7 @@
 										WHEN #{am_rto_dsc} = '1' THEN DECODE(#{sbt_am},'0',FIR_LOWS_SBID_LMT_AM,LOWS_SBID_LMT_AM - #{sbt_am})
                                    		ELSE DECODE(#{sbt_pmr},'0',FIR_LOWS_SBID_LMT_AM,( FLOOR((LOWS_SBID_LMT_AM - (LOWS_SBID_LMT_AM * ${sbt_pmr} / 100)) / 1000) * 1000 ))
                                    END
-             , LWPR_CHG_NT       = LWPR_CHG_NT + 1
+             , LWPR_CHG_NT       = CASE WHEN LWPR_CHG_NT IS NULL THEN 1 ELSE LWPR_CHG_NT + 1 END
              , LSCHG_DTM         = SYSDATE
              , LS_CMENO          = #{ss_userid}
          WHERE NA_BZPLC          = #{ss_na_bzplc}
