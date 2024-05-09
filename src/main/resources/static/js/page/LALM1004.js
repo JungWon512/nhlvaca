@@ -1350,6 +1350,7 @@ function fn_CallFtsnmPopup(p_param, callback) {
 			$("#sog_na_trpl_c").val(result.NA_TRPL_C);
 			
 			$("#io_sogmn_maco_yn").val(result.MACO_YN);
+			$("#jrdwo_dsc").val(result.JRDWO_DSC);
 			$("#sra_farm_acno").val(result.SRA_FARM_ACNO);
 			if (typeof callback === 'function') callback();
 		} else {
