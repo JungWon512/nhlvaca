@@ -195,7 +195,7 @@ public class LALM1006ServiceImpl implements LALM1006Service{
 
 			Map<String, Object> rmkMap = lalm1007Mapper.LALM1007_rvInfo(rvMap);
 
-			Set<String> mapKey = rmkMap.keySet();
+			// Set<String> mapKey = rmkMap.keySet();
 
 			// for(String key : mapKey) {
 
@@ -238,7 +238,27 @@ public class LALM1006ServiceImpl implements LALM1006Service{
 		Map<String, Object> reMap = new HashMap<String, Object>();
 		int deleteNum = 0;
 		deleteNum = lalm1006Mapper.LALM1006_delAllPgm(map);
+
+		// 보증금 입금 처리 내역 삭제
+		Map<String, Object> rvMap = new HashMap<String, Object>();
+
+		rvMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
+		rvMap.put("auc_obj_dsc", map.get("hd_auc_obj_dsc"));
+		rvMap.put("auc_dt", map.get("auc_date"));
+		rvMap.put("trmn_amnno", map.get("trmn_amnno"));
+
+		Map<String, Object> rmkMap = lalm1007Mapper.LALM1007_rvInfo(rvMap);
+
+		reMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
+		reMap.put("de_trmn_amnno", map.get("trmn_amnno"));
+		reMap.put("de_auc_obj_dsc", map.get("hd_auc_obj_dsc"));
+		reMap.put("de_auc_dt", map.get("auc_date"));
+		reMap.put("de_rv_sqno", rmkMap.get("RV_SQNO"));
+
+		lalm1007Mapper.LALM1007_delRv(reMap);
+		
 		reMap.put("deleteNum", deleteNum);
+
 		return reMap;
 	}
 
