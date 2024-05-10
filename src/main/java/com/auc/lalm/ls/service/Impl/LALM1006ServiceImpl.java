@@ -141,13 +141,16 @@ public class LALM1006ServiceImpl implements LALM1006Service{
 		reMap.put("insertNum", insertNum);
 		
 		// 경매참가번호 정보 등록 후 보증금 입금 여부 등록(염소일 경우에만)
-		if(map.get("hd_auc_obj_dsc").equals("5")) {
+		// if(map.get("hd_auc_obj_dsc").equals("5")) {
 
-			LocalDate today = LocalDate.now();
-		
-			Map<String, Object> rvMap = new HashMap<String, Object>();
+		LocalDate today = LocalDate.now();
+	
+		Map<String, Object> rvMap = new HashMap<String, Object>();
 
-			int v_rv_sqno = lalm1007Mapper.LALM1007_v_rv_sqno(map);
+		int v_rv_sqno = lalm1007Mapper.LALM1007_v_rv_sqno(map);
+
+		// 보증금 금액이 0보다 클때만 보증금 입금 내역 등록
+		if (!map.get("auc_entr_grn_am").equals("") && !map.get("auc_entr_grn_am").equals("0")) {
 
 			rvMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
 			rvMap.put("de_auc_obj_dsc", map.get("hd_auc_obj_dsc"));
@@ -163,10 +166,12 @@ public class LALM1006ServiceImpl implements LALM1006Service{
 
 			lalm1007Mapper.LALM1007_insRv(rvMap);
 
-			return reMap;
-		} else {
-			return reMap;
 		}
+
+		return reMap;
+		// } else {
+		// 	return reMap;
+		// }
 
 	}
 	
@@ -184,53 +189,64 @@ public class LALM1006ServiceImpl implements LALM1006Service{
 		reMap.put("updateNum", updateNum);
 
 		// 경매참가번호 정보 수정 후 보증금 입금 여부 등록(염소일 경우에만)
-		if(map.get("hd_auc_obj_dsc").equals("5")) {
+		// if(map.get("hd_auc_obj_dsc").equals("5")) {
 		
-			Map<String, Object> rvMap = new HashMap<String, Object>();
+		Map<String, Object> rvMap = new HashMap<String, Object>();
 
-			rvMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
-			rvMap.put("auc_obj_dsc", map.get("hd_auc_obj_dsc"));
-			rvMap.put("auc_dt", map.get("auc_date"));
-			rvMap.put("trmn_amnno", map.get("trmn_amnno"));
+		rvMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
+		rvMap.put("auc_obj_dsc", map.get("hd_auc_obj_dsc"));
+		rvMap.put("auc_dt", map.get("auc_date"));
+		rvMap.put("trmn_amnno", map.get("trmn_amnno"));
 
-			Map<String, Object> rmkMap = lalm1007Mapper.LALM1007_rvInfo(rvMap);
+		Map<String, Object> rmkMap = lalm1007Mapper.LALM1007_rvInfo(rvMap);
 
-			// Set<String> mapKey = rmkMap.keySet();
+		LocalDate today = LocalDate.now();
 
-			// for(String key : mapKey) {
+		if(rmkMap != null) {
+			Map<String, Object> updMap = new HashMap<String, Object>();
 
-			// 	System.out.println(key + ": " + rmkMap.get(key));
-			// }
+			updMap.put("de_rv_dt", today.format(DateTimeFormatter.ofPattern("YYYYMMdd")));
+			updMap.put("de_sra_rv_tpc", "1");
+			updMap.put("de_sra_rv_am", map.get("auc_entr_grn_am").equals("") ? 0 : map.get("auc_entr_grn_am"));
+			updMap.put("de_rmk_cntn", "보증금입금 처리");
+			updMap.put("ss_userid", map.get("ss_userid"));
 
-			if(rmkMap.size() > 0) {
-				Map<String, Object> updMap = new HashMap<String, Object>();
+			updMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
+			updMap.put("de_trmn_amnno", map.get("trmn_amnno"));
+			updMap.put("de_auc_obj_dsc", map.get("hd_auc_obj_dsc"));
+			updMap.put("de_auc_dt", map.get("auc_date"));
+			updMap.put("de_rv_sqno", rmkMap.get("RV_SQNO"));
 
-				LocalDate today = LocalDate.now();
+			lalm1007Mapper.LALM1007_updRv(updMap);
 
-				System.out.println(rmkMap.get("rv_sqno"));
+		} 
+		// 기존에 등록되어있는 보증금 입금 데이터가 없고 보증금 금액이 0원 이상일 경우에는 
+		// 보증금 입금 내역 등록 
+		else  {
+			if (!map.get("auc_entr_grn_am").equals("") && !map.get("auc_entr_grn_am").equals("0")) {
+				Map<String, Object> insMap = new HashMap<String, Object>();
 
-				today.format(DateTimeFormatter.ofPattern("YYYYMMdd"));
+				int v_rv_sqno = lalm1007Mapper.LALM1007_v_rv_sqno(map);
 
-				updMap.put("de_rv_dt", today.format(DateTimeFormatter.ofPattern("YYYYMMdd")));
-				updMap.put("de_sra_rv_tpc", "1");
-				updMap.put("de_sra_rv_am", map.get("auc_entr_grn_am").equals("") ? 0 : map.get("auc_entr_grn_am"));
-				updMap.put("de_rmk_cntn", "보증금입금 처리");
-				updMap.put("ss_userid", map.get("ss_userid"));
+				insMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
+				insMap.put("de_auc_obj_dsc", map.get("hd_auc_obj_dsc"));
+				insMap.put("de_auc_dt", map.get("auc_date"));
+				insMap.put("de_trmn_amnno", map.get("trmn_amnno"));
+				insMap.put("rv_sqno", v_rv_sqno);
+				insMap.put("de_rv_dt", today.format(DateTimeFormatter.ofPattern("YYYYMMdd")));
+				insMap.put("de_sra_rv_tpc", "1");
+				insMap.put("de_sra_rv_am", map.get("auc_entr_grn_am").equals("") ? 0 : map.get("auc_entr_grn_am"));
+				insMap.put("de_rmk_cntn", "보증금입금 처리");
+				insMap.put("ss_userid", map.get("ss_userid"));
 
-				updMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
-				updMap.put("de_trmn_amnno", map.get("trmn_amnno"));
-				updMap.put("de_auc_obj_dsc", map.get("hd_auc_obj_dsc"));
-				updMap.put("de_auc_dt", map.get("auc_date"));
-				updMap.put("de_rv_sqno", rmkMap.get("RV_SQNO"));
-
-				lalm1007Mapper.LALM1007_updRv(updMap);
-
+				lalm1007Mapper.LALM1007_insRv(insMap);
 			}
-
-			return reMap;
-		} else {
-			return reMap;
 		}
+
+		return reMap;
+		// } else {
+		// 	return reMap;
+		// }
 	}
 	
 	@Override
@@ -249,15 +265,18 @@ public class LALM1006ServiceImpl implements LALM1006Service{
 
 		Map<String, Object> rmkMap = lalm1007Mapper.LALM1007_rvInfo(rvMap);
 
-		reMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
-		reMap.put("de_trmn_amnno", map.get("trmn_amnno"));
-		reMap.put("de_auc_obj_dsc", map.get("hd_auc_obj_dsc"));
-		reMap.put("de_auc_dt", map.get("auc_date"));
-		reMap.put("de_rv_sqno", rmkMap.get("RV_SQNO"));
+		if(rmkMap.size() > 0) {
 
-		lalm1007Mapper.LALM1007_delRv(reMap);
-		
-		reMap.put("deleteNum", deleteNum);
+			reMap.put("ss_na_bzplc", map.get("ss_na_bzplc"));
+			reMap.put("de_trmn_amnno", map.get("trmn_amnno"));
+			reMap.put("de_auc_obj_dsc", map.get("hd_auc_obj_dsc"));
+			reMap.put("de_auc_dt", map.get("auc_date"));
+			reMap.put("de_rv_sqno", rmkMap.get("RV_SQNO"));
+
+			lalm1007Mapper.LALM1007_delRv(reMap);
+			
+			reMap.put("deleteNum", deleteNum);
+		}
 
 		return reMap;
 	}
