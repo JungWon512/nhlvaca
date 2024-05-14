@@ -1646,6 +1646,7 @@
           from tb_la_is_mh_fee_imps
          where na_bzplc    = #{ss_na_bzplc}
            and auc_dt      = #{auc_dt}
+		   and auc_obj_dsc in ( '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca3700Cnt" resultType="_int">
