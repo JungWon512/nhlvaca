@@ -1032,9 +1032,12 @@ var na_bzplc = App_na_bzplc;
              		 if(na_bzplc == '8808990660783') {
              			 ReportPopup('LALM0216R3_42',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
-             		 // ★안동봉화: 8808990689180 영덕울진: 8808990785431 상주 : 8808990657639
-             		 } else if(na_bzplc == '8808990689180' || na_bzplc == '8808990785431' || na_bzplc == '8808990657639') {
-             			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             		 // ★안동봉화: 8808990689180 영덕울진: 8808990785431 
+             		 } else if(na_bzplc == '8808990689180' || na_bzplc == '8808990785431') {
+             			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			 
+               		 // 상주 : 8808990657639
+               		 } else if(na_bzplc == '8808990657639') {
+               			 ReportPopup('LALM0216R3_6_2_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★영주: 8808990687094
              		 } else if(na_bzplc == '8808990687094') {
@@ -1298,9 +1301,13 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990652825') {
             			 ReportPopup('LALM0216R3_52',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
-             		 // ★안동봉화: 8808990689180 영덕울진: 8808990785431, 상주 : 8808990657639
-             		 } else if(na_bzplc == '8808990689180' || na_bzplc == '8808990785431' || na_bzplc == '8808990657639') {
-             			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+                 		 // ★안동봉화: 8808990689180 영덕울진: 8808990785431
+               		 } else if(na_bzplc == '8808990689180' || na_bzplc == '8808990785431') {
+               			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+                 			 
+             		 //상주 : 8808990657639
+             		 } else if(na_bzplc == '8808990657639') {
+             			 ReportPopup('LALM0216R3_6_2_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★영주: 8808990687094
              		 } else if(na_bzplc == '8808990687094') {

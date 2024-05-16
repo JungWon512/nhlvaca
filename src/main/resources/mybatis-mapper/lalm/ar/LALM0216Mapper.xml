@@ -657,7 +657,7 @@
          , A.MOD_KPN_NO                                  /* 수정KPN번호                            */
          , A.BRANDNM                                     /* 출장우브랜드명 		                   */
          , A.DNA_YN_CHK                                  /* 친자검사여부                           */
-         , CASE WHEN A.NA_BZPLC = '8808990674605' THEN A.DNA_YN 
+         , CASE WHEN A.NA_BZPLC IN ('8808990674605','8808990670737') THEN A.DNA_YN 
                 ELSE (CASE WHEN A.DNA_YN = '1' THEN '1' ELSE '' END)
            END  AS DNA_YN                                /* 친자검사결과                       */ 
          
