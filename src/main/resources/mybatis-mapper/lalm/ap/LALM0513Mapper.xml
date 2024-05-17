@@ -155,18 +155,14 @@
 		SELECT
           A.AUC_PRG_SQ
         , A.LVST_AUC_PTC_MN_NO
-        
         , CASE WHEN #{ss_security} = '1' THEN B.SRA_MWMNNM
            WHEN LENGTH(B.SRA_MWMNNM) = 2 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '*' 
            WHEN LENGTH(B.SRA_MWMNNM) = 3 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '*'  || SUBSTR(B.SRA_MWMNNM,3,1) 
            WHEN LENGTH(B.SRA_MWMNNM) = 4 THEN SUBSTR(B.SRA_MWMNNM,1,1) || '**' || SUBSTR(B.SRA_MWMNNM,4,1)  
            WHEN LENGTH(B.SRA_MWMNNM) >= 5 THEN SUBSTR(B.SRA_MWMNNM,1,2) || '**' || SUBSTR(B.SRA_MWMNNM,5,1)  END AS SRA_MWMNNM /*축산중도매인명*/
-        
         , B.DONGUP
-        
         , CASE WHEN #{ss_security} = '1' THEN B.DONGBW
         	   		ELSE '******' END AS DONGBW								/* 동이하마스킹주소		*/
-        
         , A.SRA_SBID_AM
         , E.SRA_SEL_FEE
         , E.SRA_ETC_CST
@@ -176,12 +172,9 @@
         , B.TRMN_AMNNO
         , C.INDV_SEX_C
         , A.LOWS_SBID_LMT_AM
-        
         , CASE WHEN #{ss_security} = '1' THEN B.DONGUP || ' ' || B.DONGBW
         	   		ELSE B.DONGUP || ' ' || '******' END AS ADR								/* 동이하마스킹주소		*/
-        
 		, NVL(H.IO_AM_15, 0) - NVL(F.SRA_RV_AM, 0) AS NOTPAY
-
     FROM TB_LA_IS_MH_SOG_COW A
     LEFT OUTER JOIN
                     (SELECT
@@ -212,7 +205,7 @@
 	                           , SUM(CASE WHEN NA_FEE_C NOT IN ('011') THEN (CASE WHEN ANS_DSC ='1' THEN 1 ELSE -1 END) * SRA_TR_FEE ELSE 0 END)                       AS SRA_ETC_CST
 	                       FROM TB_LA_IS_MH_FEE_IMPS
 	                       WHERE NA_BZPLC            = #{ss_na_bzplc}
-	                         AND (
+	                        AND (
 								(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
 								OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
 							)
@@ -240,16 +233,13 @@
                             , A.TRMN_AMNNO ) H
          ON  A.LVST_AUC_PTC_MN_NO     = H.LVST_AUC_PTC_MN_NO     /* 가축경매참여자번호          */
          AND A.TRMN_AMNNO             = H.TRMN_AMNNO             /* 거래인번호                  */
-
     INNER JOIN TB_LA_IS_MM_MWMN B
           ON  A.NA_BZPLC               = B.NA_BZPLC               /* 경제통합사업장코드          */
           AND A.TRMN_AMNNO             = B.TRMN_AMNNO             /* 거래인관리번호              */
-
     INNER JOIN TB_LA_IS_MM_INDV    C
           ON  A.NA_BZPLC               = C.NA_BZPLC               /* 경제통합사업장코드          */
           AND A.SRA_SRS_DSC            = C.SRA_SRS_DSC            /* 축산축종구분코드            */
           AND A.SRA_INDV_AMNNO         = C.SRA_INDV_AMNNO         /* 축산개체관리번호            */
-
     LEFT OUTER JOIN
                     (SELECT
                            NA_BZPLC
@@ -275,7 +265,6 @@
          AND A.AUC_DT                 = E.AUC_DT              /* 경매일자                    */
          AND A.OSLP_NO                = E.OSLP_NO             /* 원표번호                    */
          AND A.LED_SQNO               = E.LED_SQNO            /* 원장일련번호                */
-
     LEFT OUTER JOIN
                     (SELECT
                            NA_BZPLC
@@ -297,7 +286,6 @@
 			OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
 		 )																														 /* 대상구분코드 : 일괄 조회시 염소,말 조회되지 않도록 수정 */
          AND A.AUC_DT                 = F.AUC_DT                                                                                 /* 경매일자                    */
-
     WHERE A.NA_BZPLC             = #{ss_na_bzplc}
       AND (
 			(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
@@ -307,7 +295,6 @@
       AND A.SEL_STS_DSC          = '22'                   /* 판매상태구분코드	         */
       AND A.DEL_YN               = '0'
       AND A.LED_SQNO             = 1
-
     ORDER BY TO_NUMBER(A.LVST_AUC_PTC_MN_NO), A.AUC_PRG_SQ
 	]]>
 	</select>
