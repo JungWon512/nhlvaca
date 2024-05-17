@@ -23,19 +23,25 @@
 	        , del_yn
 	        , SRA_FED_SPY_YN
 			, VACN_DT
+			, CASE WHEN SUBSTR(FHS_ID_NO, 1, 1) = 'G' THEN '1'
+                   ELSE '0'
+              END AS ETC_AUC_OBJ_DSC_YN
           FROM TB_LA_IS_MM_FHS
          WHERE NA_BZPLC   = #{ss_na_bzplc}
            AND DEL_YN     = '0'
            AND ANW_YN    != '0'
            AND FTSNM   LIKE '%'||#{ftsnm}||'%'
-		<choose>
+		<!-- <choose>
 		<when test='"5".equals(auc_obj_dsc) or "6".equals(auc_obj_dsc)'>
 		   AND INSTR(FHS_ID_NO, 'G') <![CDATA[>]]> 0
 		</when>
 		<otherwise>
 		   AND INSTR(FHS_ID_NO, 'G') = 0
 		</otherwise>
-		</choose>
+		</choose> -->
+		<if test="auc_obj_dsc == null or auc_obj_dsc == ''">
+			AND INSTR(FHS_ID_NO, 'G') = 0
+		</if>
         ORDER BY NA_BZPLC, FHS_ID_NO
     </select>
 </mapper>
