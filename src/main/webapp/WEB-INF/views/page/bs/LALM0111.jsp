@@ -348,7 +348,7 @@ var isFrmOrgData = null;
 									"H경제통합거래처코드", "농가명", "조합원여부", "관내외구분", "우편번호",
 									"동이상주소", "동이하주소", "전화번호", "휴대전화번호", "계좌번호",
 									"생년월일", "비고내용", "SMS인증번호","H농장식별번호", "H한우종합여부",
-									"사료사용여부", "삭제여부", "기타가축여부", "예방접종일"];
+									"사료사용여부", "삭제여부", "염소농가여부", "예방접종일"];
 		
 		var searchResultColModel = [
 									{name:"NA_BZPLC",            index:"NA_BZPLC",            width:60, align:'center', hidden:true},
@@ -376,8 +376,8 @@ var isFrmOrgData = null;
 									{name:"ANW_YN",              index:"ANW_YN",              width:100, align:'center', hidden:true},
 
 									{name:"SRA_FED_SPY_YN",      index:"SRA_FED_SPY_YN",      width:50,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"DEL_YN",              index:"DEL_YN",              width:40,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-									{name:"ETC_AUC_OBJ_DSC_YN",  index:"ETC_AUC_OBJ_DSC_YN",  width:40,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}, hidden: !ETC_AUC_OBJ_DSC},
+									{name:"DEL_YN",              index:"DEL_YN",              width:30,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+									{name:"ETC_AUC_OBJ_DSC_YN",  index:"ETC_AUC_OBJ_DSC_YN",  width:50,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}, hidden: !ETC_AUC_OBJ_DSC},
 									{name:"VACN_DT",  	         index:"VACN_DT",             width:60,  align:'center', formatter:'gridDateFormat', hidden: !ETC_AUC_OBJ_DSC},
 									];
 
@@ -782,7 +782,7 @@ var isFrmOrgData = null;
                                         <input type="text" id="sms_no" name="sms_no" readonly="readonly" />
                                     </div>
                                 </td>
-                                <th scope="row" class="etc">기타가축여부</th>
+                                <th scope="row" class="etc">염소농가</th>
                                 <td class="etc">
 	                                <div>
 										<input type="checkbox" id="etc_auc_obj_dsc_yn" name="etc_auc_obj_dsc_yn" onclick="fn_ChkEtc();" />
