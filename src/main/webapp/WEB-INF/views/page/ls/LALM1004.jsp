@@ -96,11 +96,11 @@
 											<button type="button" id="pb_ftsnm" class="tb_btn white srch">
 												<i class="fa fa-search"></i>
 											</button>
-											<select id="io_sogmn_maco_yn" style="width:100px" disabled>
+											<select id="io_sogmn_maco_yn" style="width:100px">
 												<option value="1">조합원</option>
 												<option value="0">비조합원</option>
 											</select>
-											<select id="jrdwo_dsc" style="width:80px" disabled></select>
+											<select id="jrdwo_dsc" style="width:80px"></select>
 										</td>
 										<th scope="row"><span>주소</span></th>
 										<td colspan="2">
