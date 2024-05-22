@@ -110,7 +110,7 @@ public class LALM1004Controller {
 		List<Map<String, Object>> indvAmnnoList = lalm1004Service.LALM1004_selIndvAmnno(frmMap);
 
 		if (indvAmnnoList.size() > 0) {
-			throw new CusException(ErrorCode.CUSTOM_ERROR, "동일한 경매일자에 동일한 귀표번호는 등록할수 없습니다.");
+			throw new CusException(ErrorCode.CUSTOM_ERROR, "동일한 경매일자에 동일한 개체번호는 등록할수 없습니다.");
 		}
 
 		Map<String, Object> inMap = lalm1004Service.LALM1004_insPgm(map);
@@ -147,7 +147,7 @@ public class LALM1004Controller {
 
 		if (indvAmnnoList.size() > 0) {
 			if (!frmMap.get("re_indv_no").toString().equals(indvAmnnoList.get(0).get("SRA_INDV_AMNNO").toString())) {
-				throw new CusException(ErrorCode.CUSTOM_ERROR, "귀표번호는 수정하실 수 없습니다.");
+				throw new CusException(ErrorCode.CUSTOM_ERROR, "개체번호는 수정하실 수 없습니다.");
 			}
 		}
 
