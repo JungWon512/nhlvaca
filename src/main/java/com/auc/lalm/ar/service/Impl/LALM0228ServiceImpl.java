@@ -6,14 +6,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.auc.lalm.ar.service.LALM0228Service;
 import com.auc.lalm.sy.service.Impl.LALM0840Mapper;
 import com.auc.lalm.sy.service.Impl.LALM0899Mapper;
 import com.auc.mca.AlarmTalkForm;
-import com.auc.mca.RestApiJsonController;
 
 @Service("LALM0228Service")
 public class LALM0228ServiceImpl implements LALM0228Service{
