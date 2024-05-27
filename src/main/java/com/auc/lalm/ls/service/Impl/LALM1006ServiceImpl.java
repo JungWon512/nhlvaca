@@ -217,7 +217,12 @@ public class LALM1006ServiceImpl implements LALM1006Service{
 			updMap.put("de_auc_dt", map.get("auc_date"));
 			updMap.put("de_rv_sqno", rmkMap.get("RV_SQNO"));
 
-			lalm1007Mapper.LALM1007_updRv(updMap);
+			// 보증금 변경된 금액이 0원일 경우 보증금 입금 내역 삭제 하도록 수정
+			if(map.get("auc_entr_grn_am").equals("") || map.get("auc_entr_grn_am").equals("0")) {
+				lalm1007Mapper.LALM1007_delRv(updMap);
+			} else {
+				lalm1007Mapper.LALM1007_updRv(updMap);
+			}
 
 		} 
 		// 기존에 등록되어있는 보증금 입금 데이터가 없고 보증금 금액이 0원 이상일 경우에는 

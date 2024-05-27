@@ -366,7 +366,13 @@
             });
             return;
         }
-        
+
+		if($("input[name='rd_tr_dfn_yn']:checked").val() == '1' && ($("#auc_entr_grn_am").val() !== $("#auc_entr_grn_am_ori").val())) {
+			if(!confirm("거래확정 상태입니다. 참가보증금을 변경하시겠습니까?")) {
+				return;
+			}
+		}
+
 		MessagePopup('YESNO',"저장하시겠습니까?",function(res){
 			if(res){
 				if(setRowStatus == "I") {
@@ -591,6 +597,7 @@
 	                
 	                
 	                $("#auc_entr_grn_am").val(fn_toComma(result[0].AUC_ENTR_GRN_AM));
+	                $("#auc_entr_grn_am_ori").val(fn_toComma(result[0].AUC_ENTR_GRN_AM));
 	                $("#cus_mpno").val(result[0].CUS_MPNO);
 	                $("#rmk_cntn").val(result[0].RMK_CNTN);
 	                
@@ -1111,6 +1118,7 @@
                             	<th scope="row"><span>참가보증금(원)</span></th>
                             	<td>
                             		<input type="text" class="number" id="auc_entr_grn_am" maxlength="8">
+                            		<input type="hidden" class="number" id="auc_entr_grn_am_ori" maxlength="8">
                             	</td>
                             	<th scope="row"><span>전화번호</span></th>
                             	<td colspan=3>
