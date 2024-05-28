@@ -782,7 +782,7 @@ var isFrmOrgData = null;
                                         <input type="text" id="sms_no" name="sms_no" readonly="readonly" />
                                     </div>
                                 </td>
-                                <th scope="row" class="etc">염소농가</th>
+                                <th scope="row" class="etc">염소사육</th>
                                 <td class="etc">
 	                                <div>
 										<input type="checkbox" id="etc_auc_obj_dsc_yn" name="etc_auc_obj_dsc_yn" onclick="fn_ChkEtc();" />
