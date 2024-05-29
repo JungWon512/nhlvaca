@@ -134,16 +134,16 @@ var mv_sqno_prc_dsc = "";
         $("#pb_searchMwmn").on('click',function(e){
             e.preventDefault();
             this.blur();
-         	    var data = new Object();          	    
-               data['auc_dt']           = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
-               data['auc_obj_dsc']      = $("#auc_obj_dsc").val();                  
-        	    fn_CallMwmnnmNoPopup(data,false,function(result){
-	            	if(result){
-	                    $("#trmn_amnno").val(result.TRMN_AMNNO);
-	                    $("#lvst_auc_ptc_mn_no").val(result.LVST_AUC_PTC_MN_NO);
-	                    $("#sra_mwmnnm").val(result.SRA_MWMNNM);
-	            	}
-	            });
+       	    var data = new Object();          	    
+            data['auc_dt']           = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
+            data['auc_obj_dsc']      = $("#auc_obj_dsc").val();                  
+       	    fn_CallMwmnnmNoPopup(data,false,function(result){
+	           	if(result){
+	                $("#trmn_amnno").val(result.TRMN_AMNNO);
+	                $("#lvst_auc_ptc_mn_no").val(result.LVST_AUC_PTC_MN_NO);
+	                $("#sra_mwmnnm").val(result.SRA_MWMNNM);
+	           	}
+            });
         });        
         
         
@@ -475,9 +475,11 @@ var mv_sqno_prc_dsc = "";
             		if(parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR')) > 0 
             		&& parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR')) < parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'LOWS_SBID_LMT_AM_EX'))) {
             			MessagePopup('OK','낙찰가가 예정가보다 작습니다.');
-            		}
-            		
-            	}            	
+            		}            		
+            	}
+         	   if(cellname == 'SRA_SBID_UPR' && $("#grd_MhSogCow").jqGrid("getCell", rowid, 'SEL_STS_DSC') == '23' && parseInt($("#grd_MhSogCow").jqGrid("getCell", iRow, 'SRA_SBID_UPR')) > 0 && $("#grd_MhSogCow").jqGrid("getCell", iRow, 'TRMN_AMNNO') != '0') {         		   
+             	   $("#grd_MhSogCow").jqGrid("setCell", iRow, 'SEL_STS_DSC', '22');
+         	   }
             },
             colNames: searchResultColNames,
             colModel: searchResultColModel,          
@@ -535,10 +537,15 @@ var mv_sqno_prc_dsc = "";
          	if(result){
   	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 'SRA_MWMNNM', result.SRA_MWMNNM);  
          		$("#grd_MhSogCow").jqGrid("setCell", rowid, 'TRMN_AMNNO', result.TRMN_AMNNO);
-  	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 'LVST_AUC_PTC_MN_NO', result.LVST_AUC_PTC_MN_NO);
+  	            $("#grd_MhSogCow").jqGrid("setCell", rowid, 'LVST_AUC_PTC_MN_NO', result.LVST_AUC_PTC_MN_NO);  	            
+  	            
   	            if(pre_trmn_amnno != result.TRMN_AMNNO || pre_lvst_auc_ptc_mn_no != result.LVST_AUC_PTC_MN_NO){
   	          		$("#grd_MhSogCow").jqGrid('setCell', rowid, '_STATUS_', '*', GRID_MOD_BACKGROUND_COLOR);  	            	
   	            }
+  	            
+	          	if($("#grd_MhSogCow").jqGrid("getCell", rowid, 'SEL_STS_DSC') == '23' && parseInt($("#grd_MhSogCow").jqGrid("getCell", rowid, 'SRA_SBID_UPR')) > 0 && $("#grd_MhSogCow").jqGrid("getCell", rowid, 'TRMN_AMNNO') != '0') {         		   
+	               $("#grd_MhSogCow").jqGrid("setCell", rowid, 'SEL_STS_DSC', '22');
+	          	}
           		$('#grd_MhSogCow').jqGrid('editCell',Number(rowid)+1,fn_GridColByName('grd_MhSogCow', 'SRA_MWMNNM'), true);
          	}
          });
