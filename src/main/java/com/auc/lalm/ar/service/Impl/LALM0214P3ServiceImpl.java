@@ -2,8 +2,10 @@ package com.auc.lalm.ar.service.Impl;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -553,9 +555,19 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				/* s: 종축개량 데이터 연동 */
 				//부여 : 8808990660127 | 창녕 : 8808990656274 | 진주 : 8808990657240 | 함양산청 : 8808990656410 | 합천 : 8808990656236 | 상주:8808990657639 | 횡성 : 8808990656885 | 예산 : 8808990657196
 				String[] arrNaBzplc = {"8808990660127","8808990656274","8808990657240","8808990656410","8808990656236", "8808990657639" ,"8808990656885", "8808990657196"};
+
+				Map<String,Object> tempMap = new HashMap<>();
+				
+				tempMap.put("sra_indv_amnno", result.get("SRA_INDV_AMNNO"));
+				tempMap.put("ss_na_bzplc", inMap.get("ss_na_bzplc"));
+				tempMap.put("auc_dt", inMap.get("auc_dt"));
+				tempMap.put("indv_bld_dsc", "0");
+				tempMap.put("chg_pg_id", "nhlvaca[0]");
+				tempMap.put("chg_rmk_cntn", "출장우 일괄등륵[LALM0214P3]");
+				tempMap.put("chg_ip_addr", inMap.get("chg_ip_addr"));
 				try {
-					String barcode = (String) result.get("SRA_INDV_AMNNO");
-					Map<String,Object> epdMap = commonService.Common_selAiakInfo(barcode);
+					//String barcode = (String) result.get("SRA_INDV_AMNNO");
+					Map<String,Object> epdMap = commonService.Common_selAiakInfo(tempMap);
 					/* s: 부여축협일시 EPD값 종개협 연둉 */
 					if(Arrays.asList(arrNaBzplc).contains(map.get("ss_na_bzplc")) && !epdMap.isEmpty()){
 						int updNum = (int) epdMap.get("updateNum");
@@ -581,7 +593,11 @@ public class LALM0214P3ServiceImpl implements LALM0214P3Service{
 				if(Arrays.asList(arrNaBzplc).contains(map.get("ss_na_bzplc")) && !"".equals(result.get("MCOW_SRA_INDV_AMNNO"))) {
 					try {
 						String barcode = (String) result.get("MCOW_SRA_INDV_AMNNO");
-						Map<String,Object> mEpdMap = commonService.Common_selAiakInfo(barcode);
+						//Map<String,Object> mEpdMap = commonService.Common_selAiakInfo(barcode);
+						tempMap.put("sra_indv_amnno", result.get("MCOW_SRA_INDV_AMNNO"));
+						tempMap.put("indv_bld_dsc", "M");
+						tempMap.put("chg_pg_id", "nhlvaca[M]");
+						Map<String,Object> mEpdMap = commonService.Common_selAiakInfo(tempMap);
 						int updNum = (int) mEpdMap.get("updateNum");
 						if(!mEpdMap.isEmpty() && updNum > 0) {
 							log.debug(mEpdMap.toString());

@@ -2,6 +2,7 @@ package com.auc.main.service.Impl;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -602,10 +603,41 @@ public class CommonServiceImpl implements CommonService{
 		reMap.put("updateNum", updateNum);
 		return reMap;
 	}
+
+	public Map<String, Object> Common_selAiakInfo(Map<String, Object> param) throws Exception{
+		Map<String,Object> reMap = new HashMap<>();
+		int updateNum = 0;
+		
+		String barcode = (String) param.getOrDefault("sra_indv_amnno","");
+		if(barcode != null && barcode.length() == 15) {
+			barcode = barcode.substring(3);
+		}	
+		reMap = mcaUtil.callApiAiakMap(barcode);
+		
+		if(reMap != null && !reMap.isEmpty()) {
+			reMap.put("NA_BZPLC", param.get("ss_na_bzplc"));
+			reMap.put("AUC_DT", param.get("auc_dt"));
+			reMap.put("INDV_BLD_DSC", param.get("indv_bld_dsc"));
+			reMap.put("CHG_IP_ADDR", param.get("chg_ip_addr"));
+			reMap.put("CHG_PGID", param.get("chg_pg_id"));
+			reMap.put("CHG_RMK_CNTN", param.get("chg_rmk_cntn"));
+			reMap.put("ss_userid", param.get("ss_userid"));
+			updateNum += this.Common_insAiakInfo(reMap);
+		};
+		reMap.put("updateNum", updateNum);
+		return reMap;
+		
+	}
 	
 	private int Common_insAiakInfo(Map<String, Object> map) throws Exception{
 		int insertNum = 0;
+//		Iterator<String> it = map.keySet().iterator();
+//		while(it.hasNext()){
+//			String key = it.next();
+//			log.debug("### aiakInfo key : {} , val : {} ###",key,map.get(key));
+//		};
 		insertNum += commonMapper.Common_insAiakInfo(map);
+		commonMapper.Common_insertIndvAiakInfoLog(map);
 
 		List<Map<String, Object>> postData = (List<Map<String, Object>>) map.get("postInfo");
 		for(Map<String, Object> postMap: postData) {

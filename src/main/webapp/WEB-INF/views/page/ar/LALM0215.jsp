@@ -16,7 +16,7 @@
 <script type="text/javascript">
 	var pageInfos = setDecryptData('${pageInfo}');
 </script>
-<script src="/js/page/LALM0215.js"></script>
+<script src="/js/page/LALM0215.js?v=20240507"></script>
 <body>
     <div class="contents">
         <%@ include file="/WEB-INF/common/menuBtn.jsp" %>

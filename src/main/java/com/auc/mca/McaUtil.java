@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -476,5 +478,32 @@ public class McaUtil {
         	}
 		}
         return result;
+	}
+
+	public Object getClientIp(HttpServletRequest request) {
+	    String clientIp = null;
+	    boolean isIpInHeader = false;
+	    List<String> headerList = new ArrayList<>();
+	    headerList.add("X-Forwarded-For");
+	    headerList.add("Proxy-Client-IP");
+	    headerList.add("WL-Proxy-Client-IP");
+	    headerList.add("HTTP_CLIENT_IP");
+	    headerList.add("HTTP_X_FORWARDED_FOR");
+	    headerList.add("X-Real-IP");
+	    headerList.add("X-RealIP");
+	    headerList.add("REMOTE_ADDR");
+
+	    for (String header : headerList) {
+	        clientIp = request.getHeader(header);
+	        if (clientIp != null && !clientIp.equals("unknown")) {
+	            isIpInHeader = true;
+	            break;
+	        }
+	    }
+
+	    if (!isIpInHeader) {
+	        clientIp = request.getRemoteAddr();
+	    }
+	    return clientIp;
 	}
 }

@@ -4251,10 +4251,15 @@
 	// result   : N/A
 	//**************************************
     function fn_CallAiakInfoSync(p_param) {
+    	//개체이력정보
+    	var srchData = new Object();
+        srchData["INDV_BLD_DSC"]   = "0";
+        
 		var p_sra_indv_amnno = "";
 		var mcowChk = 0;
 		if(!fn_isNull(p_param)){
 			mcowChk = 1;
+			srchData["INDV_BLD_DSC"]   = "M";
 			p_sra_indv_amnno = p_param;			
 		}else if($("#sra_indv_amnno").val().replace("-", "").length == 12) {
 			p_sra_indv_amnno = $("#hed_indv_no").val() + $("#sra_indv_amnno").val().replace("-", "");        	
@@ -4265,14 +4270,12 @@
 			return;
 		}
     	 
-    	//개체이력정보
-    	var srchData = new Object();
     	var results = null;
     	var result = null;
     	
         srchData["SRA_INDV_AMNNO"]   = p_sra_indv_amnno;
-        srchData["AUC_DT"]   = $('#auc_dt').val();
-        
+        srchData["AUC_DT"]   = $('#auc_dt').val().replace(/[^0-9]/g,"");
+        srchData["CHG_RMK_CNTN"]   = "LALM0215["+srchData["INDV_BLD_DSC"]+"]";
         results = sendAjax(srchData, "/LALM0899_selAiakRestApi", "POST");
         
         if(results.status == RETURN_SUCCESS) {        	

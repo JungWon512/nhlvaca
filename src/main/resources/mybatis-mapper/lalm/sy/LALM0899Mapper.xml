@@ -1067,6 +1067,7 @@
 	    where  a.na_bzplc            = #{ss_na_bzplc}
 	      and  a.del_yn              = '0'
 	      and  a.na_bzplc            = b.na_bzplc
+	      AND  A.NA_BZPLC            = C.NA_BZPLC
           and  a.na_bzplc            = e.na_bzplc(+)
           and  e.trmn_amnno(+)		 = #{auc_dt} || LPAD(A.TRMN_AMNNO, 5, '0')
        	  and  length(REGEXP_REPLACE(a.cus_mpno, '[^0-9]')) <![CDATA[>=]]> 10

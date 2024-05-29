@@ -26,7 +26,7 @@ public class TaskBatch {
 	
 	private boolean isProdServerType() {
 		boolean isProdFlag = false;
-		if("production".equals(serverType)) {
+		if(!"local".equals(serverType)) {
 			isProdFlag = true;
 		}
 		return isProdFlag; 

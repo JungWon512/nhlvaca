@@ -179,9 +179,9 @@
                     , '0'                                                       /* 삭제여부                            */
                     , '1'                                                       /* 한우종합등록여부                    */
                     , SYSDATE                                                 /* 최초등록일시                        */
-                    , #{ss_userid}                                               /* 최초등록자개인번호                  */
+                    , 'LALM0222'                                               /* 최초등록자개인번호                  */
                     , SYSDATE                                                 /* 최종변경일시                        */
-                    , #{ss_userid}                                               /* 최종변경자개인번호                  */
+                    , 'LALM0222'                                               /* 최종변경자개인번호                  */
                     , #{sra_farm_acno}                             /* 선택시 계좌번호 저장                */
                     , #{birth}								/*출하주 생년월일*/
                     , #{mb_intg_no}								/*회원통합번호*/
@@ -285,7 +285,7 @@
                     , DEL_YN      = '0'                                      /* 삭제여부                            */
                     , ANW_YN      = '1'                                      /* 한우종합등록여부                    */
                     , LSCHG_DTM   = SYSDATE                                  /* 최종변경일시                        */
-                    , LS_CMENO    = #{ss_userid}                             /* 최종변경자개인번호                  */
+                    , LS_CMENO    = 'LALM0222'                             /* 최종변경자개인번호                  */
                     <if test="mb_intg_no != null and mb_intg_no != ''">
                     , MB_INTG_NO = #{mb_intg_no}					/*회원통합번호*/
                     </if>

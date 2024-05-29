@@ -134,16 +134,16 @@ var mv_sqno_prc_dsc = "";
         $("#pb_searchMwmn").on('click',function(e){
             e.preventDefault();
             this.blur();
-       	    var data = new Object();          	    
-            data['auc_dt']           = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
-            data['auc_obj_dsc']      = $("#auc_obj_dsc").val();                  
-       	    fn_CallMwmnnmNoPopup(data,false,function(result){
-	           	if(result){
-	                $("#trmn_amnno").val(result.TRMN_AMNNO);
-	                $("#lvst_auc_ptc_mn_no").val(result.LVST_AUC_PTC_MN_NO);
-	                $("#sra_mwmnnm").val(result.SRA_MWMNNM);
-	           	}
-            });
+         	    var data = new Object();          	    
+               data['auc_dt']           = $("#auc_dt").val().replace(/[^0-9.]/g,'').replace(/(\..*)\./g,'$1');
+               data['auc_obj_dsc']      = $("#auc_obj_dsc").val();                  
+        	    fn_CallMwmnnmNoPopup(data,false,function(result){
+	            	if(result){
+	                    $("#trmn_amnno").val(result.TRMN_AMNNO);
+	                    $("#lvst_auc_ptc_mn_no").val(result.LVST_AUC_PTC_MN_NO);
+	                    $("#sra_mwmnnm").val(result.SRA_MWMNNM);
+	            	}
+	            });
         });        
         
         
