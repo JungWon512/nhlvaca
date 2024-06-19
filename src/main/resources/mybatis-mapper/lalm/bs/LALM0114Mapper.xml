@@ -32,6 +32,7 @@
 		     from tb_la_is_mm_indv a
 		        , tb_la_is_mm_fhs  b
 		    where a.na_bzplc     = #{ss_na_bzplc}
+        and   a.sra_srs_dsc  = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
 		    and   a.na_bzplc     = b.na_bzplc
 		    and   a.fhs_id_no    = b.fhs_id_no
 		    and   a.farm_amnno   = b.farm_amnno

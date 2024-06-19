@@ -291,6 +291,10 @@
              srchData["calf_auc_atdr_unt_am"] = parent.envList[0]["CALF_AUC_ATDR_UNT_AM"];
              srchData["nbfct_auc_atdr_unt_am"] = parent.envList[0]["NBFCT_AUC_ATDR_UNT_AM"];
              srchData["ppgcow_auc_atdr_unt_am"] = parent.envList[0]["PPGCOW_AUC_ATDR_UNT_AM"];
+             // 기타 경매대상 축가
+             srchData["etc_auc_obj_dsc"] = parent.envList[0]["ETC_AUC_OBJ_DSC"];
+             srchData["gt_auc_atdr_unt_am"] = parent.envList[0]["GT_AUC_ATDR_UNT_AM"];
+             srchData["hs_auc_atdr_unt_am"] = parent.envList[0]["HS_AUC_ATDR_UNT_AM"];
                      
              if($("#ch_rmk_cntn").is(":checked")) {
                  result = sendAjax(srchData, "/LALM0311_updRmkPgm", "POST");
@@ -353,8 +357,20 @@
                                          {name:"LED_SQNO",              index:"LED_SQNO",               width:10,  align:'center', hidden:true},
                                          {name:"FIR_LOWS_SBID_LMT_AM",  index:"FIR_LOWS_SBID_LMT_AM",   width:10,  align:'center', hidden:true},
                                          {name:"RMK_CNTN",              index:"RMK_CNTN",               width:200, align:'left' , editable:$("#ch_rmk_cntn").is(":checked")},
-                                         {name:"COW_SOG_WT",            index:"COW_SOG_WT",             width:70,  align:'right', editable:$("#ch_cow_wt").is(":checked")},
-                                         {name:"LOWS_SBID_LMT_AM",      index:"LOWS_SBID_LMT_AM",       width:90,  align:'right', editable:$("#ch_lows_sbid_am").is(":checked")  ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                         {name:"COW_SOG_WT",            index:"COW_SOG_WT",             width:70,  align:'right', editable:$("#ch_cow_wt").is(":checked")
+                                             , editoptions:{
+                                                 dataInit:function(e){$(e).addClass('grid_number integer').attr("inputmode","decimal").attr("pattern","\d*");},
+                                                 maxlength:"5"
+                                                 
+                                              }
+                                       	 },
+                                         {name:"LOWS_SBID_LMT_AM",      index:"LOWS_SBID_LMT_AM",       width:90,  align:'right', editable:$("#ch_lows_sbid_am").is(":checked")  ,formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}
+	                                         , editoptions:{
+	                                             dataInit:function(e){$(e).addClass('grid_number integer').attr("inputmode","decimal").attr("pattern","\d*");},
+	                                             maxlength:"10"
+	                                             
+	                                          }
+                                         },
                                          
                                         ];        
         
@@ -375,8 +391,20 @@
                                              {name:"LED_SQNO",              index:"LED_SQNO",               width:10,  align:'center', hidden:true},
                                              {name:"FIR_LOWS_SBID_LMT_AM",  index:"FIR_LOWS_SBID_LMT_AM",   width:10,  align:'center', hidden:true},
                                              {name:"RMK_CNTN",              index:"RMK_CNTN",               width:200, align:'left'},
-                                             {name:"COW_SOG_WT",            index:"COW_SOG_WT",             width:70,  align:'right'},
-                                             {name:"LOWS_SBID_LMT_AM",      index:"LOWS_SBID_LMT_AM",       width:90,  align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}},
+                                             {name:"COW_SOG_WT",            index:"COW_SOG_WT",             width:70,  align:'right'
+                                                 , editoptions:{
+                                                     dataInit:function(e){$(e).addClass('grid_number integer').attr("inputmode","decimal").attr("pattern","\d*");},
+                                                     maxlength:"5"
+                                                     
+                                                  }
+                                           	 },
+                                             {name:"LOWS_SBID_LMT_AM",      index:"LOWS_SBID_LMT_AM",       width:90,  align:'right', formatter:'integer', formatoptions:{decimalPlaces:0,thousandsSeparator:','}
+	                                             , editoptions:{
+	                                                 dataInit:function(e){$(e).addClass('grid_number integer').attr("inputmode","decimal").attr("pattern","\d*");},
+	                                                 maxlength:"10"
+	                                                 
+	                                              }
+                                             },
                                              
                                             ];        
             
@@ -400,14 +428,14 @@
                                          {name:"RMK_CNTN",              index:"RMK_CNTN",               width:200, align:'left',  editable:true},
                                          {name:"COW_SOG_WT",            index:"COW_SOG_WT",             width:70,  align:'right', editable:true, formatter:'integer', formatoptions:{thousandsSeparator:','},
                                              editoptions:{
-                                                 dataInit:function(e){$(e).addClass('grid_number').attr("inputmode","decimal").attr("pattern","\d*");},
+                                                 dataInit:function(e){$(e).addClass('grid_number integer').attr("inputmode","decimal").attr("pattern","\d*");console.log(e);},
                                                  maxlength:"5"
                                                  
                                               }
                                          },
                                         {name:"LOWS_SBID_LMT_AM",        index:"LOWS_SBID_LMT_AM",      width:90,  align:'right', editable:true, formatter:'integer', formatoptions:{thousandsSeparator:','},
                                              editoptions:{
-                                                 dataInit:function(e){$(e).addClass('grid_number').attr("inputmode","decimal").attr("pattern","\d*");},
+                                                 dataInit:function(e){$(e).addClass('grid_number integer').attr("inputmode","decimal").attr("pattern","\d*");},
                                                  maxlength:"10"
                                                  
                                               }

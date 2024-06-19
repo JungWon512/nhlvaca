@@ -10,27 +10,74 @@
                NVL(
 		<choose>
 			<when test="flag != null and flag == 'init'.toString()">
-                   (SELECT MIN(AUC_DT)							/* 경매일자             */
+				(
+					SELECT MIN(AUC_DT)							/* 경매일자             */
                       FROM TB_LA_IS_MH_AUC_QCN
                      WHERE NA_BZPLC    = #{ss_na_bzplc}			/* 경제통합사업장코드 */
-                       AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
-                       AND DDL_YN      = '0')
-                  ,(SELECT MAX(AUC_DT)                     /* 경매일자             */
+                       AND DDL_YN      = '0'
+					<choose>
+					<!-- 축종 구분코드가 '01'이 아닌 경우 일괄 조회 X -->
+					<when test='!"01".equals(sra_srs_dsc)'>
+					   AND AUC_OBJ_DSC = #{auc_obj_dsc}
+					</when>
+					<otherwise>
+					   AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
+					</otherwise>
+					</choose>
+					   <!-- AND (
+							(#{auc_obj_dsc} IN ('0', '1', '2', '3') AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc}))
+							OR
+							(#{auc_obj_dsc} NOT IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC = #{auc_obj_dsc})	/* 경매대상구분코드   */
+						) -->
+				),
+				(
+					SELECT MAX(AUC_DT)                     /* 경매일자             */
                       FROM TB_LA_IS_MH_AUC_QCN
                      WHERE NA_BZPLC    = #{ss_na_bzplc}            /* 경제통합사업장코드 */
-                       AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})    /* 경매대상구분코드   */
-                       AND DDL_YN      = '1')
+                       AND DDL_YN      = '1'
+                    <choose>
+					<when test='!"01".equals(sra_srs_dsc)'>
+					   AND AUC_OBJ_DSC = #{auc_obj_dsc}
+					</when>
+					<otherwise>
+					   AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
+					</otherwise>
+					</choose>
+					   <!-- AND (
+							(#{auc_obj_dsc} IN ('0', '1', '2', '3') AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc}))
+							OR
+							(#{auc_obj_dsc} NOT IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC = #{auc_obj_dsc})	/* 경매대상구분코드   */
+						) -->
+				)
 			</when>
 			<otherwise>
-                   (SELECT AUC_DT								/* 경매일자             */
+				(
+					SELECT AUC_DT								/* 경매일자             */
                       FROM TB_LA_IS_MH_AUC_QCN
                      WHERE NA_BZPLC    = #{ss_na_bzplc}			/* 경제통합사업장코드 */
-                       AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
-                       AND AUC_DT = #{auc_dt})
-                  ,(SELECT MAX(AUC_DT)                     /* 경매일자             */
+                       AND AUC_DT = #{auc_dt}
+                	<choose>
+					<when test='!"01".equals(sra_srs_dsc)'>
+					   AND AUC_OBJ_DSC = #{auc_obj_dsc}
+					</when>
+					<otherwise>
+					   AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
+					</otherwise>
+					</choose>
+				),
+				(
+					SELECT MAX(AUC_DT)                     /* 경매일자             */
                       FROM TB_LA_IS_MH_AUC_QCN
                      WHERE NA_BZPLC    = #{ss_na_bzplc}            /* 경제통합사업장코드 */
-                       AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc}))    /* 경매대상구분코드   */
+                    <choose>
+					<when test='!"01".equals(sra_srs_dsc)'>
+					   AND AUC_OBJ_DSC = #{auc_obj_dsc}
+					</when>
+					<otherwise>
+					   AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
+					</otherwise>
+					</choose>
+				)
 			</otherwise>
 		</choose>
                  )
@@ -39,7 +86,6 @@
     </select>
     
     <select id="Common_selAucQcn" resultType="hashMap">
-    <![CDATA[
          SELECT
               NA_BZPLC                                  /* 경제통합사업장코드        */
             , AUC_OBJ_DSC                               /* 경매대상구분코드     */
@@ -50,21 +96,32 @@
             , SGNO_PRC_DSC                              /* 단수처리구분코드     */
             , DDL_YN                                    /* 마감여부         */
             , DEL_YN                                    /* 삭제여부         */
-            , (SELECT WM_CONCAT(AUC_OBJ_DSC) FROM  TB_LA_IS_MH_AUC_QCN WHERE NA_BZPLC = #{ss_na_bzplc} AND AUC_DT = #{auc_dt} AND AUC_OBJ_DSC NOT IN ('0', #{auc_obj_dsc})) AS OT_AUC_OBJ_DSC
+            , (
+				SELECT WM_CONCAT(AUC_OBJ_DSC)
+				  FROM TB_LA_IS_MH_AUC_QCN
+				 WHERE NA_BZPLC = #{ss_na_bzplc}
+				   AND AUC_DT = #{auc_dt}
+				   AND AUC_OBJ_DSC NOT IN ('0', #{auc_obj_dsc})
+			) AS OT_AUC_OBJ_DSC
         FROM  TB_LA_IS_MH_AUC_QCN
         WHERE NA_BZPLC    = #{ss_na_bzplc}              /* 경제통합사업장코드        */
-    ]]>
     <choose>
-        <when test='auc_obj_dsc == "" or auc_obj_dsc == null'>
-            AND AUC_OBJ_DSC = '0'                       /* 경매대상구분코드     */
-        </when>
-        <otherwise>
-            AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})    /* 경매대상구분코드     */
-        </otherwise>
+	<when test='auc_obj_dsc == "" or auc_obj_dsc == null'>
+		AND AUC_OBJ_DSC = '0'                       /* 경매대상구분코드     */
+	</when>
+	<otherwise>
+		<choose>
+		<when test='!"01".equals(sra_srs_dsc)'>
+			AND AUC_OBJ_DSC = #{auc_obj_dsc}
+		</when>
+		<otherwise>
+			AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})	/* 경매대상구분코드   */
+		</otherwise>
+		</choose>
+		<!-- AND AUC_OBJ_DSC IN ('0', #{auc_obj_dsc})    /* 경매대상구분코드     */ -->
+	</otherwise>
     </choose>
-    <![CDATA[
           AND AUC_DT      = #{auc_dt};                  /* 경매일자         */
-    ]]>
     </select>
     
     
@@ -127,7 +184,10 @@
                                  AND APL_DT       <![CDATA[<=]]> #{auc_dt}          /* 적용일자               */
                                  AND DEL_YN        = '0')               /* 적용일자               */
           AND A.DEL_YN      = '0'                                       /* 삭제여부               */
-    
+		  AND '1' = ( CASE WHEN A.AUC_OBJ_DSC IN ( '1', '2', '3' ) OR NVL(A.JNLZ_BSN_DSC, '2') = '2' THEN '1'
+							WHEN NVL(#{cow_sog_wt}, 0) <![CDATA[>=]]> A.ST_SOG_WT AND NVL(#{cow_sog_wt}, 0) <![CDATA[<]]> A.ED_SOG_WT THEN '1'
+							ELSE '0'
+						END)															/* 중량 적용 구간 */
     </select>
     
     <!-- 임신우 구분조회 -->
@@ -264,7 +324,7 @@
 		) VALUES (
 			  #{ss_na_bzplc}										/* 경제통합사업장코드                  */
 			, #{re_indv_no}											/* 축산개체관리번호                    */
-			, '01'													/* 축산축종구분코드                    */
+			, #{sra_srs_dsc}										/* 축산축종구분코드                    */
 			, #{fhs_id_no}											/* 농가식별번호                        */
 			, #{farm_amnno}											/* 농장관리번호                        */
 			<choose>
@@ -344,7 +404,7 @@
 			 , SRA_INDV_PASG_QCN     = #{sra_indv_pasg_qcn}
 		 WHERE NA_BZPLC              = #{ss_na_bzplc}
 		   AND SRA_INDV_AMNNO        = #{re_indv_no}
-		   AND SRA_SRS_DSC           ='01'
+		   AND SRA_SRS_DSC           = #{sra_srs_dsc}
 	</update>
 	<!-- ************************************************ 개체 등록/수정 관련 [e] ************************************************ -->
 	
@@ -728,7 +788,7 @@
 				, EPD_VAL_4                             =   TRIM(#{EPD_VAL_4} )                           
 				, EPD_GRD_4                             =   TRIM(#{EPD_GRD_4} )                           
 				, LSCHG_DTM                             =   SYSDATE                                 
-				, LSCHGMN_ENO                           =   #{ss_userid}          
+				, LSCHGMN_ENO                           =   #{ss_userid}                             
 				, LSCHG_IP                           	=   #{CHG_IP_ADDR}                   
 		WHEN NOT MATCHED THEN 
 			INSERT(
@@ -915,7 +975,8 @@
 			UPDATE SET                                          
 				A.MATIME                      = B.NEW_MATIME
 	</update>
-		
+	
+	
 	<update id="Common_updIndvSibMatime" parameterType="hashMap">
 		/* CommonMapper.Common_updIndvSibMatime */
 		MERGE INTO TB_LA_IS_MM_INDV_SIBINF A
@@ -956,14 +1017,12 @@
 			, EPD_GRD_3
 			, EPD_VAL_4
 			, EPD_GRD_4
-			, INDV_BLD_DSC
 			, FSRG_DTM
 			, FSRG_IP
 			, FSRGMN_ENO
 			, LSCHG_DTM
 			, LSCHGMN_ENO
 			, LSCHG_IP
-			, CHG_IP_ADDR
 			, CHG_PGID
 			, CHG_RMK_CNTN
 			, NA_BZPLC
@@ -989,14 +1048,12 @@
 			, EPD_GRD_3
 			, EPD_VAL_4
 			, EPD_GRD_4
-			, INDV_BLD_DSC
 			, FSRG_DTM
 			, FSRG_IP
 			, FSRGMN_ENO
 			, LSCHG_DTM
 			, LSCHGMN_ENO
 			, LSCHG_IP
-			, #{CHG_IP_ADDR} CHG_IP_ADDR
 			, #{CHG_PGID} CHG_PGID
 			, #{CHG_RMK_CNTN} CHG_RMK_CNTN
 			, NA_BZPLC

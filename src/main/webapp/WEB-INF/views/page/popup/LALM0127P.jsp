@@ -36,6 +36,7 @@
                             <th scope="row">농가명</th>
                             <td>
                                 <input type="text" id="ftsnm"/>
+                                <input type="hidden" id="auc_obj_dsc" />
                             </td>
                             <td></td>
                             <td></td>
@@ -75,6 +76,7 @@
             //폼 초기화
             fn_InitFrm('frm_Search');
             $("#ftsnm").val(pageInfo.param.ftsnm); 
+            $("#auc_obj_dsc").val(pageInfo.param.auc_obj_dsc??''); 
                         
             if( pageInfo.result != null){
                 fn_CreateGrid(pageInfo.result);
@@ -159,26 +161,27 @@
         }
         
         var searchResultColNames = ["경제통합사업장코드","경제통합거래처코드","축산농장계좌번호","농가코드","농가명","농장관리번호"
-        	                        ,"농장식별번호","우편번호","동이상주소","동이하주소","자택전화번호","휴대폰번호"
-        	                        ,"조합원여부","관내외<br>구분코드","사료사용<br>여부","비고내용", ];        
+        	                        ,"농장식별번호","예방접종일", "염소농가여부", "우편번호","동이상주소","동이하주소","자택전화번호","휴대폰번호"
+        	                        ,"조합원여부","관내외<br>구분코드","사료사용<br>여부","비고내용"];        
         var searchResultColModel = [
-        	                         {name:"NA_BZPLC",       index:"NA_BZPLC",       width:70,  align:'center', hidden:true},
-        	                         {name:"NA_TRPL_C",      index:"NA_TRPL_C",      width:70,  align:'center', hidden:true},
-        	                         {name:"SRA_FARM_ACNO",  index:"SRA_FARM_ACNO",  width:70,  align:'center', hidden:true},
-                                     {name:"FHS_ID_NO",      index:"FHS_ID_NO",      width:70,  align:'center'},
-                                     {name:"FTSNM",          index:"FTSNM",          width:80,  align:'center'},
-                                     {name:"FARM_AMNNO",     index:"FARM_AMNNO",     width:80,  align:'center'},
-                                     {name:"FARM_ID_NO",     index:"FARM_ID_NO",     width:80,  align:'center'},
-                                     {name:"ZIP",            index:"ZIP",            width:60,  align:'center'},
-                                     {name:"DONGUP",         index:"DONGUP",         width:100, align:'left'},
-                                     {name:"DONGBW",         index:"DONGBW",         width:100, align:'left'},
-                                     {name:"OHSE_TELNO",     index:"OHSE_TELNO",     width:90,  align:'center'},
-                                     {name:"CUS_MPNO",       index:"CUS_MPNO",       width:90,  align:'center'},
-                                     {name:"MACO_YN",        index:"MACO_YN",        width:70,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_MACO_YN_DATA}},
-                                     {name:"JRDWO_DSC",      index:"JRDWO_DSC",      width:70,  align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("JRDWO_DSC", 1)}},
-                                     {name:"SRA_FED_SPY_YN", index:"SRA_FED_SPY_YN", width:70,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
-                                     {name:"RMK_CNTN",       index:"RMK_CNTN",       width:160, align:'left',   },
-                                     
+        	                         {name:"NA_BZPLC",             index:"NA_BZPLC",            width:70,  align:'center', hidden:true},
+        	                         {name:"NA_TRPL_C",            index:"NA_TRPL_C",           width:70,  align:'center', hidden:true},
+        	                         {name:"SRA_FARM_ACNO",        index:"SRA_FARM_ACNO",       width:70,  align:'center', hidden:true},
+                                     {name:"FHS_ID_NO",            index:"FHS_ID_NO",           width:70,  align:'center'},
+                                     {name:"FTSNM",                index:"FTSNM",               width:80,  align:'center'},
+                                     {name:"FARM_AMNNO",           index:"FARM_AMNNO",          width:80,  align:'center'},
+                                     {name:"FARM_ID_NO",           index:"FARM_ID_NO",          width:80,  align:'center'},
+                                     {name:"VACN_DT",              index:"VACN_DT",             width:80,  align:'center', formatter:'gridDateFormat', hidden:(ETC_AUC_OBJ_DSC === '')},
+                                     {name:"ETC_AUC_OBJ_DSC_YN",   index:"ETC_AUC_OBJ_DSC_YN",  width:60,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}, hidden:(ETC_AUC_OBJ_DSC === '')},
+                                     {name:"ZIP",                  index:"ZIP",                 width:60,  align:'center'},
+                                     {name:"DONGUP",               index:"DONGUP",              width:100, align:'left'},
+                                     {name:"DONGBW",               index:"DONGBW",              width:100, align:'left'},
+                                     {name:"OHSE_TELNO",           index:"OHSE_TELNO",          width:90,  align:'center'},
+                                     {name:"CUS_MPNO",             index:"CUS_MPNO",            width:90,  align:'center'},
+                                     {name:"MACO_YN",              index:"MACO_YN",             width:70,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_MACO_YN_DATA}},
+                                     {name:"JRDWO_DSC",            index:"JRDWO_DSC",           width:70,  align:'center', edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("JRDWO_DSC", 1)}},
+                                     {name:"SRA_FED_SPY_YN",       index:"SRA_FED_SPY_YN",      width:70,  align:'center', edittype:"select", formatter : "select", editoptions:{value:GRID_YN_DATA}},
+                                     {name:"RMK_CNTN",             index:"RMK_CNTN",            width:160, align:'left',   },
                                      ];
             
         $("#grd_MmFhs").jqGrid("GridUnload");

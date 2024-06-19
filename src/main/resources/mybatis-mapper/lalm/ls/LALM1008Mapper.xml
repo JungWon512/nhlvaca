@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.auc.lalm.ls.service.Impl.LALM1008Mapper">
+
+    <select id="LALM1008_selList" resultType="hashMap">
+	    SELECT A.NA_BZPLC                       /* 경제통합사업장코드                   */
+             , A.AUC_OBJ_DSC                    /* 경매대상구분                         */
+             , A.AUC_DT                         /* 경매일자                             */
+             , A.OSLP_NO                        /* 원표번호(경매번호)                   */
+             , A.LED_SQNO                       /* 원장일련번호(경매 = 1)               */
+             , A.FHS_ID_NO                      /* 농가식별번호                         */
+             , A.FARM_AMNNO                     /* 농장관리번호                         */
+             , A.SOG_NA_TRPL_C                  /* 출하경제통합거래처코드               */
+             , A.VHC_SHRT_C                     /* 차량당축코드                         */
+             , A.RC_DT                          /* 접수일자                             */
+             , A.TRMN_AMNNO                     /* 거래인관리번호                       */
+             , A.LVST_AUC_PTC_MN_NO             /* 가축경매참여자번호                   */
+             , A.SRA_SRS_DSC                    /* 축산축종구분코드                     */
+             , A.SRA_INDV_AMNNO                 /* 축산개체관리번호(바코드, 귀표번호)   */
+             , A.COW_SOG_WT                     /* 우출하중량                           */
+             , A.FIR_LOWS_SBID_LMT_AM           /* 최초최저낙찰한도금액                 */
+             , A.LOWS_SBID_LMT_AM               /* 최저낙찰한도금액                     */
+             , CASE WHEN A.AUC_OBJ_DSC = '1' THEN A.LOWS_SBID_LMT_AM / F.CALF_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '2' THEN A.LOWS_SBID_LMT_AM / F.NBFCT_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '3' THEN A.LOWS_SBID_LMT_AM / F.PPGCOW_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '5' THEN A.LOWS_SBID_LMT_AM / F.GT_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '6' THEN A.LOWS_SBID_LMT_AM / F.HS_AUC_ATDR_UNT_AM
+                    ELSE A.LOWS_SBID_LMT_AM / 10000
+                END AS LOWS_SBID_LMT_AM_EX
+             , A.SRA_SBID_UPR                   /* 축산낙찰단가                         */
+             , A.SRA_SBID_AM                    /* 축산낙찰금액                         */
+             , A.SEL_STS_DSC                    /* 판매상태구분코드                     */
+             , A.SEL_STS_DSC HDN_SEL_STS_DSC
+             , A.BRCL_ISP_CTFW_SMT_YN           /* 브루셀라검사증명서제출여부           */
+             , A.BRCL_ISP_DT                    /* 브루셀라검사일자                     */
+             , A.LWPR_CHG_NT                    /* 최저가변경횟수                       */
+             , A.VACN_DT                        /* 예방접종일자                         */
+             , A.LVST_MKT_TRPL_AMNNO            /* 가축시장거래처관리번호(수의사)       */
+             , A.MT12_OVR_YN                    /* 12개월이상여부                       */
+             , A.PPGCOW_FEE_DSC                 /* 번식우수수료구분코드                 */
+             , NVL(A.PRNY_JUG_YN,'0') PRNY_JUG_YN                    /* 임신감정여부                         */
+             , A.PRNY_YN                        /* 임신여부                             */
+             , NVL(A.NCSS_JUG_YN,'0') NCSS_JUG_YN                    /* 괴사감정여부                         */
+             , A.NCSS_YN                        /* 괴사여부                             */
+             , A.TRPCS_PY_YN                    /* 운송비지급여부                       */
+             , A.SRA_TRPCS                      /* 축산운송비                           */
+             , A.SRA_PYIVA                      /* 축산납입출자금                       */
+             , A.SRA_FED_SPY_AM                 /* 축산가료공급금액                     */
+             , A.TD_RC_CST                      /* 당일접수비용                         */
+             , A.AFISM_MOD_DT                   /* 인공수정일자                         */
+             , A.PRNY_MTCN                      /* 임신개월수                           */
+             , A.AFISM_MOD_CTFW_SMT_YN          /* 인공수정증명서제출여부               */
+             , NVL(A.RMHN_YN,'0') RMHN_YN                       /* 제각여부                             */
+             , A.SRA_PDMNM                      /* 축산생산자명                         */
+             , A.SRA_PD_RGNNM                   /* 축산생산지역명                       */
+             , A.RMK_CNTN                       /* 비고내용                             */
+             , A.AUC_PRG_SQ                     /* 경매진행순서                         */
+             , A.TMS_YN                         /* 전송여부                             */
+             , A.DEL_YN                         /* 삭제여부                             */
+             , A.FSRG_DTM                       /* 최초등록일시                         */
+             , A.FSRGMN_ENO                     /* 최초등록자개인번호                   */
+             , A.LSCHG_DTM                      /* 최종변경일시                         */
+             , A.LS_CMENO                       /* 최종변경자개인번호                   */
+             , A.FEE_CHK_YN                     /* 출하수수료수기적용여부               */
+             , A.SELFEE_CHK_YN                  /* 판매수수료수기적용여부               */
+             , A.FEE_CHK_YN_FEE                 /* 출하수수료수기등록                   */
+             , A.SELFEE_CHK_YN_FEE              /* 판매수수료수기등록                   */
+             , B.SRA_SRS_DSC                    /* 축산축종구분코드                     */
+             , B.SRA_INDV_AMNNO                 /* 축산개체관리번호(바코드, 귀표번호)   */
+             , B.FHS_ID_NO                      /* 농가식별번호                         */
+             , B.FARM_AMNNO                     /* 농장관리번호                         */
+             , B.BIRTH                          /* 생년월일                             */
+             , B.MCOW_DSC                       /* 어미구분코드                         */
+             , RTRIM(B.KPN_NO) AS KPN_NO        /* PKN번호                              */
+             , B.INDV_SEX_C                     /* 개체성별코드                         */
+             , B.MCOW_SRA_INDV_AMNNO            /* 어미소축산개체관리번호               */
+             , B.MATIME                         /* 산차                                 */
+             , B.SRA_INDV_PASG_QCN              /* 계대                                 */
+             , B.INDV_ID_NO                     /* 개체식별번호                         */
+             , B.SRA_INDV_BRDSRA_RG_NO          /* 축산개체종축등록번호                 */
+             , B.RG_DSC                         /* 등록구분코드                         */
+             , C.SRA_MWMNNM                     /* 중도매인명                           */
+             , C.MACO_YN   AS IO_MWMN_MACO_YN   /* 중도매인조합원여부                   */
+             , D.FTSNM                          /* 출하주명                             */
+             , D.MACO_YN   AS IO_SOGMN_MACO_YN  /* 출하자조합원여부                     */
+             , E.BRWRNM                         /* 차주명                               */
+             , E.VHC_DRV_CAFFNM                 /* 운전기사명                           */
+             , '1'         AS CHG_GBN
+             , 0           AS CHG_LOWS_SBID_LMT_AM
+             , ''          AS BTNDNCHG
+             , A.DDL_QCN
+             , A.BLOOD_AM
+             , NVL(D.SRA_FED_SPY_YN, 0) AS SRA_FED_SPY_YN         /* 사료미사용여부                      */
+             , A.DNA_YN                          /* 친자검사결과                        */
+             , A.DNA_YN_CHK                      /* 친자검사여부                        */
+             , A.MT12_OVR_FEE                    /* 12개월이상수수료                    */
+         FROM TB_LA_IS_MH_SOG_COW  A
+         LEFT OUTER JOIN TB_LA_IS_MM_MWMN C
+           ON A.NA_BZPLC     = C.NA_BZPLC
+          AND A.TRMN_AMNNO   = C.TRMN_AMNNO
+         LEFT OUTER JOIN TB_LA_IS_MM_VHC E
+           ON A.NA_BZPLC     = E.NA_BZPLC
+          AND A.VHC_SHRT_C   = E.VHC_SHRT_C
+            , TB_LA_IS_MM_INDV     B
+            , TB_LA_IS_MM_FHS      D
+            , TB_LA_IS_MM_ENV_EST     F
+        WHERE A.NA_BZPLC           = #{ss_na_bzplc}
+          <!-- AND A.AUC_OBJ_DSC        = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END -->
+          AND (
+            (#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+            OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+          )
+          AND A.AUC_DT             = #{auc_dt}
+        <if test="trmn_amnno != null and trmn_amnno != ''">
+          AND A.TRMN_AMNNO         = #{trmn_amnno}
+        </if>  
+        <if test="sel_sts_dsc != null and sel_sts_dsc != ''">
+          AND A.SEL_STS_DSC        = #{sel_sts_dsc}
+        </if>
+          AND A.LED_SQNO           = 1
+          AND A.DEL_YN             = '0'
+          AND A.SRA_SRS_DSC 	    = #{sra_srs_dsc}
+          AND A.NA_BZPLC           = B.NA_BZPLC
+          AND A.SRA_INDV_AMNNO     = B.SRA_INDV_Amnno
+          AND A.SRA_SRS_DSC        = B.SRA_SRS_DSc
+          AND A.NA_BZPLC           = D.NA_BZPLC
+          AND A.FHS_ID_NO          = D.FHS_ID_NO
+          AND A.FARM_AMNNO         = D.FARM_AMNNO
+          AND A.LOWS_SBID_LMT_AM  != 0
+          AND A.NA_BZPLC           = F.NA_BZPLC
+        ORDER BY A.AUC_PRG_SQ  
+    </select>
+    
+    <update id="LALM1008_updFirstBatPrice">
+        UPDATE TB_LA_IS_MH_SOG_COW SET
+               LOWS_SBID_LMT_AM  = CASE WHEN #{am_rto_dsc} = '1' THEN #{fir_lows_sbid_lmt_am}
+                                   ELSE                               FIR_LOWS_SBID_LMT_AM 
+                                   END
+             , LWPR_CHG_NT       = CASE WHEN LWPR_CHG_NT IS NULL THEN 1 ELSE LWPR_CHG_NT + 1 END
+             , LSCHG_DTM         = SYSDATE
+             , LS_CMENO          = #{ss_userid}
+         WHERE NA_BZPLC          = #{ss_na_bzplc}
+           AND AUC_OBJ_DSC       = #{auc_obj_dsc}
+           AND AUC_DT            = #{auc_dt}
+           AND OSLP_NO           = #{oslp_no}
+           AND LED_SQNO          = 1
+           AND SEL_STS_DSC       = '23'
+    </update>
+    
+    <update id="LALM1008_updBatPrice">
+        UPDATE TB_LA_IS_MH_SOG_COW SET
+               LOWS_SBID_LMT_AM  = CASE 
+										WHEN #{am_rto_dsc} = '1' THEN DECODE(#{sbt_am},'0',FIR_LOWS_SBID_LMT_AM,LOWS_SBID_LMT_AM - #{sbt_am})
+                                   		ELSE DECODE(#{sbt_pmr},'0',FIR_LOWS_SBID_LMT_AM,( FLOOR((LOWS_SBID_LMT_AM - (LOWS_SBID_LMT_AM * ${sbt_pmr} / 100)) / 1000) * 1000 ))
+                                   END
+             , LWPR_CHG_NT       = CASE WHEN LWPR_CHG_NT IS NULL THEN 1 ELSE LWPR_CHG_NT + 1 END
+             , LSCHG_DTM         = SYSDATE
+             , LS_CMENO          = #{ss_userid}
+         WHERE NA_BZPLC          = #{ss_na_bzplc}
+           AND AUC_OBJ_DSC       = #{auc_obj_dsc}
+           AND AUC_DT            = #{auc_dt}
+           AND OSLP_NO           = #{oslp_no}
+           AND LED_SQNO          = 1
+           AND SEL_STS_DSC       = CASE WHEN #{ss_na_bzplc} = '8808990656236' THEN '11' ELSE '23' END
+    </update>
+    
+    <update id="LALM1008_updConti">
+        UPDATE TB_LA_IS_MH_SOG_COW SET
+               TRMN_AMNNO         = CASE WHEN #{trmn_amnno} = '' THEN NULL ELSE #{trmn_amnno} END
+             , LVST_AUC_PTC_MN_NO = CASE WHEN #{lvst_auc_ptc_mn_no} = '' THEN NULL ELSE #{lvst_auc_ptc_mn_no} END
+             , SRA_SBID_UPR       = CASE WHEN #{sra_sbid_upr} = 0 THEN NULL ELSE #{sra_sbid_upr} END
+             , SRA_SBID_AM        = CASE WHEN #{sra_sbid_am} = 0 THEN NULL ELSE #{sra_sbid_am} END
+             , COW_SOG_WT         = CASE WHEN #{cow_sog_wt} = 0 THEN NULL ELSE #{cow_sog_wt} END
+             , SEL_STS_DSC        = #{sel_sts_dsc}
+             , LOWS_SBID_LMT_AM   = #{lows_sbid_lmt_am}
+             , DDL_QCN		      = CASE WHEN #{sel_sts_dsc} = '11' THEN '' ELSE #{ddl_qcn}  END
+             , LWPR_CHG_NT        = #{lwpr_chg_nt}
+             , LSCHG_DTM          = SYSDATE
+             , LS_CMENO           = #{ss_userid}
+         WHERE NA_BZPLC          = #{ss_na_bzplc}
+           AND AUC_OBJ_DSC       = #{auc_obj_dsc}
+           AND AUC_DT            = #{auc_dt}
+           AND OSLP_NO           = #{oslp_no}
+           AND LED_SQNO          = 1
+           AND DEL_YN            = '0'
+    </update>
+    
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

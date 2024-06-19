@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,7 @@ import com.auc.common.exception.ErrorCode;
 import com.auc.common.vo.ResolverMap;
 import com.auc.lalm.ar.service.LALM0215Service;
 import com.auc.main.service.CommonService;
+import com.auc.mca.McaUtil;
 
 @RestController
 @SuppressWarnings("unchecked")
@@ -36,6 +39,8 @@ public class LALM0215Controller {
 	LALM0215Service lalm0215Service;
 	@Autowired
 	CommonService commonService;
+	@Autowired
+	McaUtil mcaUtil;
 	
 	@ResponseBody
 	@RequestMapping(value="/LALM0215_selList", method=RequestMethod.POST)
@@ -248,7 +253,7 @@ public class LALM0215Controller {
 	
 	@ResponseBody
 	@RequestMapping(value="/LALM0215_insPgm", method=RequestMethod.POST)
-	public Map<String, Object> LALM0215_insPgm(ResolverMap rMap) throws Exception{				
+	public Map<String, Object> LALM0215_insPgm(ResolverMap rMap, HttpServletRequest req) throws Exception{				
 				
 		Map<String, Object> map   	= convertConfig.conMapWithoutXxs(rMap);
 		Map<String, Object> frmMap  = (Map<String, Object>)map.get("frm_mhsogcow");
@@ -264,7 +269,8 @@ public class LALM0215Controller {
 		if(indvAmnnoList.size() > 0) {
 			throw new CusException(ErrorCode.CUSTOM_ERROR,"동일한 경매일자에 동일한 귀표번호는 등록할수 없습니다.");
 		}
-		
+
+		map.put("chg_ip_addr", mcaUtil.getClientIp(req));
 		Map<String, Object> inMap = lalm0215Service.LALM0215_insPgm(map);
 		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);
 		

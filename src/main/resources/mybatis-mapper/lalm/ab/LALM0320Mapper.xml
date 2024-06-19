@@ -27,11 +27,15 @@
 	        , (case when A.AUC_OBJ_DSC = '1' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
 	                when A.AUC_OBJ_DSC = '2' and A.SEL_STS_DSC = '22' then A.SRA_SBID_UPR * NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1)
 	                when A.AUC_OBJ_DSC = '3' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
+	                when A.AUC_OBJ_DSC = '5' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
+	                when A.AUC_OBJ_DSC = '6' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
 	                else 0
 	           end) as SRA_SBID_AM      /* 축산낙찰금액                            */
 	        , (case when A.AUC_OBJ_DSC = '1' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
 	                when A.AUC_OBJ_DSC = '2' and A.SEL_STS_DSC = '22' then A.SRA_SBID_UPR * NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1)
 	                when A.AUC_OBJ_DSC = '3' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
+	                when A.AUC_OBJ_DSC = '5' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
+	                when A.AUC_OBJ_DSC = '6' and A.SEL_STS_DSC = '22' then A.SRA_SBID_AM
 	                else 0
 	           end) - A.LOWS_SBID_LMT_AM as DIF_SBID_AM   /* 낙찰가차액 */
 	        , CASE WHEN #{ss_security} = '1' THEN D.SRA_MWMNNM
@@ -46,7 +50,12 @@
 	       , TB_LA_IS_MM_MWMN     D
 		   , TB_LA_IS_MM_ENV_EST J
 	    WHERE A.NA_BZPLC            = #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC         = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END
+	      <!-- AND A.AUC_OBJ_DSC         = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END -->
+		  AND (
+				(#{cb_auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{cb_auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{cb_auc_obj_dsc})
+			)
+		  AND A.SRA_SRS_DSC         = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
 	      AND A.AUC_DT              = #{auc_dt}
 	      AND A.LED_SQNO            = 1
 	      AND A.DEL_YN              = '0'
@@ -59,11 +68,10 @@
 	      AND A.NA_BZPLC            = D.NA_BZPLC(+)
 	      AND A.TRMN_AMNNO          = D.TRMN_AMNNO(+)
 		  AND A.NA_BZPLC 			  = J.NA_BZPLC
-	    ORDER BY A.AUC_PRG_SQ;
+	    ORDER BY A.AUC_PRG_SQ
     </select>
     
     <select id="LALM0320_selAucIngList" resultType="hashMap"> 
-    <![CDATA[   
 	    SELECT
 	          CASE WHEN A.AM_CNT      > 0 THEN ROUND(A.AM_LMT_AM  / A.AM_CNT     , 0)  ELSE 0 END AS AM_EVE_LMT_AM       /* 암-응찰하한가평균 */
 	        , CASE WHEN A.AM_SBID_CNT > 0 THEN ROUND(A.AM_SBID_AM / A.AM_SBID_CNT, 0)  ELSE 0 END AS AM_EVE_SBID_AM      /* 암-낙찰가평균     */
@@ -86,7 +94,12 @@
 	             , TB_LA_IS_MM_INDV     B
 				 , TB_LA_IS_MM_ENV_EST J
 	          WHERE A.NA_BZPLC            = #{ss_na_bzplc}
-	            AND A.AUC_OBJ_DSC         = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END
+	            <!-- AND A.AUC_OBJ_DSC         = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END -->
+				AND (
+						(#{cb_auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+						OR (#{cb_auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{cb_auc_obj_dsc})
+					)
+				AND A.SRA_SRS_DSC         = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
 	            AND A.AUC_DT              = #{auc_dt}
 	            AND A.LED_SQNO            = 1
 	            AND A.DEL_YN              = '0'                                /* 삭제건이 아닌건    */
@@ -95,8 +108,6 @@
 	            AND A.SRA_SRS_DSC         = B.SRA_SRS_DSC
 				AND A.NA_BZPLC 			  = J.NA_BZPLC
 	         ) A
-	      
-	]]> 
     </select>        
         
 </mapper>

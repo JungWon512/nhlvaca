@@ -797,6 +797,8 @@ var na_bzplc = App_na_bzplc;
 						ReportPopup('LALM0216R3_18_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 } else if(na_bzplc == '8808990658995'){
             			 ReportPopup('LALM0216R3_5_3',TitleData, grid4, 'V'); 
+            		 } else if(na_bzplc == '8808990670737'){ //김해축협
+            			 ReportPopup('LALM0216R3_6_8',TitleData, grid4, 'V'); 
             		 }else {
 						ReportPopup('LALM0216R3_5',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             		 }
@@ -850,7 +852,9 @@ var na_bzplc = App_na_bzplc;
             		 if(na_bzplc == '8808990656106') {
             			 ReportPopup('LALM0216R3_86',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
-            		 } else {
+            		 }else if(na_bzplc == '8808990657615') {
+						ReportPopup('LALM0216R3_7_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그                			 
+					 } else {
             			 ReportPopup('LALM0216R3_13',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			 
             		 }
@@ -1028,9 +1032,12 @@ var na_bzplc = App_na_bzplc;
              		 if(na_bzplc == '8808990660783') {
              			 ReportPopup('LALM0216R3_42',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
-             		 // ★안동봉화: 8808990689180 영덕울진: 8808990785431 상주 : 8808990657639
-             		 } else if(na_bzplc == '8808990689180' || na_bzplc == '8808990785431' || na_bzplc == '8808990657639') {
-             			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             		 // ★안동봉화: 8808990689180 영덕울진: 8808990785431 
+             		 } else if(na_bzplc == '8808990689180' || na_bzplc == '8808990785431') {
+             			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			 
+               		 // 상주 : 8808990657639
+               		 } else if(na_bzplc == '8808990657639') {
+               			 ReportPopup('LALM0216R3_6_2_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★영주: 8808990687094
              		 } else if(na_bzplc == '8808990687094') {
@@ -1078,6 +1085,8 @@ var na_bzplc = App_na_bzplc;
             			 
             		 } else if(na_bzplc == '8808990656694'){ //서산태안
              			 ReportPopup('LALM0216R3_6_J_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             		 } else if(na_bzplc == '8808990659268'){ //논산계룡
+             			 ReportPopup('LALM0216R3_6_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 } else {
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 }
@@ -1113,8 +1122,10 @@ var na_bzplc = App_na_bzplc;
              			ReportPopup('LALM0216R3_8_5',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그
              		// 진주축협 : 8808990657240
              		 }else if(na_bzplc == '8808990657240'){
-             			ReportPopup('LALM0216R3_77',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그 
-             		 } else {
+             			ReportPopup('LALM0216R3_77_1',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그 
+             		 } else if(na_bzplc == '8808990657615'){
+              			 ReportPopup('LALM0216R3_8_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
+              		 } else {
               			 ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
               		 }
             		 
@@ -1272,6 +1283,9 @@ var na_bzplc = App_na_bzplc;
             		 } else if(na_bzplc == '8808990656274') {
              			 ReportPopup('LALM0216R3_43',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
              			
+            		 }else if(na_bzplc == '8808990657240') {
+             			 ReportPopup('LALM0216R3_77_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             			
             		 } else {
              			 ReportPopup('LALM0216R3_4',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
@@ -1284,15 +1298,19 @@ var na_bzplc = App_na_bzplc;
              			 
              		 // ★김해: 8808990670737
              		 } else if(na_bzplc == '8808990670737') {
-             			 ReportPopup('LALM0216R3_44',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
-             			 
+             			//ReportPopup('LALM0216R3_44',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             			ReportPopup('LALM0216R3_6_8',TitleData, grid4, 'V');             			 
              		 // ★동해삼척태백: 8808990652825
              		 } else if(na_bzplc == '8808990652825') {
             			 ReportPopup('LALM0216R3_52',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
-             		 // ★안동봉화: 8808990689180 영덕울진: 8808990785431, 상주 : 8808990657639
-             		 } else if(na_bzplc == '8808990689180' || na_bzplc == '8808990785431' || na_bzplc == '8808990657639') {
-             			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+                 		 // ★안동봉화: 8808990689180 영덕울진: 8808990785431
+               		 } else if(na_bzplc == '8808990689180' || na_bzplc == '8808990785431') {
+               			 ReportPopup('LALM0216R3_6_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+                 			 
+             		 //상주 : 8808990657639
+             		 } else if(na_bzplc == '8808990657639') {
+             			 ReportPopup('LALM0216R3_6_2_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 // ★영주: 8808990687094
              		 } else if(na_bzplc == '8808990687094') {
@@ -1344,7 +1362,7 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990656670') {
              			 ReportPopup('LALM0216R3_75',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
-             		 // ★함안: 8808990656946 의령 8808990656199 테스트: 8808990643625
+             		 // 의령 8808990656199 테스트: 8808990643625
              		 } else if(na_bzplc == '8808990656199' ) {
              			 ReportPopup('LALM0216R3_84',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
@@ -1395,10 +1413,9 @@ var na_bzplc = App_na_bzplc;
 					 }else if(na_bzplc == '8808990656694'){ //서산태안
 						 ReportPopup('LALM0216R3_6_J_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
 						 
-					 } else {
-	            		 grid4 = grid4.map((o,i)=>{
-							return o;
-						 }); 
+					 } else if(na_bzplc == '8808990659268'){ //논산계룡
+             			 ReportPopup('LALM0216R3_6_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             		 } else {
              			 ReportPopup('LALM0216R3_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			 
              		 }
@@ -1416,9 +1433,11 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990656519') {
              			ReportPopup('LALM0216R3_74',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 
-             		 // ★함양산청: 8808990656410 산청지점: 8808990674506, 진주축협 : 8808990657240
-             		 } else if(na_bzplc == '8808990656410' || na_bzplc == '8808990674506' || na_bzplc == '8808990657240') {
-             			ReportPopup('LALM0216R3_77',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             		 // ★함양산청: 8808990656410 산청지점: 8808990674506
+             		 } else if(na_bzplc == '8808990656410' || na_bzplc == '8808990674506') {
+              			ReportPopup('LALM0216R3_77',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+             		 } else if(na_bzplc == '8808990657240') { //진주축협 : 8808990657240
+              			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 // ★영광축협: 8808990811710 , 장성축협 : 8808990817675
              		 } else if(na_bzplc == '8808990811710' || na_bzplc == '8808990817675') {
              			ReportPopup('LALM0216R3_80',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
@@ -1441,7 +1460,9 @@ var na_bzplc = App_na_bzplc;
              		// 보성축협 : 8808990656267
              		 } else if(na_bzplc == '8808990656267'){
               			ReportPopup('LALM0216R3_8_5',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그 
-             		 }else  {
+             		 } else if(na_bzplc == '8808990657615'){
+              			 ReportPopup('LALM0216R3_8_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
+              		 }else  {
              			ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 }
 

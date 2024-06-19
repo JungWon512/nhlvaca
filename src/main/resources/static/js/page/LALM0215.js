@@ -170,7 +170,11 @@
  					    }
    		            }
    		        } else {
-   		        	fn_contrChBox(false, "prny_jug_yn", "");
+					if(App_na_bzplc == '8808990656663'){
+   		        		fn_contrChBox(true, "prny_jug_yn", "");						
+					}else{
+   		        		fn_contrChBox(false, "prny_jug_yn", "");						
+					}
 	            	//경주축협일때 임신구분 자동체크
 	            	if (App_na_bzplc == '8808990659008'){
    		        		fn_contrChBox(false, "prny_yn", "");						   
@@ -252,23 +256,6 @@
     		fn_IoSogmnMacoYnModify();
     	});
     	
-    	
-    	$('#pb_syncVacn').on('click',(e)=>{
-            e.preventDefault();            
-			fn_CallBrclIspSrch();
-		});
-		
-    	$('#pb_syncEpd').on('click',(e)=>{
-            e.preventDefault();            
-			fn_CallAiakInfoSync();
-		});
-		
-    	$('#pb_syncMEpd').on('click',(e)=>{
-            e.preventDefault();
-            if(!fn_isNull($("#mcow_sra_indv_amnno").val())){
-				fn_CallAiakInfoSync($("#mcow_sra_indv_amnno").val());				
-			}
-		});
     	/******************************
          * 중도매인 검색 팝업 호출 이벤트(엔터)
          ******************************/
@@ -2837,7 +2824,8 @@
 	        $("#rc_dt").datepicker().datepicker("setDate", fn_getToday());
 	        $("#sel_sts_dsc").val("1");												// 진행상태
 	        $("#case_cow").val("1");												// 구분
-	        
+	        $("#sra_srs_dsc").val("01");
+			
 	     	// ★임실: 8808990660783 포항: 8808990679549 고성: 8808990656458  영광: 8808990811710 충주: 8808990656465 남원: 8808990227207  테스트: 8808990643625 경주 8808990659008
 			// 친자확인결과 미확인 자동 셋팅
 			if(App_na_bzplc=='8808990660783' || App_na_bzplc=='8808990679549' || App_na_bzplc=='8808990656458' || App_na_bzplc=='8808990811710' || App_na_bzplc=='8808990643625' || App_na_bzplc=='8808990659008') {
@@ -4287,7 +4275,7 @@
     	var result = null;
     	
         srchData["SRA_INDV_AMNNO"]   = p_sra_indv_amnno;
-        srchData["AUC_DT"]   = $('#auc_dt').val();
+        srchData["AUC_DT"]   = $('#auc_dt').val().replace(/[^0-9]/g,"");
         srchData["CHG_RMK_CNTN"]   = "LALM0215["+srchData["INDV_BLD_DSC"]+"]";
         results = sendAjax(srchData, "/LALM0899_selAiakRestApi", "POST");
         

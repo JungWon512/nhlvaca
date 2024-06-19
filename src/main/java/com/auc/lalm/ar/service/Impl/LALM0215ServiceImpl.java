@@ -388,7 +388,16 @@ public class LALM0215ServiceImpl implements LALM0215Service{
 			if(map.get("re_indv_no") != null) {
 				try {
 					String barcode = (String)map.get("re_indv_no");
-					commonService.Common_selAiakInfo(barcode);					
+
+					Map<String,Object> tempMap = new HashMap<>();
+					tempMap.putAll(map);
+					tempMap.put("sra_indv_amnno", map.get("re_indv_no"));					
+					//tempMap.put("auc_dt", inMap.get("auc_dt"));
+					tempMap.put("indv_bld_dsc", "0");
+					tempMap.put("chg_pg_id", "nhlvaca[0]");
+					tempMap.put("chg_rmk_cntn", "출장우등륵[LALM0215]");
+					tempMap.put("chg_ip_addr", frmMap.get("chg_ip_addr"));
+					commonService.Common_selAiakInfo(tempMap);
 				}catch(Exception e){
 					log.error("종개협INF 연동 에러",e);
 				}				

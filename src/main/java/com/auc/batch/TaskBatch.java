@@ -133,28 +133,4 @@ public class TaskBatch {
 			log.error("TaskBatch.batch_BJ_LM_0020 : {} ", e);
 		}
 	}
-	/**
-	 * 3대혈통/본개체 종개협 연동 : 매일 새벽 2시 30분
-	 */
-	@Scheduled(cron = "0 30 2 * * *")
-	public void batch_BJ_LM_0050() {
-		ResolverMap rMap = new ResolverMap();
-		Map<String, Object> request = new HashMap<String, Object>();
-		
-		try {
-			//운영서버에서만 실행되게끔 처리
-			if(!this.isProdServerType()) {
-				return ;
-			}
-		
-			batchController.commonBatch("BJ-LM-0050",request, rMap);
-			
-		}
-		catch (RuntimeException e) {
-			log.error("TaskBatch.batch_BJ_LM_0040 : {} ", e);
-		}
-		catch (Exception e) {
-			log.error("TaskBatch.batch_BJ_LM_0040 : {} ", e);
-		}
-	}
 }

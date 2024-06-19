@@ -75,9 +75,6 @@ public class BatchController {
 		case "BJ-LM-0040":
 			reMap = this.batch_BJ_LM_0040(request, rMap);			
 			break;
-		case "BJ-LM-0050":
-			reMap = this.batch_BJ_LM_0050(request, rMap);			
-			break;
 		}
 		return reMap;		
 	}
@@ -500,11 +497,6 @@ public class BatchController {
 	public Map<String, Object> batch_BJ_LM_0011(@RequestParam(required=false) Map<String, Object> request, ResolverMap rMap) {
 		return this.commonBatch("BJ-LM-0011",request, rMap);
 	}
-	@RequestMapping("/batch/batch_BJ_LM_0050")
-	public Map<String, Object> batch_BJ_LM_0050(@RequestParam(required=false) Map<String, Object> request, ResolverMap rMap) {
-		return this.commonBatch("BJ-LM-0050",request, rMap);
-	}
-
 	
 	
 	public Map<String, Object> commonBatch(String jobName,Map<String, Object> request, ResolverMap rMap) {	
@@ -579,12 +571,6 @@ public class BatchController {
 					failCnt += (int) tempMap.get("failCnt");
 					succCnt += (int) tempMap.get("succCnt");
 					error.append(tempMap.get("error"));
-					break;
-				case "BJ-LM-0050":
-					tempMap = batchService.batchBloodAiakSync(map);
-					failCnt += (int) tempMap.get("failCnt");
-					succCnt += (int) tempMap.get("succCnt");
-					error.append(tempMap.get("error"));	
 					break;
 				}
 			}

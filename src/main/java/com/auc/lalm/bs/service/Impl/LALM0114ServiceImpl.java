@@ -59,12 +59,6 @@ public class LALM0114ServiceImpl implements LALM0114Service{
 		int insertNum = 0;
 		insertNum = lalm0114Mapper.LALM0114_insIndv(map);	
 		reMap.put("updateNum", insertNum);
-		try {
-			String barcode = (String)map.get("sra_indv_amnno");
-			commonService.Common_selAiakInfo(barcode);					
-		}catch(Exception e){
-			log.error("종개협INF 연동 에러",e);
-		}
 		
 		return reMap;
 	}

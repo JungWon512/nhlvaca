@@ -78,6 +78,15 @@
     var GRID_DNA_YN_DATA ="0:;1:일치;2:불일치;3:미확인;4:부불일치;5:모불일치;6:부or모불일치";
     var GRID_SEL_DSC_DATA ="11:대기;21:진행;22:종료;23:중지";
     var GRID_DDL_QCN_DATA ="0:0차;1:1차;2:2차;3:3차;4:4차;5:5차;6:6차;7:7차;8:8차;9:9차";
+    const GRID_ETC_RG_DSC = {'5': '1:일반;2:육용;3:약용','6': '1:H일반;2:H육용;3:H약용'};
+    const GRID_ETC_INDV_SEX_C = {'5': '1:암;2:수;3:거세;7:새끼','6': '1:H암;2:H수;3:H거세;7:H새끼'};
+    const ETC_RG_DSC              = [{value : "1", text : "일반", details : ""},
+                                    {value : "2", text : "육용", details : ""},
+                                    {value : "3", text : "약용", details : ""}];
+    const ETC_INDV_SEX_C		  = [{value : "1", text : "암", details : ""},
+                                    {value : "2", text : "수", details : ""},
+                                    {value : "3", text : "거세", details : ""},
+                                    {value : "7", text : "새끼", details : ""}];
     
     //그리드 컬러
     var GRID_NOR_BACKGROUND_COLOR = {'background-color':''};
@@ -109,7 +118,7 @@
      * 3. 출 력 변 수 : result
      ------------------------------------------------------------------------------*/
     function sendAjax(objData, sendUrl, methodType){   
-    	
+    	console.log(sendUrl, objData);
         var encrypt = setEncrypt(objData);                    
         var result;
         $.ajax({
@@ -150,6 +159,7 @@
      * 3. 출 력 변 수 : result
      ------------------------------------------------------------------------------*/
     function sendAjaxFrm(frmStr, sendUrl, methodType){
+        console.log(sendUrl, setFrmToData(frmStr));
         var encrypt = setEncrypt(setFrmToData(frmStr));
         var result;
         
@@ -279,6 +289,7 @@
     
     //데이터 encript
     function setEncrypt(data){
+        // console.log(data);
         // String 형태로 변환
         var jsonData = JSON.stringify(data);
         var encrypt = CryptoJS.AES.encrypt(jsonData.toString(), keyutf, {iv:ivutf});          

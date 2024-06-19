@@ -10,12 +10,11 @@
 				SIMP_CNM 
 		  FROM TB_LA_IS_MH_COMN_APL 
 		 WHERE SIMP_TPC = 'AUC_OBJ_DSC' 
-		   AND SIMP_C_GRP_SQNO = '2' 
+		   AND SIMP_C_GRP_SQNO IN ('2', '8') 
 		   AND SIMP_C = #{auc_obj_dsc}
     </select>
 	
     <select id="LALM0314_selList" resultType="hashMap">
-    <![CDATA[
         SELECT
 			NA_BZPLC                  /* 경제통합사업장코드                  */
 			, AUC_OBJ_DSC             /* 경매대상구분코드                    */
@@ -32,10 +31,12 @@
 			, LS_CMENO                /* 최종변경자개인번호                  */
 		 FROM TB_LA_IS_MH_AUC_STN
 		WHERE NA_BZPLC         = #{ss_na_bzplc}
-		  AND AUC_OBJ_DSC      = CASE WHEN #{auc_obj_dsc} = '0' THEN AUC_OBJ_DSC ELSE #{auc_obj_dsc} END  /* 경매대상구분코드            */
+		  AND (
+				(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+			)
 		  AND AUC_DT           = #{auc_dt}
 		ORDER BY ST_AUC_NO
-    ]]>
     </select>
     
     <select id="LALM0314_selSogCow1List" resultType="hashMap">
@@ -57,14 +58,18 @@
 			 , D.MCOW_SRA_INDV_AMNNO                /* 어미소축산개체관리번호                  */
 			 , D.MCOW_DSC                           /* 어미구분코드                            */
 			 , A.COW_SOG_WT                         /* 우출하중량                              */
-			 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN A.LOWS_SBID_LMT_AM / #{calf_auc_atdr_unt_am}
-					WHEN A.AUC_OBJ_DSC = '2' THEN A.LOWS_SBID_LMT_AM / #{nbfct_auc_atdr_unt_am}
-					WHEN A.AUC_OBJ_DSC = '3' THEN A.LOWS_SBID_LMT_AM / #{ppgcow_auc_atdr_unt_am}
+			 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN A.LOWS_SBID_LMT_AM / E.CALF_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '2' THEN A.LOWS_SBID_LMT_AM / E.NBFCT_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '3' THEN A.LOWS_SBID_LMT_AM / E.PPGCOW_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '5' THEN A.LOWS_SBID_LMT_AM / E.GT_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '6' THEN A.LOWS_SBID_LMT_AM / E.HS_AUC_ATDR_UNT_AM
 					ELSE A.LOWS_SBID_LMT_AM
 				END AS LOWS_SBID_LMT_AM
-			 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / #{calf_auc_atdr_unt_am})
-					WHEN A.AUC_OBJ_DSC = '2' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / #{nbfct_auc_atdr_unt_am})
-					WHEN A.AUC_OBJ_DSC = '3' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / #{ppgcow_auc_atdr_unt_am})
+			 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / E.CALF_AUC_ATDR_UNT_AM)
+					WHEN A.AUC_OBJ_DSC = '2' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / E.NBFCT_AUC_ATDR_UNT_AM)
+					WHEN A.AUC_OBJ_DSC = '3' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / E.PPGCOW_AUC_ATDR_UNT_AM)
+					WHEN A.AUC_OBJ_DSC = '5' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / E.GT_AUC_ATDR_UNT_AM)
+					WHEN A.AUC_OBJ_DSC = '6' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / E.HS_AUC_ATDR_UNT_AM)
 					ELSE C.ATDR_AM - A.LOWS_SBID_LMT_AM
 				END AS DIF_AM
 			 , C.ATDR_AM                            /* 응찰금액                                    */
@@ -110,10 +115,13 @@
 											 WHERE A.NA_BZPLC    = #{ss_na_bzplc}
 											<choose>
 											<when test='"4".equals(auc_obj_dsc)'>
-											   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+											   AND A.AUC_OBJ_DSC IN ('2', '3')
 											</when>
 											<otherwise>
-											   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+											   AND (
+													(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+													OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+												)
 											</otherwise>
 											</choose>
 											   AND A.AUC_DT      = #{auc_dt}
@@ -152,10 +160,13 @@
 											 WHERE A.NA_BZPLC    = #{ss_na_bzplc}
 											<choose>
 											<when test='"4".equals(auc_obj_dsc)'>
-											   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+											   AND A.AUC_OBJ_DSC IN ('2', '3')
 											</when>
 											<otherwise>
-											   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+											   AND (
+													(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+													OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+												)
 											</otherwise>
 											</choose>
 											   AND A.AUC_DT      = #{auc_dt}
@@ -205,10 +216,13 @@
 									 WHERE A.NA_BZPLC    = #{ss_na_bzplc}
 									<choose>
 									<when test='"4".equals(auc_obj_dsc)'>
-									   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+										AND A.AUC_OBJ_DSC IN ('2', '3')
 									</when>
 									<otherwise>
-									   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+										AND (
+											(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+											OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+										)
 									</otherwise>
 									</choose>
 									   AND A.AUC_DT      = #{auc_dt}
@@ -247,10 +261,13 @@
 										 WHERE A.NA_BZPLC    = #{ss_na_bzplc}
 										<choose>
 										<when test='"4".equals(auc_obj_dsc)'>
-										   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+											AND A.AUC_OBJ_DSC IN ('2', '3')
 										</when>
 										<otherwise>
-										   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+											AND (
+												(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+												OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+											)
 										</otherwise>
 										</choose>
 										   AND A.AUC_DT      = #{auc_dt}
@@ -283,13 +300,17 @@
 		  LEFT OUTER JOIN TB_LA_IS_MM_MWMN  G
 			ON ( C.NA_BZPLC     = G.NA_BZPLC AND C.TRMN_AMNNO   = G.TRMN_AMNNO )
 			, TB_LA_IS_MM_INDV     D
+			, TB_LA_IS_MM_ENV_EST  E
 		  WHERE A.NA_BZPLC            = #{ss_na_bzplc}
 		<choose>
 		<when test='"4".equals(auc_obj_dsc)'>
-		   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+			AND A.AUC_OBJ_DSC IN ('2', '3')
 		</when>
 		<otherwise>
-		   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+			AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)
 		</otherwise>
 		</choose>
 		   AND A.AUC_DT              = #{auc_dt}
@@ -306,6 +327,7 @@
 		   AND A.NA_BZPLC            = D.NA_BZPLC
 		   AND A.SRA_INDV_AMNNO      = D.SRA_INDV_AMNNO
 		   AND A.SRA_SRS_DSC         = D.SRA_SRS_DSC
+		   AND A.NA_BZPLC            = E.NA_BZPLC
 		 ORDER BY A.AUC_PRG_SQ
 	</select>
 	
@@ -332,6 +354,8 @@
 			 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.CALF_AUC_ATDR_UNT_AM, 10000))
 					WHEN A.AUC_OBJ_DSC = '2' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.NBFCT_AUC_ATDR_UNT_AM, 1))
 					WHEN A.AUC_OBJ_DSC = '3' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.PPGCOW_AUC_ATDR_UNT_AM, 10000))
+					WHEN A.AUC_OBJ_DSC = '5' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.GT_AUC_ATDR_UNT_AM, 10000))
+					WHEN A.AUC_OBJ_DSC = '6' THEN ROUND(A.LOWS_SBID_LMT_AM / NVL(J.HS_AUC_ATDR_UNT_AM, 10000))
 					ELSE ROUND(A.LOWS_SBID_LMT_AM / 10000) 
 				END AS LOWS_SBID_LMT_UPR
 		  FROM TB_LA_IS_MH_SOG_COW  A
@@ -364,10 +388,13 @@
 											   AND A.AUC_DT      = #{auc_dt}
 											<choose>
 											<when test='"4".equals(auc_obj_dsc)'>
-											   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+											   AND A.AUC_OBJ_DSC IN ('2', '3')
 											</when>
 											<otherwise>
-											   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+											   AND (
+													(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+													OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+												)
 											</otherwise>
 											</choose>
 											 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO, A.TRMN_AMNNO
@@ -390,10 +417,13 @@
 			   AND AA.AUC_DT      = #{auc_dt}
 			<choose>
 			<when test='"4".equals(auc_obj_dsc)'>
-			   AND AA.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+				AND AA.AUC_OBJ_DSC IN ('2', '3')
 			</when>
 			<otherwise>
-			   AND AA.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN AA.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+				AND (
+					(#{auc_obj_dsc} = '0' AND AA.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+					OR (#{auc_obj_dsc} != '0' AND AA.AUC_OBJ_DSC = #{auc_obj_dsc})
+				)
 			</otherwise>
 			</choose>
 			 GROUP BY AA.NA_BZPLC, AA.AUC_OBJ_DSC, AA.AUC_DT, AA.OSLP_NO
@@ -402,10 +432,13 @@
 		 WHERE A.NA_BZPLC           =  #{ss_na_bzplc}
 		<choose>
 		<when test='"4".equals(auc_obj_dsc)'>
-		   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+			AND A.AUC_OBJ_DSC IN ('2', '3')
 		</when>
 		<otherwise>
-		   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+			AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)
 		</otherwise>
 		</choose>
 		   AND A.AUC_DT             =  #{auc_dt}
@@ -476,10 +509,13 @@
 								 WHERE A.NA_BZPLC    = #{ss_na_bzplc}
 								<choose>
 								<when test='"4".equals(auc_obj_dsc)'>
-								   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+									AND A.AUC_OBJ_DSC IN ('2', '3')
 								</when>
 								<otherwise>
-								   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+									AND (
+										(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+										OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+									)
 								</otherwise>
 								</choose>
 								   AND A.AUC_DT      = #{auc_dt}
@@ -521,10 +557,13 @@
 												 WHERE A.NA_BZPLC    = #{ss_na_bzplc}
 												<choose>
 												<when test='"4".equals(auc_obj_dsc)'>
-												   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+													AND A.AUC_OBJ_DSC IN ('2', '3')
 												</when>
 												<otherwise>
-												   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+													AND (
+														(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+														OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+													)
 												</otherwise>
 												</choose>
 												   AND A.AUC_DT      = #{auc_dt}
@@ -561,10 +600,13 @@
 													 WHERE A.NA_BZPLC    = #{ss_na_bzplc}
 													<choose>
 													<when test='"4".equals(auc_obj_dsc)'>
-													   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+														AND A.AUC_OBJ_DSC IN ('2', '3')
 													</when>
 													<otherwise>
-													   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+														AND (
+															(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+															OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+														)
 													</otherwise>
 													</choose>
 													   AND A.AUC_DT      = #{auc_dt}
@@ -599,10 +641,13 @@
 		 WHERE A.NA_BZPLC            = #{ss_na_bzplc}
 		<choose>
 		<when test='"4".equals(auc_obj_dsc)'>
-		   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+			AND A.AUC_OBJ_DSC IN ('2', '3')
 		</when>
 		<otherwise>
-		   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+			AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)
 		</otherwise>
 		</choose>
 		   AND A.AUC_DT              = #{auc_dt}
@@ -624,7 +669,6 @@
 	</select>
 
 	<select id="LALM0314_selSogCow4List" resultType="hashMap">
-	<![CDATA[
 		SELECT
 			  A.NA_BZPLC                        AS NA_BZPLC            /* 경제통합사업장코드  */
 			, A.AUC_OBJ_DSC                     AS AUC_OBJ_DSC         /* 경매대상구분코드    */
@@ -651,7 +695,6 @@
 		AND  A.ATDR_AM      =  #{atdr_am}
 	    AND  A.NA_BZPLC     =  C.NA_BZPLC
 		AND  A.TRMN_AMNNO   =  C.TRMN_AMNNO
-	]]>
 	</select>
 
 	<select id="LALM0314_selSogCow5List" resultType="hashMap">
@@ -681,31 +724,40 @@
 					WHEN LENGTH(G.SRA_MWMNNM) = 4 THEN SUBSTR(G.SRA_MWMNNM,1,1) || '**' || SUBSTR(G.SRA_MWMNNM,4,1)  
 					WHEN LENGTH(G.SRA_MWMNNM) >= 5 THEN SUBSTR(G.SRA_MWMNNM,1,2) || '**' || SUBSTR(G.SRA_MWMNNM,5,1)  END AS SRA_MWMNNM  /* 낙찰자명마스킹	*/
 			 , C.LVST_AUC_PTC_MN_NO
-			 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN A.LOWS_SBID_LMT_AM / #{calf_auc_atdr_unt_am}
-					WHEN A.AUC_OBJ_DSC = '2' THEN A.LOWS_SBID_LMT_AM / #{nbfct_auc_atdr_unt_am}
-					WHEN A.AUC_OBJ_DSC = '3' THEN A.LOWS_SBID_LMT_AM / #{ppgcow_auc_atdr_unt_am}
-					ELSE A.LOWS_SBID_LMT_AM END AS LOWS_SBID_LMT_AM
-			 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / #{calf_auc_atdr_unt_am})
-					WHEN A.AUC_OBJ_DSC = '2' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / #{nbfct_auc_atdr_unt_am})
-					WHEN A.AUC_OBJ_DSC = '3' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / #{ppgcow_auc_atdr_unt_am})
-					ELSE C.ATDR_AM - A.LOWS_SBID_LMT_AM END AS DIF_AM
-			 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN C.ATDR_AM * #{calf_auc_atdr_unt_am}
+			 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN A.LOWS_SBID_LMT_AM / E.CALF_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '2' THEN A.LOWS_SBID_LMT_AM / E.NBFCT_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '3' THEN A.LOWS_SBID_LMT_AM / E.PPGCOW_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '5' THEN A.LOWS_SBID_LMT_AM / E.GT_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '6' THEN A.LOWS_SBID_LMT_AM / E.HS_AUC_ATDR_UNT_AM
+					ELSE A.LOWS_SBID_LMT_AM
+				END AS LOWS_SBID_LMT_AM
+			 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / E.CALF_AUC_ATDR_UNT_AM)
+					WHEN A.AUC_OBJ_DSC = '2' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / E.NBFCT_AUC_ATDR_UNT_AM)
+					WHEN A.AUC_OBJ_DSC = '3' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / E.PPGCOW_AUC_ATDR_UNT_AM)
+					WHEN A.AUC_OBJ_DSC = '5' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / E.GT_AUC_ATDR_UNT_AM)
+					WHEN A.AUC_OBJ_DSC = '6' THEN C.ATDR_AM - (LOWS_SBID_LMT_AM / E.HS_AUC_ATDR_UNT_AM)
+					ELSE C.ATDR_AM - A.LOWS_SBID_LMT_AM
+				END AS DIF_AM
+			 , CASE WHEN A.AUC_OBJ_DSC = '1' THEN C.ATDR_AM * E.CALF_AUC_ATDR_UNT_AM
 					WHEN A.AUC_OBJ_DSC = '2' 
 			<choose>
 				<when test='nbfct_auc_upr_dsc == "1" and mv_sqno_prc_dsc == "1"'>
-						THEN (FLOOR((C.ATDR_AM * A.COW_SOG_WT * #{nbfct_auc_atdr_unt_am}) / #{mv_cut_am})) * #{mv_cut_am}
+						THEN (FLOOR((C.ATDR_AM * A.COW_SOG_WT * E.NBFCT_AUC_ATDR_UNT_AM) / #{mv_cut_am})) * #{mv_cut_am}
 				</when>
 				<when test='nbfct_auc_upr_dsc == "1" and mv_sqno_prc_dsc == "2"'>
-						THEN (CEIL((C.ATDR_AM * A.COW_SOG_WT * #{nbfct_auc_atdr_unt_am}) / #{mv_cut_am})) * #{mv_cut_am}
+						THEN (CEIL((C.ATDR_AM * A.COW_SOG_WT * E.NBFCT_AUC_ATDR_UNT_AM) / #{mv_cut_am})) * #{mv_cut_am}
 				</when>
-				<when test='nbfct_auc_upr_dsc == "1" and mv_sqno_prc_dsc == "2"'>
-						THEN (ROUND((C.ATDR_AM * A.COW_SOG_WT * #{nbfct_auc_atdr_unt_am}) / #{mv_cut_am})) * #{mv_cut_am}
+				<when test='nbfct_auc_upr_dsc == "1" and mv_sqno_prc_dsc == "3"'>
+						THEN (ROUND((C.ATDR_AM * A.COW_SOG_WT * E.NBFCT_AUC_ATDR_UNT_AM) / #{mv_cut_am})) * #{mv_cut_am}
 				</when>
 				<when test='nbfct_auc_upr_dsc == "2"'>
-						THEN C.ATDR_AM * #{nbfct_auc_atdr_unt_am}
+						THEN C.ATDR_AM * E.NBFCT_AUC_ATDR_UNT_AM
 				</when>
 			</choose>
-				WHEN A.AUC_OBJ_DSC = '3' THEN C.ATDR_AM * #{ppgcow_auc_atdr_unt_am} END AS SRA_SBID_AM
+					WHEN A.AUC_OBJ_DSC = '3' THEN C.ATDR_AM * E.PPGCOW_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '5' THEN C.ATDR_AM * E.GT_AUC_ATDR_UNT_AM
+					WHEN A.AUC_OBJ_DSC = '6' THEN C.ATDR_AM * E.HS_AUC_ATDR_UNT_AM
+				END AS SRA_SBID_AM
 		  FROM TB_LA_IS_MH_SOG_COW  A
 			 , TB_LA_IS_MM_FHS      B
 			 , (
@@ -742,10 +794,13 @@
 										   AND A.AUC_DT      = #{auc_dt}
 										<choose>
 										<when test='"4".equals(auc_obj_dsc)'>
-										   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+											AND A.AUC_OBJ_DSC IN ('2', '3')
 										</when>
 										<otherwise>
-										   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+											AND (
+												(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+												OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+											)
 										</otherwise>
 										</choose>
 										 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO, A.TRMN_AMNNO
@@ -784,10 +839,13 @@
 												   AND A.AUC_DT      = #{auc_dt}
 												<choose>
 												<when test='"4".equals(auc_obj_dsc)'>
-												   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+													AND A.AUC_OBJ_DSC IN ('2', '3')
 												</when>
 												<otherwise>
-												   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+													AND (
+														(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+														OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+													)
 												</otherwise>
 												</choose>
 												 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO, A.TRMN_AMNNO
@@ -836,10 +894,13 @@
 										   AND A.AUC_DT      = #{auc_dt}
 										<choose>
 										<when test='"4".equals(auc_obj_dsc)'>
-										   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+											AND A.AUC_OBJ_DSC IN ('2', '3')
 										</when>
 										<otherwise>
-										   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+											AND (
+												(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+												OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+											)
 										</otherwise>
 										</choose>
 										 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO, A.TRMN_AMNNO
@@ -878,10 +939,13 @@
 												   AND A.AUC_DT      = #{auc_dt}
 												<choose>
 												<when test='"4".equals(auc_obj_dsc)'>
-												   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+													AND A.AUC_OBJ_DSC IN ('2', '3')
 												</when>
 												<otherwise>
-												   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+													AND (
+														(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+														OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+													)
 												</otherwise>
 												</choose>
 												 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO, A.TRMN_AMNNO
@@ -913,13 +977,17 @@
 		  LEFT OUTER JOIN TB_LA_IS_MM_MWMN  G
 			ON ( C.NA_BZPLC     = G.NA_BZPLC AND  C.TRMN_AMNNO   = G.TRMN_AMNNO )
 			 , TB_LA_IS_MM_INDV     D
+			 , TB_LA_IS_MM_ENV_EST  E
 		 WHERE A.NA_BZPLC            = #{ss_na_bzplc}
 		<choose>
 		<when test='"4".equals(auc_obj_dsc)'>
-		   AND A.AUC_OBJ_DSC <![CDATA[<>]]> '1'
+			AND A.AUC_OBJ_DSC IN ('2', '3')
 		</when>
 		<otherwise>
-		   AND A.AUC_OBJ_DSC = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+			AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)
 		</otherwise>
 		</choose>
 		   AND A.AUC_DT              = #{auc_dt}
@@ -938,11 +1006,11 @@
 		   AND A.SRA_INDV_AMNNO      = D.SRA_INDV_AMNNO
 		   AND A.SRA_SRS_DSC         = D.SRA_SRS_DSC
 		   AND A.DDL_QCN		     = #{ddl_qcn}
+		   AND A.NA_BZPLC            = E.NA_BZPLC
 		 ORDER BY A.AUC_PRG_SQ
     </select>
     
     <select id="LALM0314_selAucQcnList" resultType="hashMap">
-    <![CDATA[
         SELECT
 			NA_BZPLC		  			/* 경제통합사업장코드          */
 		 , AUC_OBJ_DSC	  				/* 경매대상구분코드            */
@@ -956,9 +1024,12 @@
 		FROM TB_LA_IS_MH_AUC_QCN
 		WHERE NA_BZPLC     =  #{ss_na_bzplc}	  /* 경제통합사업장코드          */
 	    AND AUC_DT         =  #{auc_dt}           /* 경매일자                 */
-	]]>
-	<if test='auc_obj_dsc != null and auc_obj_dsc != "" and auc_obj_dsc != 0'>
-		AND AUC_OBJ_DSC    =  #{auc_obj_dsc}      /* 경매대상                 */
+	<if test='auc_obj_dsc != null and auc_obj_dsc != ""'>
+		<!-- AND AUC_OBJ_DSC    =  #{auc_obj_dsc}      /* 경매대상                 */ -->
+		AND (
+			(#{auc_obj_dsc} = '0' AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+			OR (#{auc_obj_dsc} != '0' AND AUC_OBJ_DSC = #{auc_obj_dsc})
+		)
 	</if>
     </select>
     

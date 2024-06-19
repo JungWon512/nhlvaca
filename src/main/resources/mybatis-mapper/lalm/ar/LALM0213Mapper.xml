@@ -6,8 +6,7 @@
 <mapper namespace="com.auc.lalm.ar.service.Impl.LALM0213Mapper">
 
     <select id="LALM0213_selList" resultType="hashMap">
-    <![CDATA[
-         SELECT
+      SELECT
           A.NA_BZPLC										/* 경제통합사업장코드		*/
         , A.AUC_DT											/* 경매일자			*/
         , A.AUC_OBJ_DSC										/* 경매대상구분코드		*/
@@ -46,31 +45,26 @@
         	   ELSE '******' END AS HD_DONGBW								/* 동이하마스킹주소		*/
         , C.QCN
         , B.SMS_NO
-        
-    FROM TB_LA_IS_MH_AUC_ENTR A
-       , TB_LA_IS_MM_MWMN B
-       , TB_LA_IS_MH_AUC_QCN C
-    WHERE A.NA_BZPLC             = #{ss_na_bzplc}			/* 경제통합사업장코드		*/
-      AND A.AUC_DT               = #{auc_dt}				/* 경매일자			*/
-      AND A.AUC_OBJ_DSC          = #{cb_auc_obj_dsc}		/* 경매대상구분코드		*/
-      AND A.DEL_YN               = '0'						/* 삭제여부			*/
-      AND A.NA_BZPLC             = B.NA_BZPLC				/* 경제통합사업장코드		*/
-      AND A.TRMN_AMNNO           = B.TRMN_AMNNO				/* 중도매인번호			*/
-      AND A.NA_BZPLC             = C.NA_BZPLC
-      AND A.AUC_OBJ_DSC          = C.AUC_OBJ_DSC
-      AND A.AUC_DT               = C.AUC_DT
-    ]]>
+      FROM TB_LA_IS_MH_AUC_ENTR A
+        , TB_LA_IS_MM_MWMN B
+        , TB_LA_IS_MH_AUC_QCN C
+      WHERE A.NA_BZPLC             = #{ss_na_bzplc}			/* 경제통합사업장코드		*/
+        AND A.AUC_DT               = #{auc_dt}				/* 경매일자			*/
+        AND A.AUC_OBJ_DSC          = #{cb_auc_obj_dsc}		/* 경매대상구분코드		*/
+        AND A.DEL_YN               = '0'						/* 삭제여부			*/
+        AND A.NA_BZPLC             = B.NA_BZPLC				/* 경제통합사업장코드		*/
+        AND A.TRMN_AMNNO           = B.TRMN_AMNNO				/* 중도매인번호			*/
+        AND A.NA_BZPLC             = C.NA_BZPLC
+        AND A.AUC_OBJ_DSC          = C.AUC_OBJ_DSC
+        AND A.AUC_DT               = C.AUC_DT
       <if test='lvst_auc_ptc_mn_no1 != null and lvst_auc_ptc_mn_no1 != ""'>
-      AND A.LVST_AUC_PTC_MN_NO   = #{lvst_auc_ptc_mn_no1}	/* 참가번호			*/
+        AND A.LVST_AUC_PTC_MN_NO   = #{lvst_auc_ptc_mn_no1}	/* 참가번호			*/
       </if>
-    <![CDATA[
-    ORDER BY TO_NUMBER(A.LVST_AUC_PTC_MN_NO) DESC
-    ]]>
+      ORDER BY TO_NUMBER(A.LVST_AUC_PTC_MN_NO) DESC
     </select>
     
     <select id="LALM0213_selSraList" resultType="hashMap">
-    <![CDATA[
-         SELECT
+      SELECT
           A.NA_BZPLC										/* 경제통합사업장코드		*/
         , A.AUC_DT											/* 경매일자			*/
         , A.AUC_OBJ_DSC										/* 경매대상구분코드		*/
@@ -95,31 +89,27 @@
         , C.QCN                                             /* 차수				*/
         , A.ATTC_NO											/* 인증번호			*/
         , B.SMS_NO
-        
-    FROM TB_LA_IS_MH_AUC_ENTR A
-       , TB_LA_IS_MM_MWMN B
-       , TB_LA_IS_MH_AUC_QCN C
-    WHERE A.NA_BZPLC             = #{ss_na_bzplc}			/* 경제통합사업장코드		*/
-      AND A.AUC_DT               = #{auc_dt}				/* 경매일자			*/
-      AND A.AUC_OBJ_DSC          = #{auc_obj_dsc}			/* 경매대상구분코드		*/
-      AND A.DEL_YN               = '0'						/* 삭제여부			*/
-      AND A.NA_BZPLC             = B.NA_BZPLC				/* 경제통합사업장코드		*/
-      AND A.TRMN_AMNNO           = B.TRMN_AMNNO				/* 중도매인번호			*/
-      AND A.NA_BZPLC             = C.NA_BZPLC
-      AND A.AUC_OBJ_DSC          = C.AUC_OBJ_DSC
-      AND A.AUC_DT               = C.AUC_DT
-    ]]>
+      FROM TB_LA_IS_MH_AUC_ENTR A
+        , TB_LA_IS_MM_MWMN B
+        , TB_LA_IS_MH_AUC_QCN C
+      WHERE A.NA_BZPLC             = #{ss_na_bzplc}			/* 경제통합사업장코드		*/
+        AND A.AUC_DT               = #{auc_dt}				/* 경매일자			*/
+        AND A.AUC_OBJ_DSC          = #{auc_obj_dsc}			/* 경매대상구분코드		*/
+        AND A.DEL_YN               = '0'						/* 삭제여부			*/
+        AND A.NA_BZPLC             = B.NA_BZPLC				/* 경제통합사업장코드		*/
+        AND A.TRMN_AMNNO           = B.TRMN_AMNNO				/* 중도매인번호			*/
+        AND A.NA_BZPLC             = C.NA_BZPLC
+        AND A.AUC_OBJ_DSC          = C.AUC_OBJ_DSC
+        AND A.AUC_DT               = C.AUC_DT
       <if test='lvst_auc_ptc_mn_no != null and lvst_auc_ptc_mn_no != ""'>
-      AND A.LVST_AUC_PTC_MN_NO   = #{lvst_auc_ptc_mn_no}	/* 참가번호			*/
+        AND A.LVST_AUC_PTC_MN_NO   = #{lvst_auc_ptc_mn_no}	/* 참가번호			*/
       </if>
-    <![CDATA[
-    ORDER BY A.LVST_AUC_PTC_MN_NO
-    ]]>
+      ORDER BY A.LVST_AUC_PTC_MN_NO
     </select>
     
     <select id="LALM0213_selBadTrmn" resultType="hashMap">
     	/*LALM0213Mapper.LALM0213_selBadTrmn_20221027_수정*/
-		SELECT
+		  SELECT
 	          ENT.NA_BZPLC              /* 경제통합사업장코드       */
 	        , ENT.AUC_DT				/* 경매일자 */
 	        , ENT.AUC_OBJ_DSC			/* 경매대상구분코드 */
@@ -140,17 +130,17 @@
 	        , NVL(BLK.AUC_PART_LIMIT_YN, '1') AS AUC_PART_LIMIT_YN   /* 거래허용여부             */
 	        , LOC.CLNTNM             /* 경제통합사업장명         */
 	        , BLK.REG_REASON         /* 사고등록사유내용         */
-			, BLK.FSRG_DTM              /* 최초등록일시             */
-			, BLK.FSRGMN_ENO            /* 최초등록자개인번호       */
-			, BLK.LSCHG_DTM             /* 최종변경일시             */
-			, BLK.LS_CMENO              /* 최종변경자개인번호       */
-			, BLK.LIMIT_DATE			/* 거래제한일자 */
-			, CASE WHEN #{ss_security} = '1' THEN USR.USRNM
-                ELSE SUBSTR(USR.USRNM,1,1) || LPAD('*',LENGTH(USR.USRNM)-2, '*') || SUBSTR(USR.USRNM, LENGTH(USR.USRNM), 1) 
-              END USRNM			/* 등록자명 */
-			, CASE WHEN #{ss_security} = '1' THEN USR.MPNO
-				ELSE REGEXP_REPLACE(USR.MPNO, '(.{3})(.*)(.{4})', '\1-****-\3')
-			  END MPNO			/* 등록자 전화번호 */
+          , BLK.FSRG_DTM              /* 최초등록일시             */
+          , BLK.FSRGMN_ENO            /* 최초등록자개인번호       */
+          , BLK.LSCHG_DTM             /* 최종변경일시             */
+          , BLK.LS_CMENO              /* 최종변경자개인번호       */
+          , BLK.LIMIT_DATE			/* 거래제한일자 */
+          , CASE WHEN #{ss_security} = '1' THEN USR.USRNM
+                    ELSE SUBSTR(USR.USRNM,1,1) || LPAD('*',LENGTH(USR.USRNM)-2, '*') || SUBSTR(USR.USRNM, LENGTH(USR.USRNM), 1) 
+                  END USRNM			/* 등록자명 */
+          , CASE WHEN #{ss_security} = '1' THEN USR.MPNO
+            ELSE REGEXP_REPLACE(USR.MPNO, '(.{3})(.*)(.{4})', '\1-****-\3')
+            END MPNO			/* 등록자 전화번호 */
 	    FROM TB_LA_IS_MH_AUC_ENTR ENT
 	    	INNER JOIN TB_LA_IS_MM_MWMN MWN
 	    	ON(
@@ -170,19 +160,18 @@
 	    WHERE ENT.NA_BZPLC = #{ss_na_bzplc}			/* 경제통합사업장코드		*/
 	    	AND ENT.AUC_DT = #{auc_dt}				/* 경매일자			*/
 	    	AND ENT.AUC_OBJ_DSC = #{cb_auc_obj_dsc}			/* 경매대상구분코드		*/
-	    	<if test='lvst_auc_ptc_mn_no1 != null and lvst_auc_ptc_mn_no1 != ""'>
-	      	AND ENT.LVST_AUC_PTC_MN_NO   = #{lvst_auc_ptc_mn_no1}	/* 참가번호			*/
-	      	</if>
-	      	<if test='trmn_amnno != null and trmn_amnno != ""'>
-	      	AND ENT.TRMN_AMNNO = #{trmn_amnno}	/* 중도매인 코드 */
-	      	</if>
+      <if test='lvst_auc_ptc_mn_no1 != null and lvst_auc_ptc_mn_no1 != ""'>
+        AND ENT.LVST_AUC_PTC_MN_NO   = #{lvst_auc_ptc_mn_no1}	/* 참가번호			*/
+      </if>
+      <if test='trmn_amnno != null and trmn_amnno != ""'>
+        AND ENT.TRMN_AMNNO = #{trmn_amnno}	/* 중도매인 코드 */
+      </if>
 	    ORDER BY BLK.LIMIT_DATE DESC, BLK.REG_DATE DESC 
-
     </select>
     
     <select id="LALM0213_selBadCheck" resultType="hashMap">
     	/*LALM0213Mapper.LALM0213_selBadCheck_20221028_수정*/
-    		SELECT A.MB_INTG_NO
+    	SELECT A.MB_INTG_NO
 					, MAX(B.CLNTNM) KEEP(DENSE_RANK LAST ORDER BY A.LSCHG_DTM) AS CLNTNM
               		, NVL(MIN(DECODE(A.NA_BZPLC, #{ss_na_bzplc}, A.AUC_PART_LIMIT_YN, '1') ), '99') AS AUC_PART_LIMIT_YN /*경매참여제한여부, 1:가능, 0:불가능, 99:불량미등록 중도매인*/
               		, (CASE WHEN COUNT(*)-1 = 0 THEN 0 ELSE COUNT(*)-1 END ) AS BLACK_CNT
@@ -198,91 +187,94 @@
     	/*LALM0213Mapper.LALM0213_selBadCheckMwmn_20230213_수정*/
    		SELECT A.NA_BZPLC 
    				, A.TRMN_AMNNO 
-				, MAX(B.CLNTNM) KEEP(DENSE_RANK LAST ORDER BY A.LSCHG_DTM) AS CLNTNM
-           		, NVL(MIN(DECODE(A.NA_BZPLC, #{ss_na_bzplc}, A.AUC_PART_LIMIT_YN, '1') ), '99') AS AUC_PART_LIMIT_YN /*경매참여제한여부, 1:가능, 0:불가능, 99:불량미등록 중도매인*/
-           		, (CASE WHEN COUNT(*)-1 = 0 THEN 0 ELSE COUNT(*)-1 END ) AS BLACK_CNT
-		FROM TB_LA_IS_MM_BLACKLIST A
-		INNER JOIN TB_LA_IS_BM_BZLOC B ON A.NA_BZPLC = B.NA_BZPLC
-	    WHERE A.NA_BZPLC = #{ss_na_bzplc}	
-	    	AND A.TRMN_AMNNO = #{trmn_amnno}
-			AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN A.REG_DATE AND A.LIMIT_DATE 
-			AND A.DEL_YN = '0'
-		GROUP BY A.NA_BZPLC 
-   				, A.TRMN_AMNNO 
+				  , MAX(B.CLNTNM) KEEP(DENSE_RANK LAST ORDER BY A.LSCHG_DTM) AS CLNTNM
+       		, NVL(MIN(DECODE(A.NA_BZPLC, #{ss_na_bzplc}, A.AUC_PART_LIMIT_YN, '1') ), '99') AS AUC_PART_LIMIT_YN /*경매참여제한여부, 1:가능, 0:불가능, 99:불량미등록 중도매인*/
+          , (CASE WHEN COUNT(*)-1 = 0 THEN 0 ELSE COUNT(*)-1 END ) AS BLACK_CNT
+      FROM TB_LA_IS_MM_BLACKLIST A
+      INNER JOIN TB_LA_IS_BM_BZLOC B ON A.NA_BZPLC = B.NA_BZPLC
+        WHERE A.NA_BZPLC = #{ss_na_bzplc}	
+          AND A.TRMN_AMNNO = #{trmn_amnno}
+        AND TO_CHAR(SYSDATE, 'YYYYMMDD') BETWEEN A.REG_DATE AND A.LIMIT_DATE 
+        AND A.DEL_YN = '0'
+      GROUP BY A.NA_BZPLC 
+            , A.TRMN_AMNNO 
     </select>
     
     <select id="LALM0213_selTrmnAmnNo" resultType="hashMap">
-         SELECT
-            COUNT(*) AS CNT
-           FROM  TB_LA_IS_MH_AUC_ENTR
-          WHERE NA_BZPLC         = #{ss_na_bzplc}
-            AND AUC_DT           = #{auc_date}
-            AND TRMN_AMNNO       = #{trmn_amnno}
-            <if test="lvst_auc_ptc_mn_no != null and lvst_auc_ptc_mn_no != ''">
-            	AND LVST_AUC_PTC_MN_NO   != #{lvst_auc_ptc_mn_no}
-            </if>
+      SELECT
+        COUNT(*) AS CNT
+        FROM  TB_LA_IS_MH_AUC_ENTR
+      WHERE NA_BZPLC         = #{ss_na_bzplc}
+        AND AUC_DT           = #{auc_date}
+        AND TRMN_AMNNO       = #{trmn_amnno}
+        <!-- 경매대상 구분없이 경매당일의 참가번호 중복을 없도록 하려면 아래 조건 지울것-->
+        AND (
+          (#{hd_auc_obj_dsc} IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC IN ( '0', '1', '2', '3' ))
+          OR
+          (#{hd_auc_obj_dsc} NOT IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC = #{hd_auc_obj_dsc})
+        )
     </select>
     
     <select id="LALM0213_selAucPtcMnNo" resultType="hashMap">
-    <![CDATA[
-         SELECT
-            COUNT(*) AS CNT
-           FROM  TB_LA_IS_MH_AUC_ENTR
-          WHERE NA_BZPLC             = #{ss_na_bzplc}
-            AND AUC_DT               = #{auc_date}
-            AND LVST_AUC_PTC_MN_NO   = #{lvst_auc_ptc_mn_no}
-    ]]>
+      SELECT
+        COUNT(*) AS CNT
+        FROM  TB_LA_IS_MH_AUC_ENTR
+      WHERE NA_BZPLC             = #{ss_na_bzplc}
+        AND AUC_DT               = #{auc_date}
+        AND LVST_AUC_PTC_MN_NO   = #{lvst_auc_ptc_mn_no}
+        <!-- 경매대상 구분없이 경매당일의 참가번호 중복을 없도록 하려면 아래 조건 지울것-->
+        AND (
+          (#{hd_auc_obj_dsc} IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC IN ( '0', '1', '2', '3' ))
+          OR
+          (#{hd_auc_obj_dsc} NOT IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC = #{hd_auc_obj_dsc})
+        )
     </select>
     
     <select id="LALM0213_selSraCount" resultType="hashMap">
-    <![CDATA[
-         SELECT
-            COUNT(*) AS CNT
-           FROM  TB_LA_IS_MH_SOG_COW
-          WHERE NA_BZPLC     = #{ss_na_bzplc}
-            AND AUC_DT       = #{auc_date}
-            AND TRMN_AMNNO   = #{trmn_amnno}
-    ]]>
+      SELECT
+        COUNT(*) AS CNT
+        FROM  TB_LA_IS_MH_SOG_COW
+      WHERE NA_BZPLC     = #{ss_na_bzplc}
+        AND AUC_DT       = #{auc_date}
+        AND TRMN_AMNNO   = #{trmn_amnno}
+        AND SRA_SRS_DSC  = #{sra_srs_dsc}
     </select>
     
     <insert id="LALM0213_insPgm">
-    <![CDATA[
-        INSERT INTO TB_LA_IS_MH_AUC_ENTR(
-              NA_BZPLC									/* 경제통합사업장코드			*/
-            , AUC_OBJ_DSC								/* 경매대상구분코드			*/
-            , AUC_DT									/* 경매일자				*/
-            , LVST_AUC_PTC_MN_NO						/* 참가번호				*/
-            , TRMN_AMNNO								/* 중도매인번호				*/
-            , TR_DFN_YN									/* 거래확정				*/
-            , AUC_ENTR_GRN_AM							/* 경매참가보증금액			*/
-            , RTRN_YN									/* 응찰기반납				*/
-            , TMS_YN									/* 전송여부				*/
-            , DEL_YN									/* 삭제여부				*/
-            , FSRG_DTM									/* 최초등록일시				*/
-            , FSRGMN_ENO								/* 최초등록자개인번호			*/
-            , LSCHG_DTM									/* 최종변경일시				*/
-            , LS_CMENO									/* 최종변경자개인번호			*/
-        )VALUES(
-              #{ss_na_bzplc}							/* 경제통합사업장코드			*/
-            , #{hd_auc_obj_dsc}							/* 경매대상구분코드			*/
-            , #{auc_date}								/* 경매일자				*/
-            , #{lvst_auc_ptc_mn_no}						/* 참가번호				*/
-            , #{trmn_amnno}								/* 중도매인번호				*/
-            , #{hd_tr_dfn_yn}							/* 거래확정				*/
-            , #{auc_entr_grn_am}						/* 경매참가보증금액			*/
-            , #{hd_rtrn_yn}								/* 응찰기반납				*/
-            , '0'										/* 전송여부				*/
-            , '0'										/* 삭제여부				*/
-            , SYSDATE									/* 최초등록일시				*/
-            , #{ss_userid}								/* 최초등록자개인번호			*/
-            , SYSDATE									/* 최종변경일시				*/
-            , #{ss_userid}								/* 최종변경자				*/
-        )
-    ]]>
+      INSERT INTO TB_LA_IS_MH_AUC_ENTR(
+            NA_BZPLC									/* 경제통합사업장코드			*/
+          , AUC_OBJ_DSC								/* 경매대상구분코드			*/
+          , AUC_DT									/* 경매일자				*/
+          , LVST_AUC_PTC_MN_NO						/* 참가번호				*/
+          , TRMN_AMNNO								/* 중도매인번호				*/
+          , TR_DFN_YN									/* 거래확정				*/
+          , AUC_ENTR_GRN_AM							/* 경매참가보증금액			*/
+          , RTRN_YN									/* 응찰기반납				*/
+          , TMS_YN									/* 전송여부				*/
+          , DEL_YN									/* 삭제여부				*/
+          , FSRG_DTM									/* 최초등록일시				*/
+          , FSRGMN_ENO								/* 최초등록자개인번호			*/
+          , LSCHG_DTM									/* 최종변경일시				*/
+          , LS_CMENO									/* 최종변경자개인번호			*/
+      )VALUES(
+            #{ss_na_bzplc}							/* 경제통합사업장코드			*/
+          , #{hd_auc_obj_dsc}							/* 경매대상구분코드			*/
+          , #{auc_date}								/* 경매일자				*/
+          , #{lvst_auc_ptc_mn_no}						/* 참가번호				*/
+          , #{trmn_amnno}								/* 중도매인번호				*/
+          , #{hd_tr_dfn_yn}							/* 거래확정				*/
+          , #{auc_entr_grn_am}						/* 경매참가보증금액			*/
+          , #{hd_rtrn_yn}								/* 응찰기반납				*/
+          , '0'										/* 전송여부				*/
+          , '0'										/* 삭제여부				*/
+          , SYSDATE									/* 최초등록일시				*/
+          , #{ss_userid}								/* 최초등록자개인번호			*/
+          , SYSDATE									/* 최종변경일시				*/
+          , #{ss_userid}								/* 최종변경자				*/
+      )
     </insert>
     
     <insert id="LALM0213_insCalfPgm">
-    <![CDATA[
         INSERT INTO TB_LA_IS_MH_AUC_ENTR(
               NA_BZPLC									/* 경제통합사업장코드			*/
             , AUC_OBJ_DSC								/* 경매대상구분코드			*/
@@ -314,11 +306,9 @@
             , SYSDATE									/* 최종변경일시				*/
             , #{ss_userid}								/* 최종변경자				*/
         )
-    ]]>
     </insert>
     
     <insert id="LALM0213_insMartPgm">
-    <![CDATA[
         INSERT INTO TB_LA_IS_MH_AUC_ENTR(
               NA_BZPLC									/* 경제통합사업장코드			*/
             , AUC_OBJ_DSC								/* 경매대상구분코드			*/
@@ -350,11 +340,9 @@
             , SYSDATE									/* 최종변경일시				*/
             , #{ss_userid}								/* 최종변경자				*/
         )
-    ]]>
     </insert>
     
     <insert id="LALM0213_insBreedingPgm">
-    <![CDATA[
         INSERT INTO TB_LA_IS_MH_AUC_ENTR(
               NA_BZPLC									/* 경제통합사업장코드			*/
             , AUC_OBJ_DSC								/* 경매대상구분코드			*/
@@ -386,11 +374,9 @@
             , SYSDATE									/* 최종변경일시				*/
             , #{ss_userid}								/* 최종변경자				*/
         )
-    ]]>
     </insert>
     
     <update id="LALM0213_updPgm">
-    <![CDATA[
          UPDATE TB_LA_IS_MH_AUC_ENTR SET
               TRMN_AMNNO            = #{trmn_amnno}					/* 중도매인번호			*/
             , TR_DFN_YN             = #{hd_tr_dfn_yn}				/* 거래확정			*/
@@ -403,17 +389,14 @@
           AND AUC_OBJ_DSC           = #{hd_auc_obj_dsc}				/* 경매대상구분코드		*/
           AND AUC_DT                = #{auc_date}					/* 경매일자			*/
           AND LVST_AUC_PTC_MN_NO    = #{lvst_auc_ptc_mn_no}			/* 참가번호			*/
-    ]]>
     </update>
     
     <delete id="LALM0213_delPgm">
-    <![CDATA[
         DELETE FROM TB_LA_IS_MH_AUC_ENTR
 		    WHERE NA_BZPLC               = #{ss_na_bzplc}				/* 경제통합사업장코드		*/
 		      AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}			/* 경매대상구분코드		*/
 		      AND AUC_DT                 = #{auc_date}					/* 경매일자			*/
 		      AND LVST_AUC_PTC_MN_NO     = #{lvst_auc_ptc_mn_no}		/* 참가번호			*/
-    ]]>
     </delete>
     
 	<insert id="LALM0213_insAllPgm">
@@ -452,6 +435,11 @@
 		  FROM TB_LA_IS_MH_AUC_QCN
 		 WHERE NA_BZPLC = #{ss_na_bzplc}
 		   AND AUC_DT = #{auc_date}
+       AND (
+          (#{hd_auc_obj_dsc} IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC IN ( '0', '1', '2', '3' ))
+          OR
+          (#{hd_auc_obj_dsc} NOT IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC = #{hd_auc_obj_dsc})
+        )
 	</insert>
 	
 	<delete id="LALM0213_delAllPgm">
@@ -459,6 +447,11 @@
 		 WHERE NA_BZPLC               = #{ss_na_bzplc}				/* 경제통합사업장코드		*/
 		   AND AUC_DT                 = #{auc_date}					/* 경매일자			*/
 		   AND LVST_AUC_PTC_MN_NO     = #{lvst_auc_ptc_mn_no}		/* 참가번호			*/
+       AND (
+          (#{hd_auc_obj_dsc} IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC IN ( '0', '1', '2', '3' ))
+          OR
+          (#{hd_auc_obj_dsc} NOT IN ( '0', '1', '2', '3' ) AND AUC_OBJ_DSC = #{hd_auc_obj_dsc})
+        )
 	</delete>
 	
 </mapper>

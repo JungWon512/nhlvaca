@@ -591,7 +591,7 @@
                 
                 fn_DisableFrm('frm_MhAucQcn', false);
                 
-                if(sel_data.AUC_OBJ_DSC == "1" || sel_data.AUC_OBJ_DSC == "3") {
+                if(sel_data.AUC_OBJ_DSC == "1" || sel_data.AUC_OBJ_DSC == "3" || sel_data.AUC_OBJ_DSC == "5") {
                 	fn_DisableCut(false, true);
                 }
                 
@@ -642,7 +642,7 @@
 	}
 	
 	//**************************************
-	//function  : fn_DisableCut(경매대상, 경매일자 초기화 및 Disable) 
+	//function  : fn_DisableAuc(경매대상, 경매일자 초기화 및 Disable) 
 	//paramater : p_boolean(disable) ex) true 
 	// result   : N/A
 	//**************************************
@@ -668,7 +668,7 @@
 	}
 	
 	//**************************************
-	//function  : fn_DisableCut(경매차수 조회) 
+	//function  : fn_selMaxQcn(경매차수 조회) 
 	//paramater : p_boolean(disable) ex) true 
 	// result   : N/A
 	//**************************************

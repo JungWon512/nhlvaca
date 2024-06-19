@@ -1193,11 +1193,13 @@
         	var l_SRA_SEL_FEE 			= 0;
         	var l_SRA_ETC_CST 			= 0;
         	var l_AUC_ENTR_GRN_AM 		= 0;
+			var l_SNO      			    = 0;
 //         	var l_IO_AM_15 				= 0;
 //         	var l_SRA_RV_AM 			= 0;
 //         	var l_NOTPAY 				= 0;
         	
         	$.each(data, function(i){
+				
         		if(i != 0 && l_LVST_AUC_PTC_MN_NO != data[i].LVST_AUC_PTC_MN_NO) {
         			dataItem = new Object();
         			dataItem['LVST_AUC_PTC_MN_NO'] = "소계";
@@ -1220,13 +1222,24 @@
         			
         			data2.push(dataItem);
         		}
+
+				// 참가 보증금은 첫번째 로우에만 노출되도록 수정
+				if(i > 0) {
+					if(l_LVST_AUC_PTC_MN_NO == data[i].LVST_AUC_PTC_MN_NO) {
+						data[i].AUC_ENTR_GRN_AM = 0;
+					} else {
+						l_SNO = i;
+					}
+				}
         		
         		data2.push(data[i]);
         		l_LVST_AUC_PTC_MN_NO = data[i].LVST_AUC_PTC_MN_NO;
         		l_SRA_SBID_AM = parseInt(l_SRA_SBID_AM) + parseInt(data[i].SRA_SBID_AM);
         		l_SRA_SEL_FEE = parseInt(l_SRA_SEL_FEE) + parseInt(data[i].SRA_SEL_FEE);
         		l_SRA_ETC_CST = parseInt(l_SRA_ETC_CST) + parseInt(data[i].SRA_ETC_CST);
-        		l_AUC_ENTR_GRN_AM = parseInt(l_AUC_ENTR_GRN_AM) + parseInt(data[i].AUC_ENTR_GRN_AM);
+				l_AUC_ENTR_GRN_AM = parseInt(data[l_SNO].AUC_ENTR_GRN_AM);
+
+//        		l_AUC_ENTR_GRN_AM = parseInt(l_AUC_ENTR_GRN_AM) + parseInt(data[i].AUC_ENTR_GRN_AM);
 //         		l_IO_AM_15 = parseInt(l_IO_AM_15) + parseInt(data[i].IO_AM_15);
 //         		l_SRA_RV_AM = parseInt(l_SRA_RV_AM) + parseInt(data[i].SRA_RV_AM);
 //         		l_NOTPAY = parseInt(l_NOTPAY) + parseInt(data[i].NOTPAY);

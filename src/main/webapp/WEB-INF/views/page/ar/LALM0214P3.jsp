@@ -617,13 +617,19 @@
     	var result = null;
     	
         srchData["SRA_INDV_AMNNO"]   = p_sra_indv_amnno;
-        srchData["AUC_DT"]   = $('#auc_dt').val();
+        srchData["AUC_DT"]   = $('#auc_dt').val().replace(/[^0-9]/g,"");
+        if(boolMcow){
+			srchData["INDV_BLD_DSC"]   = "M";
+        }else{
+            srchData["INDV_BLD_DSC"]   = "0";        	
+        }
+        srchData["CHG_RMK_CNTN"]   = "LALM0214P3["+srchData["INDV_BLD_DSC"]+"]";
         
         results = sendAjax(srchData, "/LALM0899_selAiakRestApi", "POST");
         
         if(results.status == RETURN_SUCCESS) {        	
             result = setDecrypt(results);
-            if(arrNaBzplc.includes(na_bzplc)){
+            if(arrNaBzplc.includes(App_na_bzplc)){
 				if(boolMcow){
 					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_11', fn_isNum(result.EPD_VAL_1)?Number(result.EPD_VAL_1).toFixed(3):"");					
 					$('#grd_MmInsSogCow').jqGrid('setCell', rowid, 'RE_PRODUCT_12', fn_isNum(result.EPD_VAL_2)?Number(result.EPD_VAL_2).toFixed(3):"");

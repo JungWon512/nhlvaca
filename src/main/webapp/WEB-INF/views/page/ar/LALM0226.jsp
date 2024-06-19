@@ -796,7 +796,11 @@
 				else if(setRowStatus == "update") {
 					$("#chg_rmk_cntn").val("수정로그");
 					$("#chg_del_yn").val("0");
-					srchData["frm_MhSogCow"]	= setFrmToData("frm_MhSogCow");
+					var param = setFrmToData("frm_MhSogCow");
+					param["pre_auc_recv_dt"]	= $('#hdn_auc_recv_dt').val();
+					param["pre_auc_recv_no"]	= $('#hdn_auc_recv_no').val();
+					param["pre_auc_obj_dsc"]	= $('#hdn_auc_obj_dsc').val();
+					srchData["frm_MhSogCow"]	= param;
 					
 					result = sendAjax(srchData, "/LALM0226_updPgm", "POST");
 					
@@ -1606,7 +1610,12 @@
 		}
 		
 		srchData["re_indv_no"]	= p_sra_indv_amnno;
+		srchData["auc_obj_dsc"]	= $('#auc_obj_dsc').val();
 		srchData["auc_dt"]	= $('#auc_dt').val().replaceAll('-','');
+		srchData["auc_recv_dt"]	= $('#auc_recv_dt').val().replaceAll('-','');
+		srchData["pre_auc_recv_dt"]	= $('#hdn_auc_recv_dt').val();
+		srchData["pre_auc_recv_no"]	= $('#hdn_auc_recv_no').val();
+		srchData["pre_auc_obj_dsc"]	= $('#hdn_auc_obj_dsc').val();
 		
 		var results = sendAjax(srchData, "/LALM0226_selIndvChk", "POST");
 		var result;
@@ -1616,7 +1625,7 @@
 		}else if(results.status == RETURN_SUCCESS){
 			result = setDecrypt(results);
 
-			var message = "이미 등록된 개체가 있습니다. <br/>[접수일:" + result.AUC_RECV_DT + ", 접수번호:" + result.AUC_RECV_NO + ", 경매일:" +  result.AUC_DT + "] ";
+			var message = "이미 등록된 개체가 있습니다. <br/>[경매대상:" + result.AUC_OBJ_DSC_NM + ", 접수일:" + result.AUC_RECV_DT + ", 접수번호:" + result.AUC_RECV_NO + ", 경매일:" +  result.AUC_DT + "] ";
 			MessagePopup('OK',message,function(){
 				$('#auc_dt').val('');
 				$('#sra_indv_amnno').val('');

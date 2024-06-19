@@ -88,7 +88,7 @@ public class LALM0225ServiceImpl implements LALM0225Service{
 			map.put("re_indv_no", map.get("sra_indv_amnno"));
 			
 			//귀표번호 없을경우 CHK_VAILD_ERR 1로해서 RETURN
-			Map<String, Object> indvChkInfo = lalm0226Mapper.LALM0226_selIndvChk(map);			
+			Map<String, Object> indvChkInfo = lalm0225Mapper.LALM0225_selIndvChk(map);			
 			if(indvChkInfo == null) {
 				map.put("chk_vaild_err", "1");
 			}else {

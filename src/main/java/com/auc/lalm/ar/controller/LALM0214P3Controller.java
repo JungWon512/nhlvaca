@@ -84,10 +84,10 @@ public class LALM0214P3Controller {
 
 		Map<String,Object> tempMap = new HashMap<>();
 		tempMap.putAll(map);
-		tempMap.put("indvBldDsc", "0");
-		tempMap.put("chgPgid", "nhlvaca[0]");
+		tempMap.put("indv_bld_dsc", "0");
+		tempMap.put("chg_pg_id", "nhlvaca[0]");
 		tempMap.put("chg_rmk_cntn", map.get("chg_rmk_cntn"));
-		tempMap.put("chgIpAddr", mcaUtil.getClientIp(req));
+		tempMap.put("chg_ip_addr", mcaUtil.getClientIp(req));
 		Map<String, Object> inMap = lalm0214P3Service.LALM0214P3_selIndvSync(tempMap);
 		Map<String, Object> reMap = commonFunc.createResultSetListData((List<Map<String, Object>>)inMap.get("resultList"));
 		

@@ -26,8 +26,8 @@
 	          , A.SRA_SBID_AM                                      /* 축산낙찰금액                          */
 	          , A.SEL_STS_DSC                                      /* 판매상태구분코드                      */
 	          , A.BRCL_ISP_CTFW_SMT_YN                             /* 브루셀라검사증명서제출여부            */
-	          , A.BRCL_ISP_DT 									   /* 브루셀라검사일자                      */
-	          , DECODE(A.BRCL_ISP_RZT_C,'0','-','1','음성','양성') BRCL_ISP_RZT_C_NM 
+	          , A.BRCL_ISP_DT                                      /* 브루셀라검사일자                      */
+	          , DECODE(A.BRCL_ISP_RZT_C,'1','음성','2','양성','-') BRCL_ISP_RZT_C_NM 
 	          , A.LWPR_CHG_NT                                      /* 최저가변경횟수                        */
 	          , A.VACN_DT                                          /* 예방접종일자                          */
 	          , A.VACN_ORDER
@@ -142,6 +142,7 @@
 	          , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 <![CDATA[<= 4]]> AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434')
                      THEN 4 
                 ELSE TRUNC(MONTHS_BETWEEN(A.AUC_DT, D.BIRTH)) +1 END AS MTCN      /* 월령 의령=8808990656199  원주=8808990656434 */
+			  , H.INDV_SEX_C CALF_INDV_SEX_C	
 			  , H.BIRTH CALF_BIRTH
 	          , CASE WHEN TRUNC(MONTHS_BETWEEN(A.AUC_DT, H.BIRTH)) +1 <![CDATA[<= 4]]> AND A.NA_BZPLC NOT IN ('8808990656199', '8808990656434')
                      THEN 4 
@@ -174,11 +175,23 @@
 	          , TB_LA_IS_MM_INDV D
 	      WHERE A.NA_BZPLC            = #{ss_na_bzplc}
 	       AND A.AUC_DT               = #{auc_dt}
-        <if test='auc_obj_dsc != "0"'>
-           AND A.AUC_OBJ_DSC          = #{auc_obj_dsc}
-        </if>        
+        <choose>
+        <when test='!"0".equals(auc_obj_dsc)'>
+           AND A.AUC_OBJ_DSC = #{auc_obj_dsc}
+        </when>
+        <otherwise>
+           AND A.AUC_OBJ_DSC IN ( '1', '2', '3' )
+        </otherwise>
+        </choose>
         <if test='sra_indv_amnno != null and sra_indv_amnno != ""'>
-           AND A.SRA_INDV_AMNNO  LIKE '%'||#{sra_indv_amnno}||'_'
+        <choose>
+        <when test='!"01".equals(sra_srs_dsc)'>
+          AND A.SRA_INDV_AMNNO LIKE '%'||#{sra_indv_amnno}||'%'
+        </when>
+        <otherwise>
+          AND A.SRA_INDV_AMNNO LIKE '%'||#{sra_indv_amnno}||'_'
+        </otherwise>
+        </choose>
         </if>        
         <if test='fhs_id_no != null and fhs_id_no != ""'>        
            AND B.FHS_ID_NO            = #{fhs_id_no}
@@ -189,6 +202,7 @@
         <if test='auc_prg_sq != null and auc_prg_sq != ""'>
            AND A.AUC_PRG_SQ           = #{auc_prg_sq}
         </if>
+         AND A.SRA_SRS_DSC          = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
 	       AND A.LED_SQNO             = '1'
 	       AND A.DEL_YN               = '0'	
 	       AND B.NA_BZPLC             = A.NA_BZPLC
@@ -198,6 +212,7 @@
 	       AND A.NA_BZPLC             = D.NA_BZPLC
 	       AND A.SRA_INDV_AMNNO       = D.SRA_INDV_AMNNO
 	       AND A.SRA_SRS_DSC          = D.SRA_SRS_DSC
+         <!-- 기타 가축경매 추가시 영향도가 있어 축종구분 추가-->
 	     ORDER BY A.AUC_PRG_SQ
     </select>
     
@@ -274,10 +289,15 @@
               , TB_LA_IS_MM_FHS  B
           WHERE A.NA_BZPLC            = #{ss_na_bzplc}
            AND A.AUC_DT               = #{auc_dt}
-        <if test='auc_obj_dsc != "0"'>
-           AND A.AUC_OBJ_DSC          = #{auc_obj_dsc}
-        </if>    
-        
+        <choose>
+        <when test='!"0".equals(auc_obj_dsc)'>
+           AND A.AUC_OBJ_DSC = #{auc_obj_dsc}
+        </when>
+        <otherwise>
+           AND A.AUC_OBJ_DSC IN ( '1', '2', '3' )
+        </otherwise>
+        </choose>   
+           AND A.SRA_SRS_DSC          = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
            AND A.LED_SQNO             = '1'
            AND A.DEL_YN               = '0' 
            AND B.NA_BZPLC             = A.NA_BZPLC
@@ -286,10 +306,7 @@
          ORDER BY A.AUC_PRG_SQ
     </select>
     
-    
-    
     <select id="LALM0214_selCalfList" resultType="hashMap">
-    <![CDATA[
         SELECT A.NA_BZPLC                /* 경제통합사업장코드            */
              , A.AUC_OBJ_DSC             /* 경매대상구분코드              */
              , A.AUC_DT                  /* 경매일자                      */
@@ -312,11 +329,9 @@
            AND A.OSLP_NO     = #{oslp_no}
            AND A.DEL_YN      = '0'
          ORDER BY A.RG_SQNO
-    ]]>
     </select>
     
     <select id="LALM0214_selAucQcn" resultType="hashMap">
-    <![CDATA[
         SELECT NA_BZPLC                                               /* 경제통합사업장코드            */
              , AUC_OBJ_DSC                                            /* 경매대상구분코드              */
              , AUC_DT                                                 /* 경매일자                      */
@@ -329,7 +344,6 @@
           FROM TB_LA_IS_MH_AUC_QCN
          WHERE NA_BZPLC        = #{ss_na_bzplc}                       /* 경제통합사업장코드            */
            AND AUC_DT          = #{auc_dt}                            /* 경매일자                      */
-    ]]>
     </select>
     
     
@@ -339,23 +353,30 @@
          WHERE NA_BZPLC        = #{ss_na_bzplc}                       /* 경제통합사업장코드            */
            AND AUC_DT          = #{auc_dt}                            /* 경매일자                      */  
            AND (SEL_STS_DSC    = '22' OR  TMS_YN = '1')               /* 낙찰 또는 전송완료            */
-        <if test='auc_obj_dsc != "0"'>
-           AND AUC_OBJ_DSC     = #{auc_obj_dsc}
-        </if> 
+        <choose>
+        <when test='!"0".equals(auc_obj_dsc)'>
+           AND AUC_OBJ_DSC = #{auc_obj_dsc}
+        </when>
+        <otherwise>
+           AND AUC_OBJ_DSC IN ( '1', '2', '3' )
+        </otherwise>
+        </choose>
+           AND SRA_SRS_DSC    = NVL(#{sra_srs_dsc}, SRA_SRS_DSC)
     </select>
-    
-    
-    
     
     <select id="LALM0214_selFeeImps" resultType="hashMap">
         SELECT SUM(SRA_TR_FEE) AS FEE_SUM
           FROM TB_LA_IS_MH_FEE_IMPS
          WHERE NA_BZPLC    = #{ss_na_bzplc}
            AND AUC_DT      = #{auc_dt}
-        <if test='auc_obj_dsc != "0"'>
+        <choose>
+        <when test='!"0".equals(auc_obj_dsc)'>
            AND AUC_OBJ_DSC = #{auc_obj_dsc}
-        </if> 
-          
+        </when>
+        <otherwise>
+           AND AUC_OBJ_DSC IN ( '1', '2', '3' )
+        </otherwise>
+        </choose>
     </select>
         
     <update id="LALM0214_delCntnDel">
@@ -364,10 +385,15 @@
          WHERE NA_BZPLC      = #{ss_na_bzplc} 
            AND AUC_DT        = #{auc_dt}
            AND SEL_STS_DSC  != '22'
-        <if test='auc_obj_dsc != "0"'>
-           AND AUC_OBJ_DSC   = #{auc_obj_dsc}
-        </if> 
-           
+        <choose>
+        <when test='!"0".equals(auc_obj_dsc)'>
+           AND AUC_OBJ_DSC = #{auc_obj_dsc}
+        </when>
+        <otherwise>
+           AND AUC_OBJ_DSC IN ( '1', '2', '3' )
+        </otherwise>
+        </choose>
+           AND SRA_SRS_DSC    = NVL(#{sra_srs_dsc}, SRA_SRS_DSC)
     </update>
     
     <delete id="LALM0214_delSogCog">
@@ -391,9 +417,6 @@
            AND AUC_DT        = #{auc_dt}
            AND AUC_OBJ_DSC   = #{auc_obj_dsc}
     </delete>
-    
-    
-    
     
     <select id="LALM0214P1_selList" resultType="hashMap">
         SELECT
@@ -489,7 +512,8 @@
     
         WHERE A.NA_BZPLC       = #{ss_na_bzplc} 
           AND A.AUC_DT         = #{auc_dt}          
-          AND A.AUC_OBJ_DSC    = #{auc_obj_dsc} 
+          AND A.AUC_OBJ_DSC    = #{auc_obj_dsc}
+          AND A.SRA_SRS_DSC    = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
           AND A.LED_SQNO       = '1'
           AND A.DEL_YN         = '0'
         <if test='fhs_id_no != null and fhs_id_no != ""'>
@@ -526,9 +550,7 @@
 	        , A.LVST_AUC_PTC_MN_NO                   /* 가축경매참여자번호         */
 	        , A.SRA_SRS_DSC                          /* 축산축종구분코드           */
 	        , A.SRA_INDV_AMNNO                       /* 축산개체관리번호           */
-	        
-            , SUBSTR(A.SRA_INDV_AMNNO,11,4) AS SRA_INDV_AMNNO4                       /* 축산개체관리번호           */
-            
+          , SUBSTR(A.SRA_INDV_AMNNO,11,4) AS SRA_INDV_AMNNO4                       /* 축산개체관리번호           */
 	        , A.COW_SOG_WT                           /* 우출하중량                 */
 	        , A.FIR_LOWS_SBID_LMT_AM                 /* 최초최저낙찰한도금액       */
 	        , A.LOWS_SBID_LMT_AM                     /* 최저낙찰한도금액           */
@@ -539,17 +561,17 @@
 	        , A.BRCL_ISP_DT                          /* 브루셀라검사일자           */
 	        , A.LWPR_CHG_NT                          /* 최저가변경횟수             */
 	        , A.VACN_DT                              /* 예방접종일자               */
-            , A.LVST_MKT_TRPL_AMNNO                  /* 가축시장거래처관리번호     */
-            , A.LVST_MKT_TRPL_AMNNO AS V_LVST_MKT_TRPL_AMNNO /* 가축시장거래처관리번호     */
+          , A.LVST_MKT_TRPL_AMNNO                  /* 가축시장거래처관리번호     */
+          , A.LVST_MKT_TRPL_AMNNO AS V_LVST_MKT_TRPL_AMNNO /* 가축시장거래처관리번호     */
 	        , A.MT12_OVR_YN                          /* 12개월이상여부             */
 	        , A.PPGCOW_FEE_DSC                       /* 임신구분                   */
 	        , A.PRNY_JUG_YN                          /* 임신감정여부               */
 	        , A.PRNY_YN                              /* 임신여부                   */
 	        , A.NCSS_JUG_YN                          /* 괴사감정여부               */
 	        , A.NCSS_YN                              /* 괴사여부                   */
-            , A.PPGCOW_FEE_DSC  AS V_PPGCOW_FEE_DSC  /* 임신구분                   */
-            , A.PRNY_JUG_YN     AS V_PRNY_JUG_YN     /* 임신감정여부               */
-            , A.PRNY_YN         AS V_PRNY_YN         /* 임신여부                   */
+          , A.PPGCOW_FEE_DSC  AS V_PPGCOW_FEE_DSC  /* 임신구분                   */
+          , A.PRNY_JUG_YN     AS V_PRNY_JUG_YN     /* 임신감정여부               */
+          , A.PRNY_YN         AS V_PRNY_YN         /* 임신여부                   */
 	        , A.NCSS_JUG_YN     AS V_NCSS_JUG_YN     /* 괴사감정여부               */
 	        , A.NCSS_YN         AS V_NCSS_YN         /* 괴사여부                   */
 	        , A.TRPCS_PY_YN                          /* 운송비지급여부             */
@@ -557,9 +579,9 @@
 	        , A.SRA_PYIVA                            /* 축산납입출자금             */
 	        , A.SRA_FED_SPY_AM                       /* 축산사료공급금액           */
 	        , A.TD_RC_CST                            /* 당일접수비용               */
-            , A.AFISM_MOD_DT                         /* 인공수정일자               */
-            , A.AFISM_MOD_DT AS V_AFISM_MOD_DT       /* 인공수정일자               */
-            , CASE WHEN TRIM(A.AFISM_MOD_DT) IS NULL THEN '' ELSE TO_CHAR(TO_DATE(A.AFISM_MOD_DT,'YYYYMMDD')+ 285,'YYYYMMDD') END AS PTUR_PLA_DT /* 분만예정일  */
+          , A.AFISM_MOD_DT                         /* 인공수정일자               */
+          , A.AFISM_MOD_DT AS V_AFISM_MOD_DT       /* 인공수정일자               */
+          , CASE WHEN TRIM(A.AFISM_MOD_DT) IS NULL THEN '' ELSE TO_CHAR(TO_DATE(A.AFISM_MOD_DT,'YYYYMMDD')+ 285,'YYYYMMDD') END AS PTUR_PLA_DT /* 분만예정일  */
 	        , A.PRNY_MTCN                            /* 임신개월수                 */
 	        , A.PRNY_MTCN AS V_PRNY_MTCN             /* 임신개월수                 */
 	        , A.AFISM_MOD_CTFW_SMT_YN                /* 인공수정증명서제출여부     */
@@ -595,14 +617,13 @@
 	        , CASE WHEN (G.USRNM = '' OR G.USRNM IS NULL) THEN #{ss_userid}
 	               ELSE G.USRNM
 	          END AS USRNM                           /* 등록자                     */
-	          
-			, A.FEE_CHK_YN
-			, A.FEE_CHK_YN_FEE
-			, A.SELFEE_CHK_YN
-			, A.SELFEE_CHK_YN_FEE
-			, H.BRKR_NAME_HOST /* 거래병원명 */
-			, A.DNA_YN
-			, A.DNA_YN_CHK
+          , A.FEE_CHK_YN
+          , A.FEE_CHK_YN_FEE
+          , A.SELFEE_CHK_YN
+          , A.SELFEE_CHK_YN_FEE
+          , H.BRKR_NAME_HOST /* 거래병원명 */
+          , A.DNA_YN
+          , A.DNA_YN_CHK
 	    FROM TB_LA_IS_MH_SOG_COW A
 	    LEFT OUTER JOIN TB_LA_IS_MM_VHC C
 	         ON  C.NA_BZPLC    = A.NA_BZPLC
@@ -629,18 +650,19 @@
 	    WHERE A.NA_BZPLC       = #{ss_na_bzplc} 
 	      AND A.AUC_DT         = #{auc_dt}
 	    <if test='lvst_mkt_trpl_amnno != null and lvst_mkt_trpl_amnno != ""'>
-           AND A.LVST_MKT_TRPL_AMNNO = #{lvst_mkt_trpl_amnno}
-        </if>
+        AND A.LVST_MKT_TRPL_AMNNO = #{lvst_mkt_trpl_amnno}
+      </if>
 	      
 	      AND A.AUC_OBJ_DSC    = #{auc_obj_dsc} 
 	      AND A.LED_SQNO       = '1'
 	      AND A.DEL_YN         = '0'
 	    <if test='ppgcow_fee_dsc != null and ppgcow_fee_dsc == "1"'>
-          AND A.PPGCOW_FEE_DSC IN ('1','3')
-        </if>
-        <if test='ppgcow_fee_dsc != null and ppgcow_fee_dsc == "0"'>
-          AND A.PPGCOW_FEE_DSC IN ('2','4')
-        </if>
+        AND A.PPGCOW_FEE_DSC IN ('1','3')
+      </if>
+      <if test='ppgcow_fee_dsc != null and ppgcow_fee_dsc == "0"'>
+        AND A.PPGCOW_FEE_DSC IN ('2','4')
+      </if>
+        AND A.SRA_SRS_DSC    = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
 	
 	      AND B.NA_BZPLC       = A.NA_BZPLC
 	      AND B.FHS_ID_NO      = A.FHS_ID_NO
@@ -650,9 +672,7 @@
 	      AND A.SRA_INDV_AMNNO = D.SRA_INDV_AMNNO
 	      AND A.SRA_SRS_DSC    = D.SRA_SRS_DSC
 	    ORDER BY A.AUC_PRG_SQ
-    
     </select>
-    
     
     <update id="LALM0214P2_updCow">
         UPDATE TB_LA_IS_MH_SOG_COW SET               
@@ -697,11 +717,6 @@
            AND AUC_DT              = #{auc_dt}
            AND AUC_PRG_SQ          = #{auc_prg_sq}
            AND DEL_YN              = '0'
-            
     </update>
-    
-    
-    
-    
     
 </mapper>

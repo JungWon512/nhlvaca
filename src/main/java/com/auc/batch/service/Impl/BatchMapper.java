@@ -75,6 +75,4 @@ public interface BatchMapper {
 	int delDashBoardSaveForMonth(Map<String, Object> map) throws Exception;
 
 	int insDashBoardSaveForMonth(Map<String, Object> map) throws Exception;
-
-	List<Map<String, Object>> selAucBldList(Map<String, Object> map) throws Exception;
 }

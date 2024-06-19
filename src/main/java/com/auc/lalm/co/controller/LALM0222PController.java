@@ -30,7 +30,8 @@ public class LALM0222PController {
 	@RequestMapping(value="/LALM0222P_updReturnValue", method=RequestMethod.POST)
 	public Map<String, Object> LALM0222P_updReturnValue(ResolverMap rMap) throws Exception{				
 				
-		Map<String, Object> map = convertConfig.conMap(rMap);
+		//Map<String, Object> map = convertConfig.conMap(rMap);
+		Map<String, Object> map = convertConfig.conMapWithoutXxs(rMap);
 		List<Map<String, Object>> reList = lalm0222PService.LALM0222P_updReturnValue(map);				
 		Map<String, Object> reMap = commonFunc.createResultSetListData(reList); 	
 		

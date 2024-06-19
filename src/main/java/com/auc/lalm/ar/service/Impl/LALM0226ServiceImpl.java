@@ -62,9 +62,10 @@ public class LALM0226ServiceImpl implements LALM0226Service {
 		int aucObjDscCnt = 0;
 		
 		// 같은 경매날짜에 동일 귀표번호가 있는지 확인
-		final Map<String, Object> indvChk = lalm0226Mapper.LALM0226_selIndvChk(frmMap);
-		if (indvChk != null) {
-			reMap.put("message", "이미 등록된 개체가 있습니다. <br/>[접수일:" + indvChk.get("AUC_RECV_DT") + ", 접수번호:" + indvChk.get("AUC_RECV_NO") + ", 경매일:" + indvChk.get("AUC_DT") + "] ");
+		final List<Map<String, Object>> indvChkList = lalm0226Mapper.LALM0226_selIndvChk(frmMap);
+		if (indvChkList != null && !indvChkList.isEmpty() && indvChkList.size() > 0) {
+			Map<String, Object> indvChk = indvChkList.get(0);
+			reMap.put("message", "이미 등록된 개체가 있습니다. <br/>[경매대상:" + indvChk.get("AUC_OBJ_DSC_NM") +", 접수일:" + indvChk.get("AUC_RECV_DT") + ", 접수번호:" + indvChk.get("AUC_RECV_NO") + ", 경매일:" + indvChk.get("AUC_DT") + "] ");
 			return reMap;
 		}
 		
@@ -95,11 +96,13 @@ public class LALM0226ServiceImpl implements LALM0226Service {
 		int aucObjDscCnt = 0;
 		
 		// 같은 경매날짜에 동일 귀표번호가 있는지 확인
-		final Map<String, Object> indvChk = lalm0226Mapper.LALM0226_selIndvChk(frmMap);
-		if (indvChk != null && frmMap.get("auc_dt").equals(indvChk.get("AUC_DT"))) {
-			reMap.put("message", "이미 등록된 개체가 있습니다. <br/>[접수일:" + indvChk.get("AUC_RECV_DT") + ", 접수번호:" + indvChk.get("AUC_RECV_NO") + ", 경매일:" + indvChk.get("AUC_DT") + "] ");
-			return reMap;
-		}
+		//final List<Map<String, Object>> indvChkList = lalm0226Mapper.LALM0226_selIndvChk(frmMap);
+        //
+		//if (indvChkList != null && !indvChkList.isEmpty() && indvChkList.size() > 0) {
+		//	Map<String, Object> indvChk = indvChkList.get(0);
+		//	reMap.put("message", "이미 등록된 개체가 있습니다. <br/>[경매대상:" + indvChk.get("AUC_OBJ_DSC_NM") +", 접수일:" + indvChk.get("AUC_RECV_DT") + ", 접수번호:" + indvChk.get("AUC_RECV_NO") + ", 경매일:" + indvChk.get("AUC_DT") + "] ");
+		//	return reMap;
+		//}
 		
 		// 접수내역 저장
 		updateNum = updateNum + lalm0226Mapper.LALM0226_updCowRecv(frmMap);
@@ -114,8 +117,11 @@ public class LALM0226ServiceImpl implements LALM0226Service {
 
 	@Override
 	public Map<String, Object> LALM0226_selIndvChk(Map<String, Object> map) throws Exception{
-		return lalm0226Mapper.LALM0226_selIndvChk(map);		
+		final List<Map<String, Object>> indvChkList = lalm0226Mapper.LALM0226_selIndvChk(map);
+		if(indvChkList != null && indvChkList.size() > 0) return indvChkList.get(0);
+		else return null;
 	}
+	
 	@Override
 	public Map<String, Object> LALM0226_delPgm(Map<String, Object> map) throws Exception{
 		final Map<String, Object> reMap	= new HashMap<String, Object>();

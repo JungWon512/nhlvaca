@@ -100,13 +100,13 @@ public class LALM0212Controller {
 				
 		Map<String, Object> map   = convertConfig.conMap(rMap);
 		
-		List<Map<String, Object>> qcnList = lalm0212Service.LALM0212_selQcn(map);
+		// List<Map<String, Object>> qcnList = lalm0212Service.LALM0212_selQcn(map);
 		
-		int qcn = Integer.parseInt(qcnList.get(0).get("CNT").toString());
+		// int qcn = Integer.parseInt(qcnList.get(0).get("CNT").toString());
 		
-		if(qcn > 0) {
-			throw new CusException(ErrorCode.CUSTOM_ERROR,"해당 경매일자에 차수가 이미 등록되어있습니다. 확인하세요.");
-		}
+		// if(qcn > 0) {
+		// 	throw new CusException(ErrorCode.CUSTOM_ERROR,"해당 경매일자에 차수가 이미 등록되어있습니다. 확인하세요.");
+		// }
 		
 		Map<String, Object> inMap = lalm0212Service.LALM0212_updPgm(map);
 		Map<String, Object> reMap = commonFunc.createResultCUD(inMap);

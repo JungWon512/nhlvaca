@@ -26,10 +26,8 @@
      ------------------------------------------------------------------------------*/
     var g_newFlg = false;    
     $(document).ready(function(){
-    	fn_setCodeBox("rep_bnk_c", "REP_BNK_C", 1, false,"선택"); 
-        fn_Init();
-        fn_Search();
-        
+    	fn_setCodeBox("rep_bnk_c", "REP_BNK_C", 1, false,"선택");
+
         $('#na_bzplc').on('keydown',function(e){
         	var code = e.keyCode || e.which;
         	if(code == 13){
@@ -37,7 +35,7 @@
         		fn_Search();
         	}
         })
-        		
+
         /******************************
          * 주소 검색
          ******************************/
@@ -58,17 +56,17 @@
  		        }
  		    }).open();
          });
-        
+
         /******************************
          * 이미지 미리보기
          ******************************/
         $("#pb_SealImgView").on('click',function(e){
             e.preventDefault();
             this.blur();
-            
+
             var encrypt = setEncrypt(setFrmToData('frm_MmWmc'));
             var result;
-            
+
             $.ajax({
                 url: '/LALM0912_selSealImg',
                 type: 'POST',
@@ -93,8 +91,27 @@
                 }
             }); 
             
-        });        
-    });    
+        });
+
+        $(".etc_auc_obj_dsc").on("change", function() {
+            if ($(this).is(":checked")) {
+                if ($(this).val() == "5") {
+                    $('select[id*="gt_auc_"]').prop("disabled", false);
+                } else if ($(this).val() == "6") {
+                    $('select[id*="hs_auc_"]').prop("disabled", false);
+                }
+            } else {
+                 if ($(this).val() == "5") {
+                    $('select[id*="gt_auc_"]').prop("disabled", true).val("");
+                } else if ($(this).val() == "6") {
+                    $('select[id*="hs_auc_"]').prop("disabled", true).val("");
+                }
+            }
+        });
+
+        fn_Init();
+        fn_Search();
+    });
     
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 초기화 함수
@@ -147,9 +164,21 @@
             if(result.SEAL_IMG_FLNM != ""){
             	$("#pb_SealImgView").show();
             }
+
+            /* 기타가축 경매항목 */
+            const etcAucObjDsc = result.ETC_AUC_OBJ_DSC.split(',');
+            etcAucObjDsc.forEach((o,i)=>{
+                $("#etc_auc_obj_dsc_" + o).prop('checked', true);
+                if (o == "5") {
+                    $('select[id*="gt_auc_"]').prop("disabled", false);
+                } else if (o == "6") {
+                    $('select[id*="hs_auc_"]').prop("disabled", false);
+                }
+            });
+
             g_newFlg = false;
         }                       
-    } 
+    }
     
     /*------------------------------------------------------------------------------
      * 1. 함 수 명    : 저장 함수
@@ -175,8 +204,8 @@
             return;
         }
         
-		var buffer_1='';
-		var index=0;
+        let buffer_1='';
+		let index=0;
 		$('.sms_buffer_1').each((i,o)=>{
         	if($(o).is(':checked')){
         		if(index > 0) buffer_1 +=','; 
@@ -186,6 +215,38 @@
         });
         $('#sms_buffer_1').val(buffer_1);
         
+        /* 기타가축 경매 항목 */
+        const etcList = $(".etc_auc_obj_dsc").filter(":checked").map(function() {
+            return this.value;
+        }).get();
+
+        // 염소 관련 설정 체크
+        if (etcList.includes("5")) {
+            const gtAuc = $('select[id*="gt_auc_"]').filter(function() {
+                return $(this).val() === ""
+            }).get();
+            if (gtAuc.length > 0) {
+                MessagePopup("OK", "염소 단가기준과 응찰단위금액을 선택하세요.", () => {
+                    $(gtAuc[0]).focus();
+                });
+                return;
+            }
+        }
+
+        // 말 관련 설정 체크
+        if (etcList.includes("6")) {
+            const hsAuc = $('select[id*="hs_auc_"]').filter(function() {
+                return $(this).val() === ""
+            }).get();
+            if (hsAuc.length > 0) {
+                MessagePopup("OK", "말 단가기준과 응찰단위금액을 선택하세요.", () => {
+                    $(hsAuc[0]).focus();
+                });
+                return;
+            }
+        }
+        $('#etc_auc_obj_dsc').val(etcList.join(','));
+
         if(g_newFlg == true){
              MessagePopup('YESNO',"신규등록 하시겠습니까?",function(res){
                  if(res){
@@ -678,7 +739,6 @@
             <!-- //tab_box e -->
             <div class="sec_table">
                 <div class="grayTable rsp_v">
-                    
                     <table>
                         <colgroup>
                             <col width="200">
@@ -804,6 +864,78 @@
                         </tbody>
                     </table>
                     
+                </div>
+            </div>
+            <div class="tab_box clearfix">
+                <ul class="tab_list">
+                    <li><p class="dot_allow">기타가축경매정보</p></li>
+                </ul>
+            </div>
+            <!-- //tab_box e -->
+            <div class="sec_table">
+                <div class="grayTable rsp_v">
+                    <table>
+                        <colgroup>
+                            <col width="200">
+                            <col width="*">
+                            <col width="200">
+                            <col width="*">
+                        </colgroup>
+                        <tbody>
+                            <tr>
+                                <th scope="row">기타가축항목</th>
+                                <td colspan="3">
+                                    <input type="hidden" id="etc_auc_obj_dsc" value=""/>
+                                    <input type="checkbox" id="etc_auc_obj_dsc_5" class="etc_auc_obj_dsc" value="5"/>
+                                    <label for="etc_auc_obj_dsc_5">염소</label>
+                                    <!--
+                                    <input type="checkbox" id="etc_auc_obj_dsc_6" class="etc_auc_obj_dsc" value="6"/>
+                                    <label for="etc_auc_obj_dsc_6">말</label>
+                                    -->
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">염소 단가기준</th>
+                                <td>
+                                    <select id="gt_auc_upr_dsc" disabled>
+                                        <option value="">선택</option>
+                                        <option value="1">KG별</option>
+                                        <option value="2">두별</option>
+                                    </select>
+                                </td>
+                                <th scope="row">염소 응찰단위금액</th>
+                                <td>
+                                    <select id="gt_auc_atdr_unt_am" disabled>
+                                        <option value="">선택</option>
+                                        <option value="1">원</option>
+                                        <option value="1000">천원</option>
+                                        <option value="10000">만원</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <!--
+                            <tr>
+                                <th scope="row">말 단가기준</th>
+                                <td>
+                                    <select id="hs_auc_upr_dsc" disabled>
+                                        <option value="">선택</option>
+                                        <option value="1">KG별</option>
+                                        <option value="2">두별</option>
+                                    </select>
+                                </td>
+                                <th scope="row">말 응찰단위금액</th>
+                                <td>
+                                    <select id="hs_auc_atdr_unt_am" disabled>
+                                        <option value="">선택</option>
+                                        <option value="1">원</option>
+                                        <option value="1000">천원</option>
+                                        <option value="10000">만원</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            -->
+                        </tbody>
+                    </table>
                 </div>
             </div> 
         </form>    

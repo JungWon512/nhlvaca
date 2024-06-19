@@ -37,7 +37,7 @@
 	          , anw_yn            = nvl(trim(#{ANW_YN}),'')                   /* 한우종합등록여부                 */
 	          , hdwk_rg_yn        = nvl(trim(#{HDWK_RG_YN}),'')               /* 수작업여부                       */
 	          , lschg_dtm         = SYSDATE                     /* 최종변경일시                     */
-	          , ls_cmeno          = #{ss_userid}                 /* 최종변경자개인번호               */
+	          , ls_cmeno          = 'MCA1200'                 /* 최종변경자개인번호               */
 	          , birth 			  = nvl(trim(#{BIRTH}),'')		/* 생년월일 */
 	          , mb_intg_no 		= #{mb_intg_no}					/* 통합회원번호 */
 	          /* 2023.08.31 영천축협 요청으로 수정 */	          
@@ -96,7 +96,7 @@
                , SYSDATE                       /* 최초등록일시                     */
                , '기준정보'                    /* 최초등록자개인번호               */
                , SYSDATE                       /* 최종변경일시                     */
-               , #{ss_userid}                   /* 최종변경자개인번호               */
+               , 'MCA1200'                   /* 최종변경자개인번호               */
                , nvl(trim(#{BIRTH}),'')
                , #{mb_intg_no}
               )
@@ -150,9 +150,9 @@
             , nvl(trim(#{HDWK_RG_YN}),'')                    /* 수작업여부                       */
             , nvl(trim(#{NEW_SRA_FARM_ACNO}),'')                 /* 계좌번호                         */
             , SYSDATE                          /* 최초등록일시                     */
-            , #{ss_userid}                     /* 최초등록자개인번호               */
+            , 'MCA1200'                     /* 최초등록자개인번호               */
             , SYSDATE                          /* 최종변경일시                     */
-            , #{ss_userid}                     /* 최종변경자개인번호               */
+            , 'MCA1200'                     /* 최종변경자개인번호               */
             , '0'                              /* 사료사용여부                     */
             , nvl(trim(#{BIRTH}),'')			/* 생년월일 */
             , #{mb_intg_no}					/* 회원통합번호 */
@@ -163,13 +163,14 @@
     <!-- 1300 -->
     <select id="LALM0899_selMca1300Cnt" resultType="_int">
         select   
-			count(*)
-		from tb_la_is_mm_mwmn a
-			,tb_la_is_mh_auc_entr b
-		where a.na_bzplc    = #{ss_na_bzplc}
-		and a.na_bzplc    = b.na_bzplc
-		and a.trmn_amnno  = b.trmn_amnno  
-		and b.auc_dt      = #{auc_dt}    
+                  count(*)
+            from  tb_la_is_mm_mwmn a
+                 ,tb_la_is_mh_auc_entr b
+            where a.na_bzplc    = #{ss_na_bzplc}
+              and a.na_bzplc    = b.na_bzplc
+              and a.trmn_amnno  = b.trmn_amnno  
+              and b.auc_dt      = #{auc_dt}
+			  and b.auc_obj_dsc in ( '0', '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca1300" resultType="HashMap">
@@ -209,6 +210,7 @@
 				      and a.na_bzplc    = b.na_bzplc
 				      and a.trmn_amnno  = b.trmn_amnno  
 				      and b.auc_dt      = #{auc_dt}
+					  and b.auc_obj_dsc in ( '0', '1', '2', '3' )
 				    order by a.trmn_amnno
 				    ) A)
                 WHERE NO BETWEEN #{st_pos} AND #{ed_pos}
@@ -609,6 +611,7 @@
                ,tb_la_is_mh_sog_cow b
         where a.na_bzplc    = #{ss_na_bzplc}
           and a.auc_dt      = #{auc_dt}
+		  and a.auc_obj_dsc in ( '0', '1', '2', '3' )
           and a.auc_dt      =   b.auc_dt
           and a.na_bzplc    =  b.na_bzplc
           and b.sel_sts_dsc  != '11'
@@ -643,6 +646,7 @@
 	           ,tb_la_is_mh_sog_cow b
 	    where a.na_bzplc    = #{ss_na_bzplc}
 	      and a.auc_dt      = #{auc_dt}
+		  and a.auc_obj_dsc in ( '0', '1', '2', '3' )
 	      and a.auc_dt      =   b.auc_dt
 	      and a.na_bzplc    =  b.na_bzplc
 	      and b.sel_sts_dsc  != '11'
@@ -661,7 +665,7 @@
         from  tb_la_is_mh_mwmn_adj
         where na_bzplc   = #{ss_na_bzplc}
           and auc_dt     = #{auc_dt}
-    
+		  and auc_obj_dsc in ( '0', '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca2000" resultType="HashMap">
@@ -688,6 +692,7 @@
 	    from   tb_la_is_mh_mwmn_adj
 	    where na_bzplc   = #{ss_na_bzplc}
 	      and auc_dt     = #{auc_dt}
+		  and auc_obj_dsc in ( '0', '1', '2', '3' )
         order by trmn_amnno,auc_dt,auc_obj_dsc, rv_sqno  
         ) A)
         WHERE NO BETWEEN #{st_pos} AND #{ed_pos} 
@@ -702,6 +707,7 @@
         where na_bzplc    = #{ss_na_bzplc}
           and auc_obj_dsc = case when #{auc_obj_dsc} = '0' then auc_obj_dsc else #{auc_obj_dsc} end
           and auc_dt      = #{auc_dt}
+		  and auc_obj_dsc in ( '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca2100" resultType="HashMap">
@@ -725,6 +731,7 @@
 			    where na_bzplc    = #{ss_na_bzplc}
 			      and auc_obj_dsc = case when #{auc_obj_dsc} = '0' then auc_obj_dsc else #{auc_obj_dsc} end
 			      and auc_dt      = #{auc_dt}
+				  and auc_obj_dsc in ( '1', '2', '3' )
 			      order by auc_dt
         ) A)
         WHERE NO BETWEEN #{st_pos} AND #{ed_pos} 
@@ -738,6 +745,7 @@
 	        from  tb_la_is_mh_auc_entr
 	        where na_bzplc    = #{ss_na_bzplc}
 	          and auc_dt      = #{auc_dt}
+			  and auc_obj_dsc in ( '0', '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca2700" resultType="HashMap">
@@ -758,6 +766,7 @@
 		from  tb_la_is_mh_auc_entr
 		where na_bzplc    = #{ss_na_bzplc}
 		  and auc_dt      = #{auc_dt}
+		  and auc_obj_dsc in ( '0', '1', '2', '3' )
 	    order by auc_dt, auc_obj_dsc, lvst_auc_ptc_mn_no
         ) A)
         WHERE NO BETWEEN #{st_pos} AND #{ed_pos} 
@@ -826,7 +835,7 @@
     </insert>
     
     
-    <select id="LALM0899_selMca3100_101" resultType="HashMap">    	
+    <select id="LALM0899_selMca3100_101" resultType="HashMap">
         SELECT /* LALM0899_selMca3100_101 */  
                A.NA_BZPLC
 		     , REPLACE(A.CUS_MPNO,'-','')     AS CUS_MPNO          /* 고객휴대폰   */
@@ -838,7 +847,8 @@
 		                        FROM(
 		                        SELECT CASE WHEN AUC_OBJ_DSC = '1' THEN '송아지'
 		                                    WHEN AUC_OBJ_DSC = '2' THEN '비육우'
-		                                    ELSE '번식우'
+		                                    WHEN AUC_OBJ_DSC = '3' THEN '번식우'
+		                                    WHEN AUC_OBJ_DSC = '5' THEN '염소'
 		                               END AS AUC_OBJ_DSC
 		                          FROM TB_LA_IS_MH_SOG_COW
 		                         WHERE NA_BZPLC = #{ss_na_bzplc}                    /* 경제통합사업장코드          */
@@ -915,6 +925,8 @@
 		                        FROM(
 		                        select case when auc_obj_dsc = '1' then '송아지'
 		                                    when auc_obj_dsc = '2' then '비육우'
+		                                    when auc_obj_dsc = '3' then '번식우'
+		                                    when auc_obj_dsc = '5' then '염소'
 		                                    else '번식우'
 		                               end as auc_obj_dsc
 		                          from tb_la_is_mh_sog_cow
@@ -923,6 +935,7 @@
 		                           and auc_obj_dsc = case when #{auc_obj_dsc} = '1' then '1'
 		                                                  when #{auc_obj_dsc} = '2' then '2'
 		                                                  when #{auc_obj_dsc} = '3' then '3'
+		                                                  when #{auc_obj_dsc} = '5' then '5'
 		                                                  else auc_obj_dsc
 		                                             end
 		                                group by auc_obj_dsc
@@ -961,6 +974,7 @@
 		        and  a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
 		                                          when #{auc_obj_dsc} = '2' then '2'
 		                                          when #{auc_obj_dsc} = '3' then '3'
+		                                          when #{auc_obj_dsc} = '5' then '5'
 		                                          else a.auc_obj_dsc
 		                                     end
 		        and  a.auc_dt              = #{auc_dt}
@@ -1004,6 +1018,8 @@
                                 FROM(
                                 select case when auc_obj_dsc = '1' then '송아지'
                                             when auc_obj_dsc = '2' then '비육우'
+                                            when auc_obj_dsc = '3' then '번식우'
+                                            when auc_obj_dsc = '5' then '염소'
                                             else '번식우'
                                        end as auc_obj_dsc
                                   from tb_la_is_mh_sog_cow
@@ -1012,6 +1028,7 @@
                                    and auc_obj_dsc = case when #{auc_obj_dsc} = '1' then '1'
                                                           when #{auc_obj_dsc} = '2' then '2'
                                                           when #{auc_obj_dsc} = '3' then '3'
+                                                          when #{auc_obj_dsc} = '5' then '5'
                                                           else auc_obj_dsc
                                                      end
                                         group by auc_obj_dsc
@@ -1044,6 +1061,7 @@
 	            and  a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
 	                                              when #{auc_obj_dsc} = '2' then '2'
 	                                              when #{auc_obj_dsc} = '3' then '3'
+	                                              when #{auc_obj_dsc} = '5' then '5'
 	                                              else a.auc_obj_dsc
 	                                         end
 	            and  a.auc_dt              = #{auc_dt}
@@ -1067,6 +1085,7 @@
 	    where  a.na_bzplc            = #{ss_na_bzplc}
 	      and  a.del_yn              = '0'
 	      and  a.na_bzplc            = b.na_bzplc
+	      AND  A.NA_BZPLC            = C.NA_BZPLC
           and  a.na_bzplc            = e.na_bzplc(+)
           and  e.trmn_amnno(+)		 = #{auc_dt} || LPAD(A.TRMN_AMNNO, 5, '0')
        	  and  length(REGEXP_REPLACE(a.cus_mpno, '[^0-9]')) <![CDATA[>=]]> 10
@@ -1081,7 +1100,12 @@
 		    , substr(a.auc_dt,5,2) || '월'
 		      || substr(a.auc_dt,7,2) || '일 '
 		      || ' 경매'
-		      || case when a.auc_obj_dsc = '1' then '(송아지) ' when a.auc_obj_dsc = '2' then '(비육우) ' else '(번식우) ' end
+		      || case when a.auc_obj_dsc = '1' then '(송아지) ' 
+			  		when a.auc_obj_dsc = '2' then '(비육우) ' 
+			  		when a.auc_obj_dsc = '3' then '(번식우) ' 
+			  		when a.auc_obj_dsc = '5' then '(염소) ' 
+					else '(번식우) ' 
+				 end
 		      || ' '
 		      || case when e.INDV_SEX_C = '0' then '없음'
 		             when e.INDV_SEX_C = '1' then '암'
@@ -1090,6 +1114,7 @@
 		             when e.INDV_SEX_C = '4' then '미경산'
 		             when e.INDV_SEX_C = '5' then '비거세'
 		             when e.INDV_SEX_C = '6' then '프리마틴'
+		             when e.INDV_SEX_C = '7' then '새끼'
 		             else '공통'
 		        end
 		      || ' '
@@ -1114,6 +1139,7 @@
 		  and a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
 		                                   when #{auc_obj_dsc} = '2' then '2'
 		                                   when #{auc_obj_dsc} = '3' then '3'
+		                                   when #{auc_obj_dsc} = '5' then '5'
 		                                   else a.auc_obj_dsc
 		                              end
 		  and a.auc_dt              = #{auc_dt}
@@ -1144,7 +1170,12 @@
 	        , substr(a.auc_dt,5,2) || '월'
 	          || substr(a.auc_dt,7,2) || '일 '
 	          || ' 경매'
-	          || case when a.auc_obj_dsc = '1' then '(송아지) ' when a.auc_obj_dsc = '2' then '(비육우) ' else '(번식우) ' end
+	          || case when a.auc_obj_dsc = '1' then '(송아지) ' 
+					when a.auc_obj_dsc = '2' then '(비육우) ' 
+					when a.auc_obj_dsc = '3' then '(번식우) ' 
+					when a.auc_obj_dsc = '5' then '(염소) ' 
+					else '(번식우) ' 
+			  	end
 	          || ' '
 	          || case when e.INDV_SEX_C = '0' then '없음'
 	                  when e.INDV_SEX_C = '1' then '암'
@@ -1153,6 +1184,7 @@
 	                  when e.INDV_SEX_C = '4' then '미경산'
 	                  when e.INDV_SEX_C = '5' then '비거세'
 	                  when e.INDV_SEX_C = '6' then '프리마틴'
+	                  when e.INDV_SEX_C = '7' then '새끼'
 	                  else '공통'
 	             end
 	          || ' '
@@ -1202,6 +1234,7 @@
 	            and auc_obj_dsc     = case when #{auc_obj_dsc} = '1' then '1'
 	                                       when #{auc_obj_dsc} = '2' then '2'
 	                                       when #{auc_obj_dsc} = '3' then '3'
+	                                       when #{auc_obj_dsc} = '5' then '5'
 	                                       else auc_obj_dsc
 	                                  end
 	            and fee_apl_obj_c   = '1'
@@ -1217,6 +1250,7 @@
 	      and  a.auc_obj_dsc        =case when #{auc_obj_dsc} = '1' then '1'
 	                                      when #{auc_obj_dsc} = '2' then '2'
 	                                      when #{auc_obj_dsc} = '3' then '3'
+	                                      when #{auc_obj_dsc} = '5' then '5'
 	                                      else a.auc_obj_dsc
 	                                 end
 	      and  a.auc_dt             = #{auc_dt}
@@ -1274,6 +1308,7 @@
 	                           and auc_obj_dsc = case when #{auc_obj_dsc} = '1' then '1'
 	                                                  when #{auc_obj_dsc} = '2' then '2'
 	                                                  when #{auc_obj_dsc} = '3' then '3'
+	                                                  when #{auc_obj_dsc} = '5' then '5'
 	                                                  else auc_obj_dsc
 	                                             end
 	                                group by auc_obj_dsc
@@ -1323,7 +1358,10 @@
 	                                  , sum(case when na_fee_c not in ('011') then (case when ans_dsc ='1' then 1 else -1 end) * sra_tr_fee else 0 end) as sra_etc_cst
 	                             from TB_LA_IS_MH_FEE_IMPS
 	                             where na_bzplc            = #{ss_na_bzplc}
-	                               and auc_obj_dsc         = case when #{auc_obj_dsc} = '0' then auc_obj_dsc else '1' end
+	                               and auc_obj_dsc         = case when #{auc_obj_dsc} = '0' then auc_obj_dsc
+								   								  when #{auc_obj_dsc} = '5' then auc_obj_dsc
+								   								  else '1' 
+															 end
 	                               and auc_dt              = #{auc_dt}
 	                               and fee_apl_obj_c       = '2'                           /* 1:출하자, 2:낙찰자  */
 	                             group by na_bzplc
@@ -1332,7 +1370,10 @@
 	                                  , oslp_no
 	                                  , led_sqno) b
 	                     where a.na_bzplc        = #{ss_na_bzplc}
-	                       and a.auc_obj_dsc     = case when #{auc_obj_dsc} = '0' then a.auc_obj_dsc else '1' end
+	                       and a.auc_obj_dsc     = case when #{auc_obj_dsc} = '0' then a.auc_obj_dsc 
+						   								when #{auc_obj_dsc} = '5' then a.auc_obj_dsc 
+						   								else '1' 
+												   end
 	                       and a.auc_dt          = #{auc_dt}
 	                       and a.na_bzplc        = b.na_bzplc                    /* 경제통합사업장코드  */
 	                       and a.auc_dt          = b.auc_dt                      /* 경매일자            */
@@ -1351,7 +1392,10 @@
 	          and a.trmn_amnno             = b.trmn_amnno             /* 거래인관리번호              */
 	
 	    where a.na_bzplc             = #{ss_na_bzplc}
-	      and a.auc_obj_dsc          = case when #{auc_obj_dsc} = '0' then a.auc_obj_dsc else '1' end
+	      and a.auc_obj_dsc          = case when #{auc_obj_dsc} = '0' then a.auc_obj_dsc 
+		  									when #{auc_obj_dsc} = '5' then a.auc_obj_dsc 
+		  									else '1' 
+										end
 	      and a.auc_dt               = #{auc_dt}
 	      and a.sel_sts_dsc          = '22'                   /* 판매상태구분코드            */
 	      and a.del_yn               = '0'
@@ -1386,6 +1430,8 @@
 	            substr(a.auc_dt, 5, 2) || '월' || substr(a.auc_dt, 7, 2) || '일 ' || ' 경매' ||
 	                     case when a.auc_obj_dsc = '1' then '(송) ' 
 	                          when a.auc_obj_dsc = '2' then '(비) ' 
+	                          when a.auc_obj_dsc = '3' then '(번) ' 
+	                          when a.auc_obj_dsc = '5' then '(염) ' 
 	                          else '(번) ' end || ' ' ||
 	                     case when e.INDV_SEX_C = '0'  then '없음'   
 	                          when e.INDV_SEX_C = '1'  then '암' 
@@ -1394,6 +1440,7 @@
 	                          when e.INDV_SEX_C = '4'  then '미경산' 
 	                          when e.INDV_SEX_C = '5'  then '비거세' 
 	                          when e.INDV_SEX_C = '6'  then '프리마틴'
+	                          when e.INDV_SEX_C = '7'  then '새끼'
 	                          else '공통' end || ' ' || TO_CHAR(a.auc_prg_sq) || '번 개체 번호 :' || a.sra_indv_amnno
 	                     as msg_cntn
 		   , g.TMS_YN
@@ -1415,6 +1462,7 @@
 		   and a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
 											when #{auc_obj_dsc} = '2' then '2'
 			                                when #{auc_obj_dsc} = '3' then '3'
+			                                when #{auc_obj_dsc} = '5' then '5'
 			                                else a.auc_obj_dsc
 										end
 	       and a.led_sqno = 1
@@ -1449,6 +1497,7 @@
         from tb_la_is_mh_rkon_cm
         where na_bzplc    = #{ss_na_bzplc}
           and auc_dt      = #{auc_dt}
+		  and auc_obj_dsc in ('0', '1', '2', '3')
     </select>
     
     <select id="LALM0899_selMca3500" resultType="HashMap">
@@ -1463,6 +1512,7 @@
 	    from tb_la_is_mh_rkon_cm
 	    where na_bzplc    = #{ss_na_bzplc}
 	      and auc_dt      = #{auc_dt}
+		  and auc_obj_dsc in ('0', '1', '2', '3')
     </select>
     <!-- 3500 -->
     
@@ -1492,6 +1542,7 @@
 	    from tb_la_is_mh_calf
 	    where na_bzplc    = #{ss_na_bzplc}
 	      and auc_dt      = #{auc_dt}
+		  and auc_obj_dsc = '3'
                ORDER BY oslp_no
                ) A)
             WHERE NO BETWEEN #{st_pos} AND #{ed_pos}
@@ -1567,6 +1618,7 @@
 			    from  tb_la_is_mh_fee_imps
 			    where na_bzplc    = #{ss_na_bzplc}
 			      and auc_dt      = #{auc_dt}
+				  and auc_obj_dsc in ( '1', '2', '3' )
 	           ORDER BY oslp_no
 	           ) A)
 	        WHERE NO BETWEEN #{st_pos} AND #{ed_pos}
@@ -1608,6 +1660,7 @@
 	      and a.farm_amnno   = b.farm_amnno
 	      and a.na_bzplc     = c.na_bzplc
 	      and a.anw_yn       = '9'
+		  and a.sra_srs_dsc  = '01'
 	    order by a.lschg_dtm desc
     </select>
     
@@ -1618,6 +1671,7 @@
          where a.na_bzplc       = #{ss_na_bzplc}
            and a.anw_yn         = '9'
            and a.sra_indv_amnno = ''
+		   and a.sra_srs_dsc    = '01'
     </select>
     
     <select id="LALM0899_selMca1600_ChkAucObjDsc" resultType="_int">
@@ -1625,6 +1679,7 @@
       from TB_LA_IS_MH_SOG_COW
 	 where na_bzplc      = #{ss_na_bzplc}                     /* 경제통합사업장코드          */
 	   and auc_dt        = #{auc_dt}
+	   and auc_obj_dsc not in ( '1', '2', '3' )
 	   and (auc_obj_dsc  = '' or auc_obj_dsc is null)
     </select>
     
@@ -1633,6 +1688,7 @@
 	      from TB_LA_IS_MH_SOG_COW
 	     where na_bzplc      = #{ss_na_bzplc}                     /* 경제통합사업장코드          */
 	       and auc_dt        = #{auc_dt}
+		   and auc_obj_dsc in ( '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca3900Cnt" resultType="_int">
@@ -1640,6 +1696,7 @@
           from tb_la_is_mh_fee_imps
          where na_bzplc    = #{ss_na_bzplc}
            and auc_dt      = #{auc_dt}
+		   and auc_obj_dsc in ( '1', '2', '3' )
     </select>
     
     <select id="LALM0899_selMca3700Cnt" resultType="_int">
@@ -1858,7 +1915,12 @@
 		    , substr(a.auc_dt,5,2) || '월'
 		      || substr(a.auc_dt,7,2) || '일 '
 		      || ' 경매'
-		      || case when a.auc_obj_dsc = '1' then '(송아지) ' when a.auc_obj_dsc = '2' then '(비육우) ' else '(번식우) ' end
+		      || case when a.auc_obj_dsc = '1' then '(송아지) ' 
+					when a.auc_obj_dsc = '2' then '(비육우) ' 
+					when a.auc_obj_dsc = '3' then '(번식우) ' 
+					when a.auc_obj_dsc = '5' then '(염소) ' 
+					else '(번식우) ' 
+			  	end
 		      || ' '
 		      || case when e.INDV_SEX_C = '0' then '없음'
 		             when e.INDV_SEX_C = '1' then '암'
@@ -1867,6 +1929,7 @@
 		             when e.INDV_SEX_C = '4' then '미경산'
 		             when e.INDV_SEX_C = '5' then '비거세'
 		             when e.INDV_SEX_C = '6' then '프리마틴'
+		             when e.INDV_SEX_C = '7' then '새끼'
 		             else '공통'
 		        end
 		      ||  ' 개체번호:'
@@ -1889,6 +1952,7 @@
 		  and a.auc_obj_dsc         = case when #{auc_obj_dsc} = '1' then '1'
 		                                   when #{auc_obj_dsc} = '2' then '2'
 		                                   when #{auc_obj_dsc} = '3' then '3'
+		                                   when #{auc_obj_dsc} = '5' then '5'
 		                                   else a.auc_obj_dsc
 		                              end
 		  and a.auc_dt              = #{auc_dt}

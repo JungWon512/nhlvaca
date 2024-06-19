@@ -119,7 +119,7 @@
 				"원표번호", "경매일자", "진행상태" ];
 		var searchResultColModel = [
 			{name : "AUC_OBJ_DSC",		index : "AUC_OBJ_DSC",		width : 65,	align : 'center',edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("AUC_OBJ_DSC", 1)}	},
-			{name : "AUC_PRG_SQ",	    index : "AUC_PRG_SQ",		width : 55,	align : 'center'}, 
+			{name : "AUC_PRG_SQ",	    index : "AUC_PRG_SQ",		width : 55,	align : 'center', sorttype: 'number'}, 
 			{name : "FTSNM",			index : "FTSNM",			width : 60,	align : 'center'},
 			{name : "SRA_INDV_AMNNO",	index : "SRA_INDV_AMNNO",	width : 120,align : 'center'},
 			{name : "BIRTH",	    	index : "BIRTH",			width : 70,	align : 'center'},
@@ -127,9 +127,9 @@
 			{name : "KPN_NO",			index : "KPN_NO",			width : 60,	align : 'center'},
 			{name : "SRA_INDV_PASG_QCN",index : "SRA_INDV_PASG_QCN",width : 40,	align : 'center'},
 			{name : "MATIME",			index : "MATIME",			width : 40,	align : 'center'}, 
-			{name : "COW_SOG_WT",		index : "COW_SOG_WT",		width : 35,	align : 'center'},
-			{name : "LOWS_SBID_LMT_AM",	index : "LOWS_SBID_LMT_AM",	width : 85,	align : 'right',	formatter : 'integer',formatoptions : {thousandsSeparator : ',',decimalPlaces : 0}},
-			{name : "SRA_SBID_AM",		index : "SRA_SBID_AM",		width : 85,	align : 'right',			formatter : 'integer',formatoptions : {	thousandsSeparator : ',',decimalPlaces : 0}},
+			{name : "COW_SOG_WT",		index : "COW_SOG_WT",		width : 35,	align : 'center', sorttype: 'number'},
+			{name : "LOWS_SBID_LMT_AM",	index : "LOWS_SBID_LMT_AM",	width : 85,	align : 'right', sorttype: 'number', formatter : 'integer', formatoptions : {thousandsSeparator : ',',decimalPlaces : 0}},
+			{name : "SRA_SBID_AM",		index : "SRA_SBID_AM",		width : 85,	align : 'right', sorttype: 'number', formatter : 'integer', formatoptions : {thousandsSeparator : ',',decimalPlaces : 0}},
 			{name : "OSLP_NO",	        index : "OSLP_NO",	        width : 85,	align : 'center'}, 
 			{name : "AUC_DT",	        index : "AUC_DT",	        width : 85,	align : 'center'},
 			{name : "SEL_STS_DSC",	    index : "SEL_STS_DSC",	    width : 85,	align : 'center',edittype:"select", formatter : "select", editoptions:{value:fn_setCodeString("SEL_STS_DSC", 1)}}, 

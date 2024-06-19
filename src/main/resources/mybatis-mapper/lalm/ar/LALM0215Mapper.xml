@@ -6,7 +6,6 @@
 <mapper namespace="com.auc.lalm.ar.service.Impl.LALM0215Mapper">
 
     <select id="LALM0215_selList" resultType="hashMap">
-    <![CDATA[
          SELECT
 	          A.NA_BZPLC                        /* 경제통합사업장코드                   	*/
 	        , A.AUC_OBJ_DSC                     /* 경매대상구분코드                    	*/
@@ -146,6 +145,7 @@
 	      AND A.AUC_DT         = #{hdn_auc_dt}
 	      AND A.OSLP_NO        = #{hdn_oslp_no}
 	      AND A.LED_SQNO       = '1'
+		  AND A.SRA_SRS_DSC    = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
 	
 	      AND B.NA_BZPLC       = A.NA_BZPLC
 	      AND B.FHS_ID_NO      = A.FHS_ID_NO
@@ -154,29 +154,26 @@
 	      AND A.NA_BZPLC       = D.NA_BZPLC
 	      AND A.SRA_SRS_DSC    = D.SRA_SRS_DSC
 	      AND A.SRA_INDV_AMNNO = D.SRA_INDV_AMNNO
-	]]>
     </select>
     
     <select id="LALM0215_selPrgSq" resultType="hashMap">
-    <![CDATA[
          SELECT
         	  NVL(MAX(AUC_PRG_SQ)+1,1)  AS AUC_PRG_SQ			/* 경매순번			*/
     	FROM  TB_LA_IS_MH_SOG_COW
     	WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
       	  AND AUC_DT          = #{auc_dt}						/* 경매일자			*/
-	]]>
+		  AND SRA_SRS_DSC     = NVL(#{sra_srs_dsc}, SRA_SRS_DSC)
 	<if test='ss_na_bzplc == "8808990656571"'>
           AND FSRGMN_ENO      = #{ss_userid}
    	</if>
     </select>
     
     <select id="LALM0215_selAucPrgSq" resultType="hashMap">
-    <![CDATA[
          SELECT COUNT(AUC_PRG_SQ) AS C_AUC_PRG_SQ
            FROM  TB_LA_IS_MH_SOG_COW
           WHERE 1 = 1
             AND NA_BZPLC     = #{ss_na_bzplc}
-    ]]>
+			AND SRA_SRS_DSC  = NVL(#{sra_srs_dsc}, SRA_SRS_DSC)
     <if test='auc_dt != null and auc_dt != ""'>
             AND AUC_DT       = #{auc_dt}
     </if>
@@ -189,12 +186,11 @@
     </select>
     
     <select id="LALM0215_selOslpNo" resultType="hashMap">
-    <![CDATA[
          SELECT OSLP_NO
            FROM TB_LA_IS_MH_SOG_COW
           WHERE 1 = 1
             AND NA_BZPLC     = #{ss_na_bzplc}
-    ]]>
+			AND SRA_SRS_DSC  = NVL(#{sra_srs_dsc}, SRA_SRS_DSC)
     <if test='auc_dt != null and auc_dt != ""'>
             AND AUC_DT       = #{auc_dt}
     </if>
@@ -207,7 +203,6 @@
     </select>
         
      <select id="LALM0215_selMhCalf" resultType="hashMap">
-    <![CDATA[
          SELECT
 		        NA_BZPLC									/* 경제통합사업장코드		*/
 		      , AUC_OBJ_DSC									/* 경매대상구분코드		*/
@@ -228,11 +223,9 @@
 		      AND  A.AUC_OBJ_DSC     = #{auc_obj_dsc}	/* 경매대상구분코드		*/
 		      AND  A.AUC_DT          = #{auc_dt}			/* 경매일자			*/
 		      AND  A.OSLP_NO         = #{oslp_no}			/* 원표번호			*/
-	]]>
     </select>
     
     <select id="LALM0215_selIndvAmnno" resultType="hashMap">
-    <![CDATA[
          SELECT
               SRA_INDV_AMNNO
         FROM  TB_LA_IS_MH_SOG_COW
@@ -240,11 +233,9 @@
           AND AUC_DT          = #{auc_dt}						/* 이월일자			*/
           AND SRA_SRS_DSC     = '01'							/* 축산축종구분코드		*/
           AND SRA_INDV_AMNNO  = #{re_indv_no}					/* 축산개체관리번호		*/
-	]]>
     </select>
     
     <select id="LALM0215_selIndvAmnnoPgm" resultType="hashMap">
-    <![CDATA[
           SELECT A.SRA_INDV_AMNNO, A.AUC_DT, A.AUC_PRG_SQ 
 			FROM (SELECT SRA_INDV_AMNNO, AUC_DT, AUC_PRG_SQ 
 					FROM TB_LA_IS_MH_SOG_COW 
@@ -254,11 +245,9 @@
 			WHERE 1 = 1
 			  AND SRA_INDV_AMNNO LIKE '%'||#{sra_indv_amnno}||'%'
 			  AND ROWNUM = 1
-	]]>
     </select>
     
     <select id="LALM0215_selTmpIndvAmnnoPgm" resultType="hashMap">
-    <![CDATA[
           SELECT
                A.SRA_INDV_AMNNO
            FROM TB_LA_IS_MM_INDV A
@@ -270,11 +259,9 @@
              AND A.ANW_YN IN('1','9')
              AND B.ANW_YN IN('1','9')
              AND A.SRA_INDV_AMNNO = #{re_indv_no}
-	]]>
     </select>
     
     <select id="LALM0215_selFhsIdNo" resultType="hashMap">
-    <![CDATA[
           SELECT
                FHS_ID_NO
              , FARM_AMNNO
@@ -288,59 +275,48 @@
          FROM TB_LA_IS_MM_FHS
          WHERE NA_BZPLC       = #{ss_na_bzplc} 
            AND FHS_ID_NO = #{fhs_id_no}
-	]]>  
            <if test="farm_amnno != null and farm_amnno != ''"> 
 				AND FARM_AMNNO = #{farm_amnno}
            </if>       
     </select>
     
     <select id="LALM0215_selAmnno" resultType="hashMap">
-    <![CDATA[
          SELECT
               SRA_INDV_AMNNO
         FROM  TB_LA_IS_MM_INDV
         WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
           AND SRA_INDV_AMNNO  = #{re_indv_no}					/* 축산개체관리번호		*/
-	]]>
     </select>
     
     <select id="LALM0215_selVoslpNo" resultType="hashMap">
-    <![CDATA[
          SELECT
 	          NVL(MAX(OSLP_NO)+1,1)  AS V_OSLP_NO
 		FROM  TB_LA_IS_MH_SOG_COW
 		WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
-		  AND AUC_DT          = #{auc_dt}					/* 이월일자			*/
-	]]>
+		  AND AUC_DT          = #{auc_dt}					    /* 이월일자			*/
     </select>
     
     <select id="LALM0215_selChgVoslpNo" resultType="hashMap">
-    <![CDATA[
          SELECT
 	          NVL(MAX(OSLP_NO)+1,1)  AS V_OSLP_NO
 		FROM  TB_LA_IS_MH_SOG_COW
 		WHERE NA_BZPLC        = #{ss_na_bzplc}					/* 경제통합사업장코드		*/
 		  AND AUC_DT          = #{auc_chg_dt}					/* 이월일자			*/
-	]]>
     </select>
     
     <select id="LALM0215_selTmpAucObjDsc" resultType="hashMap">
-    <![CDATA[
          SELECT AUC_OBJ_DSC
           FROM  TB_LA_IS_MH_AUC_QCN
           WHERE NA_BZPLC        = #{ss_na_bzplc}
             AND AUC_DT          = #{auc_dt}
-	]]>
     </select>
     
     <select id="LALM0215_selTmpAucPrgSq" resultType="hashMap">
-    <![CDATA[
          SELECT NVL(MAX(AUC_PRG_SQ)+1,1) AS AUC_PRG_SQ			/* 경매순번                     */
            FROM TB_LA_IS_MH_SOG_COW
            WHERE NA_BZPLC        = #{ss_na_bzplc}				/* 경제통합사업장코드           */
              AND AUC_DT          = #{auc_dt}					/* 경매일자                     */
              AND AUC_OBJ_DSC     = #{auc_obj_dsc}			/* 경매대상                     */
-	]]>
     </select>
     
     <select id="LALM0215_selTmpFhsNm" resultType="hashMap">
@@ -717,7 +693,7 @@
 				, #{lvst_auc_ptc_mn_no}
 			</otherwise>
 		 </choose>
-         , '01'					                  	/* 축산축종구분코드           */
+         , NVL(#{sra_srs_dsc}, '01')              	/* 축산축종구분코드           */
          , #{re_indv_no}                   			/* 축산개체관리번호           */
          , #{cow_sog_wt}               				/* 우출하중량                 */
          , #{fir_lows_sbid_lmt_am}     				/* 최초최저낙찰한도금액       */
@@ -867,7 +843,7 @@
             (
                   #{ss_na_bzplc}										/* 경제통합사업장코드                  */
                 , #{re_indv_no}											/* 축산개체관리번호                    */
-                , '01'													/* 축산축종구분코드                    */
+                , NVL(#{sra_srs_dsc}, '01')								/* 축산축종구분코드                    */
                 , #{fhs_id_no}											/* 농가식별번호                        */
                 , #{farm_amnno}											/* 농장관리번호                        */
                 <choose>
@@ -1040,7 +1016,7 @@
                 , SRA_INDV_PASG_QCN     = #{sra_indv_pasg_qcn}
             WHERE NA_BZPLC              = #{ss_na_bzplc}
               AND SRA_INDV_AMNNO        = #{re_indv_no}
-              AND SRA_SRS_DSC           ='01'
+              AND SRA_SRS_DSC           = '01'
     </update>
     
     <!-- 출장우 이미지 조회 -->

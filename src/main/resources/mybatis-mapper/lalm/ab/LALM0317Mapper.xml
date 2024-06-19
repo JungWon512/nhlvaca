@@ -23,6 +23,13 @@
              , A.COW_SOG_WT                     /* 우출하중량                           */
              , A.FIR_LOWS_SBID_LMT_AM           /* 최초최저낙찰한도금액                 */
              , A.LOWS_SBID_LMT_AM               /* 최저낙찰한도금액                     */
+             , CASE WHEN A.AUC_OBJ_DSC = '1' THEN A.LOWS_SBID_LMT_AM / F.CALF_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '2' THEN A.LOWS_SBID_LMT_AM / F.NBFCT_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '3' THEN A.LOWS_SBID_LMT_AM / F.PPGCOW_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '5' THEN A.LOWS_SBID_LMT_AM / F.GT_AUC_ATDR_UNT_AM
+                    WHEN A.AUC_OBJ_DSC = '6' THEN A.LOWS_SBID_LMT_AM / F.HS_AUC_ATDR_UNT_AM
+                    ELSE A.LOWS_SBID_LMT_AM / 10000
+                END AS LOWS_SBID_LMT_AM_EX
              , A.SRA_SBID_UPR                   /* 축산낙찰단가                         */
              , A.SRA_SBID_AM                    /* 축산낙찰금액                         */
              , A.SEL_STS_DSC                    /* 판매상태구분코드                     */
@@ -99,8 +106,13 @@
           AND A.VHC_SHRT_C   = E.VHC_SHRT_C
             , TB_LA_IS_MM_INDV     B
             , TB_LA_IS_MM_FHS      D
+            , TB_LA_IS_MM_ENV_EST     F
         WHERE A.NA_BZPLC           = #{ss_na_bzplc}
-          AND A.AUC_OBJ_DSC        = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+          <!-- AND A.AUC_OBJ_DSC        = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END -->
+          AND (
+            (#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+            OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+          )
           AND A.AUC_DT             = #{auc_dt}
         <if test="trmn_amnno != null and trmn_amnno != ''">
           AND A.TRMN_AMNNO         = #{trmn_amnno}
@@ -109,7 +121,8 @@
           AND A.SEL_STS_DSC        = #{sel_sts_dsc}
         </if>
           AND A.LED_SQNO           = 1
-          AND A.DEL_YN             = '0'                       
+          AND A.DEL_YN             = '0'
+          AND A.SRA_SRS_DSC 	    = #{sra_srs_dsc}
           AND A.NA_BZPLC           = B.NA_BZPLC
           AND A.SRA_INDV_AMNNO     = B.SRA_INDV_Amnno
           AND A.SRA_SRS_DSC        = B.SRA_SRS_DSc
@@ -117,6 +130,7 @@
           AND A.FHS_ID_NO          = D.FHS_ID_NO
           AND A.FARM_AMNNO         = D.FARM_AMNNO
           AND A.LOWS_SBID_LMT_AM  != 0
+          AND A.NA_BZPLC           = F.NA_BZPLC
         ORDER BY A.AUC_PRG_SQ  
     </select>
     

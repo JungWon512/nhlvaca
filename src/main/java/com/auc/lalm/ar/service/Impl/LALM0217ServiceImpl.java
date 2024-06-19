@@ -65,11 +65,11 @@ public class LALM0217ServiceImpl implements LALM0217Service{
 		int insNum = 0;
 		int insLogNum = 0;
 		
-		insNum = lalm0217Mapper.LALM0217_updPgm(map);		
-		reMap.put("updateNum", insNum);
-		
 		insLogNum = lalm0217Mapper.LALM0217_updLogPgm(map);
-		reMap.put("insLogNum", insLogNum);		
+		reMap.put("insLogNum", insLogNum);
+
+		insNum = lalm0217Mapper.LALM0217_updPgm(map);	
+		reMap.put("updateNum", insNum);
 		
 		return reMap;
 	}
@@ -80,7 +80,11 @@ public class LALM0217ServiceImpl implements LALM0217Service{
 		Map<String, Object> reMap = new HashMap<String, Object>();		
 		int delNum = 0;	
 		int insLogNum = 0;
-		delNum = lalm0217Mapper.LALM0217_delPgm(map);		
+
+		insLogNum = lalm0217Mapper.LALM0217_delLogPgm(map);
+		reMap.put("insLogNum", insLogNum);
+
+		delNum = lalm0217Mapper.LALM0217_delPgm(map);
 		reMap.put("updateNum", delNum);
 		
 		insLogNum = lalm0217Mapper.LALM0217_delLogPgm(map);

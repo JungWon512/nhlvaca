@@ -114,7 +114,7 @@
 			 , NVL(F.USRNM, 'SYSTEM') AS LSCHG_NM	/* 최종수정자 */
 		  FROM TB_LA_IS_MH_COW_RECV A
 		 INNER JOIN TB_LA_IS_MM_INDV B
-			ON ( A.NA_BZPLC = B.NA_BZPLC AND A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO )
+			ON ( A.NA_BZPLC = B.NA_BZPLC AND A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO AND B.SRA_SRS_DSC = '01' )
 		 INNER JOIN TB_LA_IS_MM_FHS C
 			ON ( A.NA_BZPLC = C.NA_BZPLC AND A.FHS_ID_NO = C.FHS_ID_NO AND A.FARM_AMNNO = C.FARM_AMNNO )
 		  LEFT OUTER JOIN TB_LA_IS_MM_VHC D
@@ -253,7 +253,7 @@
 				END AS VHC_DRV_CAFFNM /* 수송자명 */
 		  FROM TB_LA_IS_MH_COW_RECV A
 		 INNER JOIN TB_LA_IS_MM_INDV B
-			ON ( A.NA_BZPLC = B.NA_BZPLC AND A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO )
+			ON ( A.NA_BZPLC = B.NA_BZPLC AND A.SRA_INDV_AMNNO = B.SRA_INDV_AMNNO AND B.SRA_SRS_DSC = '01' )
 		 INNER JOIN TB_LA_IS_MM_FHS C
 			ON ( A.NA_BZPLC = C.NA_BZPLC AND A.FHS_ID_NO = C.FHS_ID_NO AND A.FARM_AMNNO = C.FARM_AMNNO )
 		  LEFT OUTER JOIN TB_LA_IS_MM_VHC D
@@ -266,14 +266,39 @@
 	
 	<!-- 선택한 경매일자에 동일한 개체가 있는지 확인 -->
 	<select id="LALM0226_selIndvChk" parameterType="hashMap" resultType="hashMap">
-		SELECT TO_CHAR(TO_DATE(AUC_DT), 'YYYY-MM-DD') AS AUC_DT
-			 , AUC_PRG_SQ
-			 , AUC_RECV_NO
-			 , TO_CHAR(TO_DATE(AUC_RECV_DT), 'YYYY-MM-DD') AS AUC_RECV_DT
-		  FROM TB_LA_IS_MH_COW_RECV
-		 WHERE NA_BZPLC = #{ss_na_bzplc}
-		   AND AUC_DT = #{auc_dt}
-		   AND SRA_INDV_AMNNO = #{re_indv_no}
+		SELECT TO_CHAR(TO_DATE(A.AUC_DT), 'YYYY-MM-DD') AS AUC_DT
+			, A.AUC_OBJ_DSC
+			, I.SIMP_CNM AS AUC_OBJ_DSC_NM
+			, A.AUC_PRG_SQ
+			, A.AUC_RECV_NO
+			, TO_CHAR(TO_DATE(A.AUC_RECV_DT), 'YYYY-MM-DD') AS AUC_RECV_DT
+		FROM TB_LA_IS_MH_COW_RECV A
+		LEFT OUTER JOIN (
+			SELECT SIMP_C, SIMP_CNM
+			FROM TB_LA_IS_MH_COMN_APL
+			WHERE SIMP_TPC = 'AUC_OBJ_DSC'
+			AND SIMP_C_GRP_SQNO = '7'
+		) I ON (I.SIMP_C = A.AUC_OBJ_DSC)
+		WHERE A.NA_BZPLC = #{ss_na_bzplc}
+		<choose>
+			<when test='"1".equals(auc_obj_dsc)'>
+				AND A.AUC_DT = #{auc_dt}
+			</when>
+			<otherwise>
+				AND A.AUC_DT BETWEEN TO_CHAR(ADD_MONTHS(TO_DATE(#{auc_recv_dt}), -6), 'YYYYMMDD') AND TO_CHAR(ADD_MONTHS(TO_DATE(#{auc_recv_dt}) ,6), 'YYYYMMDD')
+				<if test="pre_auc_recv_dt !=null and pre_auc_recv_dt !=''">
+					AND A.AUC_RECV_DT != #{pre_auc_recv_dt}
+				</if>
+				<if test="pre_auc_recv_no !=null and pre_auc_recv_no !=''">
+					AND A.AUC_RECV_NO != #{pre_auc_recv_no}
+				</if>
+				<if test="pre_auc_obj_dsc !=null and pre_auc_obj_dsc !=''">
+					AND A.AUC_OBJ_DSC != #{pre_auc_obj_dsc}
+				</if>
+			</otherwise>
+		</choose>
+		AND A.SRA_INDV_AMNNO = #{re_indv_no}
+		ORDER BY A.AUC_DT,A.AUC_RECV_DT
 	</select>
 
 	<!-- 출장우 접수 정보 저장 -->

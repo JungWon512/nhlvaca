@@ -6,7 +6,6 @@
 <mapper namespace="com.auc.lalm.ab.service.Impl.LALM0312Mapper">
 
     <select id="LALM0312_selList" resultType="hashMap">
-    <![CDATA[
 	    SELECT
 	          A.AUC_PRG_SQ                           /* 원표번호                 */
 	        , A.AUC_OBJ_DSC                         /* 경매대상구분코드         */
@@ -23,9 +22,12 @@
 	        , 0  AS SANJUNG3                        /* 수기입력3                  */
 	        , 0  AS SANJUNG4                        /* 수기입력4                  */
 	        , CASE A.AUC_OBJ_DSC WHEN '1' THEN A.LOWS_SBID_LMT_AM/D.CALF_AUC_ATDR_UNT_AM
-	                             WHEN '2' THEN A.LOWS_SBID_LMT_AM/D.NBFCT_AUC_ATDR_UNT_AM
-	                             ELSE A.LOWS_SBID_LMT_AM/D.PPGCOW_AUC_ATDR_UNT_AM
-	                             END AS LOWS_SBID_LMT_AM 
+								 WHEN '2' THEN A.LOWS_SBID_LMT_AM/D.NBFCT_AUC_ATDR_UNT_AM
+								 WHEN '3' THEN A.LOWS_SBID_LMT_AM/D.PPGCOW_AUC_ATDR_UNT_AM
+								 WHEN '5' THEN A.LOWS_SBID_LMT_AM/D.GT_AUC_ATDR_UNT_AM
+								 WHEN '6' THEN A.LOWS_SBID_LMT_AM/D.HS_AUC_ATDR_UNT_AM
+								 ELSE A.LOWS_SBID_LMT_AM/10000
+			END AS LOWS_SBID_LMT_AM
 	        , A.AUC_DT                        /* 경매일자                    */
 	        , A.LED_SQNO                            /* 원장일련번호                */
 	        , A.FHS_ID_NO                           /* 농가식별번호                */
@@ -42,7 +44,11 @@
 	         , TB_LA_IS_MM_INDV    C
 	         , TB_LA_IS_MM_ENV_EST D
 	   WHERE A.NA_BZPLC              = #{ss_na_bzplc}
-	     AND A.AUC_OBJ_DSC          = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END
+	     <!-- AND A.AUC_OBJ_DSC          = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END -->
+		 AND (
+			(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+			OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+		)
 	     AND A.AUC_DT                = #{auc_dt}
 	     AND A.NA_BZPLC             = B.NA_BZPLC
 	     AND A.FHS_ID_NO            = B.FHS_ID_NO
@@ -54,33 +60,34 @@
 	     AND A.SEL_STS_DSC          = '11'
 	     AND A.NA_BZPLC             = D.NA_BZPLC
 	     ORDER BY A.AUC_DT,A.AUC_PRG_SQ	     
-    ]]>
     </select>
-    
+   
 	<update id="LALM0312_updSogCowSjam">
-    <![CDATA[	
-			UPDATE TB_LA_IS_MH_SOG_COW SET
-
-				 FIR_LOWS_SBID_LMT_AM   = CASE WHEN FIR_LOWS_SBID_LMT_AM = 0 AND #{auc_obj_dsc} = '1' THEN #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}
-											   WHEN FIR_LOWS_SBID_LMT_AM = 0 AND #{auc_obj_dsc} = '2' THEN #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}
-											   WHEN FIR_LOWS_SBID_LMT_AM = 0 AND #{auc_obj_dsc} = '3' THEN #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}
-										  ELSE FIR_LOWS_SBID_LMT_AM
-	  		                              END
-
-			    ,LOWS_SBID_LMT_AM       = CASE WHEN #{auc_obj_dsc} = '1' THEN #{lows_sbid_lmt_am} * #{calf_auc_atdr_unt_am}
-				                               WHEN #{auc_obj_dsc} = '2' THEN #{lows_sbid_lmt_am} * #{nbfct_auc_atdr_unt_am}
-				                               WHEN #{auc_obj_dsc} = '3' THEN #{lows_sbid_lmt_am} * #{ppgcow_auc_atdr_unt_am}
-				                          ELSE LOWS_SBID_LMT_AM
-				                          END
-		  	 WHERE NA_BZPLC				= #{ss_na_bzplc}
-			   AND AUC_DT				= #{auc_dt}
-			   AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
-			   AND AUC_PRG_SQ			= #{auc_prg_sq}
-			   AND OSLP_NO              = #{oslp_no}
-			   AND LED_SQNO				= '1'
-			   AND SEL_STS_DSC			= '11'
-			   AND DEL_YN				= '0'	
-    ]]>		   
+		UPDATE TB_LA_IS_MH_SOG_COW SET
+			FIR_LOWS_SBID_LMT_AM   = #{lows_sbid_lmt_am} * (SELECT CASE WHEN #{auc_obj_dsc} = '1' THEN CALF_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '2' THEN NBFCT_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '3' THEN PPGCOW_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '5' THEN GT_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '6' THEN HS_AUC_ATDR_UNT_AM
+																		ELSE 10000 END
+															FROM TB_LA_IS_MM_ENV_EST
+															WHERE NA_BZPLC = #{ss_na_bzplc})
+			, LOWS_SBID_LMT_AM       = #{lows_sbid_lmt_am} * (SELECT CASE WHEN #{auc_obj_dsc} = '1' THEN CALF_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '2' THEN NBFCT_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '3' THEN PPGCOW_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '5' THEN GT_AUC_ATDR_UNT_AM
+																		WHEN #{auc_obj_dsc} = '6' THEN HS_AUC_ATDR_UNT_AM
+																		ELSE 10000 END
+															FROM TB_LA_IS_MM_ENV_EST
+															WHERE NA_BZPLC = #{ss_na_bzplc})
+			WHERE NA_BZPLC			= #{ss_na_bzplc}
+			AND AUC_DT				= #{auc_dt}
+			AND AUC_OBJ_DSC   		= #{auc_obj_dsc}
+			AND AUC_PRG_SQ			= #{auc_prg_sq}
+			AND OSLP_NO				= #{oslp_no}
+			AND LED_SQNO			= '1'
+			AND SEL_STS_DSC			= '11'
+			AND DEL_YN				= '0'	
 	</update>    
     
 </mapper>

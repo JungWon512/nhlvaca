@@ -44,5 +44,7 @@ public interface LALM0225Mapper {
 	 */
 	int LALM0225P1_updDnaYn(Map<String, Object> map);
 
+	Map<String, Object> LALM0225_selIndvChk(Map<String, Object> map);
+
 
 }

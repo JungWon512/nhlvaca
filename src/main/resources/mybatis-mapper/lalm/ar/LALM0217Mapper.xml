@@ -16,24 +16,32 @@
 	        , A.DEL_YN                    /* 삭제여부                   */
 	    FROM TB_LA_IS_MH_AUC_STN A
 	    WHERE A.NA_BZPLC         = #{ss_na_bzplc}
-	      AND A.AUC_OBJ_DSC      = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END /* 경매대상구분코드            */
+	      <!-- AND A.AUC_OBJ_DSC      = CASE WHEN #{auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{auc_obj_dsc} END /* 경매대상구분코드            */ -->
+		  AND (
+				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
+			)
 	      AND A.AUC_DT           = #{auc_dt}
 	    ORDER BY A.ST_AUC_NO
     </select>
     
     <select id="LALM0217_selQcn" resultType="hashMap">
-    <![CDATA[
          SELECT
             COUNT(*) AS CNT
            FROM  TB_LA_IS_MH_AUC_QCN
           WHERE NA_BZPLC             = #{ss_na_bzplc}
             AND AUC_DT               = #{cb_auc_dt}
             AND DEL_YN               = '0'
-    ]]>
+		<!-- 경매일자에 등록된 전체 차수를 체크하는게 맞나?.. -->
+		<!-- 240308 : 경매대상 조건도 추가 -->
+		    AND (
+				(#{hd_auc_obj_dsc} IN ('0', '1', '2', '3', '4') AND AUC_OBJ_DSC IN ('0', '1', '2', '3'))
+				OR
+				(#{hd_auc_obj_dsc} NOT IN ('0', '1', '2', '3', '4') AND AUC_OBJ_DSC = #{hd_auc_obj_dsc})
+			)
     </select>
     
     <select id="LALM0217_selAucStn" resultType="hashMap">
-    <![CDATA[
  		 SELECT
                 COUNT(*)  AS MAXCNT
            FROM TB_LA_IS_MH_AUC_STN
@@ -41,12 +49,9 @@
             AND AUC_OBJ_DSC  = #{hd_auc_obj_dsc}
             AND AUC_DT       = #{cb_auc_dt}
             AND ( #{st_auc_no} BETWEEN ST_AUC_NO AND ED_AUC_NO OR  #{ed_auc_no}  BETWEEN ST_AUC_NO AND ED_AUC_NO )
-
-    ]]>
     </select>
        
     <insert id="LALM0217_insPgm">
-    <![CDATA[
         INSERT INTO TB_LA_IS_MH_AUC_STN(
               NA_BZPLC              /* 경제통합사업장코드         */
             , AUC_OBJ_DSC           /* 경매대상구분코드           */
@@ -80,11 +85,9 @@
             , SYSDATE               /* 최종변경일시               */             
             , #{ss_userid}          /* 최종변경자개인번호         */              
         )
-    ]]>
     </insert>
     
     <insert id="LALM0217_insLogPgm">
-    <![CDATA[
 	    INSERT INTO TB_LA_IS_MH_AUC_STN_LOG
 	        (
 	          NA_BZPLC                           /* 경제통합사업장코드           */
@@ -121,28 +124,29 @@
             , '0217저장'                          /* 최종변경자개인번호         */     
          FROM TB_LA_IS_MH_AUC_STN A
         WHERE A.NA_BZPLC         =  #{ss_na_bzplc}
-          AND A.AUC_OBJ_DSC      =  CASE WHEN #{hd_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{hd_auc_obj_dsc} END    /* 경매대상구분코드            */
+          <!-- AND A.AUC_OBJ_DSC      =  CASE WHEN #{hd_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{hd_auc_obj_dsc} END    /* 경매대상구분코드            */ -->
+		  AND A.AUC_OBJ_DSC      =  #{hd_auc_obj_dsc}
           AND A.AUC_DT           =  #{cb_auc_dt}
-        
-    ]]>
-    </insert>    
+		  AND A.RG_SQNO          = ( SELECT NVL(MAX(RG_SQNO),1)
+									  FROM TB_LA_IS_MH_AUC_STN
+									 WHERE NA_BZPLC    = #{ss_na_bzplc}
+									   AND AUC_OBJ_DSC = #{hd_auc_obj_dsc}
+									   AND AUC_DT      = #{cb_auc_dt} )
+    </insert>
     
     <update id="LALM0217_updPgm">
-    <![CDATA[
         UPDATE TB_LA_IS_MH_AUC_STN SET
               ST_AUC_NO              = #{st_auc_no}          /* 시작경매번호               */
             , ED_AUC_NO              = #{ed_auc_no}          /* 종료경매번호               */
             , LSCHG_DTM              = SYSDATE               /* 최종변경일시               */
             , LS_CMENO               = #{ss_userid}          /* 최종변경자개인번호         */
         WHERE NA_BZPLC               = #{ss_na_bzplc}
-          AND   AUC_OBJ_DSC          = #{hd_auc_obj_dsc}
-          AND   AUC_DT               = #{cb_auc_dt}
-          AND   RG_SQNO              = #{rg_sqno}
-    ]]>
+          AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}
+          AND AUC_DT                 = #{cb_auc_dt}
+          AND RG_SQNO                = #{rg_sqno}
     </update>
     
     <insert id="LALM0217_updLogPgm">
-    <![CDATA[
 	    INSERT INTO TB_LA_IS_MH_AUC_STN_LOG
 	        (
 	        NA_BZPLC                                 /* 경제통합사업장코드                  */
@@ -179,24 +183,22 @@
 	        , '0217수정'                          /* 최종변경자개인번호                  */
 	        FROM TB_LA_IS_MH_AUC_STN A
 	        WHERE A.NA_BZPLC       =  #{ss_na_bzplc}
-	        AND A.AUC_OBJ_DSC      =  CASE WHEn #{hd_auc_obj_dsc} = '0' then a.auc_obj_dsc else #{hd_auc_obj_dsc} end    /* 경매대상구분코드            */
+	        <!-- AND A.AUC_OBJ_DSC      =  CASE WHEn #{hd_auc_obj_dsc} = '0' then a.auc_obj_dsc else #{hd_auc_obj_dsc} end    /* 경매대상구분코드            */ -->
+			AND A.AUC_OBJ_DSC      =  #{hd_auc_obj_dsc}
 	        AND A.AUC_DT           =  #{cb_auc_dt}
-    ]]>
+			AND A.RG_SQNO          =  #{rg_sqno}
     </insert>       
     
     <delete id="LALM0217_delPgm">
-    <![CDATA[
 	    DELETE
 	      FROM TB_LA_IS_MH_AUC_STN
 	     WHERE NA_BZPLC               = #{ss_na_bzplc}
 	       AND AUC_OBJ_DSC            = #{hd_auc_obj_dsc}
 	       AND AUC_DT                 = #{cb_auc_dt}
 	       AND RG_SQNO                = #{rg_sqno}
-    ]]>
     </delete>
     
     <insert id="LALM0217_delLogPgm">
-    <![CDATA[
 	    INSERT INTO TB_LA_IS_MH_AUC_STN_LOG
 	        (
 	        NA_BZPLC                                 /* 경제통합사업장코드                  */
@@ -233,9 +235,10 @@
 	        , '0217삭제'                          /* 최종변경자개인번호                  */
 	        FROM TB_LA_IS_MH_AUC_STN A
 	        WHERE A.NA_BZPLC       =  #{ss_na_bzplc}
-	        AND A.AUC_OBJ_DSC      =  CASE WHEn #{hd_auc_obj_dsc} = '0' then a.auc_obj_dsc else #{hd_auc_obj_dsc} end   
+	        <!-- AND A.AUC_OBJ_DSC      =  CASE WHEn #{hd_auc_obj_dsc} = '0' then a.auc_obj_dsc else #{hd_auc_obj_dsc} end    -->
+			AND A.AUC_OBJ_DSC      =  #{hd_auc_obj_dsc}
 	        AND A.AUC_DT           =  #{cb_auc_dt}
-    ]]>
+			AND A.RG_SQNO          =  #{rg_sqno}
     </insert>     
     
 </mapper>

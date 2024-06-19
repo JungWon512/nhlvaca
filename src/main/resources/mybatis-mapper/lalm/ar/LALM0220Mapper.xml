@@ -112,6 +112,7 @@
 		    WHERE A.NA_BZPLC       = #{ss_na_bzplc}
 		      AND A.AUC_OBJ_DSC    = CASE WHEN #{cb_auc_obj_dsc} = '0' THEN A.AUC_OBJ_DSC ELSE #{cb_auc_obj_dsc} END 
 		      AND A.AUC_DT         = #{auc_dt}
+			  AND A.SRA_SRS_DSC    = NVL(#{sra_srs_dsc}, A.SRA_SRS_DSC)
 		      AND 1                = (CASE WHEN #{vhc_drv_caffnm} is null THEN 1 ELSE 2 END) 
 		      AND A.LED_SQNO       = '1'
 		      AND A.DEL_YN         = '0'

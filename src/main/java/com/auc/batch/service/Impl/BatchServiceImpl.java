@@ -6,10 +6,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +21,6 @@ import com.auc.common.util.StringUtils;
 import com.auc.lalm.bs.service.Impl.LALM0117Mapper;
 import com.auc.lalm.sy.service.LALM0899Service;
 import com.auc.lalm.sy.service.Impl.LALM0840Mapper;
-import com.auc.main.service.CommonService;
 import com.auc.mca.AlarmTalkForm;
 import com.auc.mca.McaUtil;
 
@@ -54,9 +51,6 @@ public class BatchServiceImpl implements BatchService{
 
 	@Autowired
 	CommonFunc commonFunc;
-
-	@Autowired
-	CommonService commonService;
 	
 	@Override
 	public List<Map<String, Object>> selDormaccMmMbintgList(Map<String, Object> map) throws Exception{
@@ -650,65 +644,6 @@ public class BatchServiceImpl implements BatchService{
 		reMap.put("succCnt", succCnt);
 		reMap.put("error", error.toString());
 		return reMap;
-	}
-	public Map<String, Object> batchBloodAiakSync(Map<String, Object> map) throws Exception{
-		Map<String,Object> reMap = new HashMap<String, Object>();
-		StringBuffer error = new StringBuffer();
-		int insertNum = 0;
-		int deleteNum = 0;
-		int failCnt = 0;
-		int succCnt = 0; 
-		
-		try {
-			List<Map<String,Object>> bldList = batchMapper.selAucBldList(map);
-			for(Map<String,Object> info : bldList) {
-				Iterator<String> keys = info.keySet().iterator();
-				Map<String,Object> tempMap = new HashMap<>();
-				tempMap.put("NA_BZPLC", info.get("NA_BZPLC"));
-				tempMap.put("AUC_DT", info.get("AUC_DT"));
-				
-				while(keys.hasNext()) {
-					String key = keys.next();
-					log.debug("{} : {}", key, info.get(key));
-					if(!key.contains("SRA_INDV_AMNNO")) continue;
-					String sraIndvAmnno = (String) info.get(key);
-					switch(key) {
-						case "SRA_INDV_AMNNO": tempMap.put("indvBldC", "0"); break;						
-						case "MCOW_SRA_INDV_AMNNO": tempMap.put("indvBldC", "M"); break;						
-						case "FCOW_SRA_INDV_AMNNO": tempMap.put("indvBldC", "F"); break;						
-						case "GRMCOW_SRA_INDV_AMNNO": tempMap.put("indvBldC", "GM"); break;						
-						case "GRFCOW_SRA_INDV_AMNNO": tempMap.put("indvBldC", "GF"); break;						
-						case "MTGRMCOW_SRA_INDV_AMNNO": tempMap.put("indvBldC", "MGM"); break;						
-						case "MTGRFCOW_SRA_INDV_AMNNO": tempMap.put("indvBldC", "MGF"); break;
-					}
-					if(this.chkIndvAmnnoVaild(sraIndvAmnno)) {
-						tempMap.put("sraIndvAmnno", sraIndvAmnno);						
-						//commonService.Common_selAiakInfo(tempMap);
-					}
-				}
-			}
-			succCnt++;
-		}catch(Exception e){
-			log.error("BatchServiceImpl.batchBloodAiakSync : {} ", e);
-			if("".equals(error.toString())) { error.append(" ||"); }
-			error.append(this.getExceptionErrorMessage(e));
-			failCnt++;			
-		}
-		
-		reMap.put("insertNum", insertNum);
-		reMap.put("deleteNum", deleteNum);
-		reMap.put("failCnt", failCnt);
-		reMap.put("succCnt", succCnt);
-		reMap.put("error", error.toString());
-		return reMap;
-		
-	}
-
-	private boolean chkIndvAmnnoVaild(String sraIndvAmnno) {
-		if(sraIndvAmnno != null && !"".equals(sraIndvAmnno) && (sraIndvAmnno.length() == 15 || sraIndvAmnno.length() == 12)){
-			return true;
-		}
-		return false;
 	}
 
 }

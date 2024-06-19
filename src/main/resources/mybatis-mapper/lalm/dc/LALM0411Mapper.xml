@@ -68,6 +68,7 @@
 	   where a.na_bzplc       = #{ss_na_bzplc}
 	     and a.auc_dt         = #{auc_dt}
 	     and a.led_sqno       = '1'
+		 and a.auc_obj_dsc in ( '1', '2', '3' )
 	     and b.na_bzplc       = a.na_bzplc
 	     and b.fhs_id_no      = a.fhs_id_no
 	     and b.farm_amnno     = a.farm_amnno

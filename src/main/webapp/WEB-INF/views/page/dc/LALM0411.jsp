@@ -918,7 +918,7 @@
         var MwmnAdj_result;
                 
         var tot_cnt = result.totCnt;
-        var fix_pos = 40;
+        var fix_pos = 150;
         var st_pos = 1;
         var ed_pos = fix_pos;
     	

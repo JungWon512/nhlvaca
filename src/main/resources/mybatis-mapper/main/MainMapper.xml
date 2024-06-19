@@ -29,6 +29,9 @@
              , CASE WHEN A.MENU_LVL_C = '2' THEN A.MNNM_CNTN
                     WHEN A.MENU_LVL_C = '3' THEN  (SELECT MNNM_CNTN FROM TB_LA_IS_MM_MENU WHERE MENU_ID = SUBSTR(A.MENU_ID, 1, 4) || '00')
                     END AS scd_menu_nm
+             ,  CASE WHEN A.MENU_LVL_C = '2' THEN A.SORT_SQ
+                    WHEN A.MENU_LVL_C = '3' THEN  (SELECT SORT_SQ FROM TB_LA_IS_MM_MENU WHERE MENU_ID = SUBSTR(A.MENU_ID, 1, 4) || '00')
+                    END AS SCD_SORT_SQ
              FROM TB_LA_IS_MM_MENU A
                 , TB_LA_IS_MM_PGM  B
                 , (SELECT MENU_ID     
@@ -50,7 +53,7 @@
               AND A.UYN     = '1'
               AND A.PGID    = B.PGID(+)
               AND A.MENU_ID = C.MENU_ID
-            ORDER BY SCD_MENU_ID, MENU_LVL_C, SORT_SQ
+            ORDER BY SCD_SORT_SQ, SCD_MENU_ID, MENU_LVL_C, SORT_SQ
     </select>
     
     <select id="selectPopupList" resultType="hashMap">
@@ -186,6 +189,11 @@
 	        , BRKR_NAME_HOST                                            /* 수의사병원명                */
 	        , NVL(FEE_CHK_DNA_YN_FEE, 0) AS FEE_CHK_DNA_YN_FEE          /* 친자확인출하수수료          */
 	        , NVL(SELFEE_CHK_DNA_YN_FEE, 0) AS SELFEE_CHK_DNA_YN_FEE    /* 친자확인판매수수료          */
+          , (SELECT ETC_AUC_OBJ_DSC FROM TB_LA_IS_BM_BZLOC WHERE NA_BZPLC = #{ss_na_bzplc}) AS ETC_AUC_OBJ_DSC  /* 기타경매대상구분 */
+          , GT_AUC_UPR_DSC              /* 염소경매단가구분코드 */
+          , GT_AUC_ATDR_UNT_AM          /* 염소경매응찰단위금액 */
+          , HS_AUC_UPR_DSC              /* 말경매단가구분코드 */
+          , HS_AUC_ATDR_UNT_AM          /* 말경매응찰단위금액 */
 	    FROM TB_LA_IS_MM_ENV_EST
 	   WHERE NA_BZPLC = #{ss_na_bzplc}
     </select>
@@ -803,4 +811,34 @@
 		) A
 		WHERE ROWNUM <![CDATA[ <= ]]> 4  
 	</select>
+	
+	<select id="MainNotice_selPopupList" resultType="hashMap">
+    	/* MainMapper.MainNotice_selPopupList */
+		SELECT 
+			NA_BZPLC
+			, BLBD_DSC
+			, BBRD_SQNO
+			, RL_SQNO
+			, BBRD_TINM
+			, BBRD_CNTN
+			, BBRD_INQ_CN
+			, APDFL_ID
+			, PUP_UYN
+			, FIX_YN
+			, BBRD_DEL_YN
+			, ST_DT
+			, ED_DT
+			, FSRG_DTM
+			, FSRGMN_ENO
+			, LSCHG_DTM
+			, LS_CMENO
+		FROM TB_LA_IS_MM_BLBD
+		WHERE BLBD_DSC ='2'
+		AND NA_BZPLC ='0000000000000'
+		AND PUP_UYN ='1'
+		AND NVL(BBRD_DEL_YN,'0') = '0' 
+		AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[ >= ]]> ST_DT
+		AND TO_CHAR(SYSDATE,'YYYYMMDD') <![CDATA[ <= ]]> ED_DT
+		ORDER BY LSCHG_DTM DESC
+    </select>  
 </mapper>
