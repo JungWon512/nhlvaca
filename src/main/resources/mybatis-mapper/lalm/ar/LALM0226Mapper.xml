@@ -272,8 +272,16 @@
 			 , TO_CHAR(TO_DATE(AUC_RECV_DT), 'YYYY-MM-DD') AS AUC_RECV_DT
 		  FROM TB_LA_IS_MH_COW_RECV
 		 WHERE NA_BZPLC = #{ss_na_bzplc}
-		   AND AUC_DT = #{auc_dt}
+		 <choose>
+		 	<when test='"1".equals(auc_obj_dsc)'>
+		 		AND AUC_DT = #{auc_dt}
+		 	</when>
+		 	<otherwise>
+		 		AND AUC_DT BETWEEN TO_CHAR(TO_DATE(#{auc_recv_dt}) -6, 'YYYYMMDD') AND TO_CHAR(TO_DATE(#{auc_recv_dt}) +6, 'YYYYMMDD') 
+		 	</otherwise>
+		 </choose>		   
 		   AND SRA_INDV_AMNNO = #{re_indv_no}
+		   ORDER BY AUC_DT,AUC_RECV_DT
 	</select>
 
 	<!-- 출장우 접수 정보 저장 -->

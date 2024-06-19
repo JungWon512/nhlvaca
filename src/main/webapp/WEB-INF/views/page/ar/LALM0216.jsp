@@ -1021,6 +1021,8 @@ var na_bzplc = App_na_bzplc;
             			 
             		 }else if(na_bzplc == '8808990656274') {
                			 ReportPopup('LALM0216R3_43',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+               		 } else if(na_bzplc == '8808990657240') {
+               			 ReportPopup('LALM0216R3_77_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
                		 } else {
             			 ReportPopup('LALM0216R3_4',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
             			              
@@ -1122,9 +1124,9 @@ var na_bzplc = App_na_bzplc;
              			ReportPopup('LALM0216R3_8_5',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그
              		// 진주축협 : 8808990657240
              		 }else if(na_bzplc == '8808990657240'){
-             			ReportPopup('LALM0216R3_77_1',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그 
+             			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');				//V:세로 , H:가로  , T :콘솔로그
              		 } else if(na_bzplc == '8808990657615'){
-              			 ReportPopup('LALM0216R3_8_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
+             			ReportPopup('LALM0216R3_8_6',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
               		 } else {
               			 ReportPopup('LALM0216R3_8',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그              			 
               		 }
@@ -1283,6 +1285,9 @@ var na_bzplc = App_na_bzplc;
             		 } else if(na_bzplc == '8808990656274') {
              			 ReportPopup('LALM0216R3_43',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
              			
+            		 }else if(na_bzplc == '8808990657240') {
+             			 ReportPopup('LALM0216R3_77_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그             			
+             			
             		 } else {
              			 ReportPopup('LALM0216R3_4',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              			
@@ -1434,7 +1439,7 @@ var na_bzplc = App_na_bzplc;
              		 } else if(na_bzplc == '8808990656410' || na_bzplc == '8808990674506') {
               			ReportPopup('LALM0216R3_77',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 } else if(na_bzplc == '8808990657240') { //진주축협 : 8808990657240
-              			ReportPopup('LALM0216R3_77_1',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
+              			ReportPopup('LALM0216R3_8_2',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그
              		 // ★영광축협: 8808990811710 , 장성축협 : 8808990817675
              		 } else if(na_bzplc == '8808990811710' || na_bzplc == '8808990817675') {
              			ReportPopup('LALM0216R3_80',TitleData, grid4, 'V');              //V:세로 , H:가로  , T :콘솔로그

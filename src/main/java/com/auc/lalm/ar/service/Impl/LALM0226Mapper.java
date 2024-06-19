@@ -27,7 +27,7 @@ public interface LALM0226Mapper {
 	 * @param frmMap
 	 * @return
 	 */
-	Map<String, Object> LALM0226_selIndvChk(Map<String, Object> frmMap);
+	List<Map<String, Object>> LALM0226_selIndvChk(Map<String, Object> frmMap);
 	
 	/**
 	 * 접수내역 저장

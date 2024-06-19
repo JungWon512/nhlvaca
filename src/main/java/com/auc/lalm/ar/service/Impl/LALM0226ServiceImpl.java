@@ -62,8 +62,9 @@ public class LALM0226ServiceImpl implements LALM0226Service {
 		int aucObjDscCnt = 0;
 		
 		// 같은 경매날짜에 동일 귀표번호가 있는지 확인
-		final Map<String, Object> indvChk = lalm0226Mapper.LALM0226_selIndvChk(frmMap);
-		if (indvChk != null) {
+		final List<Map<String, Object>> indvChkList = lalm0226Mapper.LALM0226_selIndvChk(frmMap);
+		if (indvChkList != null && !indvChkList.isEmpty() && indvChkList.size() > 0) {
+			Map<String, Object> indvChk = indvChkList.get(0);
 			reMap.put("message", "이미 등록된 개체가 있습니다. <br/>[접수일:" + indvChk.get("AUC_RECV_DT") + ", 접수번호:" + indvChk.get("AUC_RECV_NO") + ", 경매일:" + indvChk.get("AUC_DT") + "] ");
 			return reMap;
 		}
