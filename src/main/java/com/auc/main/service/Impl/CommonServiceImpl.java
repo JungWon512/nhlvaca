@@ -2,6 +2,7 @@ package com.auc.main.service.Impl;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -620,6 +621,7 @@ public class CommonServiceImpl implements CommonService{
 			reMap.put("CHG_IP_ADDR", param.get("chg_ip_addr"));
 			reMap.put("CHG_PGID", param.get("chg_pg_id"));
 			reMap.put("CHG_RMK_CNTN", param.get("chg_rmk_cntn"));
+			reMap.put("ss_userid", param.get("ss_userid"));
 			updateNum += this.Common_insAiakInfo(reMap);
 		};
 		reMap.put("updateNum", updateNum);
@@ -629,8 +631,13 @@ public class CommonServiceImpl implements CommonService{
 	
 	private int Common_insAiakInfo(Map<String, Object> map) throws Exception{
 		int insertNum = 0;
-		commonMapper.Common_insertIndvAiakInfoLog(map);
+//		Iterator<String> it = map.keySet().iterator();
+//		while(it.hasNext()){
+//			String key = it.next();
+//			log.debug("### aiakInfo key : {} , val : {} ###",key,map.get(key));
+//		};
 		insertNum += commonMapper.Common_insAiakInfo(map);
+		commonMapper.Common_insertIndvAiakInfoLog(map);
 
 		List<Map<String, Object>> postData = (List<Map<String, Object>>) map.get("postInfo");
 		for(Map<String, Object> postMap: postData) {

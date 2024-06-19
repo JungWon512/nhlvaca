@@ -61,6 +61,8 @@ public interface MainMapper {
 
 	int selChkPw(Map<String, Object> map);
 
+	List<Map<String, Object>> MainNotice_selPopupList(Map<String, Object> map) throws Exception;
+
 	
 
 	
