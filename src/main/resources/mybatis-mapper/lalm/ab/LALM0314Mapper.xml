@@ -759,236 +759,51 @@
 					WHEN A.AUC_OBJ_DSC = '6' THEN C.ATDR_AM * E.HS_AUC_ATDR_UNT_AM
 				END AS SRA_SBID_AM
 		  FROM TB_LA_IS_MH_SOG_COW  A
-			 , TB_LA_IS_MM_FHS      B
-			 , (
-				SELECT AAA.NA_BZPLC
-					 , AAA.AUC_OBJ_DSC
-					 , AAA.AUC_DT
-					 , AAA.OSLP_NO
-					 , AAA.TRMN_AMNNO
-					 , AAA.LVST_AUC_PTC_MN_NO
-					 , AAA.ATDR_AM
-					 , AAA.ATDR_DTM
-				  FROM (
-						SELECT AA.*
-						  FROM (
-								SELECT A.NA_BZPLC
-									 , A.AUC_OBJ_DSC
-									 , A.AUC_DT
-									 , A.OSLP_NO
-									 , A.RG_SQNO
-									 , A.TRMN_AMNNO
-									 , A.LVST_AUC_PTC_MN_NO
-									 , A.ATDR_AM
-									 , A.ATDR_DTM
-								  FROM TB_LA_IS_MH_ATDR_LOG A
-									 , (
-										SELECT A.NA_BZPLC
-											 , A.AUC_OBJ_DSC
-											 , A.AUC_DT
-											 , A.OSLP_NO
-											 , A.TRMN_AMNNO
-											 , MAX(A.RG_SQNO) AS RG_SQNO
-										  FROM TB_LA_IS_MH_ATDR_LOG A
-										 WHERE A.NA_BZPLC    = #{ss_na_bzplc}
-										   AND A.AUC_DT      = #{auc_dt}
-										<choose>
-										<when test='"4".equals(auc_obj_dsc)'>
-											AND A.AUC_OBJ_DSC IN ('2', '3')
-										</when>
-										<otherwise>
-											AND (
-												(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
-												OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
-											)
-										</otherwise>
-										</choose>
-										 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO, A.TRMN_AMNNO
-									 ) B
-								 WHERE A.NA_BZPLC    = B.NA_BZPLC
-								   AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
-								   AND A.AUC_DT      = B.AUC_DT
-								   AND A.OSLP_NO     = B.OSLP_NO
-								   AND A.TRMN_AMNNO  = B.TRMN_AMNNO
-								   AND A.RG_SQNO     = B.RG_SQNO
-								   AND A.ATDR_AM     > 0
-							) AA
-							, (
-								SELECT A.NA_BZPLC
-									 , A.AUC_OBJ_DSC
-									 , A.AUC_DT
-									 , A.OSLP_NO
-									 , MAX(A.ATDR_AM) AS ATDR_AM
-								  FROM (
-										SELECT A.NA_BZPLC
-											 , A.AUC_OBJ_DSC
-											 , A.AUC_DT
-											 , A.OSLP_NO
-											 , A.RG_SQNO
-											 , A.ATDR_AM
-										  FROM TB_LA_IS_MH_ATDR_LOG A
-											 , (
-												SELECT A.NA_BZPLC
-													 , A.AUC_OBJ_DSC
-													 , A.AUC_DT
-													 , A.OSLP_NO
-													 , A.TRMN_AMNNO
-													 , MAX(A.RG_SQNO) AS RG_SQNO
-												  FROM TB_LA_IS_MH_ATDR_LOG A
-												 WHERE A.NA_BZPLC    = #{ss_na_bzplc}
-												   AND A.AUC_DT      = #{auc_dt}
-												<choose>
-												<when test='"4".equals(auc_obj_dsc)'>
-													AND A.AUC_OBJ_DSC IN ('2', '3')
-												</when>
-												<otherwise>
-													AND (
-														(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
-														OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
-													)
-												</otherwise>
-												</choose>
-												 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO, A.TRMN_AMNNO
-											 ) B
-										 WHERE A.NA_BZPLC    = B.NA_BZPLC
-										   AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
-										   AND A.AUC_DT      = B.AUC_DT
-										   AND A.OSLP_NO     = B.OSLP_NO
-										   AND A.TRMN_AMNNO  = B.TRMN_AMNNO
-										   AND A.RG_SQNO     = B.RG_SQNO
-									 ) A
-								 WHERE A.ATDR_AM     > 0
-								 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO
-							 ) BB
-						 WHERE AA.NA_BZPLC    = BB.NA_BZPLC
-						   AND AA.AUC_OBJ_DSC = BB.AUC_OBJ_DSC
-						   AND AA.AUC_DT      = BB.AUC_DT
-						   AND AA.OSLP_NO     = BB.OSLP_NO
-						   AND AA.ATDR_AM     = BB.ATDR_AM
-					) AAA
-					, (
-						SELECT AA.NA_BZPLC
-							 , AA.AUC_OBJ_DSC
-							 , AA.AUC_DT
-							 , AA.OSLP_NO
-							 , AA.ATDR_AM
-							 , MIN(AA.ATDR_DTM) AS ATDR_DTM
-						  FROM (
-								SELECT A.NA_BZPLC
-									 , A.AUC_OBJ_DSC
-									 , A.AUC_DT
-									 , A.OSLP_NO
-									 , A.RG_SQNO
-									 , A.TRMN_AMNNO
-									 , A.ATDR_AM, A.ATDR_DTM
-								  FROM TB_LA_IS_MH_ATDR_LOG A
-									 , (
-										SELECT A.NA_BZPLC
-											 , A.AUC_OBJ_DSC
-											 , A.AUC_DT
-											 , A.OSLP_NO
-											 , A.TRMN_AMNNO
-											 , MAX(A.RG_SQNO) AS RG_SQNO
-										  FROM TB_LA_IS_MH_ATDR_LOG A
-										 WHERE A.NA_BZPLC    = #{ss_na_bzplc}
-										   AND A.AUC_DT      = #{auc_dt}
-										<choose>
-										<when test='"4".equals(auc_obj_dsc)'>
-											AND A.AUC_OBJ_DSC IN ('2', '3')
-										</when>
-										<otherwise>
-											AND (
-												(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
-												OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
-											)
-										</otherwise>
-										</choose>
-										 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO, A.TRMN_AMNNO
-									 ) B
-								 WHERE A.NA_BZPLC    = B.NA_BZPLC
-								   AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
-								   AND A.AUC_DT      = B.AUC_DT
-								   AND A.OSLP_NO     = B.OSLP_NO
-								   AND A.TRMN_AMNNO  = B.TRMN_AMNNO
-								   AND A.RG_SQNO     = B.RG_SQNO
-								   AND A.ATDR_AM     > 0
-							 ) AA
-							, (
-								SELECT A.NA_BZPLC
-									 , A.AUC_OBJ_DSC
-									 , A.AUC_DT
-									 , A.OSLP_NO
-									 , MAX(A.ATDR_AM) AS ATDR_AM
-								  FROM (
-										SELECT A.NA_BZPLC
-											 , A.AUC_OBJ_DSC
-											 , A.AUC_DT
-											 , A.OSLP_NO
-											 , A.RG_SQNO
-											 , A.ATDR_AM
-										  FROM TB_LA_IS_MH_ATDR_LOG A
-											 , (
-												SELECT A.NA_BZPLC
-													 , A.AUC_OBJ_DSC
-													 , A.AUC_DT
-													 , A.OSLP_NO
-													 , A.TRMN_AMNNO
-													 , MAX(A.RG_SQNO) AS RG_SQNO
-												  FROM TB_LA_IS_MH_ATDR_LOG A
-												 WHERE A.NA_BZPLC    = #{ss_na_bzplc}
-												   AND A.AUC_DT      = #{auc_dt}
-												<choose>
-												<when test='"4".equals(auc_obj_dsc)'>
-													AND A.AUC_OBJ_DSC IN ('2', '3')
-												</when>
-												<otherwise>
-													AND (
-														(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
-														OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
-													)
-												</otherwise>
-												</choose>
-												 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO, A.TRMN_AMNNO
-											 ) B
-										 WHERE A.NA_BZPLC    = B.NA_BZPLC
-										   AND A.AUC_OBJ_DSC = B.AUC_OBJ_DSC
-										   AND A.AUC_DT      = B.AUC_DT
-										   AND A.OSLP_NO     = B.OSLP_NO
-										   AND A.TRMN_AMNNO  = B.TRMN_AMNNO
-										   AND A.RG_SQNO     = B.RG_SQNO
-									 ) A
-								 WHERE A.ATDR_AM     > 0
-								 GROUP BY A.NA_BZPLC, A.AUC_OBJ_DSC, A.AUC_DT, A.OSLP_NO
-							 ) BB
-						 WHERE AA.NA_BZPLC    = BB.NA_BZPLC
-						   AND AA.AUC_OBJ_DSC = BB.AUC_OBJ_DSC
-						   AND AA.AUC_DT      = BB.AUC_DT
-						   AND AA.OSLP_NO     = BB.OSLP_NO
-						   AND AA.ATDR_AM     = BB.ATDR_AM
-						 GROUP BY AA.NA_BZPLC, AA.AUC_OBJ_DSC, AA.AUC_DT, AA.OSLP_NO, AA.ATDR_AM
-					 ) BBB
-				 WHERE AAA.NA_BZPLC    = BBB.NA_BZPLC
-				   AND AAA.AUC_OBJ_DSC = BBB.AUC_OBJ_DSC
-				   AND AAA.AUC_DT      = BBB.AUC_DT
-				   AND AAA.OSLP_NO     = BBB.OSLP_NO
-				   AND AAA.ATDR_AM     = BBB.ATDR_AM
-				   AND AAA.ATDR_DTM    = BBB.ATDR_DTM
-			 ) C
-		  LEFT OUTER JOIN TB_LA_IS_MM_MWMN  G
-			ON ( C.NA_BZPLC     = G.NA_BZPLC AND  C.TRMN_AMNNO   = G.TRMN_AMNNO )
-			 , TB_LA_IS_MM_INDV     D
-			 , TB_LA_IS_MM_ENV_EST  E
+		  INNER JOIN ( 			
+				SELECT BB.*
+					,RANK() OVER(PARTITION BY AUC_OBJ_DSC,AUC_DT, OSLP_NO ORDER BY ATDR_AM DESC, ATDR_DTM ASC) AS ATDR_RANK
+				FROM (
+					SELECT
+						 AA.*
+						 ,ROW_NUMBER() OVER(PARTITION BY AUC_OBJ_DSC, OSLP_NO,TRMN_AMNNO, LVST_AUC_PTC_MN_NO ORDER BY RG_SQNO DESC) AS BID_NUM
+					FROM TB_LA_IS_MH_ATDR_LOG AA
+					WHERE AA.NA_BZPLC            = #{ss_na_bzplc}
+					<choose>
+						<when test='"4".equals(auc_obj_dsc)'>
+							AND AA.AUC_OBJ_DSC IN ('2', '3')
+						</when>
+						<when test='"0".equals(auc_obj_dsc)'>
+							AND AA.AUC_OBJ_DSC IN ('1', '2', '3')
+						</when>
+						<otherwise>
+							AND AA.AUC_OBJ_DSC = #{auc_obj_dsc}
+						</otherwise>
+					</choose>
+					AND AA.AUC_DT              = #{auc_dt}
+					AND AA.RG_SQNO NOT IN ('0', '99999999')
+				) BB
+				WHERE BB.BID_NUM = 1
+				AND BB.ATDR_AM > 0 
+			) C ON A.NA_BZPLC = C.NA_BZPLC
+				AND A.AUC_DT = C.AUC_DT
+				AND A.AUC_OBJ_DSC = C.AUC_OBJ_DSC
+				AND A.OSLP_NO = C.OSLP_NO
+				AND C.ATDR_RANK = 1 
+		 LEFT OUTER JOIN TB_LA_IS_MM_MWMN G ON ( C.NA_BZPLC     = G.NA_BZPLC AND  C.TRMN_AMNNO   = G.TRMN_AMNNO )
+		 , TB_LA_IS_MM_FHS      B
+		 , TB_LA_IS_MM_INDV     D
+		 , TB_LA_IS_MM_ENV_EST  E
 		 WHERE A.NA_BZPLC            = #{ss_na_bzplc}
 		<choose>
-		<when test='"4".equals(auc_obj_dsc)'>
-			AND A.AUC_OBJ_DSC IN ('2', '3')
-		</when>
-		<otherwise>
-			AND (
-				(#{auc_obj_dsc} = '0' AND A.AUC_OBJ_DSC IN ('0', '1', '2', '3'))
-				OR (#{auc_obj_dsc} != '0' AND A.AUC_OBJ_DSC = #{auc_obj_dsc})
-			)
-		</otherwise>
+			<when test='"4".equals(auc_obj_dsc)'>
+				AND A.AUC_OBJ_DSC IN ('2', '3')
+			</when>
+			<when test='"0".equals(auc_obj_dsc)'>
+				AND A.AUC_OBJ_DSC IN ('1', '2', '3')
+			</when>
+			<otherwise>
+				AND A.AUC_OBJ_DSC = #{auc_obj_dsc}
+			</otherwise>
 		</choose>
 		   AND A.AUC_DT              = #{auc_dt}
 		   AND A.AUC_PRG_SQ         <![CDATA[>=]]> #{st_auc_no}
@@ -998,10 +813,6 @@
 		   AND A.NA_BZPLC            = B.NA_BZPLC
 		   AND A.FHS_ID_NO           = B.FHS_ID_NO                     /* 농가식별번호                */
 		   AND A.FARM_AMNNO          = B.FARM_AMNNO                    /* 농장관리번호                */
-		   AND A.NA_BZPLC            = C.NA_BZPLC
-		   AND A.AUC_OBJ_DSC         = C.AUC_OBJ_DSC
-		   AND A.AUC_DT              = C.AUC_DT
-		   AND A.OSLP_NO             = C.OSLP_NO
 		   AND A.NA_BZPLC            = D.NA_BZPLC
 		   AND A.SRA_INDV_AMNNO      = D.SRA_INDV_AMNNO
 		   AND A.SRA_SRS_DSC         = D.SRA_SRS_DSC
